@@ -1,0 +1,260 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "format:HID{####}",
+ "creation": "2026-01-09 16:12:33.789929",
+ "doctype": "DocType",
+ "custom": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "detail_about_surveyor_section",
+  "name_of_surveyor",
+  "centre_name",
+  "date_of_survey",
+  "name_of_vastislum_pocket",
+  "household_number",
+  "is_house_hold_available_for_the_interview",
+  "reason_for_the_refusal",
+  "household_details_section",
+  "household_head_name",
+  "address",
+  "type_of_house",
+  "house_type",
+  "electricity_available",
+  "water_facility_available",
+  "water_access_availability",
+  "toilet_facility",
+  "years_living_in_the_locality",
+  "native_place_village",
+  "district",
+  "column_break_eipt",
+  "state",
+  "family_type",
+  "religion",
+  "caste",
+  "sub_caste",
+  "mother_tongue",
+  "monthly_household_income",
+  "government_benefits",
+  "if_yes_name_of_the_scheme",
+  "support_from_swadhar",
+  "additional_information"
+ ],
+ "fields": [
+  {
+   "fieldname": "detail_about_surveyor_section",
+   "fieldtype": "Section Break",
+   "label": "Detail About Surveyor"
+  },
+  {
+   "fieldname": "name_of_surveyor",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Name of Surveyor"
+  },
+  {
+   "fieldname": "centre_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Centre Name",
+   "options": "Centre"
+  },
+  {
+   "fieldname": "date_of_survey",
+   "fieldtype": "Date",
+   "label": "Date of Survey"
+  },
+  {
+   "fieldname": "name_of_vastislum_pocket",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Name of Vasti/Slum Pocket",
+   "options": "Pocket List"
+  },
+  {
+   "fieldname": "household_number",
+   "fieldtype": "Data",
+   "label": "Household Number"
+  },
+  {
+   "fieldname": "is_house_hold_available_for_the_interview",
+   "fieldtype": "Select",
+   "label": "Is House hold available for the interview? ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "reason_for_the_refusal",
+   "fieldtype": "Small Text",
+   "label": "Reason for the refusal"
+  },
+  {
+   "fieldname": "household_details_section",
+   "fieldtype": "Section Break",
+   "label": "Household Details"
+  },
+  {
+   "fieldname": "household_head_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Household Head Name"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
+   "fieldname": "type_of_house",
+   "fieldtype": "Select",
+   "label": "Type of House",
+   "options": "\nKutcha\nPucca\nSemi-Pucca"
+  },
+  {
+   "fieldname": "house_type",
+   "fieldtype": "Select",
+   "label": "House Type",
+   "options": "\nRented\nowned"
+  },
+  {
+   "fieldname": "electricity_available",
+   "fieldtype": "Select",
+   "label": "Electricity Available",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "water_facility_available",
+   "fieldtype": "Select",
+   "label": "Water Facility Available",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.water_facility_available == \"Yes\"",
+   "fieldname": "water_access_availability",
+   "fieldtype": "Select",
+   "label": "If yes, Select Water Access Availability",
+   "options": "\nSeparate tabs for drinking water & water for daily use\nDrinking water is not available\nWater is available on specific schedule or time of the day\nWe have to buy drinking water\nWe have to buy usable water for daily activities."
+  },
+  {
+   "fieldname": "toilet_facility",
+   "fieldtype": "Select",
+   "label": "Toilet Facility",
+   "options": "\nHome toilet\ncommunity toilet\nSharing toilet/ group toilet"
+  },
+  {
+   "fieldname": "years_living_in_the_locality",
+   "fieldtype": "Data",
+   "label": "Years Living in the Locality"
+  },
+  {
+   "fieldname": "native_place_village",
+   "fieldtype": "Data",
+   "label": "Native Place Village"
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Data",
+   "label": "District"
+  },
+  {
+   "fieldname": "column_break_eipt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Select",
+   "label": "State"
+  },
+  {
+   "fieldname": "family_type",
+   "fieldtype": "Select",
+   "label": "Family Type",
+   "options": "\nNuclear\nJoint"
+  },
+  {
+   "fieldname": "religion",
+   "fieldtype": "Select",
+   "label": "Religion",
+   "options": "\nHindusim\nJanism\nIslam\nChristianity\nSikhism\nBuddhism"
+  },
+  {
+   "fieldname": "caste",
+   "fieldtype": "Select",
+   "label": "Caste",
+   "options": "\nSC\nST\nVJ-A\nNT\nOBC\nGeneral/Open Category"
+  },
+  {
+   "fieldname": "sub_caste",
+   "fieldtype": "Select",
+   "label": "Sub Caste"
+  },
+  {
+   "fieldname": "mother_tongue",
+   "fieldtype": "Select",
+   "label": "Mother Tongue",
+   "options": "\nHindi\nBengali\nMarathi\nTelugu\nTamil\nGujarati\nUrdu\nKannada\nOdia\nMalayalam\nPunjabi\nAssamese\nMaithili\nSantali\nKashmiri\nNepali\nSindhi\nKonkani\nDogri\nManipuri (Meitei)\nBodo\nSanskrit\nBanjari/ Lamana\nTulu\nBihari\nGujarathi\nKannada"
+  },
+  {
+   "fieldname": "monthly_household_income",
+   "fieldtype": "Data",
+   "label": "Monthly Household Income"
+  },
+  {
+   "fieldname": "government_benefits",
+   "fieldtype": "Select",
+   "label": "Availing any Government Scheme Benefits",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.government_benefits == \"Yes\"",
+   "fieldname": "if_yes_name_of_the_scheme",
+   "fieldtype": "Select",
+   "label": "If Yes, Name of the scheme",
+   "options": "\nWomen Empowerment Widow Grant Scheme\nSanjay Gandhi Niradhar Yojana\nMata Ramai Pension Scheme\nFinancial Assistance to Disabled Persons\nArtificial Limb Assistance\nBus Pass Scheme\nSanjay Gandhi Niradhar Yojana\nShravan Bal Pension Scheme\nSanjay Gandhi Niradhar Yojana\nChild Care Scheme\nSanjay Gandhi Niradhar Yojana\nMarriage Assistance (First Marriage)\nHealth \u2013 Normal Delivery\nHealth \u2013 Cesarean Delivery\nSerious Illness Treatment\nEducation Assistance\nDeath Assistance (Work accident)\nNatural Death Assistance\nFuneral Assistance\nDr. Babasaheb Ambedkar Shram Safalya Awas Yojana\nLabour Welfare Fund / Death Assistance\nPM SVANidhi Yojana\nSocial Security & Pension Schemes"
+  },
+  {
+   "fieldname": "support_from_swadhar",
+   "fieldtype": "Select",
+   "label": "Do you require any kind of support from Swadhar? ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.support_from_swadhar == \"Yes\"",
+   "fieldname": "additional_information",
+   "fieldtype": "Small Text",
+   "label": "If yes, please specify the type of help needed. You may also share any additional information you feel is important"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-09 17:41:30.400928",
+ "modified_by": "Administrator",
+ "module": "Janadhikara",
+ "name": "Household Profile",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

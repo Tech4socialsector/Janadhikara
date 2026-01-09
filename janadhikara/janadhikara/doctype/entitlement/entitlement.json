@@ -1,0 +1,201 @@
+{
+ "actions": [],
+ "autoname": "format:ENM{DD}{MM}{###}",
+ "creation": "2026-01-09 17:21:47.835969",
+ "doctype": "DocType",
+ "custom": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "created_by",
+  "beneficiary",
+  "full_name",
+  "age",
+  "column_break_odxy",
+  "gender",
+  "active_partner",
+  "hotspot",
+  "pocket_name",
+  "section_break_mngu",
+  "entitlement_type",
+  "status",
+  "mobile_number",
+  "column_break_oclt",
+  "request_date",
+  "document_type",
+  "acknowledgement_no"
+ ],
+ "fields": [
+  {
+   "fieldname": "created_by",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Created By",
+   "read_only": 1
+  },
+  {
+   "fieldname": "beneficiary",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Beneficiary",
+   "options": "Family Members",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fetch_from": "beneficiary.familymember",
+   "fetch_if_empty": 1,
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full Name"
+  },
+  {
+   "fetch_from": "beneficiary.age",
+   "fetch_if_empty": 1,
+   "fieldname": "age",
+   "fieldtype": "Data",
+   "label": "Age"
+  },
+  {
+   "fieldname": "column_break_odxy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "beneficiary.gender",
+   "fetch_if_empty": 1,
+   "fieldname": "gender",
+   "fieldtype": "Data",
+   "label": "Gender"
+  },
+  {
+   "fetch_if_empty": 1,
+   "fieldname": "active_partner",
+   "fieldtype": "Data",
+   "label": "Active Partner"
+  },
+  {
+   "fetch_from": "beneficiary.centre",
+   "fetch_if_empty": 1,
+   "fieldname": "hotspot",
+   "fieldtype": "Data",
+   "label": "centre",
+   "options": "Centre"
+  },
+  {
+   "fetch_from": "beneficiary.pocket",
+   "fieldname": "pocket_name",
+   "fieldtype": "Data",
+   "label": "Pocket Name",
+   "options": "Pocket List"
+  },
+  {
+   "fieldname": "section_break_mngu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "entitlement_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Entitlement Type",
+   "options": "New\nReissue\nUpdate"
+  },
+  {
+   "default": "New",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "New\nApplied\nInprogress\nIssued\nRejected\nUntraced",
+   "reqd": 1
+  },
+  {
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "Register Mobile No"
+  },
+  {
+   "fieldname": "column_break_oclt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "request_date",
+   "fieldtype": "Date",
+   "label": "Request Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "document_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Document type",
+   "options": "\nAadhaar Card\nPAN Card\nVoter ID\nRation Card",
+   "reqd": 1
+  },
+  {
+   "fieldname": "acknowledgement_no",
+   "fieldtype": "Data",
+   "label": "Acknowledgement no"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-09 17:40:10.962856",
+ "modified_by": "Administrator",
+ "module": "Janadhikara",
+ "name": "Entitlement",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Orange",
+   "title": "New"
+  },
+  {
+   "color": "Purple",
+   "title": "Untraced"
+  },
+  {
+   "color": "Cyan",
+   "title": "Inprogress"
+  },
+  {
+   "color": "Cyan",
+   "title": "Applied"
+  },
+  {
+   "color": "Red",
+   "title": "Rejected"
+  },
+  {
+   "color": "Green",
+   "title": "Issued"
+  }
+ ],
+ "title_field": "beneficiary",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

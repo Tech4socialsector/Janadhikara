@@ -1,0 +1,69 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-01-09 17:25:04.795257",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "custom": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "type_of_stakeholders_in_the_slum",
+  "name_of_the_person",
+  "contact_details_if_any",
+  "met_the_stakeholder_during_profiling_work",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "type_of_stakeholders_in_the_slum",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Type of Stakeholders in the slum "
+  },
+  {
+   "fieldname": "name_of_the_person",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Name of the person "
+  },
+  {
+   "fieldname": "contact_details_if_any",
+   "fieldtype": "Phone",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Contact details (if any)"
+  },
+  {
+   "fieldname": "met_the_stakeholder_during_profiling_work",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Met the stakeholder during profiling work",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Remarks"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-01-09 17:39:34.426826",
+ "modified_by": "Administrator",
+ "module": "Janadhikara",
+ "name": "Stakeholder Mapping Template",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

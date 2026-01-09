@@ -1,0 +1,387 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "format:FMD{####}",
+ "creation": "2026-01-09 17:16:11.063872",
+ "default_view": "List",
+ "custom": 1,
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "child_information_tab",
+  "0_to_3_years_age_group_section",
+  "family_member_id",
+  "name_of_the_family_member",
+  "age_group",
+  "child_name",
+  "mother_name",
+  "mother_age",
+  "children_have",
+  "child_gender",
+  "child_birth",
+  "child_age",
+  "birth_place",
+  "child_certificate",
+  "reason_birth",
+  "require_birth",
+  "child_aadhaar",
+  "reason_card",
+  "require_card",
+  "vaccination",
+  "vaccination_reason",
+  "require_vaccination",
+  "column_break_iwzo",
+  "vacci_3_6",
+  "complete",
+  "remark",
+  "anganwadi",
+  "reason_angan",
+  "education",
+  "school",
+  "reason",
+  "class",
+  "school_type",
+  "medium",
+  "timing",
+  "transport",
+  "swadhar",
+  "specify_swadhar",
+  "academic_status_section",
+  "previous",
+  "current",
+  "tution",
+  "learning",
+  "write",
+  "column_break_nipk",
+  "math",
+  "support",
+  "extra",
+  "if_yes_why",
+  "child_support"
+ ],
+ "fields": [
+  {
+   "fieldname": "child_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Child Information "
+  },
+  {
+   "fieldname": "0_to_3_years_age_group_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "family_member_id",
+   "fieldtype": "Link",
+   "label": "Family Member ID",
+   "options": "Family Member"
+  },
+  {
+   "fetch_from": "family_member_id.family_member",
+   "fieldname": "name_of_the_family_member",
+   "fieldtype": "Data",
+   "label": "Name of the family member"
+  },
+  {
+   "fieldname": "age_group",
+   "fieldtype": "Select",
+   "label": "Age Group",
+   "options": "\n0-3\n3-6\n6-18"
+  },
+  {
+   "fieldname": "child_name",
+   "fieldtype": "Data",
+   "label": "Name of the child"
+  },
+  {
+   "fieldname": "mother_name",
+   "fieldtype": "Data",
+   "label": "Name of the mother"
+  },
+  {
+   "fieldname": "mother_age",
+   "fieldtype": "Int",
+   "label": "Age of the mother"
+  },
+  {
+   "fieldname": "children_have",
+   "fieldtype": "Int",
+   "label": "How many children mother have"
+  },
+  {
+   "fieldname": "child_gender",
+   "fieldtype": "Select",
+   "label": "Gender of child",
+   "options": "\nGirl\nBoy"
+  },
+  {
+   "fieldname": "child_birth",
+   "fieldtype": "Date",
+   "label": "Date of Birth"
+  },
+  {
+   "fieldname": "child_age",
+   "fieldtype": "Data",
+   "label": "Age"
+  },
+  {
+   "fieldname": "birth_place",
+   "fieldtype": "Data",
+   "label": "Place of Birth"
+  },
+  {
+   "fieldname": "child_certificate",
+   "fieldtype": "Select",
+   "label": "Birth Certificate",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.child_certificate == \"No\"",
+   "fieldname": "reason_birth",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.child_certificate == \"No\"",
+   "fieldname": "require_birth",
+   "fieldtype": "Select",
+   "label": "Do you require"
+  },
+  {
+   "fieldname": "child_aadhaar",
+   "fieldtype": "Select",
+   "label": "Aadhaar Card",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.child_aadhaar == \"No\"",
+   "fieldname": "reason_card",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.child_aadhaar == \"No\"",
+   "fieldname": "require_card",
+   "fieldtype": "Select",
+   "label": "Do you require",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"0-3\"",
+   "fieldname": "vaccination",
+   "fieldtype": "Select",
+   "label": "Vaccination Card",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.vaccination == \"No\"",
+   "fieldname": "vaccination_reason",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.vaccination == \"No\"",
+   "fieldname": "require_vaccination",
+   "fieldtype": "Select",
+   "label": "Do you require"
+  },
+  {
+   "fieldname": "column_break_iwzo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"3-6\"",
+   "fieldname": "vacci_3_6",
+   "fieldtype": "Select",
+   "label": "Vaccination Card",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"3-6\"",
+   "fieldname": "complete",
+   "fieldtype": "Data",
+   "label": "Vaccination completed but do not have the card"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"3-6\"",
+   "fieldname": "remark",
+   "fieldtype": "Data",
+   "label": "Any other remark"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"3-6\"",
+   "fieldname": "anganwadi",
+   "fieldtype": "Select",
+   "label": "Attending Balwadi Anganwadi",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "reason_angan",
+   "fieldtype": "Small Text",
+   "label": "If no, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "education",
+   "fieldtype": "Heading",
+   "label": "<h5>Education Details</h5>"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "school",
+   "fieldtype": "Select",
+   "label": "Is the child attending school? ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.school == \"No\"",
+   "fieldname": "reason",
+   "fieldtype": "Select",
+   "label": "If No, Reason",
+   "options": "\nFinancial issue\nMigration\nLack of interest\nHealth issue\nNo nearby school\nOther"
+  },
+  {
+   "depends_on": "eval: doc.school == \"Yes\"",
+   "fieldname": "class",
+   "fieldtype": "Data",
+   "label": "If Yes, Class Standard"
+  },
+  {
+   "depends_on": "eval: doc.school == \"Yes\"",
+   "fieldname": "school_type",
+   "fieldtype": "Select",
+   "label": "Type of School"
+  },
+  {
+   "fieldname": "medium",
+   "fieldtype": "Select",
+   "label": "Medium of Instruction",
+   "options": "\nEnglish\nMarathi\nHindi\nUrdu"
+  },
+  {
+   "depends_on": "eval: doc.school == \"Yes\"",
+   "fieldname": "timing",
+   "fieldtype": "Data",
+   "label": "School Timing"
+  },
+  {
+   "depends_on": "eval: doc.school == \"Yes\"",
+   "fieldname": "transport",
+   "fieldtype": "Select",
+   "label": "Transport Mode",
+   "options": "\nWalking\nCycle\nSchool Bus\nPublic Transport\nOther"
+  },
+  {
+   "fieldname": "swadhar",
+   "fieldtype": "Select",
+   "label": "Support received from Swadhar or any other programme",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.swadhar == \"Yes\"",
+   "fieldname": "specify_swadhar",
+   "fieldtype": "Small Text",
+   "label": "If Yes, specify"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "academic_status_section",
+   "fieldtype": "Section Break",
+   "label": "Academic Status"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "previous",
+   "fieldtype": "Data",
+   "label": "Previous Year Percentage"
+  },
+  {
+   "fieldname": "current",
+   "fieldtype": "Data",
+   "label": "Current Year Percentage"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "tution",
+   "fieldtype": "Select",
+   "label": "Is the child attending tuition coaching class other than school?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "learning",
+   "fieldtype": "Data",
+   "label": "Child\u2019s Learning Levels"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "write",
+   "fieldtype": "Select",
+   "label": "Able to read & write languages",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "column_break_nipk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "math",
+   "fieldtype": "Select",
+   "label": "Able to do basic math",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "support",
+   "fieldtype": "Select",
+   "label": "Would you like to send your child to Swadhar\u2019s Support Class? ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "extra",
+   "fieldtype": "Select",
+   "label": "Do you feel your child needs extra academic attention? ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.extra == \"Yes\"",
+   "fieldname": "if_yes_why",
+   "fieldtype": "Data",
+   "label": "If yes, Why"
+  },
+  {
+   "fieldname": "child_support",
+   "fieldtype": "Select",
+   "label": "What kind of support does your child need?",
+   "options": "\nEducational support\nEmotional / counselling support\nHealth-related support\nBehavioural support\nCareer guidance\nOther"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-09 17:40:45.425884",
+ "modified_by": "Administrator",
+ "module": "Janadhikara",
+ "name": "Child Information",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

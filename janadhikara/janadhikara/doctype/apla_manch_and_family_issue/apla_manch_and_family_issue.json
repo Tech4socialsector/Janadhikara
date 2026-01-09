@@ -1,0 +1,177 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "format:HID{####}",
+ "creation": "2026-01-09 17:22:58.786543",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "custom": 1,
+ "field_order": [
+  "apla_manch_tab",
+  "hhid",
+  "eard_apla_march",
+  "breif_about_aplamanch",
+  "willing_to_part",
+  "contibution",
+  "volunteerism_and_training_section",
+  "receiving_traing",
+  "community_activity",
+  "willing_to_share_detail",
+  "name1",
+  "age",
+  "phone_number",
+  "details_of_family_issues_tab",
+  "issue_faced_by_family",
+  "if_others_specify",
+  "counselling_support",
+  "if_yes_mention_the_reason",
+  "field_worker_observations",
+  "suggestion"
+ ],
+ "fields": [
+  {
+   "fieldname": "apla_manch_tab",
+   "fieldtype": "Tab Break",
+   "label": "Apla Manch"
+  },
+  {
+   "fieldname": "hhid",
+   "fieldtype": "Data",
+   "label": "HHID",
+   "options": "Household Profile"
+  },
+  {
+   "fieldname": "eard_apla_march",
+   "fieldtype": "Select",
+   "label": "Have you heard about Apla Manch? ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.eard_apla_march == \"No\"",
+   "fieldname": "breif_about_aplamanch",
+   "fieldtype": "Small Text",
+   "label": "If Answer is no, then surveyor will brief about the Apla manch to the respondent "
+  },
+  {
+   "fieldname": "willing_to_part",
+   "fieldtype": "Select",
+   "label": "Are you willing to be a part of Apla Manch Group?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.eard_apla_march == \"Yes\"",
+   "fieldname": "contibution",
+   "fieldtype": "Data",
+   "label": "If yes, how can you contribute into the Apla Manch"
+  },
+  {
+   "fieldname": "volunteerism_and_training_section",
+   "fieldtype": "Section Break",
+   "label": "Volunteerism and Training"
+  },
+  {
+   "fieldname": "receiving_traing",
+   "fieldtype": "Select",
+   "label": "Are you interested in receiving training on volunteerism/ schemes/programs?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "community_activity",
+   "fieldtype": "Select",
+   "label": "Are you willing to give your time for community activities?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "willing_to_share_detail",
+   "fieldtype": "Select",
+   "label": "Are you will to share your details to us for Volunteer of Apla Manch ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.willing_to_share_detail == \"Yes\"",
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "label": "Name"
+  },
+  {
+   "depends_on": "eval: doc.willing_to_share_detail == \"Yes\"",
+   "fieldname": "age",
+   "fieldtype": "Int",
+   "label": "Age"
+  },
+  {
+   "depends_on": "eval: doc.willing_to_share_detail == \"Yes\"",
+   "fieldname": "phone_number",
+   "fieldtype": "Phone",
+   "label": "Phone Number"
+  },
+  {
+   "fieldname": "details_of_family_issues_tab",
+   "fieldtype": "Tab Break",
+   "label": "Details of Family Issues"
+  },
+  {
+   "fieldname": "issue_faced_by_family",
+   "fieldtype": "Select",
+   "label": "Please select the issues faced by the family",
+   "options": "\nMarital Issues\nFinancial Stress\nAddiction/Alcoholism\nBehavioural/Educational Issues of Children\nMental Stress/Mental Health Concerns\nDrop Out Students Issues\nAdolescences Girl/ boy issues\nOld aged people issues\nUnemployment/ Livelihood\nWomen Hormonal Changes\nOther"
+  },
+  {
+   "depends_on": "eval: doc.issue_faced_by_family == \"Yes\"",
+   "fieldname": "if_others_specify",
+   "fieldtype": "Data",
+   "label": "If others, specify"
+  },
+  {
+   "fieldname": "counselling_support",
+   "fieldtype": "Select",
+   "label": "Have you received counselling support?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.counselling_support == \"Yes\"",
+   "fieldname": "if_yes_mention_the_reason",
+   "fieldtype": "Small Text",
+   "label": "If Yes, Mention the reason"
+  },
+  {
+   "fieldname": "field_worker_observations",
+   "fieldtype": "Small Text",
+   "label": "Field Worker Observations"
+  },
+  {
+   "fieldname": "suggestion",
+   "fieldtype": "Small Text",
+   "label": "Any special request or suggestion by the respondents please ask"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-09 17:37:18.752421",
+ "modified_by": "Administrator",
+ "module": "Janadhikara",
+ "name": "Apla Manch and Family issue",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

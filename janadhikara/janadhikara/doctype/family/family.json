@@ -1,0 +1,1041 @@
+{
+ "actions": [],
+ "autoname": "format:FMD{####}",
+ "creation": "2026-01-09 16:01:22.266600",
+ "doctype": "DocType",
+ "custom": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "hhid",
+  "head_of_the_family_member",
+  "familymember",
+  "relationship",
+  "gender",
+  "date_of_birth",
+  "age",
+  "centre",
+  "pocket",
+  "qualification",
+  "occupation",
+  "monthly_income",
+  "marital_status",
+  "availed_scheme",
+  "scheme_for_widow",
+  "column_break_ussy",
+  "children",
+  "pregnat_woman",
+  "if_yes_month_of_pregnancy",
+  "h5immunization_status",
+  "enrolled",
+  "government",
+  "if_yes_specify_the_scheme",
+  "identified",
+  "transgender_certificate",
+  "schemes",
+  "collective",
+  "tg_certificate",
+  "health_related_tab",
+  "disability",
+  "type_of_disability",
+  "disability_certificate",
+  "mention_the_reason",
+  "require_certificate",
+  "percentage",
+  "pension",
+  "if_yes_mention_the_schemes_and_benifits",
+  "column_break_gsco",
+  "renewal",
+  "reason_benefits",
+  "do_you_require",
+  "udid",
+  "reason_udid",
+  "require_udid",
+  "health_issue_section",
+  "health_issues_if_any",
+  "issue",
+  "specify_healthissue",
+  "treatment_benifits",
+  "reason_treatment",
+  "column_break_zctn",
+  "do_you_require_any_support",
+  "ayushman",
+  "reason_ayushman",
+  "require_ayushman",
+  "if_yes_please_specify",
+  "documentation_tab",
+  "aadhaar",
+  "reason_aadhaar",
+  "aadhaar_require",
+  "modification_required",
+  "pan",
+  "reason_pan",
+  "require_pan",
+  "modification_pan",
+  "voter_id",
+  "reason_voter",
+  "require_voter",
+  "any_modification_required_in_voter_id",
+  "ration_card",
+  "if_yes",
+  "reason_ration",
+  "require_ration",
+  "any_modification_required_in_ration_card",
+  "caste_certificate",
+  "reason_caste",
+  "require_caste_certificate",
+  "column_break_dqjx",
+  "income",
+  "reason_income",
+  "require_income",
+  "esharam",
+  "reason_sharam",
+  "require_esharam",
+  "bank_account",
+  "reason_bank",
+  "require_bank_account",
+  "birth_certificate",
+  "marriage",
+  "reason_death",
+  "do_you_require_marriage_certificate",
+  "death",
+  "reason_spouse_death",
+  "require_death",
+  "child_information_tab",
+  "0_to_3_years_age_group_section",
+  "age_group",
+  "child_name",
+  "mother_name",
+  "mother_age",
+  "children_have",
+  "child_gender",
+  "child_birth",
+  "child_age",
+  "birth_place",
+  "child_certificate",
+  "reason_birth",
+  "require_birth",
+  "child_aadhaar",
+  "reason_card",
+  "require_card",
+  "vaccination",
+  "vaccination_reason",
+  "require_vaccination",
+  "column_break_iwzo",
+  "vacci_3_6",
+  "complete",
+  "remark",
+  "anganwadi",
+  "reason_angan",
+  "education",
+  "school",
+  "reason",
+  "class",
+  "school_type",
+  "medium",
+  "timing",
+  "transport",
+  "swadhar",
+  "specify_swadhar",
+  "academic_status_section",
+  "previous",
+  "current",
+  "tution",
+  "learning",
+  "write",
+  "column_break_nipk",
+  "math",
+  "support",
+  "extra",
+  "if_yes_why",
+  "child_support"
+ ],
+ "fields": [
+  {
+   "fieldname": "hhid",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "HHID",
+   "options": "Household Profile"
+  },
+  {
+   "fetch_from": "hhid.household_head_name",
+   "fieldname": "head_of_the_family_member",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Head of the family member"
+  },
+  {
+   "fieldname": "familymember",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name of the Family Member"
+  },
+  {
+   "fieldname": "relationship",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Relationship with the Head of the Family "
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "\nMale\nFemale\nTransgender\nNot to specify"
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date of Birth"
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Data",
+   "label": "Age"
+  },
+  {
+   "fetch_from": "hhid.centre_name",
+   "fieldname": "centre",
+   "fieldtype": "Data",
+   "label": "Centre",
+   "options": "Centre"
+  },
+  {
+   "fetch_from": "hhid.name_of_vastislum_pocket",
+   "fieldname": "pocket",
+   "fieldtype": "Data",
+   "label": "Pocket",
+   "options": "Pocket List"
+  },
+  {
+   "fieldname": "qualification",
+   "fieldtype": "Select",
+   "label": "Qualification",
+   "options": "\n1st\n2nd\n3rd\n4th\n5th\n6th\n7th\n8th\n9th\n10th\n10th\u201312th\nGraduate\nPost Graduate"
+  },
+  {
+   "fieldname": "occupation",
+   "fieldtype": "Data",
+   "label": "Occupation",
+   "options": "Occupation"
+  },
+  {
+   "fieldname": "monthly_income",
+   "fieldtype": "Select",
+   "label": "Monthly Income ",
+   "options": "\nBelow > 10000\n10000 -15000\n15000-20000\n20000-25000\n25000-30000\n30000< above"
+  },
+  {
+   "fieldname": "marital_status",
+   "fieldtype": "Select",
+   "label": "Marital Status",
+   "options": "\nSingle\nMarried\nWidow\nDivorced\nSeparated"
+  },
+  {
+   "depends_on": "eval: doc.marital_status == \"Widow\"",
+   "fieldname": "availed_scheme",
+   "fieldtype": "Select",
+   "label": "Availed any Government Schemes",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.availed_scheme ==\"Yes\"",
+   "fieldname": "scheme_for_widow",
+   "fieldtype": "Select",
+   "label": "if Yes, Scheme For Widow",
+   "options": "\nWomen Empowerment Widow Grant Scheme\nSanjay Gandhi Niradhar Yojana\nMata Ramai Pension Scheme"
+  },
+  {
+   "fieldname": "column_break_ussy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "children",
+   "fieldtype": "Data",
+   "label": "No of Children"
+  },
+  {
+   "fieldname": "pregnat_woman",
+   "fieldtype": "Select",
+   "label": "Is there any pregnant woman in the family? ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.pregnat_woman == \"Yes\"",
+   "fieldname": "if_yes_month_of_pregnancy",
+   "fieldtype": "Data",
+   "label": "If Yes, Month of pregnancy"
+  },
+  {
+   "depends_on": "eval: doc.pregnat_woman == \"Yes\"",
+   "fieldname": "h5immunization_status",
+   "fieldtype": "Heading",
+   "label": "<h5>Immunization status</h5>"
+  },
+  {
+   "depends_on": "eval: doc.pregnat_woman == \"Yes\"",
+   "fieldname": "enrolled",
+   "fieldtype": "Select",
+   "label": "Pregnant women enrolled in any Health Facility",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "government",
+   "fieldtype": "Select",
+   "label": "Availed any Government Schemes (individual)",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.government == \"Yes\"",
+   "fieldname": "if_yes_specify_the_scheme",
+   "fieldtype": "Select",
+   "label": "If yes specify the scheme"
+  },
+  {
+   "depends_on": "eval: doc.gender == \"Transgender\"",
+   "fieldname": "identified",
+   "fieldtype": "Data",
+   "label": "If transgender, Have you have officially identified as transgender "
+  },
+  {
+   "depends_on": "eval: doc.gender == \"transgender\"",
+   "fieldname": "transgender_certificate",
+   "fieldtype": "Data",
+   "label": "Do you have any transgender certificate? "
+  },
+  {
+   "depends_on": "eval: doc.gender == \"Transgender\"",
+   "fieldname": "schemes",
+   "fieldtype": "Data",
+   "label": "Do you receive any pension or benefits from transgender schemes?"
+  },
+  {
+   "depends_on": "eval: doc.gender == \"Transgender\"",
+   "fieldname": "collective",
+   "fieldtype": "Select",
+   "label": "Are you part of any group or collective?",
+   "options": "\nTrans community group\nSHG / NGO\nNone"
+  },
+  {
+   "depends_on": "eval: doc.gender == \"Transgender\"",
+   "fieldname": "tg_certificate",
+   "fieldtype": "Select",
+   "label": "Transgender ID card (TG Certificate) ",
+   "options": "\nYes\nNo\nApplied\nDo you require"
+  },
+  {
+   "fieldname": "health_related_tab",
+   "fieldtype": "Tab Break",
+   "label": "Health Related"
+  },
+  {
+   "fieldname": "disability",
+   "fieldtype": "Select",
+   "label": "Person with Disability (if any applicable)",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.disability == \"Yes\"",
+   "fieldname": "type_of_disability",
+   "fieldtype": "Select",
+   "label": "If  PWD, what type of disability",
+   "options": "\n1. Blindness (complete vision loss)+A2:A22\n2. Low Vision (partial visual impairment)\n3. Leprosy Cured Persons (with residual physical impairments)\n4. Hearing Impairment (Deaf and Hard of Hearing)\n5. Locomotor Disability (movement difficulty affecting limbs)\n6. Dwarfism (short stature disability)\n7. Intellectual Disability\n8. Mental Illness\n9. Autism Spectrum Disorder\n10. Cerebral Palsy\n11. Muscular Dystrophy\n12. Chronic Neurological Conditions (e.g., Multiple Sclerosis)\n13. Specific Learning Disabilities (e.g., dyslexia)\n14. Multiple Sclerosis (a specific chronic neurological condition)\n15. Speech and Language Disability\n16. Thalassemia (blood disorder)\n17. Haemophilia (blood disorder)\n18. Sickle Cell Disease (blood disorder)\n19. Multiple Disabilities (combined disabilities, including deaf-blindness)\n20. Acid Attack Victims (disability due to acid burns)\n21. Parkinson\u2019s Disease (chronic neurological condition)"
+  },
+  {
+   "fieldname": "disability_certificate",
+   "fieldtype": "Select",
+   "label": "Does the person have a Disability medical Certificate",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.disability_certificate == \"No\"",
+   "fieldname": "mention_the_reason",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.disability_certificate == \"No\"",
+   "fieldname": "require_certificate",
+   "fieldtype": "Data",
+   "label": "Do you require"
+  },
+  {
+   "fieldname": "percentage",
+   "fieldtype": "Data",
+   "label": "Percentage of disability (if applicable)"
+  },
+  {
+   "fieldname": "pension",
+   "fieldtype": "Select",
+   "label": "Do you receive Disability pension and other benefits",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.pension == \"Yes\"",
+   "fieldname": "if_yes_mention_the_schemes_and_benifits",
+   "fieldtype": "Select",
+   "label": "If yes, Mention the schemes and benifits",
+   "options": "\nFinancial Assistance to Disabled Persons\nArtificial Limb Assistance\nBus Pass Scheme\nSanjay Gandhi Niradhar Yojana"
+  },
+  {
+   "fieldname": "column_break_gsco",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.pension == \"Yes\"",
+   "fieldname": "renewal",
+   "fieldtype": "Data",
+   "label": "If Yes, do you require renewal"
+  },
+  {
+   "depends_on": "eval: doc.pension == \"No\"",
+   "fieldname": "reason_benefits",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.pension == \"No\"",
+   "fieldname": "do_you_require",
+   "fieldtype": "Data",
+   "label": "Do you require"
+  },
+  {
+   "fieldname": "udid",
+   "fieldtype": "Select",
+   "label": "Are they having UDID Card",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.udid == \"No\"",
+   "fieldname": "reason_udid",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.udid == \"No\"",
+   "fieldname": "require_udid",
+   "fieldtype": "Data",
+   "label": "Do you require"
+  },
+  {
+   "fieldname": "health_issue_section",
+   "fieldtype": "Section Break",
+   "label": "Health Issue"
+  },
+  {
+   "fieldname": "health_issues_if_any",
+   "fieldtype": "Select",
+   "label": "Health Issues (if any)",
+   "options": "\n<h1>1. Communicable (Infectious) Diseases\nWater, sanitation, and overcrowding related\nDiarrhoea &amp; gastroenteritis\nTyphoid\nCholera (seasonal outbreaks)\nHepatitis A &amp; E\nTuberculosis (TB)\nAcute respiratory infections (ARI)\nPneumonia (especially in children &amp; elderly)\nCOVID-19 / Influenza-like illnesses\nSkin infections (scabies, fungal infections, boils)\nEye infections (conjunctivitis)\n2. Vector-Borne Diseases\nLinked to stagnant water &amp; poor waste management\nDengue\nMalaria\nChikungunya\nFilariasis\nJapanese Encephalitis (in some regions)\n3. Non-Communicable Diseases (NCDs)\nIncreasing due to lifestyle stress, poor diet\nAnaemia (very common among women &amp; adolescents)\nDiabetes\nHigh blood pressure (hypertension)\nHeart diseases\nAsthma / chronic respiratory diseases\nArthritis &amp; joint pain\nObesity (urban poor paradox)\n4. Maternal Health Issues\nAnaemia during pregnancy\nHigh-risk pregnancies\nInadequate antenatal care (ANC)\nHome deliveries\nPost-partum infections\nLow birth weight babies\nRepeated pregnancies with short spacing\n5. Child Health &amp; Nutrition Issues\nMalnutrition (underweight, stunting, wasting)\nSevere Acute Malnutrition (SAM)\nMicronutrient deficiencies (iron, vitamin A)\nDelayed immunisation\nFrequent infections (diarrhoea, pneumonia)\nWorm infestation\nDevelopmental delays\n6. Adolescent Health Issues\nAnaemia (especially among adolescent girls)\nMenstrual hygiene issues\nEarly pregnancy\nMental stress &amp; anxiety\nSubstance use (tobacco, gutkha, alcohol)\nDropout-related psychosocial issues\n7. Mental Health &amp; Psychosocial Issues\nOften hidden but highly prevalent\nDepression\nAnxiety\nStress due to poverty &amp; insecurity\nSubstance addiction (alcohol, tobacco, drugs)\nDomestic violence trauma\nChild abuse / neglect\nSuicide risk (youth &amp; adults)\n8. Women\u2019s Health Issues\nReproductive tract infections (RTIs)\nUrinary tract infections (UTIs)\nMenstrual disorders\nPCOD / hormonal issues\nBreast and cervical health issues (low screening)\n9. Environmental &amp; Occupational Health Issues\nChronic cough due to indoor air pollution\nSkin allergies due to polluted water\nHeat-related illnesses\nInjuries at construction sites\nBack pain &amp; musculoskeletal disorders\nBurns (unsafe cooking practices)\n10. Geriatric (Elderly) Health Issues\nArthritis\nVision problems (cataract)\nHearing loss\nDiabetes &amp; BP complications\nMobility issues\nNeglect and isolation\n11. Addictions &amp; Related Issues\nAlcohol dependence\nTobacco chewing &amp; smoking\nGutkha consumption\nDrug abuse (in some pockets)\n12. Public Health Red-Flag Issues (for Surveys)\nDuring interviews, indirectly check for:\nFrequent illness in children\nLong-term cough (&gt;2 weeks) \u2013 TB suspect\nRecurrent fever\nSignificant weight loss\nPregnancy without ANC\nChildren not immunised</h1>"
+  },
+  {
+   "fieldname": "issue",
+   "fieldtype": "Select",
+   "label": "Is there is any health issue",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.issue == \"Yes\"",
+   "fieldname": "specify_healthissue",
+   "fieldtype": "Small Text",
+   "label": "If yes, specify the health issue"
+  },
+  {
+   "fieldname": "treatment_benifits",
+   "fieldtype": "Select",
+   "label": "Are you getting benefits for the treatment",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.treatment_benifits == \"No\"",
+   "fieldname": "reason_treatment",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "fieldname": "column_break_zctn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.treatment_benifits == \"No\"",
+   "fieldname": "do_you_require_any_support",
+   "fieldtype": "Data",
+   "label": "Do you require any support"
+  },
+  {
+   "fieldname": "ayushman",
+   "fieldtype": "Select",
+   "label": "Do you have access of Ayushman Yojana / Insurance",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.ayushman == \"No\"",
+   "fieldname": "reason_ayushman",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.ayushman == \"No\"",
+   "fieldname": "require_ayushman",
+   "fieldtype": "Data",
+   "label": "Do you require"
+  },
+  {
+   "depends_on": "eval: doc.ayushman == \"Yes\"",
+   "fieldname": "if_yes_please_specify",
+   "fieldtype": "Small Text",
+   "label": "If yes please specify"
+  },
+  {
+   "fieldname": "documentation_tab",
+   "fieldtype": "Tab Break",
+   "label": "Documentation"
+  },
+  {
+   "fieldname": "aadhaar",
+   "fieldtype": "Select",
+   "label": "Do you have Aadhaar Card ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.aadhaar == \"No\"",
+   "fieldname": "reason_aadhaar",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.aadhaar == \"No\"",
+   "fieldname": "aadhaar_require",
+   "fieldtype": "Select",
+   "label": "Do you require",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.aadhaar == \"Yes\"",
+   "fieldname": "modification_required",
+   "fieldtype": "Select",
+   "label": "Any modification required in Adhaar Card",
+   "options": "\nAddress Change\nPhoto Update\nName change\nSurname\nBiometrics changes\nMobile Link\nBank- Pan Link with Adhaar Card"
+  },
+  {
+   "fieldname": "pan",
+   "fieldtype": "Select",
+   "label": "Do you have a PAN Card",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.pan == \"No\"",
+   "fieldname": "reason_pan",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.pan == \"No\"",
+   "fieldname": "require_pan",
+   "fieldtype": "Select",
+   "label": "Do you require"
+  },
+  {
+   "depends_on": "eval: doc.pan == \"Yes\"",
+   "fieldname": "modification_pan",
+   "fieldtype": "Select",
+   "label": "Any modification required in Pan Card",
+   "options": "\nAddress Change\nPhoto Update\nName change\nSurname\nBiometrics changes\nMobile Link\nBank- Adhaar Link with Pan Card"
+  },
+  {
+   "fieldname": "voter_id",
+   "fieldtype": "Select",
+   "label": "Do you have a Voter ID"
+  },
+  {
+   "depends_on": "eval: doc.voter_id == \"No\"",
+   "fieldname": "reason_voter",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.voter_id == \"No\"",
+   "fieldname": "require_voter",
+   "fieldtype": "Select",
+   "label": "Do you require",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.voter_id == \"Yes\"",
+   "fieldname": "any_modification_required_in_voter_id",
+   "fieldtype": "Select",
+   "label": "Any modification required in Voter ID",
+   "options": "\nAddress Change\nPhoto Update\nName change\nsurname change"
+  },
+  {
+   "fieldname": "ration_card",
+   "fieldtype": "Select",
+   "label": "Do you have a Ration Card",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.ration_card == \"Yes\"",
+   "fieldname": "if_yes",
+   "fieldtype": "Select",
+   "label": "If Yes",
+   "options": "\nOrange\nYellow\nWhite\nOther"
+  },
+  {
+   "depends_on": "eval: doc.ration_card == \"No\"",
+   "fieldname": "reason_ration",
+   "fieldtype": "Small Text",
+   "label": "If No, Mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.ration_card == \"No\"",
+   "fieldname": "require_ration",
+   "fieldtype": "Select",
+   "label": "Do you require",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.ration_card == \"Yes\"",
+   "fieldname": "any_modification_required_in_ration_card",
+   "fieldtype": "Select",
+   "label": "Any modification required in Ration Card",
+   "options": "\nAddress Change\nPhoto Update\nName change\nsurname change\nadding family members deletion of the family member\nany other"
+  },
+  {
+   "fieldname": "caste_certificate",
+   "fieldtype": "Select",
+   "label": "Do you have Caste Certificate",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.caste_certificate == \"No\"",
+   "fieldname": "reason_caste",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.caste_certificate == \"No\"",
+   "fieldname": "require_caste_certificate",
+   "fieldtype": "Select",
+   "label": "Do you require Caste Certificate",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "column_break_dqjx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "income",
+   "fieldtype": "Select",
+   "label": "Do you have Income Certificate",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "reason_income",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.income == \"No\"",
+   "fieldname": "require_income",
+   "fieldtype": "Data",
+   "label": "Do you require Income Certificate"
+  },
+  {
+   "fieldname": "esharam",
+   "fieldtype": "Select",
+   "label": "Do you have E Sharam card",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.esharam == \"No\"",
+   "fieldname": "reason_sharam",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.esharam == \"No\"",
+   "fieldname": "require_esharam",
+   "fieldtype": "Select",
+   "label": "Do you require",
+   "options": "\nYes\nno"
+  },
+  {
+   "fieldname": "bank_account",
+   "fieldtype": "Select",
+   "label": "Do you have Bank Account",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.bank_account == \"No\"",
+   "fieldname": "reason_bank",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.bank_account == \"No\"",
+   "fieldname": "require_bank_account",
+   "fieldtype": "Select",
+   "label": "Do you required Bank Account",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "birth_certificate",
+   "fieldtype": "Select",
+   "label": "Do you have a Birth Certificate"
+  },
+  {
+   "depends_on": "eval: doc.marital_status == \"Married\"",
+   "fieldname": "marriage",
+   "fieldtype": "Select",
+   "label": "Marriage Certificate (for married individuals)",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.marriage == \"No\"",
+   "fieldname": "reason_death",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.marriage == \"No\"",
+   "fieldname": "do_you_require_marriage_certificate",
+   "fieldtype": "Select",
+   "label": "Do you require Marriage Certificate",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.marital_status == \"Widow\"",
+   "fieldname": "death",
+   "fieldtype": "Select",
+   "label": "Spouse Death Certificate (for widowed women only)",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.death == \"No\"",
+   "fieldname": "reason_spouse_death",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.death == \"No\"",
+   "fieldname": "require_death",
+   "fieldtype": "Select",
+   "label": "Do you require ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "child_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Child Information "
+  },
+  {
+   "fieldname": "0_to_3_years_age_group_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "age_group",
+   "fieldtype": "Select",
+   "label": "Age Group",
+   "options": "\n0-3\n3-6\n6-18"
+  },
+  {
+   "fieldname": "child_name",
+   "fieldtype": "Data",
+   "label": "Name of the child"
+  },
+  {
+   "fieldname": "mother_name",
+   "fieldtype": "Data",
+   "label": "Name of the mother"
+  },
+  {
+   "fieldname": "mother_age",
+   "fieldtype": "Int",
+   "label": "Age of the mother"
+  },
+  {
+   "fieldname": "children_have",
+   "fieldtype": "Int",
+   "label": "How many children mother have"
+  },
+  {
+   "fieldname": "child_gender",
+   "fieldtype": "Select",
+   "label": "Gender of child",
+   "options": "\nGirl\nBoy"
+  },
+  {
+   "fieldname": "child_birth",
+   "fieldtype": "Date",
+   "label": "Date of Birth"
+  },
+  {
+   "fieldname": "child_age",
+   "fieldtype": "Data",
+   "label": "Age"
+  },
+  {
+   "fieldname": "birth_place",
+   "fieldtype": "Data",
+   "label": "Place of Birth"
+  },
+  {
+   "fieldname": "child_certificate",
+   "fieldtype": "Select",
+   "label": "Birth Certificate",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.child_certificate == \"No\"",
+   "fieldname": "reason_birth",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.child_certificate == \"No\"",
+   "fieldname": "require_birth",
+   "fieldtype": "Select",
+   "label": "Do you require"
+  },
+  {
+   "fieldname": "child_aadhaar",
+   "fieldtype": "Select",
+   "label": "Aadhaar Card",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.child_aadhaar == \"No\"",
+   "fieldname": "reason_card",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.child_aadhaar == \"No\"",
+   "fieldname": "require_card",
+   "fieldtype": "Select",
+   "label": "Do you require",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"0-3\"",
+   "fieldname": "vaccination",
+   "fieldtype": "Select",
+   "label": "Vaccination Card",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.vaccination == \"No\"",
+   "fieldname": "vaccination_reason",
+   "fieldtype": "Small Text",
+   "label": "If No, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.vaccination == \"No\"",
+   "fieldname": "require_vaccination",
+   "fieldtype": "Select",
+   "label": "Do you require"
+  },
+  {
+   "fieldname": "column_break_iwzo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"3-6\"",
+   "fieldname": "vacci_3_6",
+   "fieldtype": "Select",
+   "label": "Vaccination Card",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"3-6\"",
+   "fieldname": "complete",
+   "fieldtype": "Data",
+   "label": "Vaccination completed but do not have the card"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"3-6\"",
+   "fieldname": "remark",
+   "fieldtype": "Data",
+   "label": "Any other remark"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"3-6\"",
+   "fieldname": "anganwadi",
+   "fieldtype": "Select",
+   "label": "Attending Balwadi/Anganwadi",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "reason_angan",
+   "fieldtype": "Small Text",
+   "label": "If no, mention the reason"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "education",
+   "fieldtype": "Heading",
+   "label": "<h5>Education Details</h5>"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "school",
+   "fieldtype": "Select",
+   "label": "Is the child attending school? ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.school == \"No\"",
+   "fieldname": "reason",
+   "fieldtype": "Select",
+   "label": "If No, Reason",
+   "options": "\nFinancial issue\nMigration\nLack of interest\nHealth issue\nNo nearby school\nOther"
+  },
+  {
+   "depends_on": "eval: doc.school == \"Yes\"",
+   "fieldname": "class",
+   "fieldtype": "Data",
+   "label": "If Yes, Class / Standard"
+  },
+  {
+   "depends_on": "eval: doc.school == \"Yes\"",
+   "fieldname": "school_type",
+   "fieldtype": "Select",
+   "label": "Type of School"
+  },
+  {
+   "fieldname": "medium",
+   "fieldtype": "Select",
+   "label": "Medium of Instruction",
+   "options": "\nEnglish\nMarathi\nHindi\nUrdu"
+  },
+  {
+   "depends_on": "eval: doc.school == \"Yes\"",
+   "fieldname": "timing",
+   "fieldtype": "Data",
+   "label": "School Timing"
+  },
+  {
+   "depends_on": "eval: doc.school == \"Yes\"",
+   "fieldname": "transport",
+   "fieldtype": "Select",
+   "label": "Transport Mode",
+   "options": "\nWalking\nCycle\nSchool Bus\nPublic Transport\nOther"
+  },
+  {
+   "fieldname": "swadhar",
+   "fieldtype": "Select",
+   "label": "Support received from Swadhar or any other programme",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.swadhar == \"Yes\"",
+   "fieldname": "specify_swadhar",
+   "fieldtype": "Small Text",
+   "label": "If Yes, specify"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "academic_status_section",
+   "fieldtype": "Section Break",
+   "label": "Academic Status"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "previous",
+   "fieldtype": "Data",
+   "label": "Previous Year Percentage"
+  },
+  {
+   "fieldname": "current",
+   "fieldtype": "Data",
+   "label": "Current Year Percentage"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "tution",
+   "fieldtype": "Select",
+   "label": "Is the child attending tuition / coaching class other than school?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "learning",
+   "fieldtype": "Data",
+   "label": "Child\u2019s Learning Levels"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "write",
+   "fieldtype": "Select",
+   "label": "Able to read & write languages",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "column_break_nipk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "math",
+   "fieldtype": "Select",
+   "label": "Able to do basic math",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "support",
+   "fieldtype": "Select",
+   "label": "Would you like to send your child to Swadhar\u2019s Support Class? ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.age_group == \"6-18\"",
+   "fieldname": "extra",
+   "fieldtype": "Select",
+   "label": "Do you feel your child needs extra academic attention? ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.extra == \"Yes\"",
+   "fieldname": "if_yes_why",
+   "fieldtype": "Data",
+   "label": "If yes, Why"
+  },
+  {
+   "fieldname": "child_support",
+   "fieldtype": "Select",
+   "label": "What kind of support does your child need?",
+   "options": "\nEducational support\nEmotional / counselling support\nHealth-related support\nBehavioural support\nCareer guidance\nOther"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-09 16:08:03.908157",
+ "modified_by": "Administrator",
+ "module": "Janadhikara",
+ "name": "Family",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "familymember"
+}

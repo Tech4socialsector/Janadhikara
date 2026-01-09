@@ -1,0 +1,690 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:name_of_the_settlement",
+ "creation": "2026-01-09 17:26:48.269472",
+ "doctype": "DocType",
+ "custom": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "name_of_the_settlement",
+  "name_of_the_organization",
+  "dates_of_visit",
+  "persons_visited_name",
+  "designation",
+  "key_respondents",
+  "general_information_tab",
+  "name_of_the_settlement_popularly_known_name",
+  "official_name_of_the_settlement",
+  "google_location",
+  "latitude",
+  "longitude",
+  "column_break_nstf",
+  "address",
+  "ward_number_and_name",
+  "zone_name_govt",
+  "ward_counselorparshad_name",
+  "legislative_assembly_constituency",
+  "duda_notified_slum",
+  "duda_list",
+  "facing_hardazous_thing",
+  "if_others_please_specify",
+  "railwaytracks",
+  "slum_related_information_tab",
+  "age_of_settlement",
+  "number_of_households_near_to_exact",
+  "type_of_community_residing",
+  "what_is_occupation_for_men",
+  "waht_is_the_occupation_for_women",
+  "predominant_religion",
+  "specify_religion",
+  "predominant_caste",
+  "migrants_staying_here",
+  "if_yes_state",
+  "source_state_or_district",
+  "type_of_occupation",
+  "only_male_member",
+  "average_monthly_income",
+  "column_break_oupd",
+  "living_in_rented_houses",
+  "tenant_hhs_else_write_not_applicable",
+  "average_rent_in_the_area",
+  "predominant_type_of_housing",
+  "thatched_roof_huts",
+  "specify_thatched",
+  "cement_sheet_roof_with_one_brick_walls",
+  "makeshift_structures",
+  "yes_makeshift",
+  "concrete_houses",
+  "by_govt_authorities",
+  "specify",
+  "construction",
+  "children_detail",
+  "children_in_the_slum",
+  "other_estimated",
+  "average_student",
+  "schoold_going_student",
+  "land_ownership_details_tab",
+  "cathment_area_of_the_settlement_in_kms",
+  "catchment",
+  "ownership_of_the_slum_as_per",
+  "if_others_please_define",
+  "developed_under_any_govt_project_mention_project",
+  "status_of_this_slum_under_city_development_plan_mater_plan",
+  "eviction_issues_section",
+  "is_the_settlemenst_facing_any_eviction_threat",
+  "follow_up_questions_for_if_there_is_a_threat_of_eviction",
+  "survey_no_for_settlements_facing_eviction_threat",
+  "amenities",
+  "community_eligible",
+  "explain_the_situation_of",
+  "availability_of_civic_anienities",
+  "column_break_vhrm",
+  "entitlements_related_services",
+  "households_settlement",
+  "any_other_csosngos_working_in_the_slum_section",
+  "ngo_cso",
+  "if_yes_name",
+  "intervention_detail",
+  "others_section",
+  "public_health_facility",
+  "distance_settlement",
+  "type_of_health_facility_name",
+  "mobile_medical_units",
+  "police_station",
+  "settlement_distance",
+  "column_break_wpvj",
+  "public_scholl_name_location",
+  "distance",
+  "secondary_school",
+  "settlements_distance",
+  "children_enrollment",
+  "culture_significance",
+  "tab_6_tab",
+  "recommendations",
+  "explain_with_maps",
+  "vulnerabiliteis",
+  "line_maping",
+  "stakeholders_mapping_template_tab",
+  "slum_wise_stakeholders_mapping_section",
+  "stakeholders_mapping"
+ ],
+ "fields": [
+  {
+   "fieldname": "name_of_the_settlement",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Name of the Settlement",
+   "unique": 1
+  },
+  {
+   "fieldname": "name_of_the_organization",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Name of the Organization"
+  },
+  {
+   "fieldname": "dates_of_visit",
+   "fieldtype": "Date",
+   "label": "Dates of Visit"
+  },
+  {
+   "fieldname": "persons_visited_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Persons visited (Name)"
+  },
+  {
+   "fieldname": "designation",
+   "fieldtype": "Data",
+   "label": "Designation"
+  },
+  {
+   "fieldname": "key_respondents",
+   "fieldtype": "Data",
+   "label": "Key Respondents "
+  },
+  {
+   "fieldname": "general_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "General Information"
+  },
+  {
+   "fieldname": "name_of_the_settlement_popularly_known_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Name of the Settlement (Popularly known name)"
+  },
+  {
+   "fieldname": "official_name_of_the_settlement",
+   "fieldtype": "Data",
+   "label": "Official Name of the settlement "
+  },
+  {
+   "fieldname": "google_location",
+   "fieldtype": "Geolocation",
+   "label": "Google Location Pin"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Float",
+   "label": "Latitude"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Float",
+   "label": "Longitude"
+  },
+  {
+   "fieldname": "column_break_nstf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "CO must be captured a simple address with a landmark for revisiting the same Household",
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address & Landmark"
+  },
+  {
+   "fieldname": "ward_number_and_name",
+   "fieldtype": "Data",
+   "label": "Ward Number and Name "
+  },
+  {
+   "fieldname": "zone_name_govt",
+   "fieldtype": "Data",
+   "label": "Govt. Zone name  "
+  },
+  {
+   "fieldname": "ward_counselorparshad_name",
+   "fieldtype": "Data",
+   "label": "Ward Counselor/Parshad Name"
+  },
+  {
+   "fieldname": "legislative_assembly_constituency",
+   "fieldtype": "Data",
+   "label": "Legislative Assembly Constituency"
+  },
+  {
+   "fieldname": "duda_notified_slum",
+   "fieldtype": "Select",
+   "label": "District Urban Development Authority (DUDA) Notified slum ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.duda_notified_slum == \"Yes\"",
+   "fieldname": "duda_list",
+   "fieldtype": "Data",
+   "label": "If Yes, name in DUDA list"
+  },
+  {
+   "fieldname": "facing_hardazous_thing",
+   "fieldtype": "Select",
+   "label": "If slum is facing hardazous thing",
+   "options": "\nnear railway tracks\nwater bodies\nriver\nunder the flyover\nhigh tension wires\nindustrial areas\nOthers"
+  },
+  {
+   "depends_on": "eval: doc.facing_hardazous_thing == \"Others\"",
+   "fieldname": "if_others_please_specify",
+   "fieldtype": "Data",
+   "label": "If others please specify"
+  },
+  {
+   "description": "Note: example caste/religion conflict, Others specify ",
+   "fieldname": "railwaytracks",
+   "fieldtype": "Data",
+   "label": "Is there any risk of any conflicts"
+  },
+  {
+   "fieldname": "slum_related_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Slum related Information"
+  },
+  {
+   "fieldname": "age_of_settlement",
+   "fieldtype": "Data",
+   "label": "Age of settlement"
+  },
+  {
+   "fieldname": "number_of_households_near_to_exact",
+   "fieldtype": "Data",
+   "label": "Number of Households (near to exact)"
+  },
+  {
+   "fieldname": "type_of_community_residing",
+   "fieldtype": "Heading",
+   "label": "<h5>Type of community residing</h5>"
+  },
+  {
+   "fieldname": "what_is_occupation_for_men",
+   "fieldtype": "Data",
+   "label": "What is Occupation for Men"
+  },
+  {
+   "fieldname": "waht_is_the_occupation_for_women",
+   "fieldtype": "Data",
+   "label": "Waht is the Occupation for Women"
+  },
+  {
+   "fieldname": "predominant_religion",
+   "fieldtype": "Select",
+   "label": "Predominant Religion",
+   "options": "\nHindu\nMuslim\nChirstian\nOthers Specify"
+  },
+  {
+   "depends_on": "eval: doc.predominant_religion == \"Others Specify\"",
+   "fieldname": "specify_religion",
+   "fieldtype": "Data",
+   "label": "If Others Please Specify"
+  },
+  {
+   "fieldname": "predominant_caste",
+   "fieldtype": "Data",
+   "label": "Predominant Caste"
+  },
+  {
+   "fieldname": "migrants_staying_here",
+   "fieldtype": "Select",
+   "label": "Are there migrants staying here",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.migrants_staying_here == \"Yes\"",
+   "fieldname": "if_yes_state",
+   "fieldtype": "Data",
+   "label": "if yes, number of HHs "
+  },
+  {
+   "fieldname": "source_state_or_district",
+   "fieldtype": "Data",
+   "label": "source state or district"
+  },
+  {
+   "fieldname": "type_of_occupation",
+   "fieldtype": "Data",
+   "label": " Type of occupation"
+  },
+  {
+   "fieldname": "only_male_member",
+   "fieldtype": "Data",
+   "label": "residing with family or only male member"
+  },
+  {
+   "fieldname": "average_monthly_income",
+   "fieldtype": "Data",
+   "label": "Average monthly income"
+  },
+  {
+   "fieldname": "column_break_oupd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "living_in_rented_houses",
+   "fieldtype": "Select",
+   "label": "Are there families living in rented houses?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.living_in_rented_houses == \"Yes\"",
+   "fieldname": "tenant_hhs_else_write_not_applicable",
+   "fieldtype": "Data",
+   "label": "If yes, No. of tenant HHs else write Not Applicable"
+  },
+  {
+   "depends_on": "eval: doc.living_in_rented_houses == \"Yes\"",
+   "fieldname": "average_rent_in_the_area",
+   "fieldtype": "Data",
+   "label": "Average rent in the area "
+  },
+  {
+   "description": "(Could be a combination or one or two different housing\t)",
+   "fieldname": "predominant_type_of_housing",
+   "fieldtype": "Data",
+   "label": "Predominant type of housing"
+  },
+  {
+   "fieldname": "thatched_roof_huts",
+   "fieldtype": "Select",
+   "label": "Thatched roof huts",
+   "options": "\nYes\nNo\nOthers"
+  },
+  {
+   "depends_on": "eval: doc.thatched_roof_huts == \"Others\"",
+   "fieldname": "specify_thatched",
+   "fieldtype": "Data",
+   "label": "If Others Please Specify"
+  },
+  {
+   "fieldname": "cement_sheet_roof_with_one_brick_walls",
+   "fieldtype": "Select",
+   "label": "Cement Sheet roof with one brick walls",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "makeshift_structures",
+   "fieldtype": "Select",
+   "label": "Makeshift structures made of metal - cement sheets/tarpaulin sheets for roof)",
+   "options": "\nYes\nNo\nOthers"
+  },
+  {
+   "depends_on": "eval: doc.makeshift_structures == \"Others\"",
+   "fieldname": "yes_makeshift",
+   "fieldtype": "Data",
+   "label": "If Others, Please Specify"
+  },
+  {
+   "fieldname": "concrete_houses",
+   "fieldtype": "Select",
+   "label": "Concrete Houses ",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "by_govt_authorities",
+   "fieldtype": "Select",
+   "label": "Houses constructed by govt. authorities",
+   "options": "\nYes\nNo\nOthers"
+  },
+  {
+   "depends_on": "eval: doc.by_govt_authorities == \"Others\"",
+   "fieldname": "specify",
+   "fieldtype": "Data",
+   "label": "Others Specify"
+  },
+  {
+   "depends_on": "eval: doc.by_govt_authorities == \"Yes\"",
+   "fieldname": "construction",
+   "fieldtype": "Data",
+   "label": "If yes, year of construction to be mentioned"
+  },
+  {
+   "fieldname": "children_detail",
+   "fieldtype": "Section Break",
+   "label": "children detail"
+  },
+  {
+   "fieldname": "children_in_the_slum",
+   "fieldtype": "Select",
+   "label": "Estimated number of children in the slum",
+   "options": "\n0-6 months\n6 months- 3 yrs\n3-6 yrs\n6- 12yrs\nOthers"
+  },
+  {
+   "depends_on": "eval: doc.children_in_the_slum == \"Others\"",
+   "fieldname": "other_estimated",
+   "fieldtype": "Data",
+   "label": "If, Others Please Specify"
+  },
+  {
+   "fieldname": "average_student",
+   "fieldtype": "Data",
+   "label": "Average number of school going children (6-12 yrs) "
+  },
+  {
+   "fieldname": "schoold_going_student",
+   "fieldtype": "Data",
+   "label": "Average of school drop out children (6-12 yrs)"
+  },
+  {
+   "fieldname": "land_ownership_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Land Ownership details "
+  },
+  {
+   "description": "Please refer the Govt survey to get the official information on land size. mention the Year of survey referring",
+   "fieldname": "cathment_area_of_the_settlement_in_kms",
+   "fieldtype": "Data",
+   "label": "Cathment area of the Settlement (in Kms)"
+  },
+  {
+   "fieldname": "catchment",
+   "fieldtype": "Small Text",
+   "label": "Explain is there any change in the catchment area/land size over the years, else write No? "
+  },
+  {
+   "fieldname": "ownership_of_the_slum_as_per",
+   "fieldtype": "Select",
+   "label": "Nature of land ownership of the slum as per ",
+   "options": "\nPublic\nPrivate\nOthers, define"
+  },
+  {
+   "depends_on": "eval: doc.ownership_of_the_slum_as_per == \"Others, define\"",
+   "fieldname": "if_others_please_define",
+   "fieldtype": "Data",
+   "label": "If Others, Please Define"
+  },
+  {
+   "fieldname": "developed_under_any_govt_project_mention_project",
+   "fieldtype": "Data",
+   "label": "Developed under any govt. project (mention project)"
+  },
+  {
+   "description": "(e.g if any developmental project planned for this slum in future)",
+   "fieldname": "status_of_this_slum_under_city_development_plan_mater_plan",
+   "fieldtype": "Data",
+   "label": "Status of this slum under City Development Plan/ Mater Plan"
+  },
+  {
+   "fieldname": "eviction_issues_section",
+   "fieldtype": "Section Break",
+   "label": "Eviction Issues "
+  },
+  {
+   "fieldname": "is_the_settlemenst_facing_any_eviction_threat",
+   "fieldtype": "Data",
+   "label": "Is the settlemenst facing any eviction threat"
+  },
+  {
+   "description": "(define current status with categories and timelines) Explain the reason why it is classified as objectionable slum",
+   "fieldname": "follow_up_questions_for_if_there_is_a_threat_of_eviction",
+   "fieldtype": "Small Text",
+   "label": "Follow up questions for if there is a threat of eviction"
+  },
+  {
+   "description": "else write Not Applicable",
+   "fieldname": "survey_no_for_settlements_facing_eviction_threat",
+   "fieldtype": "Data",
+   "label": "Survey No. for settlements facing eviction threat,"
+  },
+  {
+   "fieldname": "amenities",
+   "fieldtype": "Tab Break",
+   "label": "Land and Civic Amenities Service"
+  },
+  {
+   "fieldname": "community_eligible",
+   "fieldtype": "Data",
+   "label": "Is the community eligible for land/housing rights, and have they obtained pattas/sale deed"
+  },
+  {
+   "fieldname": "explain_the_situation_of",
+   "fieldtype": "Select",
+   "label": "Explain the situation of",
+   "options": "\nInfrastructure,\nCivic amenities,\nAccess to public services like education, health etc.\nClimate risks\nOthers, specify"
+  },
+  {
+   "fieldname": "availability_of_civic_anienities",
+   "fieldtype": "Select",
+   "label": "Explain the availability of civic amenities",
+   "options": "\nstreet lights, Dark spots\ndrainage & sewage\nCCTV\ndrinking water facilities and water connection\nOthers specify"
+  },
+  {
+   "fieldname": "column_break_vhrm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "entitlements_related_services",
+   "fieldtype": "Data",
+   "label": "Where do they go for availing entitlements and related services ?"
+  },
+  {
+   "fieldname": "households_settlement",
+   "fieldtype": "Data",
+   "label": "What is the status of access to different government entitlements among most of households in the settlement?"
+  },
+  {
+   "fieldname": "any_other_csosngos_working_in_the_slum_section",
+   "fieldtype": "Section Break",
+   "label": "Any other CSOs/NGOs working in the Slum"
+  },
+  {
+   "fieldname": "ngo_cso",
+   "fieldtype": "Select",
+   "label": "Is there any other NGO/CSO working in the settlements",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval: doc.ngo_cso == \"Yesa\"",
+   "fieldname": "if_yes_name",
+   "fieldtype": "Data",
+   "label": "If Yes, Name"
+  },
+  {
+   "depends_on": "eval: doc.ngo_cso == \"Yesa\"",
+   "fieldname": "intervention_detail",
+   "fieldtype": "Small Text",
+   "label": "If Yes, their existing Interventions and other details"
+  },
+  {
+   "fieldname": "others_section",
+   "fieldtype": "Section Break",
+   "label": "Others"
+  },
+  {
+   "fieldname": "public_health_facility",
+   "fieldtype": "Data",
+   "label": "Name and type of the nearest Public Health Facility"
+  },
+  {
+   "fieldname": "distance_settlement",
+   "fieldtype": "Data",
+   "label": " Distance from the settlement  "
+  },
+  {
+   "fieldname": "type_of_health_facility_name",
+   "fieldtype": "Data",
+   "label": "Type of Health facility, Name"
+  },
+  {
+   "fieldname": "mobile_medical_units",
+   "fieldtype": "Small Text",
+   "label": "Details about any other popular Health Facility, private, quacks, public spirited hospital, Mobile Medical Units"
+  },
+  {
+   "fieldname": "police_station",
+   "fieldtype": "Data",
+   "label": "Name of the police station/ Chowki/Thana"
+  },
+  {
+   "fieldname": "settlement_distance",
+   "fieldtype": "Data",
+   "label": "Distance from the settlement "
+  },
+  {
+   "fieldname": "column_break_wpvj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "public_scholl_name_location",
+   "fieldtype": "Data",
+   "label": "Nearest Govt. Primary School name and location"
+  },
+  {
+   "fieldname": "distance",
+   "fieldtype": "Data",
+   "label": "Distance from the settlement "
+  },
+  {
+   "fieldname": "secondary_school",
+   "fieldtype": "Data",
+   "label": "Nearest Govt. Secondary School name and location"
+  },
+  {
+   "fieldname": "settlements_distance",
+   "fieldtype": "Data",
+   "label": "Distance from the settlement "
+  },
+  {
+   "fieldname": "children_enrollment",
+   "fieldtype": "Data",
+   "label": "Nearest AWCs distance from settlement and average number of eligible children  enrolled in AWC"
+  },
+  {
+   "fieldname": "culture_significance",
+   "fieldtype": "Data",
+   "label": "Historical and Cultural Significance"
+  },
+  {
+   "fieldname": "tab_6_tab",
+   "fieldtype": "Tab Break",
+   "label": "Recommendations "
+  },
+  {
+   "fieldname": "recommendations",
+   "fieldtype": "Heading",
+   "label": "Visiting Team's recommendations"
+  },
+  {
+   "fieldname": "explain_with_maps",
+   "fieldtype": "Data",
+   "label": "Are we taking all the proposed no. of HHs or partially. Explain with maps"
+  },
+  {
+   "fieldname": "vulnerabiliteis",
+   "fieldtype": "Small Text",
+   "label": "What are the vulnerabilities in the settlement"
+  },
+  {
+   "fieldname": "line_maping",
+   "fieldtype": "Geolocation",
+   "label": "Line Maping"
+  },
+  {
+   "fieldname": "stakeholders_mapping_template_tab",
+   "fieldtype": "Tab Break",
+   "label": "Stakeholder's Mapping Template"
+  },
+  {
+   "fieldname": "slum_wise_stakeholders_mapping_section",
+   "fieldtype": "Section Break",
+   "label": "Slum wise Stakeholders mapping "
+  },
+  {
+   "fieldname": "stakeholders_mapping",
+   "fieldtype": "Table",
+   "label": "Stakeholders mapping ",
+   "options": "Stakeholder Mapping Template"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-09 17:38:57.552932",
+ "modified_by": "Administrator",
+ "module": "Janadhikara",
+ "name": "Settlements",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
