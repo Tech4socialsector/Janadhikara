@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" id="app-favicon" href="/assets/janadhikara/frontend/favicon.png" />
+    <title>Janadhikara</title>
+    <script type="module" crossorigin src="/assets/janadhikara/frontend/assets/index-BoKCHy0R.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/janadhikara/frontend/assets/index-BDswUGsh.css">
+  <link rel="manifest" href="/assets/janadhikara/frontend/manifest.webmanifest"></head>
+  <body>
+    <div id="app"></div>
+  
+          <script>
+              {% for key in boot %}
+              window["{{ key }}"] = {{ boot[key] | tojson }};
+              {% endfor %}
+          </script>
+          </body>
+          
+</html>

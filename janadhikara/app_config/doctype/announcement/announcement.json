@@ -1,0 +1,179 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "format:ANN-{#####}",
+ "creation": "2026-09-30 13:02:31.135978",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "title",
+  "message",
+  "column_break_type",
+  "announcement_type",
+  "section_break_schedule",
+  "start_date",
+  "column_break_schedule",
+  "end_date",
+  "section_break_audience",
+  "audience",
+  "column_break_audience",
+  "dismissible",
+  "section_break_roles",
+  "roles",
+  "section_break_users",
+  "users"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Title",
+   "reqd": 1
+  },
+  {
+   "description": "Shown in the announcement banner on the Home page.",
+   "fieldname": "message",
+   "fieldtype": "Small Text",
+   "label": "Message",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_type",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Info",
+   "description": "Controls the banner color/icon shown on Home.",
+   "fieldname": "announcement_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type",
+   "options": "Info\nSuccess\nWarning\nUrgent"
+  },
+  {
+   "fieldname": "section_break_schedule",
+   "fieldtype": "Section Break",
+   "label": "Schedule"
+  },
+  {
+   "description": "Leave blank to show immediately once Enabled.",
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "column_break_schedule",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Leave blank to show indefinitely while Enabled.",
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "section_break_audience",
+   "fieldtype": "Section Break",
+   "label": "Audience"
+  },
+  {
+   "default": "Everyone",
+   "fieldname": "audience",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Show To",
+   "options": "Everyone\nSpecific Roles\nSpecific Users",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_audience",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "description": "When on, each user can close this banner and it will not reappear for them.",
+   "fieldname": "dismissible",
+   "fieldtype": "Check",
+   "label": "Dismissible"
+  },
+  {
+   "depends_on": "eval:doc.audience==\"Specific Roles\"",
+   "fieldname": "section_break_roles",
+   "fieldtype": "Section Break",
+   "label": "Roles"
+  },
+  {
+   "description": "Shown only to users who have at least one of these roles.",
+   "fieldname": "roles",
+   "fieldtype": "Table MultiSelect",
+   "label": "Roles",
+   "options": "Announcement Target Role"
+  },
+  {
+   "depends_on": "eval:doc.audience==\"Specific Users\"",
+   "fieldname": "section_break_users",
+   "fieldtype": "Section Break",
+   "label": "Users"
+  },
+  {
+   "description": "Shown only to these specific users.",
+   "fieldname": "users",
+   "fieldtype": "Table MultiSelect",
+   "label": "Users",
+   "options": "Announcement Target User"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-30 13:02:31.135978",
+ "modified_by": "Administrator",
+ "module": "App Config",
+ "name": "Announcement",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Program Coordinator",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "title",
+ "track_changes": 1
+}

@@ -1,0 +1,114 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "autoname": "field:worker_code",
+ "creation": "2026-09-30 11:27:14.603840",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "worker_code",
+  "column_break_worker_1",
+  "worker_name",
+  "role",
+  "status",
+  "section_break_contact",
+  "mobile_number",
+  "column_break_contact_1",
+  "email",
+  "section_break_account",
+  "user"
+ ],
+ "fields": [
+  {
+   "fieldname": "worker_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Worker Code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_worker_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "worker_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Worker Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "role",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Role",
+   "options": "Data Collector\nSupervisor\nProgram Manager\nOrganization Admin\nReport Viewer",
+   "reqd": 1
+  },
+  {
+   "default": "Active",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Active\nInactive",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_contact",
+   "fieldtype": "Section Break",
+   "label": "Contact"
+  },
+  {
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "Mobile Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_contact_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "options": "Email",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_account",
+   "fieldtype": "Section Break",
+   "label": "App Access"
+  },
+  {
+   "description": "Set automatically from Email - a matching User account is created if one does not already exist, with this row's Role granted to it.",
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-09-30 12:50:09.233686",
+ "modified_by": "Administrator",
+ "module": "Engine",
+ "name": "Employee",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "worker_name",
+ "track_changes": 1
+}

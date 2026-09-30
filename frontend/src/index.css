@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* App Setting's Accent Color (see data/branding.js, which sets
+--app-accent/-hover/-active on :root from it) drives every spot in this
+app that was hardcoded to the same near-black as frappe-ui's own default
+Button theme, so both now visibly change together when an admin picks a
+different color - a mismatched "branded" primary button next to a still-
+black active nav tab would look like a bug, not a feature.
+
+Scoped to the exact `bg-surface-gray-7 ...` class combination frappe-ui's
+Button.vue only ever emits for theme="gray" (the default) + variant="solid"
+- confirmed in Button.vue's own solidClasses map, gray is the only entry
+using surface-gray-7/6/5. theme="blue"/"red"/"green" buttons (e.g. the
+child-table/list bulk-delete button, always theme="red") use a completely
+different class combination and are untouched by this selector, since
+turning a delete button into the brand color would be actively misleading
+regardless of what color is picked. */
+.bg-surface-gray-7.hover\:bg-surface-gray-6.active\:bg-surface-gray-5 {
+  background-color: var(--app-accent) !important;
+}
+.bg-surface-gray-7.hover\:bg-surface-gray-6.active\:bg-surface-gray-5:hover {
+  background-color: var(--app-accent-hover) !important;
+}
+.bg-surface-gray-7.hover\:bg-surface-gray-6.active\:bg-surface-gray-5:active {
+  background-color: var(--app-accent-active) !important;
+}
+
+/* The app's own hand-rolled "this is the brand color" spots - not
+frappe-ui components, so these are plain utility classes this app wrote
+itself (AiAssistant.vue's user message bubble, AppSidebar.vue's assistant
+badge, MobileNav.vue's active tab, DoctypeList.vue's active-filter
+border/badge) - overridden the same way, by their own exact class value,
+rather than editing every one of those class-i.e. bindings to a computed
+string. Keeps each component's template readable (still just
+`bg-gray-900`, same as before) while this one rule is the only place that
+needs to know an accent color is configurable at all. Dark-mode's own
+gray-100/white pairing is untouched (only the light-mode gray-900 value is
+targeted) - the accent only replaces the *light*-mode near-black default,
+since a light accent color substituted into dark mode's existing
+near-white pairing would be illegible. */
+.bg-gray-900 {
+  background-color: var(--app-accent) !important;
+}
+.border-gray-900 {
+  border-color: var(--app-accent) !important;
+}
+
+/* reka-ui's Select/Combobox option list (its [data-slot=content] portal,
+teleported to document.body, outside whatever Popover/Dialog visually
+contains the trigger) has no z-index of its own above reka-ui's default
+(100) - it silently loses to any Popover or Dialog on the page that sets
+a real z-index for exactly this reason (AppSidebar.vue's own
+[data-reka-popper-content-wrapper] rule, ChildTable.vue's row-editor
+Dialog, both at 1050). Confirmed live in two different places now (see
+DoctypeList.vue's Filter popover originally, and ChildTable.vue's row
+editor here): the dropdown visibly paints on top in a screenshot, but
+document.elementFromPoint() at its own coordinates resolves to the
+Popover/Dialog behind it, not the option - so it's clickable-looking but
+not actually clickable. Moved here (not left duplicated in whichever
+page component happened to declare it first) since this needs to hold
+everywhere a Select/Combobox can be nested inside a Popover or a Dialog,
+which by now is most of the app, not few enough page components to
+enumerate. 1100 clears every current call site's own z-index (1050); if
+a future dialog/popover ever needs to go higher than 1100 itself, this
+value needs raising too. */
+[data-slot='content'][data-state='open'] {
+  z-index: 1100 !important;
+}

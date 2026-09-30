@@ -1,0 +1,129 @@
+import { computed } from 'vue'
+import { useCall } from 'frappe-ui'
+
+// Live doctype metadata (fields, list settings, etc), fetched once per
+// doctype and cached - this is the single source of truth DoctypeList and
+// DoctypeForm render from. No per-doctype Vue files: adding a field in the
+// desk's DocType editor shows up here automatically on next load.
+export function useMeta(doctype) {
+  return useCall({
+    url: `/api/v2/doctype/${doctype}/meta`,
+    method: 'GET',
+    cacheKey: `janadhikara-meta-${doctype}`,
+  })
+}
+
+const SKIP_FIELDTYPES = new Set([
+  'Section Break',
+  'Column Break',
+  'Tab Break',
+  'HTML',
+  'Heading',
+  'Button',
+])
+
+function isDisplayField(field) {
+  return !SKIP_FIELDTYPES.has(field.fieldtype) && !field.hidden
+}
+
+// Fields shown as columns on the list view: explicit in_list_view fields, or
+// (name + first few visible fields) as a fallback so a doctype with none
+// configured still renders something useful.
+export function useListFields(metaResource) {
+  return computed(() => {
+    const meta = metaResource.data
+    if (!meta) return []
+    let fields = meta.fields.filter((f) => f.in_list_view && isDisplayField(f))
+    if (!fields.length) {
+      fields = meta.fields.filter(isDisplayField).slice(0, 4)
+    }
+    return fields
+  })
+}
+
+// Fields shown on the form: every non-table, non-layout, non-hidden field.
+// Table MultiSelect is kept here (not treated like Table) - it renders as a
+// single multi-select control via DynamicField, not a child-table grid.
+export function useFormFields(metaResource) {
+  return computed(() => {
+    const meta = metaResource.data
+    if (!meta) return []
+    return meta.fields.filter((f) => isDisplayField(f) && f.fieldtype !== 'Table')
+  })
+}
+
+// Groups the form's fields by Tab Break > Section Break > Column Break, the
+// same three-level structure Frappe desk's own form layout engine reads
+// `field_order` into - a doctype's fields are declared in exactly the
+// left-to-right, top-to-bottom order they're meant to render in (Column
+// Break starts a new column within the current section; a new Section
+// Break implicitly closes any open columns and starts a single-column
+// section again), and `meta.fields` arrives pre-sorted per field_order, so
+// a single linear pass tracking "current tab/section/column" reproduces
+// that layout exactly. Previously this only tracked tabs and flattened
+// everything else into one list, which is why fields rendered in
+// height-driven CSS-multi-column order instead of the doctype's own order.
+// Fields before the first Tab Break/Section Break (or a doctype with
+// neither) land in one untitled tab/section, matching Frappe desk's
+// implicit first tab/section.
+export function useFormTabs(metaResource) {
+  return computed(() => {
+    const meta = metaResource.data
+    if (!meta) return []
+
+    function newSection() {
+      return { label: null, dependsOn: null, columns: [[]] }
+    }
+    function newTab() {
+      return { label: null, dependsOn: null, sections: [newSection()] }
+    }
+
+    const tabs = [newTab()]
+    for (const f of meta.fields) {
+      if (f.fieldtype === 'Tab Break') {
+        if (!f.hidden) tabs.push({ label: f.label || null, dependsOn: f.depends_on || null, sections: [newSection()] })
+        continue
+      }
+      const tab = tabs[tabs.length - 1]
+      if (f.fieldtype === 'Section Break') {
+        if (!f.hidden) {
+          tab.sections.push({ label: f.label || null, dependsOn: f.depends_on || null, columns: [[]] })
+        }
+        continue
+      }
+      const section = tab.sections[tab.sections.length - 1]
+      if (f.fieldtype === 'Column Break') {
+        section.columns.push([])
+        continue
+      }
+      if (isDisplayField(f) && f.fieldtype !== 'Table') {
+        section.columns[section.columns.length - 1].push(f)
+      }
+    }
+
+    // Flatten back to a plain field list per tab too (unchanged shape for
+    // callers that only need "every field on this tab", e.g. isWideField
+    // sizing or the hook-diffing snapshot in DoctypeForm.vue) alongside the
+    // new sections/columns structure the template actually renders from.
+    return tabs
+      .map((tab) => ({
+        label: tab.label,
+        dependsOn: tab.dependsOn,
+        sections: tab.sections
+          .map((s) => ({ ...s, columns: s.columns.filter((c) => c.length) }))
+          .filter((s) => s.columns.length),
+        fields: tab.sections.flatMap((s) => s.columns.flat()),
+      }))
+      .filter((tab) => tab.fields.length > 0)
+  })
+}
+
+// Child-table fields, rendered as their own grid sections below the main form.
+export function useTableFields(metaResource) {
+  return computed(() => {
+    const meta = metaResource.data
+    if (!meta) return []
+    return meta.fields.filter((f) => f.fieldtype === 'Table' && !f.hidden)
+  })
+}
+
