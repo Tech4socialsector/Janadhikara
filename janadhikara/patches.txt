@@ -20,3 +20,5 @@ chw.patches.v1_0.rename_ncd_anc_pnc_display_labels
 chw.patches.v1_0.migrate_feather_icon_names_to_lucide
 chw.patches.v1_0.add_chw_roles
 namma_seva.patches.v1_0.seed_ai_guide_sections
+janadhikara.patches.v1_1.seed_geo_field_rules
+janadhikara.patches.v1_1.seed_household_geo_rule

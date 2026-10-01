@@ -36,7 +36,7 @@
           {{ tab.label }}
           <span
             v-if="tab.label === 'Unread' && unreadCount > 0"
-            class="flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-100 px-1 text-[10px] font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300"
+            class="flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-100 px-1 text-2xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300"
           >
             {{ unreadCount }}
           </span>

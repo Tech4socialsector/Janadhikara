@@ -58,5 +58,20 @@ export function useFetchFromFields({ metaResource }) {
     }
   }
 
-  return { applyFetchFrom }
+  // One-off pass for a form that has just loaded/defaulted: any fetch_from
+  // target that's still empty while its link field already has a value (e.g.
+  // Surveyor defaulted to the logged-in user, so Surveyor Name should read
+  // that user's full name) gets fetched. applyFetchFrom alone only reacts to
+  // a *change*, which a value set by a default - before the diff loop's
+  // baseline - never looks like.
+  async function applyInitialFetchFrom(values) {
+    const links = new Set()
+    for (const f of allFields.value) {
+      const parsed = parseFetchFrom(f.fetch_from)
+      if (parsed && values[parsed.linkFieldname] && !values[f.fieldname]) links.add(parsed.linkFieldname)
+    }
+    for (const link of links) await applyFetchFrom(link, values)
+  }
+
+  return { applyFetchFrom, applyInitialFetchFrom }
 }

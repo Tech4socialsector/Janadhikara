@@ -1,12 +1,17 @@
 <template>
+  <!-- fixed inset-0, not h-screen: 100vh can go stale after the browser's viewport
+  changes (closing DevTools, leaving responsive mode) and leave the shell
+  stopping short of the window with a blank band below it. Pinning to the
+  window edges always matches the real size (and on phones ignores the
+  collapsing URL bar that 100vh overshoots). -->
   <MobileShell v-if="isMobile">
     <slot />
   </MobileShell>
-  <div v-else class="flex h-screen bg-gray-50 dark:bg-gray-900">
+  <div v-else class="fixed inset-0 flex bg-surface-white text-ink-gray-8">
     <AppSidebar />
     <div class="flex min-w-0 flex-1 flex-col">
       <TopNavbar />
-      <main class="flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
+      <main class="flex-1 overflow-y-auto bg-surface-white px-5 py-4 sm:px-6">
         <slot />
       </main>
     </div>

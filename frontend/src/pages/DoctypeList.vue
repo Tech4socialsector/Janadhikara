@@ -58,20 +58,23 @@
       same way quickFilters/advancedFilters do (see searchFilter below),
       so it composes with whatever's set in the Filter sheet rather than
       replacing it. -->
-      <div v-if="isMobile" class="relative mb-2">
+      <div class="relative mb-2 sm:max-w-md">
         <FeatherIcon name="search" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
         <input
           v-model="searchQuery"
           type="text"
-          placeholder="Search records"
+          placeholder="Search records and their child table rows"
           class="h-10 w-full rounded-lg border border-gray-200 bg-white pl-9 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
         />
       </div>
 
+      <!-- Mobile: Refresh/Filter/Sort/Columns are icon-only round buttons (labels
+      dropped, icons kept) so four controls fit a 320px screen; desktop keeps
+      the labelled buttons. Right-aligned at every width. -->
       <div class="mb-3 flex items-center justify-end gap-2">
         <Tooltip text="Refresh">
           <button
-            class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
+            class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md border border-gray-200 text-gray-500 max-sm:h-9 max-sm:w-9 max-sm:rounded-full hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
             :disabled="rows.loading"
             @click="refreshList"
           >
@@ -91,7 +94,7 @@
                 Filter
                 <span
                   v-if="activeFilterCount"
-                  class="flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-900 px-1 text-[10px] text-white dark:bg-gray-100 dark:text-gray-900"
+                  class="flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-900 px-1 text-2xs text-white dark:bg-gray-100 dark:text-gray-900"
                 >
                   {{ activeFilterCount }}
                 </span>
@@ -124,36 +127,43 @@
 
         <template v-else>
           <button
-            class="flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300"
+            type="button"
+            class="relative flex h-9 w-9 items-center justify-center rounded-full border text-gray-700 dark:border-gray-700 dark:text-gray-300"
             :class="hasActiveFilters ? 'border-gray-900 dark:border-gray-100' : 'border-gray-200'"
+            aria-label="Filter"
+            title="Filter"
             @click="showFilterSheet = true"
           >
-            <FeatherIcon name="filter" class="h-3.5 w-3.5" />
-            Filter
+            <FeatherIcon name="filter" class="h-4 w-4" />
             <span
               v-if="activeFilterCount"
-              class="flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-900 px-1 text-[10px] text-white dark:bg-gray-100 dark:text-gray-900"
+              class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-900 px-1 text-2xs text-white dark:bg-gray-100 dark:text-gray-900"
             >
               {{ activeFilterCount }}
             </span>
           </button>
           <button
-            class="flex items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300"
+            type="button"
+            class="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-700 dark:border-gray-700 dark:text-gray-300"
+            aria-label="Sort"
+            title="Sort"
             @click="showSortSheet = true"
           >
-            <FeatherIcon name="sliders" class="h-3.5 w-3.5" />
-            Sort
+            <FeatherIcon name="sliders" class="h-4 w-4" />
           </button>
         </template>
 
         <Popover placement="bottom-end" popover-class="doctype-list-popover" :hide-on-blur="false">
           <template #target="{ togglePopover }">
             <button
-              class="flex items-center gap-1.5 rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300"
+              type="button"
+              class="flex items-center gap-1.5 rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700 max-sm:h-9 max-sm:w-9 max-sm:justify-center max-sm:rounded-full max-sm:px-0 dark:border-gray-700 dark:text-gray-300"
+              aria-label="Columns"
+              title="Columns"
               @click="togglePopover"
             >
-              <FeatherIcon name="columns" class="h-3.5 w-3.5" />
-              Columns
+              <FeatherIcon name="columns" class="h-3.5 w-3.5 max-sm:h-4 max-sm:w-4" />
+              <span class="max-sm:hidden">Columns</span>
             </button>
           </template>
           <template #body-main>
@@ -166,11 +176,19 @@
                 <input
                   type="checkbox"
                   class="form-checkbox h-4 w-4 !rounded-[3px] border-gray-300 dark:border-gray-600 dark:bg-gray-800"
-                  :checked="!hiddenFieldnames.has(field.fieldname)"
+                  :checked="isColumnVisible(field.fieldname)"
                   @change="toggleColumnVisible(field.fieldname)"
                 />
                 {{ field.label }}
               </label>
+              <button
+                v-if="chosenFieldnames"
+                type="button"
+                class="mt-1 w-full rounded px-2 py-1.5 text-left text-xs text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800"
+                @click="resetColumns"
+              >
+                Reset to default columns
+              </button>
             </div>
           </template>
         </Popover>
@@ -186,6 +204,9 @@
       versa - listFilters (what actually reaches the API) merges both,
       with advancedFilters taking precedence on any field both touch. -->
       <div v-if="!isMobile" class="mb-3 flex flex-wrap gap-2">
+        <div class="w-40 flex-shrink-0">
+          <FormControl type="text" placeholder="ID" v-model="quickFilters.name" />
+        </div>
         <div v-for="col in visibleColumns" :key="col.fieldname" class="w-40 flex-shrink-0">
           <FormControl
             v-if="col.fieldtype === 'Select'"
@@ -319,38 +340,46 @@
         <div
           v-for="row in allRows"
           :key="row.name"
-          class="flex cursor-pointer items-start gap-2 rounded-lg border p-3 shadow-sm transition-shadow active:shadow-none dark:border-gray-800"
+          class="cursor-pointer overflow-hidden rounded-xl border bg-white p-3.5 shadow-sm transition-shadow active:shadow-none dark:border-gray-800 dark:bg-gray-900"
           :style="cardAccentStyle(row)"
           @click="goToRow(row.name)"
         >
-          <div class="min-w-0 flex-1">
-            <div class="truncate text-sm font-medium text-gray-900 dark:text-gray-100">
-              {{ cardTitle(row) }}
-            </div>
-            <div v-if="cardBodyColumnsFor(row).length" class="mt-1.5 space-y-1">
-              <div
-                v-for="col in cardBodyColumnsFor(row)"
-                :key="col.fieldname"
-                class="flex items-baseline justify-between gap-3 text-sm"
+          <!-- Header: the record ID (always first) on the left, status
+          badge + chevron on the right. -->
+          <div class="flex items-center justify-between gap-2">
+            <span class="max-w-[60%] truncate rounded-md bg-gray-100 px-1.5 py-0.5 font-mono text-[11px] text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+              {{ row.name }}
+            </span>
+            <div class="flex items-center gap-1.5">
+              <span
+                v-if="cardStatusColumn && row[cardStatusColumn.fieldname]"
+                class="inline-block rounded-full px-2 py-0.5 text-xs font-medium"
+                :class="statusBadgeClasses(row[cardStatusColumn.fieldname])"
               >
-                <span class="flex-shrink-0 text-gray-500 dark:text-gray-400">{{ col.label }}</span>
-                <span class="truncate text-right text-gray-700 dark:text-gray-300">
-                  <span
-                    v-if="isStatusLikeField(col) && row[col.fieldname]"
-                    class="inline-block rounded-full px-2 py-0.5 text-xs font-medium"
-                    :class="statusBadgeClasses(row[col.fieldname])"
-                  >
-                    {{ row[col.fieldname] }}
-                  </span>
-                  <UserLinkHoverCard v-else-if="isUserLink(col) && row[col.fieldname]" :user="row[col.fieldname]" @click.stop>
-                    <span class="underline decoration-dotted">{{ row[col.fieldname] }}</span>
-                  </UserLinkHoverCard>
-                  <template v-else>{{ formatValue(row[col.fieldname], col) }}</template>
-                </span>
-              </div>
+                {{ row[cardStatusColumn.fieldname] }}
+              </span>
+              <FeatherIcon name="chevron-right" class="h-4 w-4 flex-shrink-0 text-gray-300 dark:text-gray-600" />
             </div>
           </div>
-          <FeatherIcon name="chevron-right" class="mt-0.5 h-4 w-4 flex-shrink-0 text-gray-300 dark:text-gray-600" />
+          <!-- Title only when it says something the ID doesn't (a
+          title_field, or a value that differs from the ID). -->
+          <div
+            v-if="cardTitle(row) !== row.name"
+            class="mt-2 truncate text-base font-semibold text-gray-900 dark:text-gray-100"
+          >
+            {{ cardTitle(row) }}
+          </div>
+          <dl v-if="cardBodyColumnsFor(row).length" class="mt-2.5 grid grid-cols-2 gap-x-4 gap-y-2.5">
+            <div v-for="col in cardBodyColumnsFor(row)" :key="col.fieldname" class="min-w-0">
+              <dt class="truncate text-xs text-gray-400 dark:text-gray-500">{{ col.label }}</dt>
+              <dd class="truncate text-sm text-gray-800 dark:text-gray-200">
+                <UserLinkHoverCard v-if="isUserLink(col) && row[col.fieldname]" :user="row[col.fieldname]" @click.stop>
+                  <span class="underline decoration-dotted">{{ row[col.fieldname] }}</span>
+                </UserLinkHoverCard>
+                <template v-else>{{ formatValue(row[col.fieldname], col) || '-' }}</template>
+              </dd>
+            </div>
+          </dl>
         </div>
       </div>
 
@@ -378,6 +407,7 @@
       about that other than the #cell slot passthrough changes. -->
       <ListView
         v-if="!isMobile"
+        :key="gridKey"
         class="mt-1"
         :columns="listViewColumns"
         :rows="allRows"
@@ -509,10 +539,11 @@ why it's needed. */
 <script setup>
 import { computed, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import { breakpointsTailwind, useBreakpoints, watchDebounced } from '@vueuse/core'
 import {
   useList,
   useCall,
+  call,
   Button,
   Dialog,
   ErrorMessage,
@@ -537,6 +568,7 @@ import SortEditor from '@/components/SortEditor.vue'
 import Skeleton from '@/components/Skeleton.vue'
 import { useMeta, useListFields, useFormFields } from '@/data/useMeta'
 import { findModuleByRoute } from '@/data/modules'
+import { linkTitle, isTitledLink, ensureTitlesForRows } from '@/data/linkTitles'
 import { setPageTitle } from '@/data/pageTitle'
 import { isStatusLikeField, statusBadgeClasses, statusBorderColor } from '@/utils/statusColors'
 
@@ -574,19 +606,69 @@ const allFields = useFormFields(metaResource)
 // Deriving visibility instead of assigning it collapses both `columns`
 // changes and any visibility toggle into the same recomputation, so
 // there's only ever one dependent state change per tick, not two.
-const hiddenFieldnames = ref(new Set())
-const visibleColumns = computed(() =>
-  columns.value.filter((c) => !hiddenFieldnames.value.has(c.fieldname)),
-)
+// `chosenFieldnames` is null until the user touches the Columns picker -
+// the default is the doctype's own in_list_view fields. Once they pick,
+// it's an explicit set over *every* form field (the picker lists them
+// all), kept per doctype in localStorage so the choice survives a reload.
+// Previously the picker listed every field as ticked but could only ever
+// hide the in_list_view ones, so ticking any other field did nothing.
+const COLUMNS_STORAGE_KEY = `janadhikara-list-columns-${props.doctype}`
+function loadChosenFieldnames() {
+  try {
+    const raw = localStorage.getItem(COLUMNS_STORAGE_KEY)
+    const parsed = raw ? JSON.parse(raw) : null
+    return Array.isArray(parsed) ? new Set(parsed) : null
+  } catch {
+    return null
+  }
+}
+const chosenFieldnames = ref(loadChosenFieldnames())
+const visibleColumns = computed(() => {
+  if (!chosenFieldnames.value) return columns.value
+  const picked = allFields.value.filter((f) => chosenFieldnames.value.has(f.fieldname))
+  return picked.length ? picked : columns.value
+})
+function isColumnVisible(fieldname) {
+  return visibleColumns.value.some((c) => c.fieldname === fieldname)
+}
+function persistChosenFieldnames() {
+  try {
+    if (chosenFieldnames.value) {
+      localStorage.setItem(COLUMNS_STORAGE_KEY, JSON.stringify([...chosenFieldnames.value]))
+    } else {
+      localStorage.removeItem(COLUMNS_STORAGE_KEY)
+    }
+  } catch {
+    /* storage unavailable - the choice just won't persist */
+  }
+}
 function toggleColumnVisible(fieldname) {
-  const next = new Set(hiddenFieldnames.value)
+  const next = new Set(visibleColumns.value.map((c) => c.fieldname))
   if (next.has(fieldname)) {
+    // Never allow an empty table - the ID column is always there, but at
+    // least one data column should remain.
+    if (next.size === 1) return
     next.delete(fieldname)
   } else {
     next.add(fieldname)
   }
-  hiddenFieldnames.value = next
+  chosenFieldnames.value = next
+  persistChosenFieldnames()
 }
+function resetColumns() {
+  chosenFieldnames.value = null
+  persistChosenFieldnames()
+}
+
+// Everything the list must fetch: the record ID, the default in_list_view
+// fields (mobile cards always show those) and whatever extra columns the
+// user picked.
+const fetchFields = computed(() => {
+  const names = new Set(['name'])
+  columns.value.forEach((c) => names.add(c.fieldname))
+  visibleColumns.value.forEach((c) => names.add(c.fieldname))
+  return [...names]
+})
 
 // Two independent filter sources feeding the same query:
 // - quickFilters: the always-visible per-column boxes below the toolbar
@@ -611,6 +693,7 @@ function selectOptions(field) {
 
 const quickFilterEntries = computed(() => {
   const result = {}
+  if (quickFilters.name) result.name = ['like', `%${quickFilters.name}%`]
   for (const col of visibleColumns.value) {
     const value = quickFilters[col.fieldname]
     if (value == null || value === '') continue
@@ -629,9 +712,35 @@ const quickFilterEntries = computed(() => {
 // happens to target it (unlikely in practice, but the same
 // last-one-wins precedence quickFilters -> advancedFilters already uses
 // above, just extended one step further).
+// Search runs server-side (janadhikara.api.search_record_names) so it can
+// look past the list's own columns - at the ID, the title, every text-like
+// field and the rows of child tables - and returns the matching record
+// names, which then filter the list. While a search is still in flight
+// (debounced), a plain ID `like` keeps the list responsive.
+const searchNames = ref(null)
+watchDebounced(
+  searchQuery,
+  async (q) => {
+    const text = q.trim()
+    if (!text) {
+      searchNames.value = null
+      return
+    }
+    try {
+      const result = await call('janadhikara.api.search_record_names', { doctype: props.doctype, txt: text })
+      // Ignore a stale answer if the box changed while this was in flight.
+      if (searchQuery.value.trim() === text) searchNames.value = Array.isArray(result) ? result : result?.message || []
+    } catch {
+      searchNames.value = null
+    }
+  },
+  { debounce: 300 },
+)
 const searchFilter = computed(() => {
   const q = searchQuery.value.trim()
-  return q ? { name: ['like', `%${q}%`] } : {}
+  if (!q) return {}
+  if (searchNames.value) return { name: ['in', searchNames.value.length ? searchNames.value : ['\u0000none']] }
+  return { name: ['like', `%${q}%`] }
 })
 const listFilters = computed(() => ({ ...quickFilterEntries.value, ...advancedFilters.value, ...searchFilter.value }))
 const hasActiveFilters = computed(() => Object.keys(listFilters.value).length > 0)
@@ -687,7 +796,7 @@ setPageTitle(pageTitle)
 // from - deleting by name doesn't care which fetch loaded it.
 const rows = useList({
   doctype: props.doctype,
-  fields: () => (columns.value.length ? ['name', ...columns.value.map((c) => c.fieldname)] : ['name']),
+  fields: () => fetchFields.value,
   filters: () => listFilters.value,
   orderBy: () => `${sortValue.value.field} ${sortValue.value.direction}`,
   limit: 20,
@@ -708,7 +817,7 @@ const loadMoreResource = useCall({
   url: `/api/v2/document/${props.doctype}`,
   method: 'GET',
   params: () => ({
-    fields: JSON.stringify(columns.value.length ? ['name', ...columns.value.map((c) => c.fieldname)] : ['name']),
+    fields: JSON.stringify(fetchFields.value),
     filters: JSON.stringify(listFilters.value),
     order_by: `${sortValue.value.field} ${sortValue.value.direction}`,
     start: 20 + moreRows.value.length,
@@ -762,8 +871,11 @@ const showResults = computed(() => !rows.loading && !rows.error && allRows.value
 // formatValue (which all expect that shape) still work from inside
 // ListRows' cell slot, without ListView itself needing to know anything
 // about Frappe doctypes.
+// The record ID is always the first column - it's what links, exports and
+// support conversations refer to, and isn't a field the picker can hide.
+const ID_COLUMN = { fieldname: 'name', label: 'ID', fieldtype: 'Data' }
 const listViewColumns = computed(() =>
-  visibleColumns.value.map((col) => ({
+  [ID_COLUMN, ...visibleColumns.value.filter((c) => c.fieldname !== 'name')].map((col) => ({
     key: col.fieldname,
     label: col.label,
     docField: col,
@@ -805,8 +917,13 @@ const selectedNames = ref([])
 // More deliberately isn't included here (it only appends to allRows,
 // via moreRows) - growing the list shouldn't wipe out a selection the
 // user made before clicking it.
+// ListView keeps its own copy of the ticked rows (it drives the "N selected"
+// banner) and can't be reset from outside - so wherever this list clears its
+// selection, bumping gridKey remounts the grid with a clean one too.
+const gridKey = ref(0)
 watch([listFilters, sortValue], () => {
   selectedNames.value = []
+  gridKey.value++
 })
 
 const showBulkDeleteConfirm = ref(false)
@@ -826,6 +943,7 @@ async function doBulkDelete(close) {
   // rows.delete has no way to reach.
   moreRows.value = moreRows.value.filter((r) => !names.includes(r.name))
   selectedNames.value = []
+  gridKey.value++
   close()
   rows.fetch()
 }
@@ -833,8 +951,19 @@ async function doBulkDelete(close) {
 function formatValue(value, field) {
   if (value == null || value === '') return '-'
   if (field.fieldtype === 'Check') return value ? 'Yes' : 'No'
+  // A linked record shows by its title (name), not its ID.
+  if (isTitledLink(field)) return linkTitle(field.options, value)
   return value
 }
+
+// Fetch the titles for every Link column on the rows currently loaded
+// (desktop table, mobile cards and the card title all read them back
+// through formatValue / linkTitle).
+watch(
+  () => [allRows.value, columns.value, visibleColumns.value],
+  () => ensureTitlesForRows(allRows.value, [...columns.value, ...visibleColumns.value]),
+  { immediate: true },
+)
 
 function isUserLink(field) {
   return field.fieldtype === 'Link' && field.options === 'User'
@@ -861,9 +990,17 @@ function cardTitle(row) {
 // all of that and still reliably catches "this column would just repeat
 // the title" for the field:X case specifically, which is the one that
 // actually shows up here.
+// The first status-like column is shown as a badge in the card header
+// instead, so it's left out of the body grid.
+const cardStatusColumn = computed(() => columns.value.find((c) => isStatusLikeField(c)) || null)
 function cardBodyColumnsFor(row) {
   const title = cardTitle(row)
-  return columns.value.filter((c) => c.fieldname !== titleFieldname.value && row[c.fieldname] !== title)
+  return visibleColumns.value.filter(
+    (c) =>
+      c.fieldname !== titleFieldname.value &&
+      c.fieldname !== cardStatusColumn.value?.fieldname &&
+      row[c.fieldname] !== title,
+  )
 }
 
 // A subtle left-border accent on the whole mobile card, colored by

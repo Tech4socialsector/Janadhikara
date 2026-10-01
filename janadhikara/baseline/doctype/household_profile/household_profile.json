@@ -1,0 +1,330 @@
+{
+ "actions": [],
+ "creation": "2026-10-01 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tab_details",
+  "section_break_household",
+  "hhid",
+  "survey",
+  "partner_organization",
+  "survey_field_unit",
+  "assigned_worker",
+  "column_break_household",
+  "settlement",
+  "settlement_intervention_unit",
+  "respondent_name",
+  "respondent_contact",
+  "respondent_relationship",
+  "section_break_location",
+  "address",
+  "landmark",
+  "latitude",
+  "longitude",
+  "column_break_location",
+  "geo_location",
+  "section_break_status",
+  "documentation_status",
+  "validation_status",
+  "column_break_status",
+  "status",
+  "validation_comments",
+  "section_break_surveyor",
+  "surveyor",
+  "column_break_surveyor",
+  "surveyor_name",
+  "tab_members",
+  "household_members"
+ ],
+ "fields": [
+  {
+   "fieldname": "tab_details",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "section_break_household",
+   "fieldtype": "Section Break",
+   "label": "Household Details"
+  },
+  {
+   "fieldname": "hhid",
+   "fieldtype": "Data",
+   "label": "Household ID",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "The Household ID from the questionnaire."
+  },
+  {
+   "fieldname": "survey",
+   "fieldtype": "Link",
+   "label": "Survey",
+   "options": "Survey",
+   "reqd": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "partner_organization",
+   "fieldtype": "Link",
+   "label": "Partner Organization",
+   "options": "Partner Details",
+   "reqd": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "survey_field_unit",
+   "fieldtype": "Link",
+   "label": "Survey Field Unit",
+   "options": "Survey Field Unit",
+   "reqd": 1,
+   "in_standard_filter": 1,
+   "link_filters": "[[\"Survey Field Unit\", \"settlement\", \"=\", \"eval:doc.settlement\"]]",
+   "description": "Filled in automatically from the settlement / intervention unit the logged-in worker is tagged to."
+  },
+  {
+   "fieldname": "assigned_worker",
+   "fieldtype": "Link",
+   "label": "Assigned Worker",
+   "options": "Employee",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "link_filters": "[[\"Employee\", \"parent\", \"=\", \"eval:doc.partner_organization\"]]",
+   "description": "A worker of the selected partner."
+  },
+  {
+   "fieldname": "column_break_household",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "settlement",
+   "fieldtype": "Link",
+   "label": "Settlement",
+   "options": "Settlement",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "settlement_intervention_unit",
+   "fieldtype": "Link",
+   "label": "Settlement Intervention Unit",
+   "options": "Settlement Intervention Unit",
+   "link_filters": "[[\"Settlement Intervention Unit\", \"parent\", \"=\", \"eval:doc.settlement\"]]",
+   "description": "Only if the settlement is divided into intervention units."
+  },
+  {
+   "fieldname": "respondent_name",
+   "fieldtype": "Data",
+   "label": "Respondent Name",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "respondent_contact",
+   "fieldtype": "Data",
+   "label": "Respondent Contact",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "respondent_relationship",
+   "fieldtype": "Link",
+   "label": "Respondent Relationship",
+   "options": "Relationship Type"
+  },
+  {
+   "fieldname": "section_break_location",
+   "fieldtype": "Section Break",
+   "label": "Household Location"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
+   "fieldname": "landmark",
+   "fieldtype": "Data",
+   "label": "Landmark"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Float",
+   "label": "Latitude",
+   "precision": "9"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Float",
+   "label": "Longitude",
+   "precision": "9"
+  },
+  {
+   "fieldname": "column_break_location",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "geo_location",
+   "fieldtype": "Geolocation",
+   "label": "Geo Location",
+   "description": "Pick the household's point on the map."
+  },
+  {
+   "fieldname": "section_break_status",
+   "fieldtype": "Section Break",
+   "label": "Household Status"
+  },
+  {
+   "fieldname": "documentation_status",
+   "fieldtype": "Select",
+   "label": "Documentation Status",
+   "options": "\nCompleted\nPartially Completed",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "validation_status",
+   "fieldtype": "Select",
+   "label": "Validation Status",
+   "options": "\nRevision Needed\nValidated",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "column_break_status",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Draft\nIn Progress\nCompleted\nRevision Needed\nValidated",
+   "default": "Draft",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "validation_comments",
+   "fieldtype": "Small Text",
+   "label": "Validation Comments"
+  },
+  {
+   "fieldname": "section_break_surveyor",
+   "fieldtype": "Section Break",
+   "label": "Surveyor"
+  },
+  {
+   "fieldname": "surveyor",
+   "fieldtype": "Link",
+   "label": "Surveyor",
+   "options": "User",
+   "read_only": 1,
+   "default": "__user",
+   "in_standard_filter": 1,
+   "description": "Set automatically to the logged-in user who creates the record."
+  },
+  {
+   "fieldname": "column_break_surveyor",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "surveyor_name",
+   "fieldtype": "Data",
+   "label": "Surveyor Name",
+   "read_only": 1,
+   "in_list_view": 1,
+   "fetch_from": "surveyor.full_name"
+  },
+  {
+   "fieldname": "tab_members",
+   "fieldtype": "Tab Break",
+   "label": "Household Members"
+  },
+  {
+   "fieldname": "household_members",
+   "fieldtype": "Table",
+   "label": "Household Members",
+   "options": "Household Member",
+   "description": "The household listing - everyone living in this household."
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-01 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Baseline",
+ "name": "Household Profile",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "states": [],
+ "autoname": "format:HH-{#####}",
+ "naming_rule": "Expression",
+ "title_field": "respondent_name",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Program Coordinator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Program Manager",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Organization Admin",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Supervisor",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Data Collector",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Report Viewer"
+  }
+ ],
+ "allow_rename": 1,
+ "track_changes": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "show_title_field_in_link": 1
+}

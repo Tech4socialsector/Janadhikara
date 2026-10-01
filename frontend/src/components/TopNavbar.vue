@@ -1,18 +1,15 @@
 <template>
-  <div class="flex h-12 flex-shrink-0 items-center gap-4 border-b bg-white px-4 dark:border-gray-800 dark:bg-gray-900">
-    <div class="flex min-w-0 flex-1 items-center gap-2">
-      <Tooltip text="Home">
-        <router-link
-          :to="{ name: 'Home' }"
-          class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-        >
-          <FeatherIcon name="home" class="h-4 w-4" />
-        </router-link>
-      </Tooltip>
+  <!-- One header bar, like Frappe Helpdesk's LayoutHeader: breadcrumbs on the
+  left; on the right, whatever the current page puts in the actions slot
+  (PageHeader teleports its buttons into #page-header-actions - Save, New,
+  Delete...), then search and the theme toggle. -->
+  <div class="flex h-[3.25rem] flex-shrink-0 items-center gap-4 border-b border-outline-gray-1 bg-surface-white px-5">
+    <div class="flex min-w-0 flex-1 items-center">
       <Breadcrumbs />
     </div>
 
-    <div class="flex flex-shrink-0 items-center gap-1">
+    <div class="flex flex-shrink-0 items-center gap-2">
+      <div id="page-header-actions" class="flex items-center gap-2 empty:hidden" />
       <AwesomeBar />
       <TabButtons v-model="theme" :buttons="themeButtons" />
     </div>
@@ -21,14 +18,14 @@
 
 <script setup>
 import { computed } from 'vue'
-import { FeatherIcon, TabButtons, Tooltip } from 'frappe-ui'
+import { TabButtons } from 'frappe-ui'
 import AwesomeBar from '@/components/AwesomeBar.vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import { currentTheme } from '@/data/theme'
 
-// Icon-only (hideLabel) so the pair stays compact in a 48px-tall navbar -
-// same two values/icons as SettingsDialog's Appearance tab, just a
-// different (icon vs text) presentation of the same underlying toggle.
+// Icon-only (hideLabel) so the pair stays compact in the header bar - same
+// two values/icons as SettingsDialog's Appearance tab, just a different
+// (icon vs text) presentation of the same underlying toggle.
 const themeButtons = [
   { label: 'Light', value: 'light', icon: 'sun', hideLabel: true, tooltip: 'Light theme' },
   { label: 'Dark', value: 'dark', icon: 'moon', hideLabel: true, tooltip: 'Dark theme' },

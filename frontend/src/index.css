@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'frappe-ui/style.css';
 
 /* App Setting's Accent Color (see data/branding.js, which sets
 --app-accent/-hover/-active on :root from it) drives every spot in this
@@ -67,4 +65,46 @@ a future dialog/popover ever needs to go higher than 1100 itself, this
 value needs raising too. */
 [data-slot='content'][data-state='open'] {
   z-index: 1100 !important;
+}
+
+/* Thin scrollbars everywhere: the browser default (~15px) is heavy next to
+this app's compact UI, so every scrollable area - the page, dialogs, lists,
+dropdowns - gets a 5px bar. The thumb is a soft gray that darkens on hover,
+with its own dark-mode shade, and the track stays transparent so it doesn't
+eat layout. */
+/* Firefox only: it has no ::-webkit-scrollbar, so it gets the standard
+properties (its "thin" is the closest it offers to 5px). Chrome/Safari must
+NOT see these - Chrome 121+ ignores ::-webkit-scrollbar sizing whenever
+scrollbar-width is set, and its own "thin" is ~8px, not 5. */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(209 213 219) transparent;
+  }
+  .dark *,
+  [data-theme='dark'] * {
+    scrollbar-color: rgb(75 85 99) transparent;
+  }
+}
+*::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(209 213 219);
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(156 163 175);
+}
+.dark *::-webkit-scrollbar-thumb,
+[data-theme='dark'] *::-webkit-scrollbar-thumb {
+  background-color: rgb(75 85 99);
+}
+.dark *::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] *::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(107 114 128);
 }

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, START_LOCATION } from 'vue-router'
 import { session, initialUserCheck, userResource } from '@/data/session'
 import { modulesResource, findModuleByRoute } from '@/data/modules'
+import { settingsEntriesResource, findSettingsEntryByRoute } from '@/data/settingsEntries'
 import { setActiveModule } from '@/data/activeModule'
 
 const routes = [
@@ -120,6 +121,18 @@ async function ensureModulesLoaded() {
   await modulesFetch.catch(() => {})
 }
 
+// Settings-dialog doctypes (Announcement, App Module Setting, ...) aren't in
+// any App Module Setting, but still render through the generic list/form
+// pages - resolved from the permission-filtered settings entries instead.
+let settingsFetch = null
+async function ensureSettingsEntriesLoaded() {
+  if (settingsEntriesResource.data) return
+  if (!settingsFetch) {
+    settingsFetch = settingsEntriesResource.fetch()
+  }
+  await settingsFetch.catch(() => {})
+}
+
 router.beforeEach(async (to, from, next) => {
   if (from === START_LOCATION) {
     // On the app's very first navigation, session.user isn't known yet -
@@ -147,14 +160,20 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.params.doctypeRoute) {
     const item = findModuleByRoute(to.params.doctypeRoute)
-    if (!item) {
-      next({ name: 'Home' })
-      return
+    if (item) {
+      to.meta.resolvedDoctype = item.doctype_name
+      // Keep the sidebar's module section in sync while browsing that
+      // module's list/form pages, so it persists across navigation there.
+      setActiveModule(item.module)
+    } else {
+      await ensureSettingsEntriesLoaded()
+      const entry = findSettingsEntryByRoute(to.params.doctypeRoute)
+      if (!entry || entry.is_single) {
+        next({ name: 'Home' })
+        return
+      }
+      to.meta.resolvedDoctype = entry.doctype
     }
-    to.meta.resolvedDoctype = item.doctype_name
-    // Keep the sidebar's module section in sync while browsing that
-    // module's list/form pages, so it persists across navigation there.
-    setActiveModule(item.module)
   }
 
   next()

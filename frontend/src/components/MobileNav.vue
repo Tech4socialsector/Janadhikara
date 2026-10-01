@@ -19,7 +19,7 @@
         <FeatherIcon name="bell" class="h-5 w-5" />
         <span
           v-if="unreadCount > 0"
-          class="absolute -right-1.5 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-medium text-white"
+          class="absolute -right-1.5 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-2xs font-medium text-white"
         >
           {{ unreadCount > 9 ? '9+' : unreadCount }}
         </span>

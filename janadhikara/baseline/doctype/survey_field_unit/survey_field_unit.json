@@ -1,0 +1,141 @@
+{
+ "actions": [],
+ "creation": "2026-10-01 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "unit_name",
+  "unit_code",
+  "column_break_main",
+  "survey",
+  "settlement",
+  "settlement_intervention_unit",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "unit_name",
+   "fieldtype": "Data",
+   "label": "Unit Name",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "unit_code",
+   "fieldtype": "Data",
+   "label": "Unit Code",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "survey",
+   "fieldtype": "Link",
+   "label": "Survey",
+   "options": "Survey",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "settlement",
+   "fieldtype": "Link",
+   "label": "Settlement",
+   "options": "Settlement",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "Where this field unit operates. Workers tagged to this settlement get this unit automatically on new households."
+  },
+  {
+   "fieldname": "settlement_intervention_unit",
+   "fieldtype": "Link",
+   "label": "Settlement Intervention Unit",
+   "options": "Settlement Intervention Unit",
+   "link_filters": "[[\"Settlement Intervention Unit\", \"parent\", \"=\", \"eval:doc.settlement\"]]",
+   "description": "Optional - narrows the field unit to one intervention unit of that settlement."
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nInactive",
+   "default": "Active",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-01 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Baseline",
+ "name": "Survey Field Unit",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "states": [],
+ "autoname": "format:SFU-{#####}",
+ "naming_rule": "Expression",
+ "title_field": "unit_name",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Program Coordinator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Program Manager"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Organization Admin"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Supervisor"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Data Collector"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Report Viewer"
+  }
+ ],
+ "allow_rename": 1,
+ "track_changes": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "show_title_field_in_link": 1
+}

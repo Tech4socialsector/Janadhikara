@@ -60,6 +60,9 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // Drop precache entries from previous builds on activation, so an
+        // old shell never keeps serving chunks the new build replaced.
+        cleanupOutdatedCaches: true,
         // Only the app shell (JS/CSS/HTML/icons Vite actually built) is
         // precached - API GET responses are cached at runtime instead (see
         // the /api/v2/(document|method)/ rule below), on-demand as each

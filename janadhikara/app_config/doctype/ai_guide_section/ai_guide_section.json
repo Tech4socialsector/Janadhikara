@@ -96,5 +96,6 @@
  "sort_field": "sort_order",
  "sort_order": "ASC",
  "states": [],
- "title_field": "section_name"
+ "title_field": "section_name",
+ "show_title_field_in_link": 1
 }

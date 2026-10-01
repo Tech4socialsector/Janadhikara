@@ -134,5 +134,6 @@
  "sort_order": "ASC",
  "states": [],
  "title_field": "label",
- "track_changes": 1
+ "track_changes": 1,
+ "show_title_field_in_link": 1
 }

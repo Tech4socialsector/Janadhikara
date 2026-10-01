@@ -31,7 +31,7 @@
 
         <div v-if="query.trim()" class="max-h-96 overflow-y-auto py-2">
           <div v-if="moduleMatches.length" class="mb-1">
-            <div class="px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
+            <div class="px-3 py-1 text-2xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
               Modules
             </div>
             <button
@@ -47,7 +47,7 @@
           </div>
 
           <div v-if="createMatches.length" class="mb-1">
-            <div class="px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
+            <div class="px-3 py-1 text-2xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
               Create New
             </div>
             <button
@@ -63,7 +63,7 @@
           </div>
 
           <div>
-            <div class="px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
+            <div class="px-3 py-1 text-2xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
               Search Results
             </div>
             <div v-if="searchResource.loading" class="px-3 py-3 text-center text-sm text-gray-500">
@@ -105,11 +105,11 @@
             Navigate
           </span>
           <span class="flex items-center gap-1.5">
-            <kbd class="flex h-5 items-center rounded border border-gray-300 bg-gray-50 px-1.5 font-sans dark:border-gray-700 dark:bg-gray-800">Enter</kbd>
+            <kbd class="flex h-5 items-center rounded border border-gray-300 bg-gray-50 px-1.5 dark:border-gray-700 dark:bg-gray-800">Enter</kbd>
             Select
           </span>
           <span class="flex items-center gap-1.5">
-            <kbd class="flex h-5 items-center rounded border border-gray-300 bg-gray-50 px-1.5 font-sans dark:border-gray-700 dark:bg-gray-800">Esc</kbd>
+            <kbd class="flex h-5 items-center rounded border border-gray-300 bg-gray-50 px-1.5 dark:border-gray-700 dark:bg-gray-800">Esc</kbd>
             Close
           </span>
         </div>

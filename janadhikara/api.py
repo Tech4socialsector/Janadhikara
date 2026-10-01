@@ -18,14 +18,42 @@ def get_app_branding():
     frontend can always just pick whichever of the two matches the active
     theme without its own separate fallback logic."""
     settings = frappe.get_single('App Setting')
+    # A logged-in partner employee sees their own partner's logo (Partner
+    # Details > Partner Logo); everyone else - and any partner without one -
+    # gets the App Setting logo as the fallback.
+    partner_logo = get_user_partner_logo()
     return {
         'app_name': settings.app_name or 'Janadhikara',
-        'app_logo': settings.app_logo or None,
-        'app_logo_dark': settings.app_logo_dark or settings.app_logo or None,
+        'app_logo': partner_logo or settings.app_logo or None,
+        'app_logo_dark': partner_logo or settings.app_logo_dark or settings.app_logo or None,
         'login_headline': settings.login_headline or None,
         'login_description': settings.login_description or None,
         'accent_color': settings.accent_color or None,
     }
+
+
+def get_user_partner_logo():
+    """Logo of the Partner Details the logged-in user works for (matched by
+    the Employee row's User, or its Email), or None when they belong to no
+    partner or their partner has no logo."""
+    user = frappe.session.user
+    if user == 'Guest':
+        return None
+    rows = frappe.db.sql(
+        """
+        select pd.partner_logo
+        from `tabEmployee` e
+        join `tabPartner Details` pd on pd.name = e.parent
+        where e.parenttype = 'Partner Details'
+          and (e.user = %(user)s or e.email = %(user)s)
+          and ifnull(e.status, 'Active') = 'Active'
+          and ifnull(pd.partner_logo, '') != ''
+        order by pd.modified desc
+        limit 1
+        """,
+        {'user': user},
+    )
+    return rows[0][0] if rows else None
 
 
 PWA_ICON_SIZES = [64, 192, 512]
@@ -208,6 +236,301 @@ def get_current_user_context():
         'is_privileged': bool(PRIVILEGED_ROLES & user_roles),
         'is_system_admin': bool(SYSTEM_ADMIN_ROLES & user_roles),
     }
+
+
+# Settings dialog catalog: (doctype, group, icon, description). Only entries
+# whose doctype exists and that the user has read permission on are returned
+# by get_settings_entries, so the dialog shows exactly what their roles allow.
+SETTINGS_CATALOG = [
+    ('App Setting', 'Application', 'sliders', 'General application settings.'),
+    ('PNC Visit Interval Master', 'Application', 'calendar', 'Visit intervals used for PNC scheduling.'),
+    ('Field Function Mapping', 'Application', 'wand-sparkles', 'Tag built-in functions (like map shape capture) to form fields.'),
+    ('Announcement', 'Content', 'megaphone', 'Banners shown to users on the Home page.'),
+    ('AI Guide Section', 'Content', 'book-open', 'Guide content the AI assistant answers from.'),
+    ('App Module Setting', 'Access', 'layout-grid', 'Modules, sidebar items and which roles can see them.'),
+]
+
+
+@frappe.whitelist()
+def get_settings_entries():
+    """Return the Settings dialog entries the current user's role permissions
+    allow. Single doctypes are edited inline; list doctypes are managed in
+    Frappe desk (the SPA only has list pages for doctypes registered in an
+    App Module Setting)."""
+    if frappe.session.user == 'Guest':
+        frappe.throw(_('Not permitted'), frappe.PermissionError)
+
+    entries = []
+    for doctype, group, icon, description in SETTINGS_CATALOG:
+        if not frappe.db.exists('DocType', doctype):
+            continue
+        if not frappe.has_permission(doctype, 'read'):
+            continue
+        meta = frappe.get_meta(doctype)
+        is_single = bool(meta.issingle)
+        entries.append({
+            'key': frappe.scrub(doctype),
+            'doctype': doctype,
+            'label': doctype,
+            'group': group,
+            'icon': icon,
+            'description': description,
+            'is_single': is_single,
+            'can_write': bool(frappe.has_permission(doctype, 'write')),
+            'can_create': (not is_single) and bool(frappe.has_permission(doctype, 'create')),
+            'desk_route': frappe.scrub(doctype).replace('_', '-'),
+            'count': None if is_single else frappe.db.count(doctype),
+        })
+    return entries
+
+
+SEARCHABLE_FIELDTYPES = {'Data', 'Small Text', 'Text', 'Long Text', 'Select', 'Link', 'Int', 'Float', 'Phone', 'Date', 'Datetime'}
+
+
+@frappe.whitelist()
+def search_record_names(doctype, txt, limit=500):
+    """Names of `doctype` records matching `txt` anywhere a person would look:
+    the record ID, its title, any of its own text-like fields, and the
+    text-like fields of rows in its child tables (so searching a Settlement
+    finds it by the name of one of its Intervention Units). Only a candidate
+    list - the list view still fetches the records themselves through normal
+    permission-checked queries."""
+    txt = (txt or '').strip()
+    if not txt:
+        return []
+    if not frappe.has_permission(doctype, 'read'):
+        frappe.throw(_('Not permitted'), frappe.PermissionError)
+
+    pattern = f'%{txt}%'
+    limit = min(int(limit), 1000)
+    meta = frappe.get_meta(doctype)
+
+    def text_fields(m):
+        return [
+            df.fieldname
+            for df in m.fields
+            if df.fieldtype in SEARCHABLE_FIELDTYPES and not df.hidden
+        ]
+
+    names = set()
+
+    own_filters = [[doctype, 'name', 'like', pattern]] + [
+        [doctype, fieldname, 'like', pattern] for fieldname in text_fields(meta)
+    ]
+    names.update(frappe.get_list(doctype, or_filters=own_filters, pluck='name', limit_page_length=limit))
+
+    for table_field in meta.get_table_fields():
+        child_meta = frappe.get_meta(table_field.options)
+        child_filters = [[table_field.options, fieldname, 'like', pattern] for fieldname in text_fields(child_meta)]
+        if not child_filters:
+            continue
+        names.update(
+            frappe.get_all(
+                table_field.options,
+                filters={'parenttype': doctype, 'parentfield': table_field.fieldname},
+                or_filters=child_filters,
+                pluck='parent',
+                limit_page_length=limit,
+            )
+        )
+    return list(names)[:limit]
+
+
+def get_user_employee(user=None):
+    """The Employee (partner worker) row for `user` (default: logged in),
+    matched by its User link or its Email, active ones only. None for anyone
+    who isn't a partner worker (e.g. an administrator)."""
+    user = user or frappe.session.user
+    if user in ('Guest', 'Administrator'):
+        return None
+    rows = frappe.db.sql(
+        """
+        select e.name, e.parent, e.worker_name
+        from `tabEmployee` e
+        where e.parenttype = 'Partner Details'
+          and (e.user = %(user)s or e.email = %(user)s)
+          and ifnull(e.status, 'Active') = 'Active'
+        order by e.modified desc
+        limit 1
+        """,
+        {'user': user},
+        as_dict=True,
+    )
+    return frappe._dict(rows[0]) if rows else None
+
+
+def find_survey_field_units(settlement, intervention_unit=None, survey=None):
+    """Active Survey Field Units covering a settlement (and, when given, one
+    of its intervention units). A unit with no intervention unit set covers
+    the whole settlement, so it matches either way."""
+    filters = {'settlement': settlement, 'status': 'Active'}
+    if survey:
+        filters['survey'] = survey
+    units = frappe.get_all(
+        'Survey Field Unit',
+        filters=filters,
+        fields=['name', 'survey', 'settlement_intervention_unit'],
+        order_by='creation asc',
+    )
+    if intervention_unit:
+        exact = [u for u in units if u.settlement_intervention_unit == intervention_unit]
+        if exact:
+            return exact
+    return [u for u in units if not u.settlement_intervention_unit]
+
+
+@frappe.whitelist()
+def get_household_field_defaults():
+    """What a new Household Profile can fill in for the logged-in user: their
+    partner and worker record, and every place they're tagged to work (a
+    settlement, or one of its intervention units, through the Settlement's
+    Workers table) with the Survey Field Unit covering that place.
+    Shape: { partner_organization, assigned_worker, assignments: [{ settlement,
+    settlement_intervention_unit, survey_field_unit, survey }] } - empty for
+    anyone who isn't a partner worker."""
+    employee = get_user_employee()
+    if not employee:
+        return {}
+
+    tagged = frappe.get_all(
+        'Settlement Worker',
+        filters={'worker': employee.name, 'parenttype': 'Settlement'},
+        fields=['parent', 'intervention_unit'],
+        order_by='creation asc',
+    )
+    assignments = []
+    seen = set()
+    for row in tagged:
+        if not frappe.has_permission('Settlement', 'read', doc=row.parent):
+            continue
+        units = find_survey_field_units(row.parent, row.intervention_unit) or [None]
+        for unit in units:
+            key = (row.parent, row.intervention_unit, unit.name if unit else None)
+            if key in seen:
+                continue
+            seen.add(key)
+            assignments.append({
+                'settlement': row.parent,
+                'settlement_intervention_unit': row.intervention_unit,
+                'survey_field_unit': unit.name if unit else None,
+                'survey': unit.survey if unit else None,
+            })
+    return {
+        'partner_organization': employee.parent,
+        'assigned_worker': employee.name,
+        'assignments': assignments,
+    }
+
+
+@frappe.whitelist()
+def get_link_options(doctype, filters=None, limit=1000):
+    """Records of `doctype` as [{ name, <title_field> }] for a Link dropdown.
+    Exists for Links that point at a *child* table (a worker, an intervention
+    unit): Frappe's list query silently drops every field except `name` for a
+    child doctype unless it is told the parent doctype, so the generic
+    document API can't return the titles those dropdowns need. A child row is
+    offered if its parent is readable by the user."""
+    if not frappe.db.exists('DocType', doctype):
+        return []
+    meta = frappe.get_meta(doctype)
+    title_field = meta.title_field if meta.title_field else 'name'
+    fields = ['name'] if title_field == 'name' else ['name', title_field]
+    filters = frappe.parse_json(filters) or {}
+    limit = min(int(limit), 1000)
+
+    if meta.istable:
+        rows = frappe.get_all(
+            doctype, filters=filters, fields=[*fields, 'parenttype'], order_by='creation asc', limit_page_length=limit
+        )
+        readable = {}
+        out = []
+        for r in rows:
+            pt = r.pop('parenttype', None)
+            if pt not in readable:
+                readable[pt] = bool(pt) and frappe.has_permission(pt, 'read')
+            if readable[pt]:
+                out.append(r)
+        return out
+
+    if not frappe.has_permission(doctype, 'read'):
+        return []
+    return frappe.get_list(doctype, filters=filters, fields=fields, limit_page_length=limit)
+
+
+@frappe.whitelist()
+def get_link_titles(doctype, names):
+    """Titles (the title_field value) for a batch of records of `doctype`, so
+    list cells, cards and child-table rows can show a person's name instead of
+    their record ID. `names` is a JSON list. Returns { name: title } only for
+    records the user may read and that actually have a title; the caller falls
+    back to the ID for the rest."""
+    names = frappe.parse_json(names) or []
+    names = [n for n in names if isinstance(n, str)][:500]
+    if not names or not frappe.db.exists('DocType', doctype):
+        return {}
+
+    meta = frappe.get_meta(doctype)
+    title_field = meta.title_field
+    if not title_field or title_field == 'name':
+        return {}
+
+    if meta.istable:
+        # A child row is readable if its parent is.
+        rows = frappe.get_all(
+            doctype,
+            filters={'name': ['in', names]},
+            fields=['name', title_field, 'parenttype'],
+        )
+        rows = [r for r in rows if r.parenttype and frappe.has_permission(r.parenttype, 'read')]
+    else:
+        if not frappe.has_permission(doctype, 'read'):
+            return {}
+        rows = frappe.get_list(doctype, filters={'name': ['in', names]}, fields=['name', title_field])
+
+    return {r['name']: r[title_field] for r in rows if r.get(title_field)}
+
+
+@frappe.whitelist()
+def get_field_function_registry():
+    """The built-in field functions and what each accepts/produces, so the
+    Field Function Mapping form (desk and Vue) can offer only field types a
+    function can actually use. Shape: { "<Function>": { description,
+    trigger_fieldtypes, input_fieldtypes?, outputs: { key: { label,
+    fieldtypes } } } }"""
+    if frappe.session.user == 'Guest':
+        frappe.throw(_('Not permitted'), frappe.PermissionError)
+    from janadhikara.field_functions import FIELD_FUNCTIONS
+
+    return FIELD_FUNCTIONS
+
+
+@frappe.whitelist()
+def get_field_function_rules():
+    """Return every enabled Field Function Mapping, so the Vue app knows which
+    function to run when a field changes and where each output goes.
+    Shape: [{ target_doctype, trigger_field, function_name,
+              mappings: [{ output, target_field, input_field, only_if_empty }] }]"""
+    if frappe.session.user == 'Guest':
+        frappe.throw(_('Not permitted'), frappe.PermissionError)
+
+    rules = []
+    for name in frappe.get_all('Field Function Mapping', filters={'enabled': 1}, pluck='name'):
+        doc = frappe.get_cached_doc('Field Function Mapping', name)
+        rules.append({
+            'target_doctype': doc.target_doctype,
+            'trigger_field': doc.trigger_field,
+            'function_name': doc.function_name,
+            'mappings': [
+                {
+                    'output': row.output,
+                    'target_field': row.target_field,
+                    'input_field': row.input_field or None,
+                    'only_if_empty': bool(row.only_if_empty),
+                }
+                for row in doc.field_mappings
+            ],
+        })
+    return rules
 
 
 def module_visible_to_user(module_doc, user_roles):

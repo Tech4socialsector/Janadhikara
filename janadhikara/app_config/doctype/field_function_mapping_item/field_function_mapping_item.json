@@ -1,0 +1,67 @@
+{
+ "actions": [],
+ "creation": "2026-09-30 18:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "function_name",
+  "output",
+  "input_field",
+  "target_field",
+  "only_if_empty"
+ ],
+ "fields": [
+  {
+   "fieldname": "function_name",
+   "fieldtype": "Data",
+   "label": "Function",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "The function this row belongs to (filled in on save)."
+  },
+  {
+   "fieldname": "output",
+   "fieldtype": "Select",
+   "label": "Output",
+   "options": "\nlatitude\nlongitude\nboundary\narea\nperimeter\ncaptured_by\ncaptured_on\naddress\npincode\nstate\ndistrict\ncity\nward\ndistance_m\ndistance_km",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "What the function produces."
+  },
+  {
+   "fieldname": "input_field",
+   "fieldtype": "Autocomplete",
+   "label": "Also Uses Field",
+   "in_list_view": 1,
+   "description": "Only for functions that read a second field (e.g. Distance Between Points: the other map field). Pick from the target doctype's fields."
+  },
+  {
+   "fieldname": "target_field",
+   "fieldtype": "Autocomplete",
+   "label": "Target Field",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "Field on the target doctype that receives the output. Pick from its fields."
+  },
+  {
+   "fieldname": "only_if_empty",
+   "fieldtype": "Check",
+   "label": "Only If Empty",
+   "in_list_view": 1,
+   "description": "Don't overwrite a value that is already there."
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-30 18:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "App Config",
+ "name": "Field Function Mapping Item",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "states": [],
+ "istable": 1,
+ "editable_grid": 1,
+ "autoname": "format:FFI-{#####}",
+ "naming_rule": "Expression"
+}

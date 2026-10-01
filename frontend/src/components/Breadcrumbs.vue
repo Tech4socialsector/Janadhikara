@@ -25,6 +25,7 @@ import { useRoute } from 'vue-router'
 import { FeatherIcon } from 'frappe-ui'
 import { pageTitle } from '@/data/pageTitle'
 import { findModuleByRoute } from '@/data/modules'
+import { findSettingsEntryByRoute } from '@/data/settingsEntries'
 
 // Rebuilt from the current route + module metadata rather than pages
 // pushing their own crumb list - every doctype list/form page already goes
@@ -41,7 +42,7 @@ const crumbs = computed(() => {
   if (!doctypeRoute) return []
 
   const moduleItem = findModuleByRoute(doctypeRoute)
-  const listLabel = moduleItem?.label || doctypeRoute
+  const listLabel = moduleItem?.label || findSettingsEntryByRoute(doctypeRoute)?.label || doctypeRoute
   const list = [{ label: 'Home', to: { name: 'Home' } }]
   // There's no dedicated page per module (Home just lists every module's
   // tiles inline), so the module crumb links back to Home too rather than

@@ -1,0 +1,294 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:SET-{#####}",
+ "creation": "2026-09-30 17:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tab_details",
+  "settlement_name",
+  "settlement_code",
+  "column_break_main",
+  "status",
+  "partner_organization",
+  "has_intervention_units",
+  "section_break_address",
+  "state",
+  "district",
+  "city",
+  "column_break_address",
+  "ward",
+  "pincode",
+  "address",
+  "section_break_location_point",
+  "latitude",
+  "longitude",
+  "column_break_location_point",
+  "geo_location",
+  "section_break_boundary",
+  "settlement_boundary",
+  "boundary_area",
+  "boundary_perimeter",
+  "column_break_boundary",
+  "boundary_captured_by",
+  "boundary_captured_on",
+  "tab_intervention_units",
+  "intervention_units",
+  "tab_workers",
+  "worker_assignments"
+ ],
+ "fields": [
+  {
+   "fieldname": "tab_details",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "settlement_name",
+   "fieldtype": "Data",
+   "label": "Settlement Name",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "settlement_code",
+   "fieldtype": "Data",
+   "label": "Settlement Code",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "Unique code for this settlement."
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nInactive",
+   "default": "Active",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "partner_organization",
+   "fieldtype": "Link",
+   "label": "Partner Organization",
+   "options": "Partner Details",
+   "in_standard_filter": 1,
+   "description": "The partner working in this settlement. Its workers can be tagged on the Workers tab."
+  },
+  {
+   "fieldname": "has_intervention_units",
+   "fieldtype": "Check",
+   "label": "Has Intervention Units",
+   "description": "Tick if this settlement is divided into intervention units. Adds an Intervention Units tab."
+  },
+  {
+   "fieldname": "section_break_address",
+   "fieldtype": "Section Break",
+   "label": "Address"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Data",
+   "label": "District",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "column_break_address",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ward",
+   "fieldtype": "Data",
+   "label": "Ward"
+  },
+  {
+   "fieldname": "pincode",
+   "fieldtype": "Data",
+   "label": "Pincode"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address",
+   "description": "Location / address of the settlement."
+  },
+  {
+   "fieldname": "section_break_location_point",
+   "fieldtype": "Section Break",
+   "label": "Location"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Float",
+   "label": "Latitude",
+   "precision": "9",
+   "description": "Reference point"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Float",
+   "label": "Longitude",
+   "precision": "9",
+   "description": "Reference point"
+  },
+  {
+   "fieldname": "column_break_location_point",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "geo_location",
+   "fieldtype": "Geolocation",
+   "label": "Geo Location",
+   "description": "Pick the point on the map."
+  },
+  {
+   "fieldname": "section_break_boundary",
+   "fieldtype": "Section Break",
+   "label": "Boundary"
+  },
+  {
+   "fieldname": "settlement_boundary",
+   "fieldtype": "JSON",
+   "label": "Settlement Boundary",
+   "description": "Polygon as GeoJSON. Optional."
+  },
+  {
+   "fieldname": "boundary_area",
+   "fieldtype": "Float",
+   "label": "Boundary Area",
+   "description": "Area enclosed by the boundary, in square metres."
+  },
+  {
+   "fieldname": "boundary_perimeter",
+   "fieldtype": "Float",
+   "label": "Boundary Perimeter",
+   "description": "Length around the boundary, in metres."
+  },
+  {
+   "fieldname": "column_break_boundary",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "boundary_captured_by",
+   "fieldtype": "Link",
+   "label": "Boundary Captured By",
+   "options": "User"
+  },
+  {
+   "fieldname": "boundary_captured_on",
+   "fieldtype": "Datetime",
+   "label": "Boundary Captured On"
+  },
+  {
+   "fieldname": "tab_intervention_units",
+   "fieldtype": "Tab Break",
+   "label": "Intervention Units",
+   "depends_on": "eval:doc.has_intervention_units"
+  },
+  {
+   "fieldname": "intervention_units",
+   "fieldtype": "Table",
+   "label": "Intervention Units",
+   "options": "Settlement Intervention Unit",
+   "depends_on": "eval:doc.has_intervention_units"
+  },
+  {
+   "fieldname": "tab_workers",
+   "fieldtype": "Tab Break",
+   "label": "Workers"
+  },
+  {
+   "fieldname": "worker_assignments",
+   "fieldtype": "Table",
+   "label": "Workers",
+   "options": "Settlement Worker",
+   "description": "Tag the partner's workers to the whole settlement, or - when it has intervention units - to a specific unit."
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-30 17:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Baseline",
+ "name": "Settlement",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Program Coordinator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Program Manager"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Organization Admin"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Supervisor"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Data Collector"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Report Viewer"
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "settlement_name",
+ "track_changes": 1,
+ "show_title_field_in_link": 1
+}

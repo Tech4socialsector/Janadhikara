@@ -22,7 +22,7 @@
         <Tooltip :text="`Ask ${assistantBotName}`" :disabled="!isCollapsed">
           <button
             v-if="assistantConfigResource.data?.enabled"
-            class="assistant-card relative flex w-full items-center gap-2 overflow-hidden rounded-lg border border-gray-200 bg-gray-50 px-2 py-1.5 text-left hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800/60 dark:hover:bg-gray-800"
+            class="assistant-card relative flex w-full items-center gap-2 overflow-hidden rounded-lg border border-outline-gray-1 bg-surface-gray-1 px-2 py-1.5 text-left hover:bg-surface-gray-2"
             :class="{ 'justify-center': isCollapsed }"
             @click="toggleAssistant"
           >
@@ -30,10 +30,10 @@
               <SparklesIcon class="h-3.5 w-3.5" />
             </span>
             <span v-if="!isCollapsed" class="min-w-0 flex-1">
-              <span class="block truncate text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span class="block truncate text-sm font-medium text-ink-gray-8">
                 {{ assistantBotName }}
               </span>
-              <span class="block truncate text-xs text-gray-500 dark:text-gray-400">
+              <span class="block truncate text-xs text-ink-gray-5">
                 Assistant
               </span>
             </span>
@@ -43,10 +43,10 @@
           <div class="flex items-center gap-2 rounded px-2 py-1.5" :class="{ 'justify-center': isCollapsed }">
             <Avatar :image="session.user_image" :label="session.full_name || session.user" size="sm" shape="square" />
             <span v-if="!isCollapsed" class="min-w-0 flex-1">
-              <span class="block truncate text-sm font-medium text-gray-700 dark:text-gray-300">
+              <span class="block truncate text-sm font-medium text-ink-gray-8">
                 {{ session.full_name || session.user }}
               </span>
-              <span class="block truncate text-xs text-gray-500 dark:text-gray-400">
+              <span class="block truncate text-xs text-ink-gray-5">
                 {{ session.user }}
               </span>
             </span>
@@ -90,6 +90,23 @@ z-index 1000, which otherwise painted through a dropdown sitting near the
 map (e.g. State's dropdown next to Household profile's map). */
 [data-reka-popper-content-wrapper] {
   z-index: 1050 !important;
+}
+
+/* Branding: the app logo takes 30% of the header row's width (frappe-ui's
+SidebarHeader hardcodes it to a 32px tile, with no size prop). The row keeps
+its normal height (h-12) - the logo is capped at the row's inner 2rem and
+uses object-contain, so a wide logo scales to fit rather than being cropped
+to a square or making the row taller. The collapsed icon-only sidebar
+(w-12) keeps frappe-ui's default tile. */
+.app-sidebar > div.w-60 > button.h-12 > div:first-child {
+  width: 30%;
+  height: 2rem;
+  flex-shrink: 0;
+}
+.app-sidebar > div.w-60 > button.h-12 > div:first-child img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 </style>
 

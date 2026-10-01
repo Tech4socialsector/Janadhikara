@@ -33,7 +33,7 @@ const RULES = []
 // time a doctype adds a new auto-captured date/user field. Any other
 // literal default (a Select's first option value, a fixed Data string,
 // etc.) is returned as-is, same as Frappe desk does.
-function resolveFrappeDefault(rawDefault) {
+export function resolveFrappeDefault(rawDefault) {
   const value = String(rawDefault)
   if (value === '__user' || value.toLowerCase() === 'user') return session.user
   if (value === 'Today') {

@@ -8,11 +8,13 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "tab_details",
   "organization_name",
   "organization_code",
   "column_break_org_1",
   "organization_type",
   "status",
+  "partner_logo",
   "section_break_contact",
   "contact_person",
   "contact_number",
@@ -20,15 +22,20 @@
   "email",
   "section_break_location",
   "state",
+  "address",
   "column_break_location_1",
   "district",
-  "address",
-  "section_break_employees",
-  "employees",
   "section_break_notes",
-  "description"
+  "description",
+  "tab_employees",
+  "employees"
  ],
  "fields": [
+  {
+   "fieldname": "tab_details",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  },
   {
    "fieldname": "organization_name",
    "fieldtype": "Data",
@@ -41,6 +48,7 @@
    "fieldname": "organization_code",
    "fieldtype": "Data",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Organization Code",
    "reqd": 1,
    "unique": 1
@@ -69,6 +77,12 @@
    "reqd": 1
   },
   {
+   "fieldname": "partner_logo",
+   "fieldtype": "Attach Image",
+   "label": "Partner Logo",
+   "description": "Shown as the app logo for this partner's staff. Leave empty to use the logo set in App Setting."
+  },
+  {
    "fieldname": "section_break_contact",
    "fieldtype": "Section Break",
    "label": "Contact"
@@ -76,6 +90,7 @@
   {
    "fieldname": "contact_person",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Contact Person",
    "reqd": 1
   },
@@ -136,8 +151,8 @@
    "label": "Description"
   },
   {
-   "fieldname": "section_break_employees",
-   "fieldtype": "Section Break",
+   "fieldname": "tab_employees",
+   "fieldtype": "Tab Break",
    "label": "Employees"
   },
   {
@@ -150,10 +165,11 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-30 12:50:09.347880",
+ "modified": "2026-09-30 16:47:07.084708",
  "modified_by": "Administrator",
  "module": "Engine",
  "name": "Partner Details",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -187,5 +203,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "organization_name",
- "track_changes": 1
+ "track_changes": 1,
+ "show_title_field_in_link": 1
 }

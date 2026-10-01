@@ -59,5 +59,7 @@
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
- "title_field": "doctype_name"
+ "title_field": "doctype_name",
+ "autoname": "format:AMD-{#####}",
+ "naming_rule": "Expression"
 }

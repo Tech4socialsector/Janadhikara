@@ -9,19 +9,33 @@
     @update:model-value="$emit('update:modelValue', $event)"
   />
 
+  <div v-else-if="controlType === 'geolocation'">
   <GeoLocationField
-    v-else-if="controlType === 'geolocation'"
     :field="field"
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
     @address-resolved="(text) => $emit('address-resolved', text)"
     @pincode-resolved="(text) => $emit('pincode-resolved', text)"
     @location-resolved="(point) => $emit('location-resolved', point)"
+    @geo-changed="(value) => $emit('geo-changed', { fieldname: field.fieldname, value })"
   />
+  </div>
 
-  <TableMultiSelectField
-    v-else-if="controlType === 'table-multiselect'"
+  <div v-else-if="controlType === 'table-multiselect'">
+    <TableMultiSelectField
+      :field="field"
+      :model-value="modelValue"
+      @update:model-value="$emit('update:modelValue', $event)"
+    />
+    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
+  </div>
+
+  <DoctypeFieldPicker
+    v-else-if="controlType === 'doctype-field'"
     :field="field"
+    :doctype="pickerDoctype"
+    :fieldtypes="pickerFieldtypes"
+    :disabled="isReadOnly"
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
   />
@@ -65,6 +79,7 @@
         </Button>
       </template>
     </FileUploader>
+    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
   </div>
 
   <FormControl
@@ -76,6 +91,7 @@
     :required="!!field.reqd"
     :disabled="isReadOnly"
     :options="selectOptions"
+    :description="field.description"
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
   />
@@ -84,6 +100,7 @@
     type="checkbox"
     :label="field.label"
     :disabled="isReadOnly"
+    :description="field.description"
     :model-value="!!modelValue"
     @update:model-value="$emit('update:modelValue', $event ? 1 : 0)"
   />
@@ -94,6 +111,7 @@
       :label="field.label"
       :required="!!field.reqd"
       :disabled="isReadOnly"
+      :description="field.description"
       :model-value="modelValue"
       @update:model-value="$emit('update:modelValue', $event)"
       @blur="touched = true"
@@ -112,6 +130,7 @@
       editor-class="prose-sm max-w-none rounded-b-lg border border-t-0 border-gray-200 px-3 py-2 min-h-[8rem] dark:border-gray-700 dark:prose-invert"
       @change="$emit('update:modelValue', $event)"
     />
+    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
   </div>
 
   <div v-else-if="controlType === 'rating'" class="space-y-1.5">
@@ -123,6 +142,7 @@
       :readonly="isReadOnly"
       @update:model-value="$emit('update:modelValue', $event / 5)"
     />
+    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
   </div>
 
   <div v-else-if="controlType === 'time'">
@@ -136,6 +156,7 @@
       :model-value="modelValue"
       @update:model-value="$emit('update:modelValue', $event)"
     />
+    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
   </div>
 
   <div v-else-if="controlType === 'duration'" class="space-y-1.5">
@@ -153,6 +174,7 @@
         />
       </div>
     </div>
+    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
   </div>
 
   <div v-else-if="controlType === 'color'">
@@ -176,6 +198,7 @@
         @update:model-value="$emit('update:modelValue', $event)"
       />
     </div>
+    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
   </div>
 
   <FormControl
@@ -186,6 +209,7 @@
     :required="!!field.reqd"
     :disabled="isReadOnly"
     :options="selectOptions"
+    :description="field.description"
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event?.value ?? $event)"
   />
@@ -247,12 +271,14 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { FormControl, FileUploader, Button, FeatherIcon, Tooltip, TextEditor, Rating, TimePicker } from 'frappe-ui'
 import UserLinkHoverCard from '@/components/UserLinkHoverCard.vue'
 import GeoLocationField from '@/components/GeoLocationField.vue'
 import IndiaGeoField from '@/components/IndiaGeoField.vue'
 import LinkField from '@/components/LinkField.vue'
+import DoctypeFieldPicker from '@/components/DoctypeFieldPicker.vue'
+import { fieldFunctionRegistryResource } from '@/data/fieldFunctionRegistry'
 import TableMultiSelectField from '@/components/TableMultiSelectField.vue'
 import { getValidatorForField } from '@/utils/validation'
 import { evaluateDependsOn } from '@/utils/dependsOn'
@@ -268,15 +294,20 @@ const props = defineProps({
   // full form/row (DoctypeForm, ChildTable) pass their own `values`/
   // `editingRow`; nothing else in this component reads it.
   siblingValues: { type: Object, default: () => ({}) },
+  // For a field inside a child-table row: the parent form's values, so a
+  // picker can read a parent-level field (e.g. Target Doctype).
+  parentValues: { type: Object, default: () => ({}) },
 })
-const emit = defineEmits(['update:modelValue', 'address-resolved', 'pincode-resolved', 'location-resolved'])
+const emit = defineEmits(['update:modelValue', 'address-resolved', 'pincode-resolved', 'location-resolved', 'geo-changed'])
 
 // Frappe's own DocField `depends_on` convention (see utils/dependsOn.js) -
 // a field with one is only rendered while its condition holds. `values`
 // itself is siblingValues since this field's own current value is one of
 // the things a later field's condition might read (e.g. Q19.1 depending
 // on Q19's own answer, not just a field elsewhere on the form).
-const isVisible = computed(() => evaluateDependsOn(props.field.depends_on, props.siblingValues))
+// `parent` in a child row's depends_on (e.g. "eval:parent.has_intervention_units")
+// is the parent form's values - same as Frappe desk.
+const isVisible = computed(() => evaluateDependsOn(props.field.depends_on, props.siblingValues, props.parentValues))
 
 // A Data field whose `options` names one of these renders as a plain
 // searchable dropdown backed by a free India states/districts dataset
@@ -289,7 +320,49 @@ const isVisible = computed(() => evaluateDependsOn(props.field.depends_on, props
 // doctype.
 const INDIA_GEO_OPTIONS = new Set(['india_state', 'india_district'])
 
+// Fields that pick one of another doctype's fields (Field Function Mapping's
+// trigger/target/input field) - keyed by fieldname, each naming the sibling
+// (or, inside a child row, parent) field that holds the doctype to list.
+// Only applies to Autocomplete/Data fields, and only when that doctype field
+// is actually on the same form, so the same fieldnames elsewhere are
+// unaffected.
+const DOCTYPE_FIELD_SOURCES = {
+  trigger_field: 'target_doctype',
+  target_field: 'target_doctype',
+  input_field: 'target_doctype',
+}
+const pickerDoctype = computed(() => {
+  const source = DOCTYPE_FIELD_SOURCES[props.field.fieldname]
+  if (!source) return undefined
+  return props.siblingValues?.[source] ?? props.parentValues?.[source] ?? null
+})
+// Field types the chosen function accepts for this picker (trigger/also-uses
+// field only - a target field can be any type the output fits, which the
+// server validates per row). Null until the registry has loaded, or when the
+// function isn't chosen yet, so nothing is hidden prematurely.
+const pickerFieldtypes = computed(() => {
+  const fnName = props.siblingValues?.function_name ?? props.parentValues?.function_name
+  const func = fieldFunctionRegistryResource.data?.[fnName]
+  if (!func) return null
+  if (props.field.fieldname === 'trigger_field') return func.trigger_fieldtypes || null
+  if (props.field.fieldname === 'input_field') return func.input_fieldtypes || null
+  return null
+})
+const doctypeFieldSource = computed(() => {
+  if (!['Autocomplete', 'Data'].includes(props.field.fieldtype)) return false
+  const source = DOCTYPE_FIELD_SOURCES[props.field.fieldname]
+  if (!source) return false
+  return source in (props.siblingValues || {}) || source in (props.parentValues || {}) || pickerDoctype.value !== undefined
+})
+
+watch(doctypeFieldSource, (isPicker) => {
+  if (isPicker && !fieldFunctionRegistryResource.data && !fieldFunctionRegistryResource.loading) {
+    fieldFunctionRegistryResource.fetch()
+  }
+}, { immediate: true })
+
 const controlType = computed(() => {
+  if (doctypeFieldSource.value) return 'doctype-field'
   if (props.field.fieldtype === 'Data' && INDIA_GEO_OPTIONS.has(props.field.options)) {
     return 'india-geo'
   }
@@ -520,6 +593,11 @@ const linkFilters = computed(() => {
     let value = rawValue
     if (typeof value === 'string' && value.startsWith('eval:doc.')) {
       value = props.siblingValues[value.slice('eval:doc.'.length)]
+    } else if (typeof value === 'string' && value.startsWith('eval:parent.')) {
+      // A reference to the parent form (e.g. a worker row's link to its
+      // settlement's partner). If the parent value isn't set yet, filter to
+      // nothing rather than dropping the filter and listing every record.
+      value = props.parentValues?.[value.slice('eval:parent.'.length)] || '\u0000none'
     }
     result[fieldname] = operator === '=' ? value : [operator, value]
   }

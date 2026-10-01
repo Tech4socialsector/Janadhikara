@@ -9,6 +9,26 @@
             </template>
             Back
           </Button>
+          <!-- Record ID next to the doctype name, click to copy - the title
+          field is what the page shows as its heading, but the ID is what
+          links, exports and support conversations refer to. -->
+          <span class="hidden text-sm text-gray-500 dark:text-gray-400 sm:inline">{{ metaResource.data?.name || doctype }}</span>
+          <button
+            v-if="!isNew && name"
+            type="button"
+            class="flex items-center gap-1 rounded-md bg-gray-100 px-2 py-0.5 font-mono text-xs text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+            title="Copy record ID"
+            @click="copyRecordId"
+          >
+            {{ name }}
+            <FeatherIcon name="copy" class="h-3 w-3" />
+          </button>
+          <span
+            v-else-if="isNew"
+            class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+          >
+            New
+          </span>
           <span
             v-if="isDirty"
             class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-500/10 dark:text-amber-400"
@@ -18,17 +38,26 @@
         </div>
       </template>
       <template #actions>
+        <!-- Icons on both, always; the text labels drop away on phones so the
+        two buttons stay compact next to the record ID / Not Saved chips. -->
         <Button
           v-if="!isNew && !loadError && canDelete"
           variant="subtle"
           theme="red"
           :loading="deleting"
+          aria-label="Delete"
           @click="showDeleteConfirm = true"
         >
-          Delete
+          <template #prefix>
+            <FeatherIcon name="trash-2" class="h-4 w-4" />
+          </template>
+          <span class="max-sm:hidden">Delete</span>
         </Button>
-        <Button v-if="!loadError" variant="solid" :loading="saving" @click="save">
-          Save
+        <Button v-if="!loadError" variant="solid" :loading="saving" aria-label="Save" @click="save">
+          <template #prefix>
+            <FeatherIcon name="save" class="h-4 w-4" />
+          </template>
+          <span class="max-sm:hidden">Save</span>
         </Button>
       </template>
     </PageHeader>
@@ -113,6 +142,7 @@
         @address-resolved="onAddressResolved"
         @pincode-resolved="onPincodeResolved"
         @location-resolved="onLocationResolved"
+        @geo-changed="onGeoChanged"
       />
       <FormTabSections
         v-else
@@ -127,7 +157,13 @@
         @address-resolved="onAddressResolved"
         @pincode-resolved="onPincodeResolved"
         @location-resolved="onLocationResolved"
+        @geo-changed="onGeoChanged"
       />
+      <div v-if="tabs.length > 1 && activeTabTables.length" class="mt-6 hidden space-y-6 sm:block">
+        <template v-for="field in activeTabTables" :key="field.fieldname">
+          <ChildTable v-if="isTableVisible(field)" :field="field" :parent-values="values" v-model="values[field.fieldname]" />
+        </template>
+      </div>
 
       <!-- Mobile accordion (sm:hidden): every tab renders as its own
       collapsible header instead of only the active one - collapsed by
@@ -164,18 +200,21 @@
               @address-resolved="onAddressResolved"
               @pincode-resolved="onPincodeResolved"
               @location-resolved="onLocationResolved"
+        @geo-changed="onGeoChanged"
             />
+            <div v-if="tab.tables.length" class="mt-6 space-y-6">
+              <template v-for="field in tab.tables" :key="field.fieldname">
+                <ChildTable v-if="isTableVisible(field)" :field="field" :parent-values="values" v-model="values[field.fieldname]" />
+              </template>
+            </div>
           </div>
         </div>
       </div>
 
-      <div v-if="tableFields.length" class="mt-6 space-y-6">
-        <ChildTable
-          v-for="field in tableFields"
-          :key="field.fieldname"
-          :field="field"
-          v-model="values[field.fieldname]"
-        />
+      <div v-if="bottomTableFields.length" class="mt-6 space-y-6">
+        <template v-for="field in bottomTableFields" :key="field.fieldname">
+          <ChildTable v-if="isTableVisible(field)" :field="field" :parent-values="values" v-model="values[field.fieldname]" />
+        </template>
       </div>
 
       <ErrorMessage class="mt-4" :message="saveError" />
@@ -202,6 +241,8 @@ import ChildTable from '@/components/ChildTable.vue'
 import FormTabSections from '@/components/FormTabSections.vue'
 import ConnectionsPanel from '@/components/ConnectionsPanel.vue'
 import { useMeta, useFormFields, useFormTabs, useTableFields } from '@/data/useMeta'
+import { useFieldFunctions } from '@/composables/useFieldFunctions'
+import { childTableErrors } from '@/utils/childRows'
 import { getDoctypeHooks } from '@/doctype-hooks'
 import { setPageTitle } from '@/data/pageTitle'
 import { useCommonFieldDefaults } from '@/composables/useCommonFieldDefaults'
@@ -237,7 +278,7 @@ const fields = useFormFields(metaResource)
 const tabs = useFormTabs(metaResource)
 const tableFields = useTableFields(metaResource)
 const hooks = getDoctypeHooks(doctype)
-const { applyFetchFrom } = useFetchFromFields({ metaResource })
+const { applyFetchFrom, applyInitialFetchFrom } = useFetchFromFields({ metaResource })
 const { lookupPincode } = usePincodeLookup()
 
 // Only the active tab's sections render, but `fields` (every field, flat)
@@ -245,7 +286,26 @@ const { lookupPincode } = usePincodeLookup()
 // on a tab that isn't currently showing can still be changed by a hook
 // (e.g. a default set onLoad) and that must still be picked up.
 const activeTabIdx = ref(0)
-watch(tabs, () => { activeTabIdx.value = 0 })
+// Reset to the first tab only when the tab *structure* changes (a different
+// doctype, tabs added/removed) - not every time `tabs` merely recomputes.
+// The metadata can be re-fetched in the background (e.g. on window focus,
+// which fires when a row-editor dialog opens or closes) and hand back an
+// identical-but-new object; resetting on that threw the user back to the
+// first tab right after clicking "Add Row" on a later one.
+const tabSignature = computed(() => tabs.value.map((t) => t.label || '').join('\u0000'))
+watch(tabSignature, () => { activeTabIdx.value = 0 })
+// Tables declared inside a tab render in that tab; the rest (doctypes with
+// no real tabs) stay in the list below the form. A table can also carry its
+// own depends_on (e.g. "eval:doc.has_intervention_units") - checked here so
+// it only shows while its condition holds.
+const activeTabTables = computed(() => tabs.value[activeTabIdx.value]?.tables || [])
+const bottomTableFields = computed(() => {
+  const inTabs = new Set(tabs.value.flatMap((t) => t.tables.map((f) => f.fieldname)))
+  return tableFields.value.filter((f) => !inTabs.has(f.fieldname))
+})
+function isTableVisible(field) {
+  return evaluateDependsOn(field.depends_on, values)
+}
 const activeTabSections = computed(
   () => tabs.value[activeTabIdx.value]?.sections || [{ label: null, columns: [fields.value] }],
 )
@@ -258,7 +318,7 @@ const activeTabSections = computed(
 // activeTabIdx whenever tabs themselves change (a different doctype/
 // record loading fresh metadata).
 const expandedMobileTabs = ref({ 0: true })
-watch(tabs, () => { expandedMobileTabs.value = { 0: true } })
+watch(tabSignature, () => { expandedMobileTabs.value = { 0: true } })
 
 // "Prompt" autoname doctypes (simple master/lookup tables like Village) have
 // no field backing their name at all - Frappe desk handles this with a
@@ -298,6 +358,34 @@ const showDeleteConfirm = ref(false)
 const deleting = ref(false)
 const deleteError = ref(null)
 
+// navigator.clipboard only exists in secure contexts and can be refused
+// when the page lacks focus/permission - fall back to a hidden textarea +
+// execCommand('copy'), which works everywhere (incl. plain-http dev hosts).
+async function copyRecordId() {
+  const text = name
+  let copied = false
+  try {
+    await navigator.clipboard.writeText(text)
+    copied = true
+  } catch {
+    const el = document.createElement('textarea')
+    el.value = text
+    el.setAttribute('readonly', '')
+    el.style.position = 'fixed'
+    el.style.opacity = '0'
+    document.body.appendChild(el)
+    el.select()
+    try {
+      copied = document.execCommand('copy')
+    } catch {
+      copied = false
+    }
+    document.body.removeChild(el)
+  }
+  if (copied) toast.success('Record ID copied')
+  else toast.error('Could not copy the ID')
+}
+
 async function confirmDelete() {
   deleting.value = true
   deleteError.value = null
@@ -326,6 +414,16 @@ const values = reactive({})
 function isTabVisible(tab) {
   return evaluateDependsOn(tab.dependsOn, values)
 }
+
+// If the tab being viewed stops being visible (e.g. "Has Intervention Units"
+// gets unticked while on that tab), fall back to the first tab instead of
+// leaving the user on a hidden, empty pane.
+watch(
+  () => !!tabs.value[activeTabIdx.value] && isTabVisible(tabs.value[activeTabIdx.value]),
+  (visible) => {
+    if (!visible) activeTabIdx.value = 0
+  },
+)
 
 // The doctype's own title_field (e.g. Household profile's
 // household_head_name) is what a record is actually recognized by, same
@@ -598,7 +696,13 @@ const { applyCommonFieldDefaults } = useCommonFieldDefaults({
   fields,
   values,
   isNew,
-  onApplied: markClean,
+  // After defaults land (e.g. Surveyor = logged-in user), fill any fetch_from
+  // fields that depend on them (Surveyor Name), then take the clean snapshot
+  // so that fetch doesn't make a brand-new form look edited.
+  onApplied: () => {
+    markClean()
+    applyInitialFetchFrom(values).then(markClean)
+  },
 })
 
 // A Geolocation field's reverse-geocoded address (see GeoLocationField.vue)
@@ -628,6 +732,10 @@ function onPincodeResolved(pincode) {
 // elsewhere on the form can read on its own, so the raw coordinates are
 // mirrored out here too whenever a location is actually captured (click,
 // drag, or "use my location"), same as address/pincode.
+// Field Function Mapping rules (Settings) - e.g. a map field's drawn shape
+// fills centre lat/long, boundary, area, perimeter and the address parts.
+const { runTrigger: onGeoChanged } = useFieldFunctions({ doctype: doctype, fields, values })
+
 function onLocationResolved(point) {
   const latField = fieldWithGeoRole('latitude')
   const lngField = fieldWithGeoRole('longitude')
@@ -697,8 +805,14 @@ watch(
   (doc) => {
     if (!doc) return
     suppressDirtyTracking.value = true
+    // Child-table rows are copied, not shared: if `values[table]` were the
+    // very same array as doc[table], adding/editing a row would mutate the
+    // loaded doc itself, re-fire this (deep) watcher, and reload every field
+    // from the saved record - silently wiping unsaved edits elsewhere on the
+    // form (e.g. a just-ticked "Has Intervention Units", which also hid the
+    // tab the user was on and threw them back to the first one).
     Object.keys(doc).forEach((k) => {
-      values[k] = doc[k]
+      values[k] = Array.isArray(doc[k]) ? JSON.parse(JSON.stringify(doc[k])) : doc[k]
     })
     initEmptyTableFields()
     initSnapshots()
@@ -732,7 +846,36 @@ const saveError = ref(null)
 // on save via Ctrl+S or a pasted value the user never actually blurred
 // out of (inline display alone only catches a field once it's been
 // touched).
+const LAYOUT_FIELDTYPES = new Set(['Section Break', 'Column Break', 'Tab Break', 'HTML', 'Button', 'Heading', 'Image'])
+
+// Mandatory fields (`reqd`, or `mandatory_depends_on` evaluating true) that
+// are currently shown and empty - checked here on the client so the user
+// sees every missing field at once, instead of the server rejecting the
+// save one field at a time (e.g. "Organization Code is required", which
+// also blocks a field:-autonamed doctype from even getting a name).
+// Check fields are never "empty" (0 is a valid answer); an empty Table
+// counts as missing, same as Frappe's own mandatory check.
+function missingRequiredFields() {
+  return fields.value.filter((field) => {
+    if (LAYOUT_FIELDTYPES.has(field.fieldtype) || field.fieldtype === 'Check') return false
+    if (!evaluateDependsOn(field.depends_on, values)) return false
+    const required =
+      !!field.reqd ||
+      (!!field.mandatory_depends_on && evaluateDependsOn(field.mandatory_depends_on, values))
+    if (!required) return false
+    const value = values[field.fieldname]
+    if (Array.isArray(value)) return value.length === 0
+    return value === undefined || value === null || String(value).trim() === ''
+  })
+}
+
 function firstValidationError() {
+  const missing = missingRequiredFields()
+  if (missing.length) {
+    // One toast per empty mandatory field, so each is called out on its own.
+    missing.forEach((f) => toast.error(`${f.label || f.fieldname} is required`))
+    return `Required: ${missing.map((f) => f.label || f.fieldname).join(', ')}`
+  }
   for (const field of fields.value) {
     const validator = getValidatorForField(field)
     if (!validator) continue
@@ -740,6 +883,17 @@ function firstValidationError() {
     if (error) return `${field.label}: ${error}`
   }
   return null
+}
+
+// Empty rows / missing mandatory fields across every visible child table,
+// as one message per problem (see utils/childRows.js).
+async function collectChildErrors() {
+  const errors = []
+  for (const tableField of tableFields.value) {
+    if (!isTableVisible(tableField)) continue
+    errors.push(...(await childTableErrors(tableField, values[tableField.fieldname], values)))
+  }
+  return errors
 }
 
 async function save() {
@@ -750,6 +904,16 @@ async function save() {
   const validationError = firstValidationError()
   if (validationError) {
     saveError.value = validationError
+    // Missing-field toasts were already shown one per field above.
+    if (!validationError.startsWith('Required: ')) toast.error(validationError)
+    return
+  }
+  const childErrors = await collectChildErrors()
+  if (childErrors.length) {
+    saveError.value = childErrors.join('\n')
+    // One toast each, capped so a badly broken table doesn't bury the page.
+    childErrors.slice(0, 5).forEach((message) => toast.error(message))
+    if (childErrors.length > 5) toast.error(`...and ${childErrors.length - 5} more - see the list below the form.`)
     return
   }
   saving.value = true
@@ -787,6 +951,9 @@ async function save() {
     }
   } catch (e) {
     saveError.value = e
+    // The inline message sits at the very bottom of the form, easy to miss
+    // on a long one - toast it too so a failed save is never silent.
+    toast.error(e?.messages?.[0] || e?.message || 'Could not save')
   } finally {
     saving.value = false
   }

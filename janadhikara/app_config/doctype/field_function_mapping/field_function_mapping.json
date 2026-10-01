@@ -1,0 +1,163 @@
+{
+ "actions": [],
+ "creation": "2026-09-30 18:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "rule_name",
+  "enabled",
+  "column_break_main",
+  "function_name",
+  "function_description",
+  "section_break_target",
+  "target_doctype",
+  "column_break_target",
+  "trigger_field",
+  "section_break_mappings",
+  "field_mappings",
+  "section_break_notes",
+  "description",
+  "expression"
+ ],
+ "fields": [
+  {
+   "fieldname": "rule_name",
+   "fieldtype": "Data",
+   "label": "Rule Name",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "A short name for this rule, e.g. 'Settlement map capture'."
+  },
+  {
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled",
+   "default": "1",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "function_name",
+   "fieldtype": "Select",
+   "label": "Function",
+   "options": "\nGeo Shape Capture\nDistance Between Points",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "The built-in function to run."
+  },
+  {
+   "fieldname": "function_description",
+   "fieldtype": "Small Text",
+   "label": "What This Function Does",
+   "read_only": 1,
+   "description": "Filled in automatically from the chosen function when saved."
+  },
+  {
+   "fieldname": "section_break_target",
+   "fieldtype": "Section Break",
+   "label": "Tag It To"
+  },
+  {
+   "fieldname": "target_doctype",
+   "fieldtype": "Link",
+   "label": "Target Doctype",
+   "options": "DocType",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "The doctype whose form runs this function. Child doctypes work too."
+  },
+  {
+   "fieldname": "column_break_target",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "trigger_field",
+   "fieldtype": "Autocomplete",
+   "label": "Trigger Field",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "Field that fires the function (e.g. geo_location). Pick from the target doctype's fields - it must be a type the function accepts."
+  },
+  {
+   "fieldname": "section_break_mappings",
+   "fieldtype": "Section Break",
+   "label": "Outputs"
+  },
+  {
+   "fieldname": "field_mappings",
+   "fieldtype": "Table",
+   "label": "Output Mapping",
+   "options": "Field Function Mapping Item",
+   "reqd": 1,
+   "description": "Which output goes into which field of the target doctype."
+  },
+  {
+   "fieldname": "section_break_notes",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description",
+   "description": "Why this rule exists - free text for other admins."
+  },
+  {
+   "fieldname": "expression",
+   "fieldtype": "Small Text",
+   "label": "Expression",
+   "read_only": 1,
+   "description": "Auto-generated summary of everything this rule maps. Refreshed on every save."
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-30 18:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "App Config",
+ "name": "Field Function Mapping",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "states": [],
+ "autoname": "field:rule_name",
+ "naming_rule": "By fieldname",
+ "title_field": "rule_name",
+ "allow_rename": 1,
+ "track_changes": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Program Coordinator",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "show_title_field_in_link": 1
+}

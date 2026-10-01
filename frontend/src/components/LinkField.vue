@@ -179,19 +179,33 @@ const filtersPending = computed(() => Object.values(props.filters).some((v) => v
 // elsewhere in this codebase, e.g. TableMultiSelectField.vue) is returned
 // as-is and gets template-string-stringified into the request path, never
 // actually invoked. A computed() is what unref() actually resolves.
-const recordsUrl = computed(() => `/api/v2/document/${props.field.options}`)
+// A Link to a *child* table doctype (a worker, an intervention unit) can't
+// use the generic document API: for a child doctype Frappe's list query drops
+// every field except `name` unless it's told the parent doctype, so the
+// titles never arrive and the dropdown falls back to showing random IDs.
+// Those go through a small purpose-built endpoint instead (it returns the
+// same { name, <title_field> } rows).
+const linksToChildTable = computed(() => !!metaResource.data?.istable)
+const recordsUrl = computed(() =>
+  linksToChildTable.value
+    ? '/api/v2/method/janadhikara.api.get_link_options'
+    : `/api/v2/document/${props.field.options}`,
+)
 
 const recordsResource = useCall({
   url: recordsUrl,
   method: 'GET',
-  params: () => ({
-    fields: JSON.stringify(['name', titleField.value]),
-    filters: JSON.stringify(props.filters),
-    // Same "large fixed limit stands in for effectively all" reasoning as
-    // TableMultiSelectField - these are bounded master/lookup lists, not a
-    // paged view, and the v2 API has no unlimited sentinel.
-    limit: 1000,
-  }),
+  params: () =>
+    linksToChildTable.value
+      ? { doctype: props.field.options, filters: JSON.stringify(props.filters), limit: 1000 }
+      : {
+          fields: JSON.stringify(['name', titleField.value]),
+          filters: JSON.stringify(props.filters),
+          // Same "large fixed limit stands in for effectively all" reasoning
+          // as TableMultiSelectField - these are bounded master/lookup lists,
+          // not a paged view, and the v2 API has no unlimited sentinel.
+          limit: 1000,
+        },
   immediate: false,
 })
 

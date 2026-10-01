@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen flex-col bg-gray-50 dark:bg-gray-900">
+  <div class="fixed inset-0 flex flex-col bg-gray-50 dark:bg-gray-900">
     <div class="flex flex-shrink-0 items-center gap-3 border-b bg-white px-4 py-3 dark:border-gray-800 dark:bg-gray-900">
       <img
         v-if="appLogo"

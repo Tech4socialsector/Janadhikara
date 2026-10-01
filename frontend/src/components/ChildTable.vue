@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="mb-2 flex items-center justify-between gap-3">
-      <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ field.label }}</h3>
+      <div class="min-w-0">
+        <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ field.label }}</h3>
+        <p v-if="field.description" class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
+      </div>
       <Button variant="ghost" @click="addRow">
         <template #prefix>
           <FeatherIcon name="plus" class="h-4 w-4" />
@@ -17,15 +20,16 @@
     round-trip: a child table's rows already live entirely in memory (the
     parent document's own field value), there is no "fetch a filtered
     page" concept here the way DoctypeList.vue's own list has - narrowing
-    what's already loaded is the whole job. Hidden when there's nothing
-    worth filtering (0-1 rows) rather than always-on chrome for an
-    almost-always-short list. -->
-    <div v-if="rows.length > 1" class="relative mb-2">
+    what's already loaded is the whole job. Always shown (disabled while the
+    table is empty) so the option is discoverable - it used to hide itself
+    until a table had 2+ rows, which read as "there's no search here". -->
+    <div class="relative mb-2">
       <FeatherIcon name="search" class="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
       <input
         v-model="searchQuery"
         type="text"
-        placeholder="Search rows"
+        :placeholder="rows.length ? 'Search rows' : 'Search rows (add a row first)'"
+        :disabled="!rows.length"
         class="h-8 w-full rounded-md border border-gray-200 bg-white pl-8 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
       />
     </div>
@@ -48,7 +52,107 @@
     hand-built "N selected" bar alongside ListView's own auto-rendered
     banner instead of doing this - confirmed live that produces two
     separate "selected" banners on screen at once. -->
+    <!-- Mobile: each row is a card (the grid below needs horizontal room a
+    phone doesn't have). Same operations as the desktop grid - tap a card to
+    edit it, per-card "..." menu (Duplicate / Insert Above / Insert Below /
+    Remove), plus a checkbox on every card, Select all, and a bulk bar
+    (Duplicate / Delete) once anything is ticked. All of it reads and writes
+    the same `rows` / `selectedKeys` the grid uses. -->
+    <template v-if="isMobile">
+      <div
+        v-if="rows.length"
+        class="mb-2 flex items-center justify-between gap-2 rounded-lg border bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-900"
+      >
+        <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+          <input
+            type="checkbox"
+            class="form-checkbox h-4 w-4 !rounded-[3px] border-gray-300 dark:border-gray-600 dark:bg-gray-800"
+            :checked="allSelected"
+            :indeterminate.prop="someSelected"
+            @change="toggleSelectAll"
+          />
+          {{ selectedKeys.length ? `${selectedKeys.length} selected` : 'Select all' }}
+        </label>
+        <div v-if="selectedKeys.length" class="flex items-center gap-1.5">
+          <Button size="sm" @click="duplicateSelected">
+            <template #prefix><FeatherIcon name="copy" class="h-3.5 w-3.5" /></template>
+            Duplicate
+          </Button>
+          <Button size="sm" variant="subtle" theme="red" @click="confirmBulkRemove">
+            <template #prefix><FeatherIcon name="trash-2" class="h-3.5 w-3.5" /></template>
+            Delete
+          </Button>
+          <button
+            type="button"
+            class="flex h-7 w-7 items-center justify-center rounded text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+            aria-label="Clear selection"
+            @click="selectedKeys = []"
+          >
+            <FeatherIcon name="x" class="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      <div v-if="filteredRows.length" class="space-y-2">
+        <div
+          v-for="row in filteredRows"
+          :key="row.__key"
+          class="rounded-xl border bg-white p-3 shadow-sm dark:border-gray-800 dark:bg-gray-900"
+          :class="selectedKeys.includes(row.__key) ? 'border-gray-900 ring-1 ring-gray-900 dark:border-gray-100 dark:ring-gray-100' : ''"
+        >
+          <div class="flex items-start gap-3">
+            <input
+              type="checkbox"
+              class="form-checkbox mt-0.5 h-4 w-4 flex-shrink-0 !rounded-[3px] border-gray-300 dark:border-gray-600 dark:bg-gray-800"
+              :checked="selectedKeys.includes(row.__key)"
+              :aria-label="`Select row ${rows.indexOf(row) + 1}`"
+              @change="toggleSelected(row.__key)"
+            />
+            <div class="min-w-0 flex-1 cursor-pointer" @click="openRow(rows.indexOf(row))">
+              <div class="flex items-center gap-2">
+                <span class="rounded-md bg-gray-100 px-1.5 py-0.5 font-mono text-[11px] text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                  #{{ rows.indexOf(row) + 1 }}
+                </span>
+                <span class="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  {{ cardTitle(row) }}
+                </span>
+              </div>
+              <dl v-if="cardBodyColumns.length" class="mt-2 grid grid-cols-2 gap-x-4 gap-y-2">
+                <div v-for="col in cardBodyColumns" :key="col.fieldname" class="min-w-0">
+                  <dt class="truncate text-xs text-gray-400 dark:text-gray-500">{{ col.label }}</dt>
+                  <dd class="truncate text-sm text-gray-800 dark:text-gray-200">{{ formatValue(row[col.fieldname], col) }}</dd>
+                </div>
+              </dl>
+            </div>
+            <Dropdown placement="bottom-end" :options="rowActions(rows.indexOf(row))">
+              <template #default="{ open }">
+                <button
+                  type="button"
+                  class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                  :class="{ 'bg-gray-100 dark:bg-gray-800': open }"
+                  aria-label="Row actions"
+                >
+                  <FeatherIcon name="more-vertical" class="h-4 w-4" />
+                </button>
+              </template>
+            </Dropdown>
+          </div>
+        </div>
+      </div>
+      <div v-else-if="searchQuery" class="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+        No rows match "{{ searchQuery }}".
+      </div>
+      <div
+        v-else
+        class="rounded-xl border border-dashed border-gray-200 py-10 text-center text-sm text-gray-500 dark:border-gray-800 dark:text-gray-400"
+      >
+        No rows yet
+      </div>
+    </template>
+
     <ListView
+      v-else
+      :key="gridKey"
       :columns="listViewColumns"
       :rows="filteredRows"
       row-key="__key"
@@ -143,7 +247,9 @@
                 :doctype="doctype"
                 :docname="docname"
                 :sibling-values="editingRow"
+                :parent-values="parentValues"
                 v-model="editingRow[col.fieldname]"
+                @geo-changed="onRowGeoChanged"
               />
             </div>
           </div>
@@ -218,7 +324,7 @@ by it. */
 </style>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import {
   Button,
   FeatherIcon,
@@ -235,12 +341,19 @@ import {
 } from 'frappe-ui'
 import DynamicField from '@/components/DynamicField.vue'
 import { useMeta, useFormFields } from '@/data/useMeta'
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import { useFieldFunctions } from '@/composables/useFieldFunctions'
+import { useFetchFromFields } from '@/composables/useFetchFromFields'
+import { linkTitle, isTitledLink, ensureTitlesForRows } from '@/data/linkTitles'
+import { resolveFrappeDefault } from '@/composables/useCommonFieldDefaults'
 
-const { field, modelValue, doctype, docname } = defineProps({
+const { field, modelValue, doctype, docname, parentValues } = defineProps({
   field: { type: Object, required: true },
   modelValue: { type: Array, default: () => [] },
   doctype: { type: String, default: null },
   docname: { type: String, default: null },
+  // The parent form's values (e.g. for pickers that read a parent-level field).
+  parentValues: { type: Object, default: () => ({}) },
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -273,7 +386,15 @@ const listViewColumns = computed(() =>
 // concept of one).
 const lastColumnKey = computed(() => listViewColumns.value.at(-1)?.key)
 
+const isMobile = useBreakpoints(breakpointsTailwind).smaller('sm')
+
 const selectedKeys = ref([])
+// ListView keeps its own copy of which rows are ticked (that's what drives
+// its "N selected" banner) and has no way to reset it from outside, so
+// clearing selectedKeys here wasn't enough: after removing the selected rows
+// the banner stayed up ("1 row selected" over an empty table). Changing this
+// key remounts the grid with a clean selection.
+const gridKey = ref(0)
 const listViewOptions = computed(() => ({
   selectable: true,
   showTooltip: false,
@@ -304,6 +425,17 @@ const editorHeight = computed(() => {
   const total = Math.min(MAX_PANEL_HEIGHT_REM, Math.max(MIN_PANEL_HEIGHT_REM, fieldsHeight + CHROME_HEIGHT_REM))
   return `${total}rem`
 })
+
+// Mobile card helpers. The first summary column is the card's title; the
+// rest form its label/value grid.
+const cardTitleColumn = computed(() => summaryColumns.value[0] || null)
+const cardBodyColumns = computed(() => summaryColumns.value.slice(1))
+function cardTitle(row) {
+  const col = cardTitleColumn.value
+  if (!col) return 'Row'
+  const value = formatValue(row[col.fieldname], col)
+  return value === '-' ? `Row ${rows.value.indexOf(row) + 1}` : value
+}
 
 let rowKeyCounter = 0
 const rows = computed({
@@ -347,6 +479,18 @@ const filteredRows = computed(() => {
   )
 })
 
+// A freshly added row gets each field's own `default` (Frappe desk does the
+// same) - including "__user"/"Today", e.g. a Household Member's Surveyor
+// becomes whoever is logged in.
+function newRowDefaults() {
+  const defaults = {}
+  for (const col of columns.value) {
+    if (col.default === undefined || col.default === null || col.default === '') continue
+    defaults[col.fieldname] = col.fieldtype === 'Check' ? Number(col.default) : resolveFrappeDefault(col.default)
+  }
+  return defaults
+}
+
 function addRow() {
   // Mutate the array in place (it's the same reactive array the parent form
   // owns) rather than reassigning through the computed setter - reassigning
@@ -354,7 +498,7 @@ function addRow() {
   // reading rows.value.length right after that in the same tick can still
   // see the pre-update array, opening the row editor on the wrong (stale)
   // index.
-  const newRow = { __key: `new-${rowKeyCounter++}` }
+  const newRow = { ...newRowDefaults(), __key: `new-${rowKeyCounter++}` }
   rows.value.push(newRow)
   openRow(rows.value.indexOf(newRow))
 }
@@ -372,13 +516,54 @@ const SUMMARY_VALUE_MAX_LENGTH = 60
 function formatValue(value, field) {
   if (value == null || value === '') return '-'
   if (field.fieldtype === 'Check') return value ? 'Yes' : 'No'
-  const text = String(value)
+  // A linked record shows by its title (name), not its ID.
+  const text = String(isTitledLink(field) ? linkTitle(field.options, value) : value)
   return text.length > SUMMARY_VALUE_MAX_LENGTH ? text.slice(0, SUMMARY_VALUE_MAX_LENGTH - 1) + '…' : text
 }
+
+// Titles for the Link columns of the rows shown (see data/linkTitles.js).
+watch(
+  () => [rows.value.length, columns.value, rows.value.map((r) => JSON.stringify(summaryColumns.value.map((c) => r[c.fieldname])))],
+  () => ensureTitlesForRows(rows.value, summaryColumns.value),
+  { immediate: true },
+)
 
 const showRowEditor = ref(false)
 const editingIdx = ref(null)
 const editingRow = computed(() => (editingIdx.value == null ? null : rows.value[editingIdx.value]))
+
+// Field Function Mapping rules on the child doctype (e.g. an Intervention
+// Unit's map capture) write into the row being edited - useFieldFunctions
+// just needs a `values` object, so this is a thin proxy onto whichever row
+// is currently open in the editor.
+const rowValues = new Proxy(
+  {},
+  {
+    get: (_, key) => editingRow.value?.[key],
+    set: (_, key, value) => {
+      if (editingRow.value) editingRow.value[key] = value
+      return true
+    },
+  },
+)
+// fetch_from on a row's fields (e.g. a worker row's name/role fetched from
+// the picked worker) - the main form diffs its own values to do this; the
+// row editor does the same for whichever row is open.
+const { applyFetchFrom } = useFetchFromFields({ metaResource: childMetaResource })
+let lastRowSnapshot = null
+watch(editingRow, (row) => { lastRowSnapshot = row ? { ...row } : null }, { immediate: true })
+watch(
+  () => (editingRow.value ? JSON.stringify(editingRow.value) : null),
+  () => {
+    const row = editingRow.value
+    if (!row || !lastRowSnapshot) return
+    const changed = Object.keys(row).find((k) => row[k] !== lastRowSnapshot[k])
+    lastRowSnapshot = { ...row }
+    if (changed) applyFetchFrom(changed, row)
+  },
+)
+
+const { runTrigger: onRowGeoChanged } = useFieldFunctions({ doctype: field.options, fields: columns, values: rowValues })
 
 function openRow(idx) {
   editingIdx.value = idx
@@ -393,6 +578,44 @@ const showRemoveConfirm = ref(false)
 // confirm dialog opens, so cancelling a bulk remove doesn't lose the
 // user's selection.
 const pendingRemoveIndices = ref([])
+
+const allSelected = computed(
+  () => filteredRows.value.length > 0 && filteredRows.value.every((r) => selectedKeys.value.includes(r.__key)),
+)
+const someSelected = computed(() => selectedKeys.value.length > 0 && !allSelected.value)
+
+function toggleSelectAll() {
+  selectedKeys.value = allSelected.value ? [] : filteredRows.value.map((r) => r.__key)
+}
+
+function toggleSelected(key) {
+  selectedKeys.value = selectedKeys.value.includes(key)
+    ? selectedKeys.value.filter((k) => k !== key)
+    : [...selectedKeys.value, key]
+}
+
+// Saved rows carry server-owned bookkeeping (their own `name`, position,
+// audit stamps, parent links) that a copy must NOT inherit - a duplicate
+// that kept `name` would be treated as the same row on save.
+const SERVER_ROW_KEYS = ['__key', 'name', 'idx', 'creation', 'modified', 'owner', 'modified_by', 'parent', 'parentfield', 'parenttype', 'docstatus']
+function cloneRowValues(source) {
+  const copy = { ...source }
+  SERVER_ROW_KEYS.forEach((k) => delete copy[k])
+  return copy
+}
+
+// Bulk duplicate (mobile bar): each ticked row is copied directly after
+// itself, walking bottom-up so earlier indices stay valid as copies are
+// inserted. Unlike single Duplicate it doesn't open an editor per copy.
+function duplicateSelected() {
+  const keys = new Set(selectedKeys.value)
+  for (let i = rows.value.length - 1; i >= 0; i--) {
+    if (keys.has(rows.value[i].__key)) {
+      rows.value.splice(i + 1, 0, { ...cloneRowValues(rows.value[i]), __key: `new-${rowKeyCounter++}` })
+    }
+  }
+  selectedKeys.value = []
+}
 
 function confirmRemoveRow(idx) {
   pendingRemoveIndices.value = [idx]
@@ -411,6 +634,7 @@ function doRemoveRow(close) {
   rows.value = rows.value.filter((_, i) => !toRemove.has(i))
   pendingRemoveIndices.value = []
   selectedKeys.value = []
+  gridKey.value++
   close()
 }
 
@@ -422,8 +646,8 @@ function doRemoveRow(close) {
 // reading its index immediately after avoids that race, letting Duplicate/
 // Insert Above/Insert Below open their new row's editor right away, the
 // same as Add Row already does.
-function insertRowAt(idx, values = {}) {
-  const row = { ...values, __key: `new-${rowKeyCounter++}` }
+function insertRowAt(idx, values = null) {
+  const row = { ...(values ?? newRowDefaults()), __key: `new-${rowKeyCounter++}` }
   rows.value.splice(idx, 0, row)
   openRow(rows.value.indexOf(row))
 }
@@ -435,8 +659,7 @@ function insertRowAt(idx, values = {}) {
 function duplicateRow(idx) {
   const source = rows.value[idx]
   if (!source) return
-  const { __key, ...values } = source
-  insertRowAt(idx + 1, values)
+  insertRowAt(idx + 1, cloneRowValues(source))
 }
 
 function insertRowAbove(idx) {

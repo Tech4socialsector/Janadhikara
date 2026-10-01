@@ -3,7 +3,11 @@
 // onChildFieldChange(tableField, fieldname, row, values) - these reimplement
 // the doctype's frappe.ui.form.on(...) desk client script, since that API
 // doesn't exist for documents edited through this Vue app.
-const HOOKS = {}
+import * as householdProfile from './householdProfile'
+
+const HOOKS = {
+  'Household Profile': householdProfile,
+}
 
 export function getDoctypeHooks(doctype) {
   return HOOKS[doctype] || null

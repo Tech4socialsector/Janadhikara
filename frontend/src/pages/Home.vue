@@ -6,50 +6,65 @@
       </template>
     </PageHeader>
 
-    <section v-if="announcements.length" class="mb-8" aria-labelledby="announcements-title">
-      <div class="mb-3 flex items-center justify-between">
-        <div>
-          <h2 id="announcements-title" class="text-sm font-semibold text-gray-900 dark:text-gray-100">Announcements</h2>
-          <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">Updates for your workspace</p>
-        </div>
-        <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
-          {{ announcements.length }}
-        </span>
-      </div>
-      <div class="grid gap-3 lg:grid-cols-2">
-        <article
-          v-for="a in announcements"
-          :key="a.name"
-          class="flex items-start gap-3 rounded-xl border p-4 shadow-sm"
-          :class="announcementStyles[a.announcement_type]?.box || announcementStyles.Info.box"
-        >
-          <span class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-white/70 dark:bg-black/10">
-            <FeatherIcon
-              :name="announcementStyles[a.announcement_type]?.icon || 'info'"
-              class="h-4 w-4"
-            />
+    <!-- Announcements: one rounded card at a time (prev/next + dots when
+    there are several) so it stays compact on every screen size. A soft
+    type-colored gradient, big icon tile and a Dismiss pill keep it light
+    without shouting. -->
+    <section v-if="current" class="mb-6" aria-label="Announcements">
+      <div
+        class="relative overflow-hidden rounded-2xl border p-4 shadow-sm sm:p-5"
+        :class="styleFor(current).card"
+      >
+        <div class="flex items-start gap-3 sm:gap-4">
+          <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl sm:h-12 sm:w-12" :class="styleFor(current).icon">
+            <FeatherIcon :name="styleFor(current).name" class="h-5 w-5 sm:h-6 sm:w-6" />
           </span>
           <div class="min-w-0 flex-1">
-            <div class="text-sm font-semibold">{{ a.title }}</div>
-            <div class="mt-1 whitespace-pre-line text-sm leading-relaxed opacity-80">{{ a.message }}</div>
+            <div class="flex items-center gap-2">
+              <span class="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide" :class="styleFor(current).chip">
+                {{ current.announcement_type || 'Info' }}
+              </span>
+              <span v-if="announcements.length > 1" class="text-xs text-gray-500 dark:text-gray-400">
+                {{ index + 1 }} / {{ announcements.length }}
+              </span>
+            </div>
+            <h2 class="mt-1.5 text-base font-semibold leading-snug text-gray-900 dark:text-gray-100">{{ current.title }}</h2>
+            <p class="mt-1 whitespace-pre-line text-sm leading-relaxed text-gray-600 dark:text-gray-300">{{ current.message }}</p>
+
+            <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
+              <div v-if="announcements.length > 1" class="flex items-center gap-1.5">
+                <button
+                  v-for="(a, i) in announcements"
+                  :key="a.name"
+                  class="h-1.5 rounded-full transition-all"
+                  :class="i === index ? ['w-5', styleFor(current).dot] : 'w-1.5 bg-gray-300 dark:bg-gray-600'"
+                  :aria-label="`Show announcement ${i + 1}`"
+                  @click="index = i"
+                />
+              </div>
+              <span v-else />
+              <div class="flex items-center gap-2">
+                <template v-if="announcements.length > 1">
+                  <button class="flex h-7 w-7 items-center justify-center rounded-full bg-white/70 text-gray-600 hover:bg-white disabled:opacity-40 dark:bg-white/10 dark:text-gray-300" :disabled="index === 0" aria-label="Previous" @click="index--">
+                    <FeatherIcon name="chevron-left" class="h-4 w-4" />
+                  </button>
+                  <button class="flex h-7 w-7 items-center justify-center rounded-full bg-white/70 text-gray-600 hover:bg-white disabled:opacity-40 dark:bg-white/10 dark:text-gray-300" :disabled="index >= announcements.length - 1" aria-label="Next" @click="index++">
+                    <FeatherIcon name="chevron-right" class="h-4 w-4" />
+                  </button>
+                </template>
+                <button
+                  v-if="current.dismissible"
+                  class="rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-gray-700 shadow-sm hover:bg-white dark:bg-white/10 dark:text-gray-200 dark:hover:bg-white/20"
+                  @click="dismissAnnouncement(current.name)"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
           </div>
-          <button
-            v-if="a.dismissible"
-            class="flex h-7 flex-shrink-0 items-center gap-1 rounded-md px-2 text-xs font-medium opacity-75 hover:bg-black/5 hover:opacity-100 dark:hover:bg-white/10"
-            :aria-label="`Dismiss ${a.title}`"
-            @click="dismissAnnouncement(a.name)"
-          >
-            <FeatherIcon name="x" class="h-3.5 w-3.5" />
-            Dismiss
-          </button>
-        </article>
+        </div>
       </div>
     </section>
-
-    <div class="mb-3 mt-2">
-      <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Your workspace</h2>
-      <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">Choose a module to get started</p>
-    </div>
 
     <div v-if="modulesResource.loading && !modulesResource.data" class="grid grid-cols-3 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(7rem,max-content))] sm:gap-4">
       <div v-for="i in 6" :key="i" class="flex flex-col items-center gap-2 p-2">
@@ -183,11 +198,38 @@ setPageTitle('Home')
 
 const announcements = computed(() => announcementsResource.data || [])
 const announcementStyles = {
-  Info: { icon: 'info', box: 'border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-100' },
-  Success: { icon: 'check-circle', box: 'border-green-200 bg-green-50 text-green-900 dark:border-green-900 dark:bg-green-950 dark:text-green-100' },
-  Warning: { icon: 'alert-triangle', box: 'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100' },
-  Urgent: { icon: 'alert-circle', box: 'border-red-200 bg-red-50 text-red-900 dark:border-red-900 dark:bg-red-950 dark:text-red-100' },
+  Info: {
+    name: 'info',
+    card: 'border-blue-100 bg-gradient-to-br from-blue-50 to-white dark:border-blue-900/60 dark:from-blue-950/60 dark:to-gray-900',
+    icon: 'bg-blue-100 text-blue-600 dark:bg-blue-900/60 dark:text-blue-300',
+    chip: 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300',
+    dot: 'bg-blue-500',
+  },
+  Success: {
+    name: 'check-circle',
+    card: 'border-green-100 bg-gradient-to-br from-green-50 to-white dark:border-green-900/60 dark:from-green-950/60 dark:to-gray-900',
+    icon: 'bg-green-100 text-green-600 dark:bg-green-900/60 dark:text-green-300',
+    chip: 'bg-green-100 text-green-700 dark:bg-green-900/60 dark:text-green-300',
+    dot: 'bg-green-500',
+  },
+  Warning: {
+    name: 'alert-triangle',
+    card: 'border-amber-100 bg-gradient-to-br from-amber-50 to-white dark:border-amber-900/60 dark:from-amber-950/60 dark:to-gray-900',
+    icon: 'bg-amber-100 text-amber-600 dark:bg-amber-900/60 dark:text-amber-300',
+    chip: 'bg-amber-100 text-amber-700 dark:bg-amber-900/60 dark:text-amber-300',
+    dot: 'bg-amber-500',
+  },
+  Urgent: {
+    name: 'alert-circle',
+    card: 'border-red-100 bg-gradient-to-br from-red-50 to-white dark:border-red-900/60 dark:from-red-950/60 dark:to-gray-900',
+    icon: 'bg-red-100 text-red-600 dark:bg-red-900/60 dark:text-red-300',
+    chip: 'bg-red-100 text-red-700 dark:bg-red-900/60 dark:text-red-300',
+    dot: 'bg-red-500',
+  },
 }
+const styleFor = (a) => announcementStyles[a.announcement_type] || announcementStyles.Info
+const index = ref(0)
+const current = computed(() => announcements.value[Math.min(index.value, announcements.value.length - 1)])
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('sm')

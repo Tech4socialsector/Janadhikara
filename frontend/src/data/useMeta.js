@@ -75,20 +75,28 @@ export function useFormTabs(metaResource) {
       return { label: null, dependsOn: null, columns: [[]] }
     }
     function newTab() {
-      return { label: null, dependsOn: null, sections: [newSection()] }
+      return { label: null, dependsOn: null, sections: [newSection()], tables: [] }
     }
 
     const tabs = [newTab()]
     for (const f of meta.fields) {
       if (f.fieldtype === 'Tab Break') {
-        if (!f.hidden) tabs.push({ label: f.label || null, dependsOn: f.depends_on || null, sections: [newSection()] })
+        if (!f.hidden) tabs.push({ label: f.label || null, dependsOn: f.depends_on || null, sections: [newSection()], tables: [] })
         continue
       }
       const tab = tabs[tabs.length - 1]
       if (f.fieldtype === 'Section Break') {
         if (!f.hidden) {
-          tab.sections.push({ label: f.label || null, dependsOn: f.depends_on || null, columns: [[]] })
+          tab.sections.push({ label: f.label || null, description: f.description || null, dependsOn: f.depends_on || null, columns: [[]] })
         }
+        continue
+      }
+      // A Table field is remembered on its tab too - DoctypeForm renders it
+      // inside that tab when the doctype has real tabs (see below), so a
+      // child table sits under the tab it was declared in instead of below
+      // the whole form.
+      if (f.fieldtype === 'Table' && isDisplayField(f)) {
+        tab.tables.push(f)
         continue
       }
       const section = tab.sections[tab.sections.length - 1]
@@ -105,7 +113,7 @@ export function useFormTabs(metaResource) {
     // callers that only need "every field on this tab", e.g. isWideField
     // sizing or the hook-diffing snapshot in DoctypeForm.vue) alongside the
     // new sections/columns structure the template actually renders from.
-    return tabs
+    const result = tabs
       .map((tab) => ({
         label: tab.label,
         dependsOn: tab.dependsOn,
@@ -113,8 +121,13 @@ export function useFormTabs(metaResource) {
           .map((s) => ({ ...s, columns: s.columns.filter((c) => c.length) }))
           .filter((s) => s.columns.length),
         fields: tab.sections.flatMap((s) => s.columns.flat()),
+        tables: tab.tables,
       }))
-      .filter((tab) => tab.fields.length > 0)
+      .filter((tab) => tab.fields.length > 0 || tab.tables.length > 0)
+    // Without real tabs there's nothing to host a table, so tables stay in
+    // the bottom list (useTableFields) exactly as before.
+    if (result.length <= 1) result.forEach((tab) => (tab.tables = []))
+    return result
   })
 }
 

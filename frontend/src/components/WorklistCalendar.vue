@@ -39,7 +39,7 @@
         :class="{ 'bg-gray-50 dark:bg-gray-950': !cell.inMonth }"
       >
         <span
-          class="mb-1 inline-flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-medium"
+          class="mb-1 inline-flex h-5 w-5 items-center justify-center rounded-full text-2xs font-medium"
           :class="[
             cell.inMonth ? 'text-gray-700 dark:text-gray-300' : 'text-gray-300 dark:text-gray-600',
             cell.isToday ? 'bg-blue-600 text-white dark:bg-blue-500' : '',
@@ -55,7 +55,7 @@
           <button
             v-for="todo in cell.todos"
             :key="todo.name"
-            class="mb-1 block w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] transition-colors"
+            class="mb-1 block w-full truncate rounded px-1.5 py-0.5 text-left text-2xs transition-colors"
             :class="todo.status === 'Open' ? 'bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60' : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'"
             @click="$emit('open', todo)"
           >
@@ -64,7 +64,7 @@
         </div>
         <button
           v-if="cell.todos.length"
-          class="block w-full truncate rounded bg-blue-100 px-1 py-0.5 text-center text-[10px] font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 sm:hidden"
+          class="block w-full truncate rounded bg-blue-100 px-1 py-0.5 text-center text-2xs font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 sm:hidden"
           @click="$emit('open', cell.todos[0])"
         >
           {{ cell.todos.length }}

@@ -14,7 +14,48 @@ window.addEventListener('pageshow', (event) => {
   }
 })
 
+// After a new deploy the hashed JS/CSS chunks of the previous build are gone
+// from the server, but an already-open tab (or an older service-worker
+// shell) still points at them - the next lazy route import then fails and
+// the page renders blank or half-drawn. Reload once to pick up the current
+// build; the sessionStorage flag stops this from ever looping if the
+// failure is something other than a stale build.
+function reloadOnceForStaleBuild() {
+  try {
+    if (sessionStorage.getItem('stale-build-reload')) return
+    sessionStorage.setItem('stale-build-reload', '1')
+  } catch {
+    return
+  }
+  window.location.reload()
+}
+window.addEventListener('vite:preloadError', (event) => {
+  event.preventDefault()
+  reloadOnceForStaleBuild()
+})
+// A successful load clears the guard so a later deploy can recover again.
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    try {
+      sessionStorage.removeItem('stale-build-reload')
+    } catch {
+      /* ignore */
+    }
+  }, 5000)
+})
+
 let app = createApp(App)
 
+router.onError((error, to) => {
+  const message = String(error?.message || error)
+  if (/Failed to fetch dynamically imported module|Importing a module script failed|error loading dynamically imported module/i.test(message)) {
+    reloadOnceForStaleBuild()
+  } else {
+    console.error('Navigation error', to?.fullPath, error)
+  }
+})
+app.config.errorHandler = (error, instance, info) => {
+  console.error('Render error', info, error)
+}
 app.use(router)
 app.mount('#app')

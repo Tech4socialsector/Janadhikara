@@ -88,8 +88,17 @@
                 </div>
               </div>
 
-              <SettingsDoctypePanel v-else-if="activeTab === 'app-setting'" doctype="App Setting" />
-              <SettingsDoctypePanel v-else-if="activeTab === 'pnc-interval'" doctype="PNC Visit Interval Master" />
+              <SettingsDoctypePanel
+                v-else-if="activeEntry?.is_single"
+                :key="activeEntry.doctype"
+                :doctype="activeEntry.doctype"
+              />
+              <SettingsManagePanel
+                v-else-if="activeEntry"
+                :key="activeEntry.doctype"
+                :entry="activeEntry"
+                @close="show = false"
+              />
               <EmailSettingsPanel v-else-if="activeTab === 'email-settings'" @close="show = false" />
             </div>
           </div>
@@ -141,6 +150,7 @@ import { Dialog, FeatherIcon, TabButtons } from 'frappe-ui'
 import SettingsDoctypePanel from '@/components/SettingsDoctypePanel.vue'
 import ProfilePanel from '@/components/ProfilePanel.vue'
 import NotificationSettingsPanel from '@/components/NotificationSettingsPanel.vue'
+import SettingsManagePanel from '@/components/SettingsManagePanel.vue'
 import EmailSettingsPanel from '@/components/EmailSettingsPanel.vue'
 import Skeleton from '@/components/Skeleton.vue'
 import moduleIcon from '@/components/moduleIcon'
@@ -148,6 +158,7 @@ import { session } from '@/data/session'
 import { languagesResource, setUserLanguage } from '@/data/language'
 import { currentTheme } from '@/data/theme'
 import { userContextResource } from '@/data/userContext'
+import { settingsEntriesResource } from '@/data/settingsEntries'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -159,7 +170,8 @@ const show = computed({
   set: (v) => emit('update:modelValue', v),
 })
 
-const isPrivileged = computed(() => !!userContextResource.data?.is_privileged)
+const settingsEntries = computed(() => settingsEntriesResource.data || [])
+const activeEntry = computed(() => settingsEntries.value.find((e) => e.key === activeTab.value))
 const isSystemAdmin = computed(() => !!userContextResource.data?.is_system_admin)
 
 const activeTab = ref('profile')
@@ -183,14 +195,15 @@ const groupedTabs = computed(() => {
       ],
     },
   ]
-  if (isPrivileged.value) {
-    groups.push({
-      label: 'App Settings',
-      tabs: [
-        { key: 'app-setting', label: 'App Settings', icon: moduleIcon('sliders') },
-        { key: 'pnc-interval', label: 'PNC Visit Interval', icon: moduleIcon('calendar') },
-      ],
-    })
+  // Everything below "Account" comes from get_settings_entries, already
+  // filtered by the user's role permissions on each doctype.
+  for (const entry of settingsEntries.value) {
+    let group = groups.find((g) => g.label === entry.group)
+    if (!group) {
+      group = { label: entry.group, tabs: [] }
+      groups.push(group)
+    }
+    group.tabs.push({ key: entry.key, label: entry.label, icon: moduleIcon(entry.icon) })
   }
   if (isSystemAdmin.value) {
     groups.push({
