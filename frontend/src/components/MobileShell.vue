@@ -1,17 +1,32 @@
 <template>
-  <div class="fixed inset-0 flex flex-col bg-gray-50 dark:bg-gray-900">
-    <div class="flex flex-shrink-0 items-center gap-3 border-b bg-white px-4 py-3 dark:border-gray-800 dark:bg-gray-900">
-      <img
-        v-if="appLogo"
-        :src="appLogo"
-        class="h-7 w-7 flex-shrink-0 rounded-lg object-cover"
-      />
-      <FeatherIcon v-else name="activity" class="h-6 w-6 flex-shrink-0 text-gray-500 dark:text-gray-400" />
+  <div class="fixed inset-0 flex flex-col bg-gray-50 pt-[env(safe-area-inset-top)] dark:bg-gray-900">
+    <div class="flex flex-shrink-0 items-center gap-2 border-b bg-white px-3 py-3 dark:border-gray-800 dark:bg-gray-900">
+      <Button variant="ghost" size="sm" icon="menu" tooltip="Menu" class="-ml-1 flex-shrink-0" @click="openMobileMenu" />
+      <!-- The app icon goes Home. -->
+      <router-link :to="{ name: 'Home' }" class="flex flex-shrink-0 items-center" aria-label="Home">
+        <img
+          v-if="appLogo"
+          :src="appLogo"
+          class="h-7 w-7 rounded-lg object-cover"
+        />
+        <FeatherIcon v-else name="home" class="h-6 w-6 text-gray-500 dark:text-gray-400" />
+      </router-link>
       <h1 class="min-w-0 flex-1 truncate text-base font-semibold text-gray-900 dark:text-gray-100">
         {{ pageTitle }}
       </h1>
       <AwesomeBar />
       <TabButtons v-model="theme" :buttons="themeButtons" />
+
+      <!-- Alerts in the top-right corner (the profile is in the bottom bar). -->
+      <span class="relative inline-flex flex-shrink-0">
+        <Button variant="ghost" size="sm" icon="bell" tooltip="Notifications" aria-label="Notifications" @click="toggleNotifications" />
+        <span
+          v-if="unreadCount > 0"
+          class="pointer-events-none absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-2xs font-medium text-white"
+        >
+          {{ unreadCount > 9 ? '9+' : unreadCount }}
+        </span>
+      </span>
     </div>
 
     <main class="flex-1 overflow-y-auto px-4 py-4 pb-20">
@@ -27,15 +42,17 @@
 
 <script setup>
 import { computed } from 'vue'
-import { FeatherIcon, TabButtons } from 'frappe-ui'
+import { Button, FeatherIcon, TabButtons } from 'frappe-ui'
 import AwesomeBar from '@/components/AwesomeBar.vue'
 import MobileNav from '@/components/MobileNav.vue'
 import NotificationPanel from '@/components/NotificationPanel.vue'
 import AiAssistant from '@/components/AiAssistant.vue'
 import SettingsDialog from '@/components/SettingsDialog.vue'
 import { appLogo } from '@/data/branding'
+import { openMobileMenu } from '@/data/mobileMenu'
 import { pageTitle } from '@/data/pageTitle'
 import { showSettingsDialog } from '@/data/settingsDialog'
+import { unreadCount, toggleNotifications } from '@/data/notifications'
 import { currentTheme } from '@/data/theme'
 
 const themeButtons = [

@@ -9,7 +9,7 @@
           @success="onImageUpload"
         >
           <template #default="{ uploading, progress, openFileSelector }">
-            <Button variant="outline" :loading="uploading" @click="openFileSelector">
+            <Button icon-left="camera" variant="outline" :loading="uploading" @click="openFileSelector">
               {{ uploading ? `Uploading ${progress}%` : 'Change Photo' }}
             </Button>
           </template>
@@ -22,14 +22,14 @@
 
     <div>
       <div class="mb-1.5 text-sm text-gray-700 dark:text-gray-300">Password</div>
-      <Button variant="outline" @click="showPasswordDialog = true">
+      <Button icon-left="key" variant="outline" @click="showPasswordDialog = true">
         Change Password
       </Button>
     </div>
 
     <ErrorMessage :message="saveError" />
     <div class="flex justify-end">
-      <Button variant="solid" :loading="saving" @click="save">
+      <Button icon-left="save" variant="solid" :loading="saving" @click="save">
         Save
       </Button>
     </div>
@@ -53,7 +53,7 @@
         </div>
       </template>
       <template #actions>
-        <Button variant="solid" class="w-full" :loading="changingPassword" @click="changePassword">
+        <Button icon-left="lock" variant="solid" class="w-full" :loading="changingPassword" @click="changePassword">
           Update Password
         </Button>
       </template>

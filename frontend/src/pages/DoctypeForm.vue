@@ -70,8 +70,8 @@
         </p>
         <ErrorMessage class="mt-3" :message="deleteError" />
         <div class="mt-4 flex justify-end gap-2">
-          <Button @click="showDeleteConfirm = false">Cancel</Button>
-          <Button variant="solid" theme="red" :loading="deleting" @click="confirmDelete">Delete</Button>
+          <Button icon-left="x" @click="showDeleteConfirm = false">Cancel</Button>
+          <Button icon-left="trash-2" variant="solid" theme="red" :loading="deleting" @click="confirmDelete">Delete</Button>
         </div>
       </template>
     </Dialog>

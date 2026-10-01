@@ -26,7 +26,7 @@
       </div>
       <ErrorMessage class="mt-4" :message="saveError" />
       <div class="mt-6 flex justify-end">
-        <Button variant="solid" :loading="saving" @click="save">
+        <Button icon-left="save" variant="solid" :loading="saving" @click="save">
           Save
         </Button>
       </div>

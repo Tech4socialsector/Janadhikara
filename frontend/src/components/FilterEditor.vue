@@ -67,8 +67,8 @@
     <Button class="mt-3" variant="subtle" icon-left="plus" @click="addRow">Add a Filter</Button>
 
     <div class="mt-4 flex flex-shrink-0 justify-end gap-2 border-t pt-3 dark:border-gray-800">
-      <Button v-if="rows.length" @click="clearAll">Clear Filters</Button>
-      <Button variant="solid" @click="apply">Apply Filters</Button>
+      <Button icon-left="rotate-ccw" v-if="rows.length" @click="clearAll">Clear Filters</Button>
+      <Button icon-left="check" variant="solid" @click="apply">Apply Filters</Button>
     </div>
   </div>
 </template>

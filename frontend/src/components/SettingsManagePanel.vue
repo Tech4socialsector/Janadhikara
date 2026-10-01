@@ -13,8 +13,8 @@
       </div>
     </div>
     <div class="mt-4 flex flex-wrap gap-2">
-      <Button variant="solid" @click="go('DoctypeList')">View {{ entry.label }}</Button>
-      <Button v-if="entry.can_create" @click="go('DoctypeNew')">New</Button>
+      <Button icon-left="list" variant="solid" @click="go('DoctypeList')">View {{ entry.label }}</Button>
+      <Button icon-left="plus" v-if="entry.can_create" @click="go('DoctypeNew')">New</Button>
     </div>
   </div>
 </template>

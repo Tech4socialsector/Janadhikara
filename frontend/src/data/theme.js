@@ -28,6 +28,11 @@ watchEffect(() => {
   root.setAttribute('data-theme', isDark ? 'dark' : 'light')
   localStorage.setItem(STORAGE_KEY, currentTheme.value)
 
+  // The installed app's status bar / title bar takes this colour, so it should
+  // match the header in whichever theme is showing.
+  const themeColor = document.querySelector('meta[name="theme-color"]')
+  if (themeColor) themeColor.setAttribute('content', isDark ? '#171717' : '#ffffff')
+
   if (!firstRun) {
     // Force the new styles to be computed while transitions are still off,
     // then release the lock after the frame has painted.

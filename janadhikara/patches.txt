@@ -23,3 +23,4 @@ namma_seva.patches.v1_0.seed_ai_guide_sections
 janadhikara.patches.v1_1.seed_geo_field_rules
 janadhikara.patches.v1_1.seed_household_geo_rule
 janadhikara.patches.v1_1.seed_ai_data_policies
+janadhikara.patches.v1_1.set_sidebar_item_types

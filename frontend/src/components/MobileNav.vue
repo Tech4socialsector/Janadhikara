@@ -3,31 +3,6 @@
     class="fixed inset-x-0 bottom-0 z-30 flex items-stretch justify-around border-t bg-white pb-[env(safe-area-inset-bottom)] dark:border-gray-800 dark:bg-gray-900"
   >
     <router-link
-      :to="{ name: 'Worklist' }"
-      class="flex flex-1 flex-col items-center gap-0.5 py-2 text-xs"
-      :class="route.name === 'Worklist' ? 'nav-active' : 'text-gray-400 dark:text-gray-500'"
-    >
-      <FeatherIcon name="check-square" class="h-5 w-5" />
-      Worklist
-    </router-link>
-
-    <button
-      class="relative flex flex-1 flex-col items-center gap-0.5 py-2 text-xs text-gray-400 dark:text-gray-500"
-      @click="toggleNotifications"
-    >
-      <span class="relative">
-        <FeatherIcon name="bell" class="h-5 w-5" />
-        <span
-          v-if="unreadCount > 0"
-          class="absolute -right-1.5 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-2xs font-medium text-white"
-        >
-          {{ unreadCount > 9 ? '9+' : unreadCount }}
-        </span>
-      </span>
-      Alerts
-    </button>
-
-    <router-link
       :to="{ name: 'Home' }"
       class="flex flex-1 flex-col items-center gap-0.5 py-2 text-xs"
       :class="route.name === 'Home' ? 'nav-active' : 'text-gray-400 dark:text-gray-500'"
@@ -47,13 +22,31 @@
       Assistant
     </button>
 
-    <button
-      class="flex flex-1 flex-col items-center gap-0.5 py-2 text-xs text-gray-400 dark:text-gray-500"
-      @click="showMenu = true"
+    <router-link
+      :to="{ name: 'Worklist' }"
+      class="flex flex-1 flex-col items-center gap-0.5 py-2 text-xs"
+      :class="route.name === 'Worklist' ? 'nav-active' : 'text-gray-400 dark:text-gray-500'"
     >
-      <FeatherIcon name="menu" class="h-5 w-5" />
-      Menu
-    </button>
+      <FeatherIcon name="check-square" class="h-5 w-5" />
+      Worklist
+    </router-link>
+
+    <!-- Profile: the same hover card as the desktop sidebar, with Settings and
+    Log out. Hover opens it; a tap opens it too (and a tap elsewhere closes it). -->
+    <UserHoverCard placement="top" with-actions class="flex-1">
+      <template #default="{ open, isOpen }">
+        <button
+          class="flex w-full flex-col items-center gap-0.5 py-2 text-xs text-gray-400 dark:text-gray-500"
+          @click="!isOpen && open()"
+        >
+          <Avatar :image="session.user_image" :label="session.full_name || session.user" size="sm" shape="circle" />
+          Profile
+        </button>
+      </template>
+    </UserHoverCard>
+
+    <!-- No Menu button here any more: the menu icon in the top header (before the
+    logo) opens the same drawer. -->
   </nav>
 
   <Transition name="menu-overlay">
@@ -66,6 +59,7 @@
         <div
           v-if="showMenu"
           class="h-full w-72 max-w-[80vw] overflow-y-auto pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
+          @click="closeOnSelect"
         >
           <AppSidebar disable-collapse embedded />
         </div>
@@ -75,17 +69,32 @@
 </template>
 
 <script setup>
+import { showMobileMenu } from '@/data/mobileMenu'
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { FeatherIcon } from 'frappe-ui'
+import { Avatar, FeatherIcon } from 'frappe-ui'
 import AppSidebar from '@/components/AppSidebar.vue'
 import SparklesIcon from '@/components/SparklesIcon.vue'
-import { unreadCount, toggleNotifications } from '@/data/notifications'
+import UserHoverCard from '@/components/UserHoverCard.vue'
 import { showSettingsDialog } from '@/data/settingsDialog'
+import { session } from '@/data/session'
 import { assistantState, assistantConfigResource, toggleAssistant } from '@/data/aiAssistant'
 
 const route = useRoute()
-const showMenu = ref(false)
+// Shared with the header's menu button (see data/mobileMenu.js).
+const showMenu = showMobileMenu
+
+// Picking anything in the drawer closes it, whatever it does - including a link
+// to the page you're already on (which changes no route, so the route watch
+// below would never fire). Two things inside the drawer are NOT a selection and
+// must leave it open: a group heading (it only folds / unfolds its children,
+// marked data-keep-drawer in AppSidebar) and the header's account menu button.
+function closeOnSelect(event) {
+  const control = event.target instanceof Element ? event.target.closest('a, button') : null
+  if (!control) return
+  if (control.closest('[data-keep-drawer]') || control.matches('.app-sidebar > div > button.h-12')) return
+  showMenu.value = false
+}
 
 // AppSidebar's own items navigate via router.replace - close the drawer
 // whenever that happens, the same way tapping a link in a mobile drawer

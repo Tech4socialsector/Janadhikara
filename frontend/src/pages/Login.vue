@@ -66,12 +66,12 @@
                 />
               </template>
             </FormControl>
-            <Button variant="ghost" size="sm" class="mt-1" type="button" @click="openForgotPassword">
+            <Button variant="ghost" size="sm" class="mt-1 !px-0" type="button" @click="openForgotPassword">
               Forgot password?
             </Button>
           </div>
           <ErrorMessage :message="loginResource.error" />
-          <Button variant="solid" :loading="loginResource.loading" type="submit" size="lg">
+          <Button icon-left="log-in" variant="solid" :loading="loginResource.loading" type="submit" size="lg">
             Log in
           </Button>
         </form>
@@ -126,7 +126,7 @@
         </p>
       </template>
       <template #actions>
-        <Button variant="solid" :loading="resetLoading" class="w-full" @click="submitForgotPassword">
+        <Button icon-left="send" variant="solid" :loading="resetLoading" class="w-full" @click="submitForgotPassword">
           Send reset link
         </Button>
       </template>

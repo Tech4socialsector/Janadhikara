@@ -61,10 +61,10 @@
     </div>
 
     <div class="mt-4 flex justify-end gap-2">
-      <Button :disabled="!rows.hasPreviousPage" @click="rows.previous()">
+      <Button icon-left="chevron-left" :disabled="!rows.hasPreviousPage" @click="rows.previous()">
         Previous
       </Button>
-      <Button :disabled="!rows.hasNextPage" @click="rows.next()">
+      <Button icon-right="chevron-right" :disabled="!rows.hasNextPage" @click="rows.next()">
         Next
       </Button>
     </div>

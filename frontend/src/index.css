@@ -187,3 +187,28 @@ light gray header band over plain rows, no outer frame and no column rules. */
 .quick-filters::-webkit-scrollbar {
   display: none;
 }
+
+/* Native-app feel (matters most when installed as a PWA, but harmless in a tab):
+- no pull-to-refresh / rubber-band bounce at the edge of the page
+- no grey flash when tapping, no long-press callout on the app's own controls
+- no double-tap zoom delay on buttons and links
+- the page can't be selected by accident while swiping; real content - fields
+  and text inside records - stays selectable */
+html,
+body {
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+button,
+nav,
+[role='button'],
+.app-sidebar {
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+input,
+textarea,
+[contenteditable='true'] {
+  user-select: text;
+}

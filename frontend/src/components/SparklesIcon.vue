@@ -1,16 +1,19 @@
 <template>
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  >
-    <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" />
-    <path d="M20 2v4" />
-    <path d="M22 4h-4" />
-    <circle cx="4" cy="20" r="2" />
+  <!-- The assistant's mark: a bright main spark with two small ones, filled with
+  the app's indigo-to-pink glow (so it keeps its colour on any background). -->
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+    <defs>
+      <linearGradient id="janadhikara-ai-glow" x1="3" y1="21" x2="21" y2="3" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#6366f1" />
+        <stop offset="0.55" stop-color="#a855f7" />
+        <stop offset="1" stop-color="#ec4899" />
+      </linearGradient>
+    </defs>
+    <path
+      d="M10 3c.5 4.6 2.4 6.5 7 7-4.6.5-6.5 2.4-7 7-.5-4.6-2.4-6.5-7-7 4.6-.5 6.5-2.4 7-7z"
+      fill="url(#janadhikara-ai-glow)"
+    />
+    <path d="M18.5 13.5c.25 2.2 1.05 3 3.25 3.25-2.2.25-3 1.05-3.25 3.25-.25-2.2-1.05-3-3.25-3.25 2.2-.25 3-1.05 3.25-3.25z" fill="url(#janadhikara-ai-glow)" />
+    <path d="M19 1.5c.15 1.3.6 1.75 1.9 1.9-1.3.15-1.75.6-1.9 1.9-.15-1.3-.6-1.75-1.9-1.9 1.3-.15 1.75-.6 1.9-1.9z" fill="url(#janadhikara-ai-glow)" />
   </svg>
 </template>

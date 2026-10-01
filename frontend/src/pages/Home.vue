@@ -73,74 +73,44 @@
       enable modules in App Module Setting.
     </div>
 
-    <!-- Desktop: a plain wrapping grid, unchanged. Mobile: a single row
-    instead of wrapping - only as many tiles as actually fit the screen
-    width render at once (measured live via useElementSize, not a fixed
-    guess), and anything past that stays hidden behind the arrow buttons
-    rather than wrapping onto a second row or growing the page taller. -->
-    <div v-else-if="!isMobile" class="grid grid-cols-3 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(7rem,max-content))] sm:gap-4">
-      <button
-        v-for="mod in modulesResource.data"
-        :key="mod.label"
-        class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
-        :class="{ 'bg-gray-100 dark:bg-gray-800': activeModule?.label === mod.label }"
-        @click="toggleModule(mod)"
-      >
-        <span class="module-tile-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-gray-300 group-active:translate-y-0 group-active:scale-95 group-active:shadow-sm dark:bg-gray-800 dark:ring-gray-700 dark:group-hover:ring-gray-600 sm:h-[4.5rem] sm:w-[4.5rem]">
-          <LucideIcon :name="mod.icon" class="h-7 w-7 text-gray-600 transition-colors duration-150 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100 sm:h-8 sm:w-8" />
-        </span>
-        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">
-          {{ mod.label }}
-        </span>
-      </button>
+    <!-- Every module as a tile, on every screen size: a wrapping grid, so on a
+    phone they're all visible at once (no paging arrows). Tapping one makes it the
+    open module - on a phone that opens the menu drawer straight onto that module's
+    configured sidebar items, which is why the old inline items list is gone. -->
+    <div v-else class="grid grid-cols-3 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(7rem,max-content))] sm:gap-4">
+      <!-- Hover a tile (desktop) for a card listing what's inside the module. -->
+      <Popover v-for="mod in modulesResource.data" :key="mod.label" trigger="hover" :hover-delay="0.3" placement="bottom-start">
+        <template #target>
+          <button
+            class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
+            :class="{ 'bg-gray-100 dark:bg-gray-800': activeModule?.label === mod.label }"
+            @click="toggleModule(mod)"
+          >
+            <span class="module-tile-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-gray-300 group-active:translate-y-0 group-active:scale-95 group-active:shadow-sm dark:bg-gray-800 dark:ring-gray-700 dark:group-hover:ring-gray-600 sm:h-[4.5rem] sm:w-[4.5rem]">
+              <LucideIcon :name="mod.icon" class="h-7 w-7 text-gray-600 transition-colors duration-150 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100 sm:h-8 sm:w-8" />
+            </span>
+            <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">
+              {{ mod.label }}
+            </span>
+          </button>
+
+        </template>
+        <template #body-main>
+          <div class="w-56 max-w-[80vw] p-3">
+            <div class="mb-1.5 text-sm font-semibold text-ink-gray-9">{{ mod.label }}</div>
+            <ul v-if="mod.doctypes?.length" class="space-y-1">
+              <li v-for="d in mod.doctypes.slice(0, 8)" :key="d.route" class="flex items-center gap-2 text-sm text-ink-gray-6">
+                <LucideIcon :name="d.icon || mod.icon" class="h-3.5 w-3.5 flex-shrink-0" />
+                <span class="truncate">{{ d.label || d.doctype_name }}</span>
+              </li>
+              <li v-if="mod.doctypes.length > 8" class="text-xs text-ink-gray-5">+ {{ mod.doctypes.length - 8 }} more</li>
+            </ul>
+            <div v-else class="text-sm text-ink-gray-5">Nothing here yet.</div>
+          </div>
+        </template>
+      </Popover>
     </div>
 
-    <div v-else ref="sliderContainerRef" class="flex items-center gap-2">
-      <Button variant="ghost" size="sm" icon="chevron-left" v-if="modulePageCount > 1" :disabled="modulePage === 0" @click="modulePage--" />
-
-      <div class="flex min-w-0 flex-1 justify-center gap-3">
-        <button
-          v-for="mod in pagedModules"
-          :key="mod.label"
-          class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
-          :class="{ 'bg-gray-100 dark:bg-gray-800': activeModule?.label === mod.label }"
-          @click="toggleModule(mod)"
-        >
-          <span class="module-tile-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-active:scale-95 group-active:shadow-sm dark:bg-gray-800 dark:ring-gray-700">
-            <LucideIcon :name="mod.icon" class="h-7 w-7 text-gray-600 dark:text-gray-300" />
-          </span>
-          <span class="line-clamp-2 w-16 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100">
-            {{ mod.label }}
-          </span>
-        </button>
-      </div>
-
-      <Button variant="ghost" size="sm" icon="chevron-right" v-if="modulePageCount > 1" :disabled="modulePage === modulePageCount - 1" @click="modulePage++" />
-    </div>
-
-    <!-- Desktop already surfaces the active module's doctypes in the
-    sidebar; on mobile there's no sidebar, so show them right here, inline,
-    as soon as a module tile is tapped. -->
-    <div
-      v-if="activeModule"
-      class="mt-4 rounded-xl border bg-white dark:border-gray-800 dark:bg-gray-900 sm:hidden"
-    >
-      <div class="flex items-center justify-between border-b px-3 py-2 dark:border-gray-800">
-        <span class="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
-          {{ activeModule.label }}
-        </span>
-        <Button variant="ghost" size="sm" icon="x" @click="clearActiveModule" />
-      </div>
-      <router-link
-        v-for="item in activeModule.doctypes || []"
-        :key="item.route"
-        :to="{ name: 'DoctypeList', params: { doctypeRoute: item.route } }"
-        class="flex items-center gap-3 border-b px-3 py-2.5 text-sm text-gray-700 last:border-0 hover:bg-gray-50 dark:border-gray-800 dark:text-gray-300 dark:hover:bg-gray-800"
-      >
-        <LucideIcon :name="item.icon || activeModule.icon" class="h-4 w-4 flex-shrink-0 text-gray-400" />
-        {{ item.label || item.doctype_name }}
-      </router-link>
-    </div>
   </AppLayout>
 </template>
 
@@ -155,8 +125,8 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { breakpointsTailwind, useBreakpoints, useElementSize } from '@vueuse/core'
-import { FeatherIcon, ErrorMessage, Button } from 'frappe-ui'
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import { FeatherIcon, ErrorMessage, Button, Popover } from 'frappe-ui'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import Skeleton from '@/components/Skeleton.vue'
@@ -164,6 +134,7 @@ import LucideIcon from '@/components/LucideIcon.vue'
 import { modulesResource } from '@/data/modules'
 import { announcementsResource, dismissAnnouncement } from '@/data/announcements'
 import { activeModule, setActiveModule, clearActiveModule } from '@/data/activeModule'
+import { openMobileMenu } from '@/data/mobileMenu'
 import { setPageTitle } from '@/data/pageTitle'
 import { session } from '@/data/session'
 
@@ -207,42 +178,6 @@ const current = computed(() => announcements.value[Math.min(index.value, announc
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('sm')
 
-// Each tile is w-16 (4rem/64px) with gap-3 (0.75rem/12px) between them -
-// how many actually fit in one row depends on the real viewport width
-// (a small phone fits 3, a larger one 4+), so this is measured live via
-// useElementSize rather than a fixed guess. The arrow buttons (h-8/32px
-// + their own gap-2/8px on each side, only rendered once page 2+ exists)
-// eat into that same row, so a first pass without them can undercount by
-// one tile right at the boundary where a 2nd page would just barely not
-// be needed - not worth a second measurement pass to correct for.
-const TILE_WIDTH = 64
-const TILE_GAP = 12
-const ARROW_RESERVED_WIDTH = 2 * (32 + 8)
-const sliderContainerRef = ref(null)
-const { width: sliderWidth } = useElementSize(sliderContainerRef)
-
-const modulesPerPage = computed(() => {
-  const available = sliderWidth.value - ARROW_RESERVED_WIDTH
-  if (available <= 0) return 1
-  return Math.max(1, Math.floor((available + TILE_GAP) / (TILE_WIDTH + TILE_GAP)))
-})
-
-const modulePage = ref(0)
-const modulePageCount = computed(() =>
-  Math.max(1, Math.ceil((modulesResource.data?.length || 0) / modulesPerPage.value)),
-)
-const pagedModules = computed(() => {
-  const start = modulePage.value * modulesPerPage.value
-  return (modulesResource.data || []).slice(start, start + modulesPerPage.value)
-})
-
-// Clamp back onto a real page if the module list shrinks (role change,
-// etc.) or a resize changes how many tiles fit per page, and the current
-// page would otherwise point past the end.
-watch(modulePageCount, (count) => {
-  if (modulePage.value > count - 1) modulePage.value = count - 1
-})
-
 const greeting = computed(() => {
   const hour = new Date().getHours()
   const timeGreeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
@@ -251,6 +186,13 @@ const greeting = computed(() => {
 })
 
 function toggleModule(mod) {
+  if (isMobile.value) {
+    // The drawer is the way to browse a module on a phone: pick the module and
+    // open the menu on its sidebar items (tapping the open one just reopens it).
+    setActiveModule(mod)
+    openMobileMenu()
+    return
+  }
   if (activeModule.value?.label === mod.label) {
     clearActiveModule()
   } else {

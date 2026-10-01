@@ -59,7 +59,7 @@
 
           <div class="flex flex-shrink-0 justify-end gap-2 border-t p-4 dark:border-gray-800">
             <Button @click="showCreateDialog = false">Cancel</Button>
-            <Button variant="solid" :loading="creating" @click="submitNewRecord">Create</Button>
+            <Button icon-left="plus" variant="solid" :loading="creating" @click="submitNewRecord">Create</Button>
           </div>
         </div>
       </template>

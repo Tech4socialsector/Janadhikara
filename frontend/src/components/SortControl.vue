@@ -4,7 +4,7 @@
   ascending / descending toggle. -->
   <Popover v-model:show="isOpen" placement="bottom-end" popover-class="doctype-list-popover" :hide-on-blur="false">
     <template #target="{ togglePopover }">
-      <Button variant="outline" icon-left="chevrons-up-down" data-toolbar-popover-trigger @click="togglePopover">
+      <Button variant="outline" icon-left="lucide-arrow-up-down" data-toolbar-popover-trigger @click="togglePopover">
         {{ currentLabel }}
         <template #suffix>
           <FeatherIcon :name="isOpen ? 'chevron-up' : 'chevron-down'" class="h-4 w-4 text-ink-gray-5" />

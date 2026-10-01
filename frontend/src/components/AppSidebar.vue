@@ -1,25 +1,59 @@
 <template>
-  <div ref="sidebarRef" class="app-sidebar flex h-full flex-shrink-0">
+  <div ref="sidebarRef" class="app-sidebar flex h-full flex-shrink-0" @click.capture="logoGoesHome">
     <Sidebar
       v-model:collapsed="collapsed"
       :header="header"
       :sections="sections"
       :disableCollapse="disableCollapse"
     >
-      <template #sidebar-item="{ item }">
+      <template #sidebar-item="{ item, isCollapsed: sidebarCollapsed }">
         <hr v-if="item.dividerBefore" class="my-2 border-gray-200 dark:border-gray-800" />
-        <SidebarItem
-          :label="item.label"
-          :accessKey="item.accessKey"
-          :icon="item.icon"
-          :suffix="item.suffix"
-          :to="item.to"
-          :isActive="item.isActive"
-          :onClick="item.onClick"
-        />
+        <!-- A module's sidebar can hold Section Break headings (optionally
+        collapsible), Spacers and indented sub-items - see App Module Setting. -->
+        <div v-if="item.spacer" class="h-1" />
+        <!-- Group heading: reads like frappe-ui's own section label - muted,
+        left-aligned, with the fold chevron after the text. A heading that
+        can't fold is just a label. -->
+        <Button
+          v-else-if="item.groupHeader && item.collapsible"
+          v-show="!sidebarCollapsed"
+          variant="ghost"
+          size="sm"
+          class="!w-full !justify-start !px-2 text-ink-gray-5"
+          data-keep-drawer
+          :icon-right="item.closed ? 'chevron-right' : 'chevron-down'"
+          @click="toggleGroup(item.groupKey)"
+        >
+          <template #prefix>
+            <component :is="item.icon" class="h-4 w-4 flex-shrink-0" />
+          </template>
+          {{ item.title }}
+        </Button>
+        <div
+          v-else-if="item.groupHeader"
+          v-show="!sidebarCollapsed"
+          class="flex items-center gap-2 px-2 py-1 text-sm text-ink-gray-5"
+        >
+          <component :is="item.icon" class="h-4 w-4 flex-shrink-0" />
+          {{ item.title }}
+        </div>
+        <div v-else :class="item.indent && !sidebarCollapsed ? 'ml-4 border-l-2 border-outline-gray-2 pl-1' : ''">
+          <SidebarItem
+            :label="item.label"
+            :accessKey="item.accessKey"
+            :icon="item.icon"
+            :suffix="item.suffix"
+            :to="item.to"
+            :isActive="item.isActive"
+            :onClick="item.onClick"
+          />
+        </div>
       </template>
       <template #footer-items="{ isCollapsed }">
-        <Tooltip :text="`Ask ${assistantBotName}`" :disabled="!isCollapsed">
+        <!-- The mobile drawer (embedded) leaves out the assistant card and the
+        profile card: on a phone the assistant is in the bottom bar and the
+        profile lives in the header (MobileShell). -->
+        <Tooltip v-if="!embedded" :text="`Ask ${assistantBotName}`" :disabled="!isCollapsed">
           <button
             v-if="assistantConfigResource.data?.enabled"
             class="assistant-card relative flex w-full items-center gap-2 overflow-hidden rounded-lg border border-outline-gray-1 bg-surface-gray-1 px-2 py-1.5 text-left hover:bg-surface-gray-2"
@@ -39,7 +73,7 @@
             </span>
           </button>
         </Tooltip>
-        <UserHoverCard>
+        <UserHoverCard v-if="!embedded">
           <div class="flex items-center gap-2 rounded px-2 py-1.5" :class="{ 'justify-center': isCollapsed }">
             <Avatar :image="session.user_image" :label="session.full_name || session.user" size="sm" shape="square" />
             <span v-if="!isCollapsed" class="min-w-0 flex-1">
@@ -233,9 +267,9 @@ something that's just inviting a tap. Ring sized to this badge's own
 </style>
 
 <script setup>
-import { computed, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { Sidebar, SidebarItem, Avatar, Tooltip } from 'frappe-ui'
+import { computed, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { Sidebar, SidebarItem, Avatar, Tooltip, Button } from 'frappe-ui'
 import moduleIcon from '@/components/moduleIcon'
 import NotificationPanel from '@/components/NotificationPanel.vue'
 import UserHoverCard from '@/components/UserHoverCard.vue'
@@ -263,12 +297,30 @@ const props = defineProps({
 })
 
 const route = useRoute()
+const router = useRouter()
 const appName = computed(() => brandingResource.data?.app_name || 'Janadhikara')
 const assistantBotName = computed(() => assistantConfigResource.data?.bot_name || 'Assistant')
 const collapsed = ref(false)
+
+// Clicking the app icon (in the header) goes Home instead of opening the account
+// menu; the title / arrow beside it still open the menu.
+function logoGoesHome(event) {
+  if (!(event.target instanceof Element)) return
+  if (!event.target.closest('.app-sidebar > div > button.h-12 img')) return
+  event.preventDefault()
+  event.stopPropagation()
+  router.push({ name: 'Home' })
+}
 const sidebarRef = ref(null)
 
 notificationsResource.fetch()
+
+// Installed as an app (standalone window)? Then "Help" (external docs) and "Go to
+// Desk" (a different site area) would drag the window out of the app, and the
+// browser's address bar comes back with them - so they're left out there.
+const isStandalone =
+  window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
+const LEAVES_THE_APP = new Set(['Help', 'Go to Desk'])
 
 const header = computed(() => ({
   title: appName.value,
@@ -304,8 +356,66 @@ const header = computed(() => ({
       icon: 'log-out',
       onClick: () => logoutResource.submit(),
     },
-  ],
+  ].filter((item) => !(isStandalone && LEAVES_THE_APP.has(item.label))),
 }))
+
+// Which Section Break groups of the open module are folded up (by key). Groups
+// start open; the folds reset whenever another module is opened.
+const collapsedGroups = ref(new Set())
+watch(activeModule, () => {
+  collapsedGroups.value = new Set()
+})
+function toggleGroup(key) {
+  const next = new Set(collapsedGroups.value)
+  if (next.has(key)) next.delete(key)
+  else next.add(key)
+  collapsedGroups.value = next
+}
+
+// A module's sidebar as rows: Links, Section Break headings, Spacers, with a
+// Link able to be a child (indented sub-item) of the item above it. A group is
+// its heading plus the child items under it - the first ordinary (non-child)
+// Link or the next heading ends it - so folding a group hides only its own
+// children. Older module data without `items` falls back to the plain list of
+// doctypes. `keyPrefix` keeps each group's fold key unique.
+function buildModuleRows(mod, keyPrefix) {
+  const items = mod.items || (mod.doctypes || []).map((d) => ({ type: 'Link', ...d }))
+  const rows = []
+  let folded = false
+  items.forEach((it, index) => {
+    if (it.type === 'Section Break') {
+      const key = `${keyPrefix}${index}`
+      folded = !!it.collapsible && collapsedGroups.value.has(key)
+      rows.push({
+        // unique per row - the sidebar keys its items by `label`
+        label: `__group-${key}`,
+        groupHeader: true,
+        groupKey: key,
+        title: it.label,
+        // The heading's own icon (a folder when none is set), like every item.
+        icon: moduleIcon(it.icon || 'folder'),
+        collapsible: !!it.collapsible,
+        closed: folded,
+      })
+    } else if (it.type === 'Spacer') {
+      // Just a gap - it doesn't end a group (a spacer between a heading and its
+      // children is common), and it folds away along with the group it's in.
+      // No gap straight after a heading - the heading and its children read as one block.
+      if (!folded && !rows[rows.length - 1]?.groupHeader) rows.push({ label: `__spacer-${keyPrefix}${index}`, spacer: true })
+    } else {
+      if (!it.child) folded = false
+      if (folded) return
+      rows.push({
+        label: it.label || it.doctype_name,
+        icon: moduleIcon(it.icon || mod.icon),
+        to: { name: 'DoctypeList', params: { doctypeRoute: it.route } },
+        isActive: route.params.doctypeRoute === it.route,
+        indent: !!it.child,
+      })
+    }
+  })
+  return rows
+}
 
 const sections = computed(() => {
   const sectionList = [
@@ -335,17 +445,12 @@ const sections = computed(() => {
     },
   ]
 
+
+  // Only the open module's items - its Links, Section Break groups (each with
+  // its indented child items) and Spacers - on desktop and on a phone alike.
   if (activeModule.value) {
     const mod = activeModule.value
-    sectionList.push({
-      label: mod.label,
-      items: (mod.doctypes || []).map((item) => ({
-        label: item.label || item.doctype_name,
-        icon: moduleIcon(item.icon || mod.icon),
-        to: { name: 'DoctypeList', params: { doctypeRoute: item.route } },
-        isActive: route.params.doctypeRoute === item.route,
-      })),
-    })
+    sectionList.push({ label: mod.label, items: buildModuleRows(mod, 'g') })
   }
 
   return sectionList

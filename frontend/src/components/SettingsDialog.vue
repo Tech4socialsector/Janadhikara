@@ -2,36 +2,48 @@
   <Dialog v-model="show" :options="{ size: '5xl', title: 'settings-dialog' }">
     <template #body>
       <div class="settings-dialog-panel flex flex-col">
-        <div class="flex h-12 flex-shrink-0 items-center justify-between border-b px-4 dark:border-gray-800">
-          <h1 class="text-base font-semibold text-gray-900 dark:text-gray-100">Settings</h1>
+        <div class="flex h-12 flex-shrink-0 items-center gap-1 border-b px-3 dark:border-gray-800 sm:px-4">
+          <!-- Phone: inside a section the header gets a back arrow to the list. -->
+          <Button
+            v-if="mobileScreen === 'panel'"
+            class="sm:hidden"
+            variant="ghost"
+            size="sm"
+            icon="arrow-left"
+            @click="mobileScreen = 'list'"
+          />
+          <h1 class="min-w-0 flex-1 truncate text-base font-semibold text-gray-900 dark:text-gray-100">
+            <span :class="mobileScreen === 'panel' ? 'hidden sm:inline' : ''">Settings</span>
+            <span v-if="mobileScreen === 'panel'" class="sm:hidden">{{ activeLabel }}</span>
+          </h1>
           <Button variant="ghost" size="sm" icon="x" @click="show = false" />
         </div>
 
-        <!-- Below sm: the side-by-side nav+content layout squeezes the
-        content column down to almost nothing on a phone-width screen
-        (192px of fixed nav width alone leaves barely 100-150px left,
-        truncating every field/button in the panels below to a few
-        characters). A horizontal, scrollable tab strip above the content
-        instead of a left rail solves that the same way MobileNav's own
-        drawer avoids fixed side columns. -->
-        <nav
-          class="flex flex-shrink-0 gap-1 overflow-x-auto border-b px-3 py-2 dark:border-gray-800 sm:hidden"
-        >
-          <button
-            v-for="tab in flatTabs"
-            :key="tab.key"
-            class="flex flex-shrink-0 items-center gap-1.5 whitespace-nowrap rounded px-2.5 py-1.5 text-sm"
-            :class="activeTab === tab.key
-              ? 'bg-gray-100 font-medium text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-              : 'text-gray-600 dark:text-gray-400'"
-            @click="activeTab = tab.key"
-          >
-            <component :is="tab.icon" class="h-4 w-4 flex-shrink-0" />
-            {{ tab.label }}
-          </button>
-        </nav>
+        <!-- Phone, first screen: a Settings-app style list - grouped rows with an
+        icon tile, the label and a chevron. Tapping one opens that section. -->
+        <div v-if="mobileScreen === 'list'" class="min-h-0 flex-1 overflow-y-auto bg-surface-gray-1 px-3 py-3 sm:hidden">
+          <div v-for="group in groupedTabs" :key="group.label" class="mb-4">
+            <div class="mb-1.5 px-2 text-xs font-medium uppercase tracking-wide text-ink-gray-5">
+              {{ group.label }}
+            </div>
+            <div class="overflow-hidden rounded-xl border border-outline-gray-1 bg-surface-white">
+              <button
+                v-for="tab in group.tabs"
+                :key="tab.key"
+                class="flex w-full items-center gap-3 border-b border-outline-gray-1 px-3 py-3 text-left last:border-b-0 active:bg-surface-gray-2"
+                @click="openTab(tab.key)"
+              >
+                <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-surface-gray-2 text-ink-gray-7">
+                  <component :is="tab.icon" class="h-4 w-4" />
+                </span>
+                <span class="min-w-0 flex-1 truncate text-base text-ink-gray-8">{{ tab.label }}</span>
+                <FeatherIcon name="chevron-right" class="h-4 w-4 flex-shrink-0 text-ink-gray-4" />
+              </button>
+            </div>
+          </div>
+        </div>
 
-        <div class="flex min-h-0 flex-1">
+        <div class="min-h-0 flex-1 sm:flex" :class="mobileScreen === 'list' ? 'hidden' : 'flex'">
           <nav class="hidden w-48 flex-shrink-0 overflow-y-auto border-r px-3 py-4 dark:border-gray-800 sm:block sm:w-56">
             <div v-for="group in groupedTabs" :key="group.label" class="mb-4">
               <div class="mb-1 px-2 text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
@@ -170,12 +182,23 @@ const activeEntry = computed(() => settingsEntries.value.find((e) => e.key === a
 const isSystemAdmin = computed(() => !!userContextResource.data?.is_system_admin)
 
 const activeTab = ref('profile')
+// Phone only: 'list' (the sections) or 'panel' (one section). Larger screens
+// always show the side nav and the panel together.
+const mobileScreen = ref('list')
+const activeLabel = computed(() => flatTabs.value.find((t) => t.key === activeTab.value)?.label || 'Settings')
+function openTab(key) {
+  activeTab.value = key
+  mobileScreen.value = 'panel'
+}
 
 // Reset to the first tab each time the panel is reopened, so a privileged
 // user who last viewed an admin-only tab doesn't leave a non-privileged
 // session on a blank pane if their role context changes between opens.
 watch(show, (visible) => {
-  if (visible) activeTab.value = 'profile'
+  if (visible) {
+    activeTab.value = 'profile'
+    mobileScreen.value = 'list'
+  }
 })
 
 const groupedTabs = computed(() => {

@@ -138,12 +138,26 @@ def get_pwa_manifest():
         'name': app_name,
         'short_name': app_name,
         'description': 'Community health worker data capture and follow-up tracking.',
-        'start_url': '/janadhikara/',
+        # Opens straight on Home, in its own window with no browser UI (no URL
+        # bar, tabs or browser menu) - like an app installed from a store.
+        'start_url': '/janadhikara/home',
         'scope': '/janadhikara/',
         'display': 'standalone',
+        'display_override': ['standalone', 'minimal-ui'],
+        # Re-use the open window when launched again instead of stacking tabs.
+        'launch_handler': {'client_mode': ['navigate-existing', 'auto']},
         'background_color': '#ffffff',
-        'theme_color': '#111827',
+        'theme_color': '#ffffff',
+        'lang': 'en',
+        'dir': 'ltr',
+        'categories': ['health', 'productivity'],
+        'prefer_related_applications': False,
         'icons': icons,
+        # Long-press the home-screen icon for quick jumps.
+        'shortcuts': [
+            {'name': 'Home', 'url': '/janadhikara/home', 'icons': [icons[1]]},
+            {'name': 'Worklist', 'url': '/janadhikara/worklist', 'icons': [icons[1]]},
+        ],
     }
 
     frappe.response['type'] = 'download'
@@ -623,21 +637,43 @@ def get_app_modules():
         module_doc = frappe.get_cached_doc('App Module Setting', name)
         if not module_visible_to_user(module_doc, user_roles):
             continue
-        doctypes = [
-            {
-                'doctype_name': item.doctype_name,
-                'label': item.label or item.doctype_name,
-                'icon': item.icon or module_doc.icon or 'file-text',
-                'route': item.route or frappe.scrub(item.doctype_name).replace('_', '-'),
-            }
-            for item in (module_doc.doctypes or [])
-            if item.doctype_name
-        ]
+        # The module's sidebar as an ordered list of Links, Section Breaks
+        # (group headings that fold up when clicked) and
+        # Spacers, where a Link can be a child (indented sub-item) of the Link
+        # above it. `doctypes` is the same list narrowed to just the Links, for
+        # everything that only needs "which doctypes does this module open".
+        items = []
+        for item in module_doc.doctypes or []:
+            kind = item.item_type or 'Link'
+            if kind == 'Link':
+                if not item.doctype_name:
+                    continue
+                items.append({
+                    'type': 'Link',
+                    'doctype_name': item.doctype_name,
+                    'label': item.label or item.doctype_name,
+                    'icon': item.icon or module_doc.icon or 'file-text',
+                    'route': item.route or frappe.scrub(item.doctype_name).replace('_', '-'),
+                    'child': bool(item.child),
+                })
+            elif kind == 'Section Break':
+                items.append({
+                    'type': 'Section Break',
+                    'label': item.label,
+                    'icon': item.icon or None,
+                    # Every group folds up when its heading is clicked, and starts open.
+                    'collapsible': True,
+                    'keep_closed': False,
+                })
+            else:
+                items.append({'type': 'Spacer'})
+        doctypes = [i for i in items if i['type'] == 'Link']
         if not doctypes:
             continue
         modules.append({
             'label': module_doc.label,
             'icon': module_doc.icon or 'file-text',
+            'items': items,
             'doctypes': doctypes,
         })
     return modules

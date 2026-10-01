@@ -101,10 +101,10 @@
       <ErrorMessage class="mt-4" :message="saveError" />
 
       <div class="mt-6 flex justify-between gap-2">
-        <Button variant="outline" @click="router.push({ name: 'EmailAccountList' })">
+        <Button icon-left="arrow-left" variant="outline" @click="router.push({ name: 'EmailAccountList' })">
           Back
         </Button>
-        <Button variant="solid" :loading="saving" type="submit">
+        <Button icon-left="save" variant="solid" :loading="saving" type="submit">
           {{ isNew ? 'Create Account' : 'Update Account' }}
         </Button>
       </div>

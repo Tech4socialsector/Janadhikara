@@ -2,7 +2,19 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- viewport-fit=cover lets the app draw under a phone's notch / home bar (the
+    layout then pads for env(safe-area-inset-*)). The rest tell the browser and
+    iOS to treat the installed app as a standalone app: no browser chrome, a
+    status bar that matches the header (theme-color is kept in sync with the
+    light / dark theme by data/theme.js), and its own name and home-screen icon. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Janadhikara" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
     <link rel="icon" id="app-favicon" href="/favicon.png" />
     <title>Janadhikara</title>
   </head>

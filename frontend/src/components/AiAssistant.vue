@@ -11,7 +11,7 @@
         >
           <div class="flex items-center gap-2">
             <span class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-              <SparklesIcon class="h-4 w-4 text-gray-600 dark:text-gray-300" />
+              <SparklesIcon class="h-4 w-4" />
             </span>
             <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ botName }}</h2>
           </div>
