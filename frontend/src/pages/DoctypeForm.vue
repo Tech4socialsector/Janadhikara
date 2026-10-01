@@ -13,16 +13,17 @@
           field is what the page shows as its heading, but the ID is what
           links, exports and support conversations refer to. -->
           <span class="hidden text-sm text-gray-500 dark:text-gray-400 sm:inline">{{ metaResource.data?.name || doctype }}</span>
-          <button
+          <Button
             v-if="!isNew && name"
-            type="button"
-            class="flex items-center gap-1 rounded-md bg-gray-100 px-2 py-0.5 font-mono text-xs text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-            title="Copy record ID"
+            variant="subtle"
+            size="sm"
+            icon-right="copy"
+            class="font-mono"
+            tooltip="Copy record ID"
             @click="copyRecordId"
           >
             {{ name }}
-            <FeatherIcon name="copy" class="h-3 w-3" />
-          </button>
+          </Button>
           <span
             v-else-if="isNew"
             class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-500 dark:bg-gray-800 dark:text-gray-400"
@@ -106,7 +107,7 @@
           v-show="isTabVisible(tab)"
           :key="idx"
           type="button"
-          class="border-b-2 px-3 py-2 text-sm font-medium"
+          class="border-b-2 px-3 py-2 text-base font-medium"
           :class="idx === activeTabIdx
             ? 'border-gray-900 text-gray-900 dark:border-gray-100 dark:text-gray-100'
             : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'"

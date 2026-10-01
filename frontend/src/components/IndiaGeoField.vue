@@ -16,7 +16,7 @@
       />
     </div>
     <p v-if="error" class="mt-1.5 text-xs text-red-500">{{ error }}</p>
-    <p v-else-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+    <p v-else-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">
       {{ field.description }}
     </p>
   </div>

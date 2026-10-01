@@ -67,6 +67,63 @@ value needs raising too. */
   z-index: 1100 !important;
 }
 
+/* Typography - one font, one scale, following Frappe Helpdesk.
+
+Helpdesk is built from frappe-ui, so the sizes below are the ones frappe-ui's
+own components use (Button, FormControl, ListView, Tabs, Sidebar, Badge,
+Breadcrumbs ...); hand-built UI in this app must match them rather than pick
+its own. Font: Inter (frappe-ui loads InterVar and sets it on <html>); the
+variable below names the same stack for anything that doesn't inherit it (the
+map widget, portalled popovers). Monospace is for record IDs and JSON.
+
+Use the Tailwind classes, never px values:
+  text-lg    16px  page titles - font-medium
+  (Header breadcrumbs are text-base 14px medium and the sidebar is stepped
+   down to 12px / 13px / 11px in AppSidebar.vue - both one step under
+   Helpdesk's own sizes, deliberately, to keep the chrome compact.)
+  text-base  14px  CONTENT: inputs, list rows, card values, tabs, form section
+                   titles (font-medium), buttons
+  text-sm    13px  CHROME: sidebar items and sections, list column headers,
+                   error messages
+  text-xs    12px  field labels, badges and ID chips, secondary meta
+  text-2xs   11px  only tiny count bubbles
+  text-p-*   paragraph variants of the same steps (relaxed 1.5 line height,
+             regular weight) - text-p-xs for the helper/description text under
+             fields, text-p-base for body paragraphs
+Weights: 400 body, 500 (font-medium) titles and labels, 600 only for card
+titles and chips. Anything with no text-* class used to fall back to the
+browser's 16px; body now defaults to the 14px "base" step so unclassed text
+matches the content size. */
+:root {
+  --font-sans: InterVar, Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+}
+html {
+  font-family: var(--font-sans);
+}
+body {
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 400;
+}
+code,
+kbd,
+pre,
+samp,
+.font-mono {
+  font-family: var(--font-mono);
+}
+/* Leaflet sets its own Helvetica/Arial on the map container and its
+controls/tooltips; make the map text Inter at the same small size as the
+rest of the fine print. */
+html .leaflet-container,
+html .leaflet-container .leaflet-control,
+html .leaflet-container .leaflet-popup-content,
+html .leaflet-draw-tooltip {
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+
 /* Thin scrollbars everywhere: the browser default (~15px) is heavy next to
 this app's compact UI, so every scrollable area - the page, dialogs, lists,
 dropdowns - gets a 5px bar. The thumb is a soft gray that darkens on hover,
@@ -107,4 +164,26 @@ scrollbar-width is set, and its own "thin" is ~8px, not 5. */
 .dark *::-webkit-scrollbar-thumb:hover,
 [data-theme='dark'] *::-webkit-scrollbar-thumb:hover {
   background-color: rgb(107 114 128);
+}
+
+/* Theme switch: no transitions for the frame(s) in which the theme changes
+(class added/removed by data/theme.js), so the sidebar, header and content
+all change together instead of the sidebar trailing behind by its 150-300ms
+transition-all. Only transitions - running animations (the assistant card's
+glow, the login logo) are left alone so they don't jump. */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
+}
+
+/* List / table: frappe-ui's own ListView, exactly as Frappe Helpdesk uses it - a
+light gray header band over plain rows, no outer frame and no column rules. */
+/* Quick filters scroll sideways without a visible scrollbar (as in Helpdesk). */
+.quick-filters {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.quick-filters::-webkit-scrollbar {
+  display: none;
 }

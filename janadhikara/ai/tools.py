@@ -1,136 +1,54 @@
 """Tool implementations the AI assistant can call.
 
-Every function here executes as `frappe.session.user` - never
-`ignore_permissions=True`, never a user switch. Frappe's own permission
-system (frappe.has_permission / frappe.get_list's built-in permission
-filtering / doc.insert() / doc.save()) is the enforcement boundary, exactly
-as it is for every other part of this app. A tool never does anything a
-DoctypeList/DoctypeForm click couldn't already do for that same user.
-
-Every tool also validates its `doctype` argument against the app's own
-navigation config (App Module Setting, via janadhikara.api.get_app_modules)
-before touching Frappe at all. This is a belt-and-suspenders layer on top
-of role permissions: it stops the assistant from ever operating on a
-doctype this app hasn't chosen to expose in its UI (e.g. User, Role, Email
-Account), even if the model hallucinates one or the calling user's role
-technically has access to it elsewhere in Frappe.
+Every data tool is a thin wrapper over janadhikara.ai.data_service - the one
+place that decides what the assistant may see or change (default-deny
+AI Data Policy per doctype, the signed-in user's own permissions including
+field-level ones, hidden/read-only field rules, query-shape limits, audit
+log). Nothing here ever uses ignore_permissions or switches user; read that
+module's docstring before adding a tool, and route any new data access
+through it rather than calling frappe directly.
 """
 
 import frappe
 from frappe import _
 
-from janadhikara.api import get_app_modules
-
-
-def _allowed_doctype_names():
-    modules = get_app_modules()
-    names = set()
-    for module in modules:
-        for item in module.get('doctypes', []):
-            names.add(item['doctype_name'])
-    return names
-
-
-def _require_allowed_doctype(doctype):
-    if doctype not in _allowed_doctype_names():
-        frappe.throw(_('{0} is not available to the assistant').format(doctype), frappe.PermissionError)
+from janadhikara.ai import data_service
 
 
 def list_doctypes():
-    """Doctypes (with their app module/route) this user can see in the app's
-    own navigation - the assistant's grounding for "what data exists here"."""
-    modules = get_app_modules()
-    return [
-        {
-            'doctype': item['doctype_name'],
-            'label': item.get('label') or item['doctype_name'],
-            'module': module['label'],
-        }
-        for module in modules
-        for item in module.get('doctypes', [])
-    ]
-
-
-SKIP_FIELDTYPES = {'Section Break', 'Column Break', 'Tab Break', 'HTML', 'Heading', 'Button'}
+    """Doctypes the assistant may use and this user can read - the assistant's
+    grounding for "what data exists here"."""
+    return data_service.list_available_doctypes()
 
 
 def get_doctype_meta(doctype):
-    """Trimmed field list for `doctype` - fieldname/label/fieldtype/required/
-    options only, matching what the Vue form itself renders (see
-    useFormFields in the frontend), so the assistant knows exactly what a
-    human filling out the same form would see."""
-    _require_allowed_doctype(doctype)
-    meta = frappe.get_meta(doctype)
-    fields = []
-    for f in meta.fields:
-        if f.fieldtype in SKIP_FIELDTYPES or f.hidden or f.fieldtype == 'Table':
-            continue
-        fields.append({
-            'fieldname': f.fieldname,
-            'label': f.label,
-            'fieldtype': f.fieldtype,
-            'required': bool(f.reqd),
-            'options': f.options if f.fieldtype in ('Select', 'Link') else None,
-        })
-    return {'doctype': doctype, 'fields': fields}
+    """Readable fields of `doctype` (never hidden ones), each flagged with
+    whether the assistant may set it - so it knows what a form would take."""
+    return data_service.describe_doctype(doctype)
 
 
 def search_records(doctype, filters=None, fields=None, limit=20):
-    """List records the current user can read, permission-filtered by
-    frappe.get_list exactly as the app's own list pages are."""
-    _require_allowed_doctype(doctype)
-    limit = min(int(limit or 20), 50)
-    if not fields:
-        meta = frappe.get_meta(doctype)
-        fields = ['name'] + [f.fieldname for f in meta.fields if f.in_list_view][:6]
-        fields = list(dict.fromkeys(fields))
-    return frappe.get_list(
-        doctype,
-        filters=filters or {},
-        fields=fields,
-        limit_page_length=limit,
-    )
+    """List records the current user can read, with only fields the assistant
+    is allowed to see."""
+    return data_service.search(doctype, filters=filters, fields=fields, limit=limit)
 
 
 def get_record(doctype, name):
-    """A single record's data, only if the current user can read it."""
-    _require_allowed_doctype(doctype)
-    if not frappe.has_permission(doctype, ptype='read', doc=name):
-        frappe.throw(_('You do not have permission to view this record'), frappe.PermissionError)
-    doc = frappe.get_doc(doctype, name)
-    data = doc.as_dict()
-    # Drop framework/internal bookkeeping fields and any Table (child) rows -
-    # keep the payload small and focused on the record's own field values.
-    for key in list(data.keys()):
-        if key.startswith('_') or key in ('doctype', 'owner', 'idx', 'docstatus'):
-            data.pop(key, None)
-        elif isinstance(data.get(key), list):
-            data.pop(key, None)
-    return data
+    """One record (and, where allowed, its child-table rows), minus every
+    field the assistant or this user may not see."""
+    return data_service.read(doctype, name)
 
 
 def create_record(doctype, values):
-    """Create a record as the current user - frappe.new_doc().insert() applies
-    the same create-permission check the Vue "New" form's save button does."""
-    _require_allowed_doctype(doctype)
-    if not frappe.has_permission(doctype, ptype='create'):
-        frappe.throw(_('You do not have permission to create {0}').format(doctype), frappe.PermissionError)
-    doc = frappe.new_doc(doctype)
-    doc.update(values or {})
-    doc.insert()
-    return {'doctype': doctype, 'name': doc.name}
+    """Create a record as the current user, setting only fields the assistant
+    is allowed to write."""
+    return data_service.create(doctype, values)
 
 
 def update_record(doctype, name, values):
-    """Update a record as the current user - doc.save() applies the same
-    write-permission check the Vue form's save button does."""
-    _require_allowed_doctype(doctype)
-    if not frappe.has_permission(doctype, ptype='write', doc=name):
-        frappe.throw(_('You do not have permission to edit this record'), frappe.PermissionError)
-    doc = frappe.get_doc(doctype, name)
-    doc.update(values or {})
-    doc.save()
-    return {'doctype': doctype, 'name': doc.name}
+    """Update a record as the current user, changing only fields the
+    assistant is allowed to write."""
+    return data_service.update(doctype, name, values)
 
 
 def navigate_to(doctype=None, name=None):
@@ -138,7 +56,7 @@ def navigate_to(doctype=None, name=None):
     a router.push. Still permission-checked so the assistant can't direct a
     user toward a form/record they can't actually open."""
     if doctype:
-        _require_allowed_doctype(doctype)
+        data_service.require_access(doctype)
         if name and not frappe.has_permission(doctype, ptype='read', doc=name):
             frappe.throw(_('You do not have permission to open this record'), frappe.PermissionError)
     return {'type': 'navigate', 'doctype': doctype, 'name': name}

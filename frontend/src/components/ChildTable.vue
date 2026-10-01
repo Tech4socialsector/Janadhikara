@@ -2,8 +2,8 @@
   <div>
     <div class="mb-2 flex items-center justify-between gap-3">
       <div class="min-w-0">
-        <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ field.label }}</h3>
-        <p v-if="field.description" class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
+        <h3 class="text-base font-medium text-gray-900 dark:text-gray-100">{{ field.label }}</h3>
+        <p v-if="field.description" class="mt-0.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
       </div>
       <Button variant="ghost" @click="addRow">
         <template #prefix>
@@ -23,15 +23,21 @@
     what's already loaded is the whole job. Always shown (disabled while the
     table is empty) so the option is discoverable - it used to hide itself
     until a table had 2+ rows, which read as "there's no search here". -->
-    <div class="relative mb-2">
-      <FeatherIcon name="search" class="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
-      <input
-        v-model="searchQuery"
-        type="text"
-        :placeholder="rows.length ? 'Search rows' : 'Search rows (add a row first)'"
-        :disabled="!rows.length"
-        class="h-8 w-full rounded-md border border-gray-200 bg-white pl-8 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
-      />
+    <!-- Search rows + the Columns picker on one row (frappe-ui throughout). -->
+    <div class="mb-2 flex items-center gap-2">
+      <div class="min-w-0 flex-1">
+        <TextInput
+          v-model="searchQuery"
+          type="text"
+          :placeholder="rows.length ? 'Search rows' : 'Search rows (add a row first)'"
+          :disabled="!rows.length"
+        >
+          <template #prefix>
+            <FeatherIcon name="search" class="h-4 w-4 text-ink-gray-5" />
+          </template>
+        </TextInput>
+      </div>
+      <ColumnPicker :prefs="columnPrefs" :compact="isMobile" class="flex-shrink-0" />
     </div>
 
     <!-- Same frappe-ui ListView grid DoctypeList.vue's main list uses (see
@@ -82,14 +88,7 @@
             <template #prefix><FeatherIcon name="trash-2" class="h-3.5 w-3.5" /></template>
             Delete
           </Button>
-          <button
-            type="button"
-            class="flex h-7 w-7 items-center justify-center rounded text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-            aria-label="Clear selection"
-            @click="selectedKeys = []"
-          >
-            <FeatherIcon name="x" class="h-4 w-4" />
-          </button>
+          <Button variant="ghost" size="sm" icon="x" aria-label="Clear selection" @click="selectedKeys = []" />
         </div>
       </div>
 
@@ -110,7 +109,7 @@
             />
             <div class="min-w-0 flex-1 cursor-pointer" @click="openRow(rows.indexOf(row))">
               <div class="flex items-center gap-2">
-                <span class="rounded-md bg-gray-100 px-1.5 py-0.5 font-mono text-[11px] text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                <span class="rounded-md bg-gray-100 px-1.5 py-0.5 font-mono text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-300">
                   #{{ rows.indexOf(row) + 1 }}
                 </span>
                 <span class="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">
@@ -120,20 +119,13 @@
               <dl v-if="cardBodyColumns.length" class="mt-2 grid grid-cols-2 gap-x-4 gap-y-2">
                 <div v-for="col in cardBodyColumns" :key="col.fieldname" class="min-w-0">
                   <dt class="truncate text-xs text-gray-400 dark:text-gray-500">{{ col.label }}</dt>
-                  <dd class="truncate text-sm text-gray-800 dark:text-gray-200">{{ formatValue(row[col.fieldname], col) }}</dd>
+                  <dd class="truncate text-base text-gray-800 dark:text-gray-200">{{ formatValue(row[col.fieldname], col) }}</dd>
                 </div>
               </dl>
             </div>
             <Dropdown placement="bottom-end" :options="rowActions(rows.indexOf(row))">
               <template #default="{ open }">
-                <button
-                  type="button"
-                  class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                  :class="{ 'bg-gray-100 dark:bg-gray-800': open }"
-                  aria-label="Row actions"
-                >
-                  <FeatherIcon name="more-vertical" class="h-4 w-4" />
-                </button>
+                <Button variant="ghost" size="sm" icon="more-vertical" aria-label="Row actions" />
               </template>
             </Dropdown>
           </div>
@@ -164,23 +156,11 @@
           <template v-if="column.key === lastColumnKey" #suffix>
             <div class="ml-auto flex items-center gap-1" @click.stop>
               <Tooltip text="Edit row">
-                <button
-                  type="button"
-                  class="flex h-7 w-7 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                  @click="openRow(rows.indexOf(row))"
-                >
-                  <FeatherIcon name="edit-2" class="h-4 w-4" />
-                </button>
+                <Button variant="ghost" size="sm" icon="edit-2" @click="openRow(rows.indexOf(row))" />
               </Tooltip>
               <Dropdown placement="bottom-end" :options="rowActions(rows.indexOf(row))">
                 <template #default="{ open }">
-                  <button
-                    type="button"
-                    class="flex h-7 w-7 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                    :class="{ 'bg-gray-100 dark:bg-gray-800': open }"
-                  >
-                    <FeatherIcon name="more-horizontal" class="h-4 w-4" />
-                  </button>
+                  <Button variant="ghost" size="sm" icon="more-horizontal" />
                 </template>
               </Dropdown>
             </div>
@@ -230,12 +210,7 @@
             <h3 class="truncate text-base font-semibold text-gray-900 dark:text-gray-100">
               {{ field.label }} - Row {{ (editingIdx ?? 0) + 1 }}
             </h3>
-            <button
-              class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-              @click="showRowEditor = false"
-            >
-              <FeatherIcon name="x" class="h-4 w-4" />
-            </button>
+            <Button variant="ghost" size="sm" icon="x" @click="showRowEditor = false" />
           </div>
 
           <div class="min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-6">
@@ -327,6 +302,7 @@ by it. */
 import { computed, ref, watch } from 'vue'
 import {
   Button,
+  TextInput,
   FeatherIcon,
   Dialog,
   Dropdown,
@@ -344,6 +320,8 @@ import { useMeta, useFormFields } from '@/data/useMeta'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { useFieldFunctions } from '@/composables/useFieldFunctions'
 import { useFetchFromFields } from '@/composables/useFetchFromFields'
+import { useColumnPrefs } from '@/composables/useColumnPrefs'
+import ColumnPicker from '@/components/ColumnPicker.vue'
 import { linkTitle, isTitledLink, ensureTitlesForRows } from '@/data/linkTitles'
 import { resolveFrappeDefault } from '@/composables/useCommonFieldDefaults'
 
@@ -364,10 +342,19 @@ const columns = useFormFields(childMetaResource)
 // row at a glance - matching Desk's grid, which shows a handful of
 // in_list_view fields and pushes the rest behind the row-edit dialog. Wide
 // child tables (10+ fields) are unusable as an all-columns-inline table.
-const summaryColumns = computed(() => {
+const defaultSummaryColumns = computed(() => {
   const inListView = columns.value.filter((c) => c.in_list_view)
   return (inListView.length ? inListView : columns.value).slice(0, 3)
 })
+// The Columns picker (ColumnPicker.vue) lets the user show other fields,
+// reorder and rename them; saved per child doctype in this browser. Until it's
+// used, the default above applies.
+const columnPrefs = useColumnPrefs({
+  storageKey: `janadhikara-childtable-columns-${field.options}`,
+  allFields: columns,
+  defaultColumns: defaultSummaryColumns,
+})
+const summaryColumns = columnPrefs.visibleColumns
 
 // Same column shape DoctypeList.vue builds for its own ListView - key/
 // label for ListView itself, docField keeping the original Frappe field

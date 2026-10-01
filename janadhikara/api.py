@@ -56,6 +56,52 @@ def get_user_partner_logo():
     return rows[0][0] if rows else None
 
 
+@frappe.whitelist(allow_guest=True)
+def get_login_options():
+    """What the login page should offer besides email + password: one entry
+    per enabled Social Login Key (Google, GitHub, Office 365, Frappe, custom
+    OAuth2 ...), built the same way Frappe's own login page builds them
+    (frappe/www/login.py), so single sign-on configured in Social Login Key
+    just works here. A successful sign-in lands on Home.
+    `disable_user_pass_login` mirrors System Settings. Shape: { providers:
+    [{ name, label, icon, auth_url }], disable_user_pass_login, app_version }."""
+    from frappe.utils.oauth import get_oauth2_authorize_url, get_oauth_keys
+
+    redirect_to = '/janadhikara/home'
+    providers = []
+    for provider in frappe.get_all(
+        'Social Login Key',
+        filters={'enable_social_login': 1},
+        fields=['name', 'client_id', 'base_url', 'provider_name', 'icon'],
+        order_by='creation asc',
+    ):
+        # Same eligibility test as Frappe's login page: needs a client id, a
+        # base url and a stored client secret, or the sign-in couldn't work.
+        if not (provider.client_id and provider.base_url and get_oauth_keys(provider.name)):
+            continue
+        try:
+            auth_url = get_oauth2_authorize_url(provider.name, redirect_to)
+        except Exception:
+            frappe.log_error(title=f'Login: could not build SSO link for {provider.name}')
+            continue
+        icon = provider.icon if provider.provider_name != 'Custom' else None
+        providers.append({
+            'name': provider.name,
+            'label': provider.provider_name if provider.provider_name != 'Custom' else provider.name,
+            'icon': icon,
+            'auth_url': auth_url,
+        })
+
+    import janadhikara
+
+    return {
+        'providers': providers,
+        'disable_user_pass_login': bool(frappe.utils.cint(frappe.get_system_settings('disable_user_pass_login'))),
+        # Single source of truth: janadhikara/__init__.py (pyproject.toml reads it too).
+        'app_version': janadhikara.__version__,
+    }
+
+
 PWA_ICON_SIZES = [64, 192, 512]
 
 
@@ -156,8 +202,19 @@ def _render_pwa_icon(app_logo, size, is_maskable):
             source = None
 
     if source is None:
-        # No logo configured (or it failed to load) - a plain colored
-        # square beats a broken image in the install prompt/home screen.
+        # No logo configured (or it failed to load): Janadhikara's own icon,
+        # shipped in the app's public folder.
+        try:
+            default_path = frappe.get_app_path('janadhikara', 'public', 'default-logo.png')
+            source = Image.open(default_path)
+            source.load()
+        except Exception:
+            frappe.log_error(title='PWA icon: failed to read the bundled default logo')
+            source = None
+
+    if source is None:
+        # Last resort - a plain colored square beats a broken image in the
+        # install prompt/home screen.
         canvas = Image.new('RGB', (size, size), '#111827')
     else:
         source = source.convert('RGBA')
@@ -175,6 +232,10 @@ def _render_pwa_icon(app_logo, size, is_maskable):
             safe_size = int(size * 0.8)
             source = source.resize((safe_size, safe_size), Image.LANCZOS)
             corner = source.getpixel((0, 0))
+            if isinstance(corner, tuple) and len(corner) == 4 and corner[3] < 255:
+                # Transparent corner (a rounded-square logo): sample the logo's
+                # own background just inside its top edge instead.
+                corner = source.getpixel((safe_size // 2, max(2, safe_size // 40)))
             fill = corner[:3] if isinstance(corner, tuple) else (17, 24, 39)
             canvas = Image.new('RGB', (size, size), fill)
             offset = (size - safe_size) // 2
@@ -245,6 +306,7 @@ SETTINGS_CATALOG = [
     ('App Setting', 'Application', 'sliders', 'General application settings.'),
     ('PNC Visit Interval Master', 'Application', 'calendar', 'Visit intervals used for PNC scheduling.'),
     ('Field Function Mapping', 'Application', 'wand-sparkles', 'Tag built-in functions (like map shape capture) to form fields.'),
+    ('AI Data Policy', 'Application', 'shield-check', 'What the AI assistant may read or change, and which fields it can never see.'),
     ('Announcement', 'Content', 'megaphone', 'Banners shown to users on the Home page.'),
     ('AI Guide Section', 'Content', 'book-open', 'Guide content the AI assistant answers from.'),
     ('App Module Setting', 'Access', 'layout-grid', 'Modules, sidebar items and which roles can see them.'),

@@ -63,6 +63,11 @@ const routes = [
     props: (route) => ({ doctype: route.meta.resolvedDoctype, name: route.params.name }),
     meta: { remountOnParamChange: true },
   },
+  // Anything else (a mistyped or stale URL, an old bookmark) lands on Home.
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/home',
+  },
 ]
 
 let router = createRouter({
@@ -146,7 +151,8 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.name !== 'Login' && !session.user) {
-    next({ name: 'Login', query: { redirect: to.fullPath } })
+    // No ?redirect= - logging in always lands on Home, whatever page was asked for.
+    next({ name: 'Login' })
     return
   }
   if (to.name === 'Login' && session.user) {

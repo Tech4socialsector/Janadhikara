@@ -17,20 +17,10 @@
           </div>
           <div class="flex items-center gap-1">
             <Tooltip v-if="conversation.length" text="Clear conversation">
-              <button
-                class="flex h-8 w-8 items-center justify-center rounded text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-                @click="clearConversation"
-              >
-                <FeatherIcon name="trash-2" class="h-4 w-4" />
-              </button>
+              <Button variant="ghost" size="sm" icon="trash-2" @click="clearConversation" />
             </Tooltip>
             <Tooltip text="Close">
-              <button
-                class="flex h-8 w-8 items-center justify-center rounded text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-                @click="show = false"
-              >
-                <FeatherIcon name="x" class="h-4 w-4" />
-              </button>
+              <Button variant="ghost" size="sm" icon="x" @click="show = false" />
             </Tooltip>
           </div>
         </div>
@@ -81,16 +71,7 @@
               @keydown.enter.exact.prevent="submit"
             />
             <Tooltip v-if="voiceSupported" :text="listening ? 'Stop listening' : 'Speak'">
-              <button
-                type="button"
-                class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg"
-                :class="listening
-                  ? 'bg-red-100 text-red-600 dark:bg-red-950 dark:text-red-400'
-                  : 'text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800'"
-                @click="toggleVoice"
-              >
-                <FeatherIcon :name="listening ? 'mic-off' : 'mic'" class="h-4 w-4" />
-              </button>
+              <Button variant="ghost" size="sm" :icon="listening ? 'mic-off' : 'mic'" @click="toggleVoice" />
             </Tooltip>
             <Button variant="solid" :loading="sending.loading" :disabled="!draft.trim()" @click="submit">
               <template #icon>

@@ -1,6 +1,7 @@
 import { computed, watchEffect } from 'vue'
 import { useCall } from 'frappe-ui'
 import { currentTheme } from '@/data/theme'
+import defaultLogo from '@/assets/default-logo.png'
 
 // The app's configurable name/logo, from App Setting (allow_guest=True
 // so the Login page can also show it before authentication).
@@ -15,10 +16,15 @@ export const brandingResource = useCall({
 // get_app_branding already falls app_logo_dark back to app_logo server-side,
 // so this only needs to choose between the two, not reimplement that
 // fallback too.
-export const appLogo = computed(() =>
-  currentTheme.value === 'dark'
-    ? brandingResource.data?.app_logo_dark || brandingResource.data?.app_logo
-    : brandingResource.data?.app_logo,
+// Janadhikara's own icon, used whenever no logo has been uploaded (and a
+// partner without a logo of its own falls back to App Setting's, then to this).
+export const DEFAULT_LOGO = defaultLogo
+
+export const appLogo = computed(
+  () =>
+    (currentTheme.value === 'dark'
+      ? brandingResource.data?.app_logo_dark || brandingResource.data?.app_logo
+      : brandingResource.data?.app_logo) || DEFAULT_LOGO,
 )
 
 // App Setting's Accent Color (a hex string, e.g. "#111827") drives the

@@ -56,12 +56,7 @@
           placeholder="Value"
           v-model="row.value"
         />
-        <button
-          class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-          @click="removeRow(row.id)"
-        >
-          <FeatherIcon name="x" class="h-4 w-4" />
-        </button>
+        <Button variant="ghost" size="sm" icon="x" @click="removeRow(row.id)" />
       </div>
 
       <div v-if="rows.length === 0" class="px-1 py-2 text-sm text-gray-400 dark:text-gray-500">
@@ -69,13 +64,7 @@
       </div>
     </div>
 
-    <button
-      class="mt-3 flex w-fit items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-      @click="addRow"
-    >
-      <FeatherIcon name="plus" class="h-3.5 w-3.5" />
-      Add a Filter
-    </button>
+    <Button class="mt-3" variant="subtle" icon-left="plus" @click="addRow">Add a Filter</Button>
 
     <div class="mt-4 flex flex-shrink-0 justify-end gap-2 border-t pt-3 dark:border-gray-800">
       <Button v-if="rows.length" @click="clearAll">Clear Filters</Button>

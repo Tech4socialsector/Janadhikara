@@ -2,14 +2,15 @@
   <div class="flex h-screen flex-col bg-white dark:bg-gray-900 lg:flex-row">
     <div class="relative flex flex-shrink-0 flex-col justify-between overflow-hidden bg-gradient-to-br from-gray-900 to-gray-700 p-6 text-white sm:p-8 lg:w-1/2 lg:justify-between lg:p-12">
       <div class="flex items-center gap-3">
-        <span class="flex h-20 w-20 items-center justify-center rounded-2xl bg-white/10 backdrop-blur">
-          <img v-if="loginLogo" :src="loginLogo" class="h-14 w-14 rounded-xl object-cover" />
-          <FeatherIcon v-else name="activity" class="h-11 w-11" />
-        </span>
-        <span class="text-xl font-semibold">{{ brandingResource.data?.app_name || 'Janadhikara' }}</span>
+        <img
+          :src="loginLogo"
+          alt=""
+          class="login-logo h-16 w-16 flex-shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20 lg:h-24 lg:w-24"
+        />
+        <span class="login-rise text-xl font-semibold lg:text-2xl" style="--d: 0.25s">{{ brandingResource.data?.app_name || 'Janadhikara' }}</span>
       </div>
 
-      <div class="mt-6 max-w-sm lg:mt-0">
+      <div class="login-rise mt-6 max-w-sm lg:mt-0" style="--d: 0.4s">
         <h2 class="text-xl font-semibold leading-tight sm:text-2xl lg:text-3xl">
           {{ brandingResource.data?.login_headline || 'Care coordination for every household you serve.' }}
         </h2>
@@ -18,21 +19,24 @@
         </p>
       </div>
 
-      <p class="mt-6 hidden text-xs text-white/40 lg:mt-0 lg:block">
+      <p class="login-rise mt-6 hidden text-xs text-white/40 lg:mt-0 lg:block" style="--d: 0.7s">
         &copy; {{ new Date().getFullYear() }} {{ brandingResource.data?.app_name || 'Janadhikara' }}
+        <template v-if="appVersion"> &middot; Version {{ appVersion }}</template>
       </p>
 
-      <div class="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-white/5 lg:-right-24 lg:-top-24 lg:h-72 lg:w-72" />
-      <div class="pointer-events-none absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-white/5 lg:-bottom-32 lg:-left-16 lg:h-80 lg:w-80" />
+      <div class="login-drift pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-white/5 lg:-right-24 lg:-top-24 lg:h-72 lg:w-72" />
+      <div class="login-drift login-drift-alt pointer-events-none absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-white/5 lg:-bottom-32 lg:-left-16 lg:h-80 lg:w-80" />
     </div>
 
     <div class="flex flex-1 items-center justify-center overflow-y-auto bg-gray-50 px-6 py-8 dark:bg-gray-950 sm:px-8">
       <div class="w-full max-w-sm">
-        <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100 sm:text-2xl">Welcome back</h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Log in to continue to your dashboard.</p>
+        <h1 class="login-rise text-xl font-semibold text-gray-900 dark:text-gray-100 sm:text-2xl" style="--d: 0.15s">Welcome back</h1>
+        <p class="login-rise mt-1 text-sm text-gray-500 dark:text-gray-400" style="--d: 0.25s">Log in to continue to your dashboard.</p>
 
         <form
-          class="mt-6 flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-lg shadow-gray-200/60 dark:border-gray-800 dark:bg-gray-900 dark:shadow-none sm:mt-8 sm:p-7"
+          v-if="showPasswordForm"
+          style="--d: 0.35s"
+          class="login-rise mt-6 flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-6 shadow-lg shadow-gray-200/60 dark:border-gray-800 dark:bg-gray-900 dark:shadow-none sm:mt-8 sm:p-7"
           @submit.prevent="submit"
         >
           <FormControl
@@ -51,29 +55,56 @@
               required
             >
               <template #suffix>
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
                   type="button"
                   tabindex="-1"
-                  class="flex h-full items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  :icon="showPassword ? 'eye-off' : 'eye'"
+                  :tooltip="showPassword ? 'Hide password' : 'Show password'"
                   @click="showPassword = !showPassword"
-                >
-                  <FeatherIcon :name="showPassword ? 'eye-off' : 'eye'" class="h-4 w-4" />
-                </button>
+                />
               </template>
             </FormControl>
-            <button
-              type="button"
-              class="mt-1.5 text-xs text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-400 dark:hover:text-gray-200"
-              @click="openForgotPassword"
-            >
+            <Button variant="ghost" size="sm" class="mt-1" type="button" @click="openForgotPassword">
               Forgot password?
-            </button>
+            </Button>
           </div>
           <ErrorMessage :message="loginResource.error" />
           <Button variant="solid" :loading="loginResource.loading" type="submit" size="lg">
             Log in
           </Button>
         </form>
+
+        <!-- Single sign-on: one frappe-ui button per enabled Social Login Key
+        (Frappe's own provider list - see janadhikara.api.get_login_options).
+        Sign-in always lands on Home. -->
+        <div v-if="providers.length" class="login-rise" style="--d: 0.5s" :class="showPasswordForm ? 'mt-5' : 'mt-6 sm:mt-8'">
+          <div v-if="showPasswordForm" class="mb-4 flex items-center gap-3 text-xs text-gray-400">
+            <span class="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
+            or
+            <span class="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
+          </div>
+          <div class="flex flex-col gap-2.5">
+            <Button
+              v-for="provider in providers"
+              :key="provider.name"
+              variant="outline"
+              size="lg"
+              class="w-full"
+              :loading="redirectingTo === provider.name"
+              @click="signInWith(provider)"
+            >
+              <template v-if="isImageUrl(provider.icon)" #prefix>
+                <img :src="provider.icon" :alt="provider.label" class="h-4 w-4" />
+              </template>
+              Continue with {{ provider.label }}
+            </Button>
+          </div>
+        </div>
+        <p v-if="appVersion" class="login-rise mt-6 text-center text-xs text-gray-400 dark:text-gray-500" style="--d: 0.7s">
+          Version {{ appVersion }}
+        </p>
       </div>
     </div>
 
@@ -105,15 +136,34 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import { FormControl, Button, ErrorMessage, Dialog, FeatherIcon, call } from 'frappe-ui'
+import { FormControl, Button, ErrorMessage, Dialog, FeatherIcon, call, useCall } from 'frappe-ui'
 import { loginResource } from '@/data/session'
-import { brandingResource } from '@/data/branding'
+import { brandingResource, DEFAULT_LOGO } from '@/data/branding'
 
 // This panel's background (bg-gradient-to-br from-gray-900 to-gray-700
 // above) is permanently dark regardless of the app's light/dark theme
 // toggle, so it always wants the dark-mode logo rather than following
 // currentTheme like the sidebar/mobile shell header do.
-const loginLogo = computed(() => brandingResource.data?.app_logo_dark || brandingResource.data?.app_logo)
+// Single sign-on providers enabled in Social Login Key (public - this page is
+// shown before anyone is logged in).
+const loginOptions = useCall({
+  url: '/api/v2/method/janadhikara.api.get_login_options',
+  method: 'GET',
+  cacheKey: 'janadhikara-login-options',
+})
+const providers = computed(() => loginOptions.data?.providers || [])
+const appVersion = computed(() => loginOptions.data?.app_version || '')
+// "Disable user/password login" in System Settings hides the form - but only
+// when there is at least one other way in, so nobody is left with a blank page.
+const showPasswordForm = computed(() => !(loginOptions.data?.disable_user_pass_login && providers.value.length))
+const redirectingTo = ref(null)
+function signInWith(provider) {
+  redirectingTo.value = provider.name
+  window.location.href = provider.auth_url
+}
+const isImageUrl = (icon) => typeof icon === 'string' && /^(https?:)?\/|^data:image/.test(icon)
+
+const loginLogo = computed(() => brandingResource.data?.app_logo_dark || brandingResource.data?.app_logo || DEFAULT_LOGO)
 
 const email = ref('')
 const password = ref('')
@@ -160,3 +210,75 @@ async function submitForgotPassword() {
   }
 }
 </script>
+
+<style scoped>
+/* Entrance: each piece rises and fades in, staggered with --d. */
+.login-rise {
+  opacity: 0;
+  animation: login-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s) forwards;
+}
+@keyframes login-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* The logo pops in, then floats gently. */
+.login-logo {
+  animation:
+    login-pop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+    login-float 6s ease-in-out 0.8s infinite;
+}
+@keyframes login-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.7) rotate(-6deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+@keyframes login-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* The two background discs breathe and drift, slowly enough to stay calm. */
+.login-drift {
+  animation: login-drift 14s ease-in-out infinite alternate;
+}
+.login-drift-alt {
+  animation-duration: 18s;
+  animation-direction: alternate-reverse;
+}
+@keyframes login-drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(18px, 14px) scale(1.12);
+  }
+}
+
+/* No motion for anyone who's asked their system for less of it. */
+@media (prefers-reduced-motion: reduce) {
+  .login-rise,
+  .login-logo,
+  .login-drift {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+</style>

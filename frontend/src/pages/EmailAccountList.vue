@@ -2,7 +2,7 @@
   <AppLayout>
     <PageHeader description="Manage your email accounts and configure incoming and outgoing settings.">
       <template #title>
-        <h1 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Email Accounts</h1>
+        <h1 class="text-lg font-medium text-gray-900 dark:text-gray-100">Email Accounts</h1>
       </template>
       <template #actions>
         <Button variant="solid" @click="router.push({ name: 'EmailAccountNew' })">

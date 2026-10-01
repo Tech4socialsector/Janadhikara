@@ -60,13 +60,13 @@
         <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
           <div>
             <FormControl type="checkbox" label="Enable Incoming" v-model="incomingEnabled" />
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p class="mt-1 text-p-xs text-ink-gray-5">
               If enabled, tickets can be created from the incoming emails on this account.
             </p>
           </div>
           <div>
             <FormControl type="checkbox" label="Enable Outgoing" v-model="outgoingEnabled" />
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p class="mt-1 text-p-xs text-ink-gray-5">
               If enabled, outgoing emails can be sent from this account.
             </p>
           </div>
@@ -80,7 +80,7 @@
               v-model="defaultIncoming"
               :disabled="!incomingEnabled"
             />
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p class="mt-1 text-p-xs text-ink-gray-5">
               If enabled, all replies will come to this account. Only one account can be default incoming.
             </p>
           </div>
@@ -91,7 +91,7 @@
               v-model="defaultOutgoing"
               :disabled="!outgoingEnabled"
             />
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            <p class="mt-1 text-p-xs text-ink-gray-5">
               If enabled, all outgoing emails will be sent from this account. Only one account can be default outgoing.
             </p>
           </div>

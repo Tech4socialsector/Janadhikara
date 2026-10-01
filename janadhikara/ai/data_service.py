@@ -1,0 +1,328 @@
+"""The one door between the AI assistant and the app's data.
+
+Everything the assistant can read or change goes through here, and the rule
+is "the assistant gets no more than the signed-in person could get by hand,
+and often less" - because whatever it reads is also sent to an external
+language model, and the data here (households, workers, locations, contact
+numbers) is confidential.
+
+Layers, all of which must agree:
+  1. Default deny. A doctype is visible to the assistant only if an enabled
+     AI Data Policy exists for it, it is in the app's own navigation (App
+     Module Setting), and it isn't on ALWAYS_BLOCKED (access, configuration
+     and the assistant's own guardrails can never be exposed or edited).
+  2. The user's own permissions: frappe.has_permission / get_list (roles,
+     User Permissions, sharing) - never ignore_permissions, never a user
+     switch - plus field-level (permlevel) read/write permission.
+  3. Field rules from the policy: Hidden fields are invisible (not returned,
+     not filterable, not writable); Read Only fields can be seen, never set.
+     Passwords, attachments and signatures are always hidden.
+  4. Shape limits: only named, readable fields can be selected or filtered
+     on, filter operators are whitelisted, row counts are capped.
+  5. Child tables are only included if the child doctype has its own
+     enabled policy - otherwise its rows are left out entirely.
+
+Every access is written to the `janadhikara.ai` log for audit.
+"""
+
+import json
+
+import frappe
+from frappe import _
+
+POLICY_CACHE_KEY = 'janadhikara_ai_policies'
+MAX_ROWS_HARD = 50
+MAX_CHILD_ROWS = 100
+
+# Never available to the assistant, whatever a policy says (the policy form
+# refuses to enable them too): identity/access, framework configuration, and
+# the assistant's own guardrails and settings.
+ALWAYS_BLOCKED = {
+    'User', 'Role', 'Has Role', 'DocType', 'DocField', 'DocPerm', 'Custom Field', 'Custom DocPerm',
+    'User Permission', 'Role Permission for Page and Report', 'System Settings', 'Email Account',
+    'Email Domain', 'OAuth Client', 'OAuth Bearer Token', 'API Request Log', 'Access Log', 'Error Log',
+    'Activity Log', 'Version', 'Patch Log', 'Scheduled Job Type', 'Server Script', 'Client Script',
+    'App Setting', 'App Module Setting', 'App Module DocType Item', 'App Module Setting Role',
+    'AI Guide Section', 'AI Guide Instruction', 'AI Data Policy', 'AI Data Policy Field',
+    'Field Function Mapping', 'Field Function Mapping Item', 'Announcement Dismissal',
+}
+
+LAYOUT_FIELDTYPES = {'Section Break', 'Column Break', 'Tab Break', 'HTML', 'Heading', 'Button', 'Image'}
+# Values that must never leave the server for the model, whatever the policy.
+ALWAYS_HIDDEN_FIELDTYPES = {'Password', 'Attach', 'Attach Image', 'Signature', 'Barcode'}
+TABLE_FIELDTYPES = {'Table', 'Table MultiSelect'}
+
+ALLOWED_OPERATORS = {'=', '!=', '>', '<', '>=', '<=', 'like', 'not like', 'in', 'not in', 'between', 'is'}
+MAX_IN_VALUES = 50
+
+logger = frappe.logger('janadhikara.ai', allow_site=True, file_count=10)
+
+
+def audit(action, doctype, detail=None):
+    """One line per assistant data access: who, what, which doctype."""
+    logger.info(json.dumps({
+        'user': frappe.session.user,
+        'action': action,
+        'doctype': doctype,
+        'detail': detail,
+    }, default=str))
+
+
+# --- policies -----------------------------------------------------------
+
+def _load_policies():
+    cached = frappe.cache().get_value(POLICY_CACHE_KEY)
+    if cached is not None:
+        return cached
+    policies = {}
+    for name in frappe.get_all('AI Data Policy', pluck='name'):
+        doc = frappe.get_doc('AI Data Policy', name)
+        policies[doc.target_doctype] = {
+            'enabled': bool(doc.enabled),
+            'can_read': bool(doc.can_read),
+            'can_write': bool(doc.can_write),
+            'include_child_tables': bool(doc.include_child_tables),
+            'max_rows': min(max(frappe.utils.cint(doc.max_rows) or 20, 1), MAX_ROWS_HARD),
+            'hidden': {r.policy_field for r in doc.field_rules if r.handling == 'Hidden'},
+            'read_only': {r.policy_field for r in doc.field_rules if r.handling == 'Read Only'},
+        }
+    frappe.cache().set_value(POLICY_CACHE_KEY, policies)
+    return policies
+
+
+def get_policy(doctype):
+    """The enabled policy for `doctype`, or None (= invisible to the assistant)."""
+    if doctype in ALWAYS_BLOCKED:
+        return None
+    policy = _load_policies().get(doctype)
+    if not policy or not policy['enabled']:
+        return None
+    return frappe._dict(policy)
+
+
+def _in_app_navigation(doctype):
+    from janadhikara.api import get_app_modules
+
+    return any(
+        item['doctype_name'] == doctype
+        for module in get_app_modules()
+        for item in module.get('doctypes', [])
+    )
+
+
+def require_access(doctype, write=False):
+    """Raise unless the assistant may use `doctype` (for writing if `write`).
+    Deliberately one generic message for every refusal - it doesn't reveal
+    whether the doctype exists or why it's off."""
+    unavailable = frappe.PermissionError(_('{0} is not available to the assistant').format(doctype))
+    policy = get_policy(doctype)
+    if not policy or not policy.can_read or not _in_app_navigation(doctype):
+        raise unavailable
+    if write and not policy.can_write:
+        raise frappe.PermissionError(_('The assistant is not allowed to change {0}').format(doctype))
+    return policy
+
+
+# --- fields -------------------------------------------------------------
+
+def _is_exposable(df):
+    return (
+        df.fieldtype not in LAYOUT_FIELDTYPES
+        and df.fieldtype not in ALWAYS_HIDDEN_FIELDTYPES
+        and not df.get('hidden')
+    )
+
+
+def readable_fields(doctype, policy, parenttype=None):
+    """Fields of `doctype` the assistant may see: not layout/hidden/secret
+    types, not hidden by policy, and readable by this user at their
+    permission level. Child tables are returned separately."""
+    meta = frappe.get_meta(doctype)
+    permitted = set(meta.get_permitted_fieldnames(parenttype=parenttype, permission_type='read'))
+    return [
+        df for df in meta.fields
+        if _is_exposable(df)
+        and df.fieldtype not in TABLE_FIELDTYPES
+        and df.fieldname in permitted
+        and df.fieldname not in policy.hidden
+    ]
+
+
+def writable_fields(doctype, policy):
+    """Subset of readable fields the assistant may set: not read-only on the
+    form, not marked Read Only by policy, and writable at this user's
+    permission level. Tables are never written through the assistant."""
+    meta = frappe.get_meta(doctype)
+    can_write_levels = set(meta.get_permitted_fieldnames(permission_type='write'))
+    return [
+        df for df in readable_fields(doctype, policy)
+        if not df.read_only
+        and df.fieldname not in policy.read_only
+        and df.fieldname in can_write_levels
+    ]
+
+
+# --- queries ------------------------------------------------------------
+
+def _clean_filters(filters, allowed_names):
+    if not filters:
+        return {}
+    if not isinstance(filters, dict):
+        raise frappe.ValidationError(_('Filters must be an object of fieldname: value pairs.'))
+    clean = {}
+    for key, value in filters.items():
+        if key not in allowed_names:
+            raise frappe.PermissionError(_('The assistant cannot filter by {0}').format(key))
+        if isinstance(value, (list, tuple)):
+            if len(value) != 2 or str(value[0]).lower() not in ALLOWED_OPERATORS:
+                raise frappe.ValidationError(_('Unsupported filter for {0}').format(key))
+            operator, operand = str(value[0]).lower(), value[1]
+            if operator in ('in', 'not in', 'between'):
+                if not isinstance(operand, (list, tuple)) or len(operand) > MAX_IN_VALUES:
+                    raise frappe.ValidationError(_('Unsupported filter for {0}').format(key))
+                if not all(isinstance(v, (str, int, float)) for v in operand):
+                    raise frappe.ValidationError(_('Unsupported filter for {0}').format(key))
+            elif isinstance(operand, (dict, list, tuple)):
+                raise frappe.ValidationError(_('Unsupported filter for {0}').format(key))
+            clean[key] = [operator, list(operand) if isinstance(operand, tuple) else operand]
+        elif isinstance(value, (dict,)):
+            raise frappe.ValidationError(_('Unsupported filter for {0}').format(key))
+        else:
+            clean[key] = value
+    return clean
+
+
+def list_available_doctypes():
+    from janadhikara.api import get_app_modules
+
+    out = []
+    for module in get_app_modules():
+        for item in module.get('doctypes', []):
+            policy = get_policy(item['doctype_name'])
+            if policy and policy.can_read and frappe.has_permission(item['doctype_name'], 'read'):
+                out.append({
+                    'doctype': item['doctype_name'],
+                    'label': item.get('label') or item['doctype_name'],
+                    'module': module['label'],
+                    'can_write': bool(policy.can_write) and bool(frappe.has_permission(item['doctype_name'], 'write')),
+                })
+    return out
+
+
+def describe_doctype(doctype):
+    policy = require_access(doctype)
+    writable = {df.fieldname for df in writable_fields(doctype, policy)} if policy.can_write else set()
+    return {
+        'doctype': doctype,
+        'can_write': bool(policy.can_write),
+        'fields': [
+            {
+                'fieldname': df.fieldname,
+                'label': df.label,
+                'fieldtype': df.fieldtype,
+                'required': bool(df.reqd),
+                'writable': df.fieldname in writable,
+                'options': df.options if df.fieldtype in ('Select', 'Link') else None,
+            }
+            for df in readable_fields(doctype, policy)
+        ],
+    }
+
+
+def search(doctype, filters=None, fields=None, limit=20):
+    policy = require_access(doctype)
+    if not frappe.has_permission(doctype, 'read'):
+        raise frappe.PermissionError(_('You do not have permission to view {0}').format(doctype))
+
+    readable = readable_fields(doctype, policy)
+    allowed = {df.fieldname for df in readable} | {'name'}
+
+    if fields:
+        bad = [f for f in fields if f not in allowed]
+        if bad:
+            raise frappe.PermissionError(_('The assistant cannot read: {0}').format(', '.join(map(str, bad))))
+        select = list(dict.fromkeys(['name', *fields]))
+    else:
+        listed = [df.fieldname for df in readable if df.in_list_view][:6]
+        select = list(dict.fromkeys(['name', *listed]))
+
+    limit = min(frappe.utils.cint(limit) or 20, policy.max_rows, MAX_ROWS_HARD)
+    rows = frappe.get_list(
+        doctype,
+        filters=_clean_filters(filters, allowed),
+        fields=select,
+        limit_page_length=limit,
+        order_by='modified desc',
+    )
+    audit('search', doctype, {'returned': len(rows), 'filtered_on': sorted((filters or {}).keys())})
+    return rows
+
+
+def _child_rows(parent_doctype, doc, table_df):
+    child_policy = get_policy(table_df.options)
+    if not child_policy or not child_policy.can_read:
+        return None
+    visible = readable_fields(table_df.options, child_policy, parenttype=parent_doctype)
+    return [
+        {'name': row.name, **{df.fieldname: row.get(df.fieldname) for df in visible}}
+        for row in (doc.get(table_df.fieldname) or [])[:MAX_CHILD_ROWS]
+    ]
+
+
+def read(doctype, name):
+    policy = require_access(doctype)
+    if not frappe.has_permission(doctype, 'read', doc=name):
+        raise frappe.PermissionError(_('You do not have permission to view this record'))
+
+    doc = frappe.get_doc(doctype, name)
+    doc.check_permission('read')
+    doc.apply_fieldlevel_read_permissions()
+
+    data = {'name': doc.name}
+    for df in readable_fields(doctype, policy):
+        data[df.fieldname] = doc.get(df.fieldname)
+
+    if policy.include_child_tables:
+        for table_df in frappe.get_meta(doctype).get_table_fields():
+            rows = _child_rows(doctype, doc, table_df)
+            if rows is not None:
+                data[table_df.fieldname] = rows
+
+    audit('read', doctype, {'name': name})
+    return data
+
+
+def _check_writable(doctype, values, policy):
+    allowed = {df.fieldname for df in writable_fields(doctype, policy)}
+    denied = sorted(k for k in (values or {}) if k not in allowed)
+    if denied:
+        raise frappe.PermissionError(
+            _('The assistant cannot set: {0}. These are read-only, hidden, restricted, or not fields of this form.').format(
+                ', '.join(denied)
+            )
+        )
+
+
+def create(doctype, values):
+    policy = require_access(doctype, write=True)
+    if not frappe.has_permission(doctype, 'create'):
+        raise frappe.PermissionError(_('You do not have permission to create {0}').format(doctype))
+    _check_writable(doctype, values, policy)
+    doc = frappe.new_doc(doctype)
+    doc.update(values or {})
+    doc.insert()
+    audit('create', doctype, {'name': doc.name, 'fields': sorted((values or {}).keys())})
+    return {'doctype': doctype, 'name': doc.name}
+
+
+def update(doctype, name, values):
+    policy = require_access(doctype, write=True)
+    if not frappe.has_permission(doctype, 'write', doc=name):
+        raise frappe.PermissionError(_('You do not have permission to edit this record'))
+    _check_writable(doctype, values, policy)
+    doc = frappe.get_doc(doctype, name)
+    doc.check_permission('write')
+    doc.update(values or {})
+    doc.save()
+    audit('update', doctype, {'name': name, 'fields': sorted((values or {}).keys())})
+    return {'doctype': doctype, 'name': doc.name}

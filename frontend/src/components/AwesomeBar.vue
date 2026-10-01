@@ -1,11 +1,6 @@
 <template>
   <Tooltip :text="`Search (${shortcutLabel})`">
-    <button
-      class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-      @click="open = true"
-    >
-      <FeatherIcon name="search" class="h-4 w-4" />
-    </button>
+    <Button variant="ghost" size="sm" icon="search" @click="open = true" />
   </Tooltip>
 
   <!-- No :options.title - the input itself is the dialog's only real
@@ -21,7 +16,7 @@
             v-model="query"
             type="text"
             placeholder="Search or type a command"
-            class="h-9 w-full rounded border border-gray-200 bg-gray-50 pl-8 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500"
+            class="h-9 w-full rounded border border-gray-200 bg-gray-50 pl-8 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500"
             @keydown.esc="open = false"
             @keydown.up.prevent="moveHighlight(-1)"
             @keydown.down.prevent="moveHighlight(1)"
@@ -122,7 +117,7 @@
 import { ref, computed, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDebounceFn } from '@vueuse/core'
-import { Dialog, FeatherIcon, Tooltip } from 'frappe-ui'
+import { Dialog, FeatherIcon, Tooltip, Button } from 'frappe-ui'
 import { searchQuery, searchResource } from '@/data/search'
 import { flatModuleItems } from '@/data/modules'
 

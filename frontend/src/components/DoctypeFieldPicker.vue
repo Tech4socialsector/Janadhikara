@@ -9,7 +9,7 @@
       :model-value="modelValue"
       @update:model-value="$emit('update:modelValue', $event?.value ?? $event ?? '')"
     />
-    <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+    <p class="mt-1.5 text-p-xs text-ink-gray-5">
       <template v-if="!doctype">Choose the target doctype first - its fields will be listed here.</template>
       <template v-else-if="loading">Loading fields...</template>
       <template v-else-if="fieldtypes && !options.length">

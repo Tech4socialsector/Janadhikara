@@ -250,3 +250,11 @@ home_page = "janadhikara"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+# AI Data Policy
+# ------------------
+# Every doctype of this app gets a (disabled) AI Data Policy so the AI assistant
+# can't see it until someone has reviewed it - see janadhikara/ai/policy.py.
+after_migrate = ["janadhikara.ai.policy.ensure_policies"]
+doc_events = {
+	"DocType": {"after_insert": "janadhikara.ai.policy.on_doctype_created"},
+}

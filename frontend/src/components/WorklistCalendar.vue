@@ -1,19 +1,9 @@
 <template>
   <div>
     <div class="mb-3 flex items-center justify-between">
-      <button
-        class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-        @click="shiftMonth(-1)"
-      >
-        <FeatherIcon name="chevron-left" class="h-4 w-4" />
-      </button>
+      <Button variant="ghost" size="sm" icon="chevron-left" @click="shiftMonth(-1)" />
       <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ monthLabel }}</span>
-      <button
-        class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-        @click="shiftMonth(1)"
-      >
-        <FeatherIcon name="chevron-right" class="h-4 w-4" />
-      </button>
+      <Button variant="ghost" size="sm" icon="chevron-right" @click="shiftMonth(1)" />
     </div>
 
     <!-- No fixed min-width/overflow-x-scroll (the previous min-w-[36rem]
@@ -76,7 +66,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { FeatherIcon } from 'frappe-ui'
+import { FeatherIcon, Button } from 'frappe-ui'
 
 const props = defineProps({
   todos: { type: Array, default: () => [] },

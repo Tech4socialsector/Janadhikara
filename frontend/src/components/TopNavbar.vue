@@ -1,15 +1,13 @@
 <template>
-  <!-- One header bar, like Frappe Helpdesk's LayoutHeader: breadcrumbs on the
-  left; on the right, whatever the current page puts in the actions slot
-  (PageHeader teleports its buttons into #page-header-actions - Save, New,
-  Delete...), then search and the theme toggle. -->
+  <!-- Header bar: breadcrumbs on the left, search and the theme toggle on the
+  right. Page action buttons (Save, New, Delete ...) live in the page's own
+  header row (PageHeader), not up here. -->
   <div class="flex h-[3.25rem] flex-shrink-0 items-center gap-4 border-b border-outline-gray-1 bg-surface-white px-5">
     <div class="flex min-w-0 flex-1 items-center">
       <Breadcrumbs />
     </div>
 
     <div class="flex flex-shrink-0 items-center gap-2">
-      <div id="page-header-actions" class="flex items-center gap-2 empty:hidden" />
       <AwesomeBar />
       <TabButtons v-model="theme" :buttons="themeButtons" />
     </div>

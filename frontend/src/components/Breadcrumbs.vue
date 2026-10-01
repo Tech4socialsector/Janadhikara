@@ -1,20 +1,24 @@
 <template>
-  <nav v-if="crumbs.length > 1" class="flex min-w-0 items-center gap-1 text-sm">
+  <!-- Helpdesk-style header trail (frappe-ui Breadcrumbs): every crumb medium
+  weight, ancestors in muted gray that darken on hover, the current page in
+  strong gray, and a light "/" between them. 14px - one step under
+  Helpdesk's own 16px, to keep the header compact. -->
+  <nav v-if="crumbs.length > 1" class="flex min-w-0 items-center text-base font-medium">
     <template v-for="(crumb, idx) in crumbs" :key="idx">
-      <FeatherIcon v-if="idx > 0" name="chevron-right" class="h-3.5 w-3.5 flex-shrink-0 text-gray-300 dark:text-gray-600" />
+      <span v-if="idx > 0" class="mx-1 flex-shrink-0 text-sm text-ink-gray-4" aria-hidden="true">/</span>
       <router-link
         v-if="crumb.to && idx < crumbs.length - 1"
         :to="crumb.to"
-        class="flex-shrink-0 truncate text-gray-500 hover:text-gray-700 hover:underline dark:text-gray-400 dark:hover:text-gray-200"
+        class="flex-shrink-0 truncate rounded px-0.5 py-1 text-ink-gray-5 hover:text-ink-gray-7"
       >
         {{ crumb.label }}
       </router-link>
-      <span v-else class="truncate font-medium text-gray-900 dark:text-gray-100">
+      <span v-else class="truncate px-0.5 py-1 text-ink-gray-9">
         {{ crumb.label }}
       </span>
     </template>
   </nav>
-  <h1 v-else class="truncate text-base font-semibold text-gray-900 dark:text-gray-100">
+  <h1 v-else class="truncate text-base font-medium text-ink-gray-9">
     {{ pageTitle }}
   </h1>
 </template>
@@ -22,7 +26,6 @@
 <script setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { FeatherIcon } from 'frappe-ui'
 import { pageTitle } from '@/data/pageTitle'
 import { findModuleByRoute } from '@/data/modules'
 import { findSettingsEntryByRoute } from '@/data/settingsEntries'

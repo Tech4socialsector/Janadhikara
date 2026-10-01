@@ -2,7 +2,7 @@
   <AppLayout>
     <PageHeader>
       <template #title>
-        <h1 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ pageTitle }}</h1>
+        <h1 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ pageTitle }}</h1>
       </template>
       <template #actions>
         <Button
@@ -58,176 +58,80 @@
       same way quickFilters/advancedFilters do (see searchFilter below),
       so it composes with whatever's set in the Filter sheet rather than
       replacing it. -->
-      <div class="relative mb-2 sm:max-w-md">
-        <FeatherIcon name="search" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search records and their child table rows"
-          class="h-10 w-full rounded-lg border border-gray-200 bg-white pl-9 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
-        />
-      </div>
-
-      <!-- Mobile: Refresh/Filter/Sort/Columns are icon-only round buttons (labels
-      dropped, icons kept) so four controls fit a 320px screen; desktop keeps
-      the labelled buttons. Right-aligned at every width. -->
-      <div class="mb-3 flex items-center justify-end gap-2">
-        <Tooltip text="Refresh">
-          <button
-            class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md border border-gray-200 text-gray-500 max-sm:h-9 max-sm:w-9 max-sm:rounded-full hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
-            :disabled="rows.loading"
-            @click="refreshList"
-          >
-            <FeatherIcon name="refresh-cw" class="h-3.5 w-3.5" :class="{ 'animate-spin': rows.loading }" />
-          </button>
-        </Tooltip>
-
-        <template v-if="!isMobile">
-          <Popover placement="bottom-end" popover-class="doctype-list-popover" :hide-on-blur="false">
-            <template #target="{ togglePopover }">
-              <button
-                class="flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300"
-                :class="hasActiveFilters ? 'border-gray-900 dark:border-gray-100' : 'border-gray-200'"
-                @click="togglePopover"
-              >
-                <FeatherIcon name="filter" class="h-3.5 w-3.5" />
-                Filter
-                <span
-                  v-if="activeFilterCount"
-                  class="flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-900 px-1 text-2xs text-white dark:bg-gray-100 dark:text-gray-900"
-                >
-                  {{ activeFilterCount }}
-                </span>
-              </button>
-            </template>
-            <template #body-main>
-              <div class="w-[26rem] max-w-[90vw] p-3">
-                <FilterEditor :fields="allFields" v-model="advancedFilters" />
-              </div>
-            </template>
-          </Popover>
-
-          <Popover placement="bottom-end" popover-class="doctype-list-popover" :hide-on-blur="false">
-            <template #target="{ togglePopover }">
-              <button
-                class="flex items-center gap-1.5 rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700 dark:border-gray-700 dark:text-gray-300"
-                @click="togglePopover"
-              >
-                <FeatherIcon name="sliders" class="h-3.5 w-3.5" />
-                Sort
-              </button>
-            </template>
-            <template #body-main>
-              <div class="w-72 max-w-[90vw] p-3">
-                <SortEditor :fields="allFields" v-model="sortValue" />
-              </div>
-            </template>
-          </Popover>
-        </template>
-
-        <template v-else>
-          <button
-            type="button"
-            class="relative flex h-9 w-9 items-center justify-center rounded-full border text-gray-700 dark:border-gray-700 dark:text-gray-300"
-            :class="hasActiveFilters ? 'border-gray-900 dark:border-gray-100' : 'border-gray-200'"
-            aria-label="Filter"
-            title="Filter"
-            @click="showFilterSheet = true"
-          >
-            <FeatherIcon name="filter" class="h-4 w-4" />
-            <span
-              v-if="activeFilterCount"
-              class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-gray-900 px-1 text-2xs text-white dark:bg-gray-100 dark:text-gray-900"
-            >
-              {{ activeFilterCount }}
-            </span>
-          </button>
-          <button
-            type="button"
-            class="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-700 dark:border-gray-700 dark:text-gray-300"
-            aria-label="Sort"
-            title="Sort"
-            @click="showSortSheet = true"
-          >
-            <FeatherIcon name="sliders" class="h-4 w-4" />
-          </button>
-        </template>
-
-        <Popover placement="bottom-end" popover-class="doctype-list-popover" :hide-on-blur="false">
-          <template #target="{ togglePopover }">
-            <button
-              type="button"
-              class="flex items-center gap-1.5 rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700 max-sm:h-9 max-sm:w-9 max-sm:justify-center max-sm:rounded-full max-sm:px-0 dark:border-gray-700 dark:text-gray-300"
-              aria-label="Columns"
-              title="Columns"
-              @click="togglePopover"
-            >
-              <FeatherIcon name="columns" class="h-3.5 w-3.5 max-sm:h-4 max-sm:w-4" />
-              <span class="max-sm:hidden">Columns</span>
-            </button>
-          </template>
-          <template #body-main>
-            <div class="max-h-80 w-56 overflow-y-auto p-2">
-              <label
-                v-for="field in allFields"
-                :key="field.fieldname"
-                class="flex items-center gap-2 rounded px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
-              >
-                <input
-                  type="checkbox"
-                  class="form-checkbox h-4 w-4 !rounded-[3px] border-gray-300 dark:border-gray-600 dark:bg-gray-800"
-                  :checked="isColumnVisible(field.fieldname)"
-                  @change="toggleColumnVisible(field.fieldname)"
-                />
-                {{ field.label }}
-              </label>
-              <button
-                v-if="chosenFieldnames"
-                type="button"
-                class="mt-1 w-full rounded px-2 py-1.5 text-left text-xs text-gray-500 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800"
-                @click="resetColumns"
-              >
-                Reset to default columns
-              </button>
+      <!-- View controls, laid out like Frappe Helpdesk's list: quick filters on the
+      left (a search box, then one inline control per filterable field), a thin
+      divider, then Reload / Filter / Sort / Columns on the right. All frappe-ui.
+      Phones keep just the search box plus icon-only actions. -->
+      <div class="mb-4 flex items-center justify-between gap-2">
+        <div class="quick-filters flex min-w-0 flex-1 items-center gap-2 overflow-x-auto py-1">
+          <div class="min-w-0 flex-1 sm:min-w-64 sm:max-w-xs sm:flex-none">
+            <TextInput v-model="searchQuery" type="text" placeholder="Search records and their child table rows">
+              <template #prefix>
+                <FeatherIcon name="search" class="h-4 w-4 text-ink-gray-5" />
+              </template>
+            </TextInput>
+          </div>
+          <template v-if="!isMobile">
+            <div v-for="field in quickFilterFields" :key="field.fieldname" class="min-w-36 flex-shrink-0">
+              <FormControl
+                v-if="field.fieldtype === 'Select'"
+                type="select"
+                class="[&_[data-slot=trigger]]:w-full"
+                :options="[{ label: field.label, value: '' }, ...selectOptions(field)]"
+                v-model="quickFilters[field.fieldname]"
+              />
+              <FormControl
+                v-else-if="field.fieldtype === 'Check'"
+                type="select"
+                class="[&_[data-slot=trigger]]:w-full"
+                :options="[{ label: field.label, value: '' }, { label: 'Yes', value: '1' }, { label: 'No', value: '0' }]"
+                v-model="quickFilters[field.fieldname]"
+              />
+              <FormControl v-else type="text" :placeholder="field.label" v-model="quickFilters[field.fieldname]" />
             </div>
           </template>
-        </Popover>
-      </div>
-
-      <!-- Quick filter row - one plain text/select box per visible column,
-      always on screen (unlike the Filter popover above, which needs a
-      click to open) for the common case of "just narrow this one column
-      by typing" - same idea as Helpdesk's own per-column filter boxes.
-      Writes to quickFilters, kept separate from the Filter popover's own
-      advancedFilters so an operator/multi-field filter set there isn't
-      silently overwritten by a quick box here for the same field, or vice
-      versa - listFilters (what actually reaches the API) merges both,
-      with advancedFilters taking precedence on any field both touch. -->
-      <div v-if="!isMobile" class="mb-3 flex flex-wrap gap-2">
-        <div class="w-40 flex-shrink-0">
-          <FormControl type="text" placeholder="ID" v-model="quickFilters.name" />
         </div>
-        <div v-for="col in visibleColumns" :key="col.fieldname" class="w-40 flex-shrink-0">
-          <FormControl
-            v-if="col.fieldtype === 'Select'"
-            type="select"
-            class="[&_[data-slot=trigger]]:w-full"
-            :options="[{ label: col.label, value: '' }, ...selectOptions(col)]"
-            v-model="quickFilters[col.fieldname]"
-          />
-          <FormControl
-            v-else-if="col.fieldtype === 'Check'"
-            type="select"
-            class="[&_[data-slot=trigger]]:w-full"
-            :options="[{ label: col.label, value: '' }, { label: 'Yes', value: '1' }, { label: 'No', value: '0' }]"
-            v-model="quickFilters[col.fieldname]"
-          />
-          <FormControl
-            v-else
-            type="text"
-            :placeholder="col.label"
-            v-model="quickFilters[col.fieldname]"
-          />
+
+        <div v-if="!isMobile" class="h-5 flex-shrink-0 border-s border-outline-gray-2" />
+
+        <div class="flex flex-shrink-0 items-center gap-2">
+          <Button variant="outline" icon="refresh-cw" tooltip="Refresh" :loading="rows.loading" @click="refreshList" />
+
+          <template v-if="!isMobile">
+            <Popover v-model:show="showFilterPopover" placement="bottom-end" popover-class="doctype-list-popover" :hide-on-blur="false">
+              <template #target="{ togglePopover }">
+                <Button variant="outline" icon-left="filter" label="Filter" data-toolbar-popover-trigger @click="togglePopover">
+                  <template v-if="activeFilterCount" #suffix>
+                    <span class="flex h-4 min-w-4 items-center justify-center rounded-full bg-surface-gray-7 px-1 text-2xs text-ink-white">
+                      {{ activeFilterCount }}
+                    </span>
+                  </template>
+                </Button>
+              </template>
+              <template #body-main>
+                <div class="w-[26rem] max-w-[90vw] p-3">
+                  <FilterEditor :fields="allFields" v-model="advancedFilters" />
+                </div>
+              </template>
+            </Popover>
+
+            <SortControl v-model="sortValue" v-model:show="showSortPopover" :fields="allFields" />
+          </template>
+
+          <template v-else>
+            <span class="relative inline-flex">
+              <Button variant="outline" icon="filter" tooltip="Filter" @click="showFilterSheet = true" />
+              <span
+                v-if="activeFilterCount"
+                class="pointer-events-none absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-surface-gray-7 px-1 text-2xs text-ink-white"
+              >
+                {{ activeFilterCount }}
+              </span>
+            </span>
+            <Button variant="outline" icon="sliders" tooltip="Sort" @click="showSortSheet = true" />
+          </template>
+
+          <ColumnPicker v-model:show="showColumnsPopover" :prefs="columnPrefs" locked-label="ID" :compact="isMobile" />
         </div>
       </div>
 
@@ -236,12 +140,7 @@
           <div class="filter-sheet-panel flex flex-col">
             <div class="flex h-12 flex-shrink-0 items-center justify-between border-b px-4 dark:border-gray-800">
               <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Filter</h3>
-              <button
-                class="flex h-7 w-7 items-center justify-center rounded text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-                @click="showFilterSheet = false"
-              >
-                <FeatherIcon name="x" class="h-4 w-4" />
-              </button>
+              <Button variant="ghost" size="sm" icon="x" @click="showFilterSheet = false" />
             </div>
 
             <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
@@ -256,12 +155,7 @@
           <div class="filter-sheet-panel flex flex-col">
             <div class="flex h-12 flex-shrink-0 items-center justify-between border-b px-4 dark:border-gray-800">
               <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Sort</h3>
-              <button
-                class="flex h-7 w-7 items-center justify-center rounded text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-                @click="showSortSheet = false"
-              >
-                <FeatherIcon name="x" class="h-4 w-4" />
-              </button>
+              <Button variant="ghost" size="sm" icon="x" @click="showSortSheet = false" />
             </div>
             <div class="px-4 py-4">
               <SortEditor :fields="allFields" v-model="sortValue" />
@@ -347,7 +241,7 @@
           <!-- Header: the record ID (always first) on the left, status
           badge + chevron on the right. -->
           <div class="flex items-center justify-between gap-2">
-            <span class="max-w-[60%] truncate rounded-md bg-gray-100 px-1.5 py-0.5 font-mono text-[11px] text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+            <span class="max-w-[60%] truncate rounded-md bg-gray-100 px-1.5 py-0.5 font-mono text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-300">
               {{ row.name }}
             </span>
             <div class="flex items-center gap-1.5">
@@ -372,7 +266,7 @@
           <dl v-if="cardBodyColumnsFor(row).length" class="mt-2.5 grid grid-cols-2 gap-x-4 gap-y-2.5">
             <div v-for="col in cardBodyColumnsFor(row)" :key="col.fieldname" class="min-w-0">
               <dt class="truncate text-xs text-gray-400 dark:text-gray-500">{{ col.label }}</dt>
-              <dd class="truncate text-sm text-gray-800 dark:text-gray-200">
+              <dd class="truncate text-base text-gray-800 dark:text-gray-200">
                 <UserLinkHoverCard v-if="isUserLink(col) && row[col.fieldname]" :user="row[col.fieldname]" @click.stop>
                   <span class="underline decoration-dotted">{{ row[col.fieldname] }}</span>
                 </UserLinkHoverCard>
@@ -380,6 +274,9 @@
               </dd>
             </div>
           </dl>
+          <p v-if="row.modified" class="mt-2.5 text-xs text-ink-gray-5" :title="fullDatetime(row.modified)">
+            Updated {{ timeAgo(row.modified) }}{{ timeAgo(row.modified) === 'now' ? '' : ' ago' }}
+          </p>
         </div>
       </div>
 
@@ -427,6 +324,13 @@
             <UserLinkHoverCard v-else-if="isUserLink(column.docField) && item" :user="item" @click.stop>
               <span class="truncate text-base underline decoration-dotted">{{ item }}</span>
             </UserLinkHoverCard>
+            <span
+              v-else-if="column.key === 'modified'"
+              class="truncate text-base text-ink-gray-6"
+              :title="fullDatetime(row.modified)"
+            >
+              {{ timeAgo(row.modified) }}
+            </span>
             <div v-else class="truncate text-base">{{ label }}</div>
           </ListRowItem>
         </template>
@@ -488,9 +392,12 @@ through a lower dialog z-index. */
 [data-dialog='sort-sheet'].dialog-overlay {
   z-index: 1050;
 }
+/* frappe-ui's dialog wrapper is a column flex box centred with
+justify-content, so the sheet is pinned to the bottom edge with
+justify-content: flex-end (align-items would only move it sideways). */
 [data-dialog='filter-sheet'].dialog-overlay > div,
 [data-dialog='sort-sheet'].dialog-overlay > div {
-  align-items: flex-end;
+  justify-content: flex-end;
   padding: 0;
 }
 [data-dialog='filter-sheet'] .dialog-content,
@@ -499,6 +406,22 @@ through a lower dialog z-index. */
   max-width: none;
   width: 100vw;
   border-radius: 1rem 1rem 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  animation: list-sheet-up 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes list-sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-dialog='filter-sheet'] .dialog-content,
+  [data-dialog='sort-sheet'] .dialog-content {
+    animation: none;
+  }
 }
 
 /* Desktop's Filter/Sort Popover (see popover-class="doctype-list-popover"
@@ -537,7 +460,7 @@ why it's needed. */
 </style>
 
 <script setup>
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { breakpointsTailwind, useBreakpoints, watchDebounced } from '@vueuse/core'
 import {
@@ -545,6 +468,7 @@ import {
   useCall,
   call,
   Button,
+  TextInput,
   Dialog,
   ErrorMessage,
   FeatherIcon,
@@ -565,11 +489,15 @@ import PageHeader from '@/components/PageHeader.vue'
 import UserLinkHoverCard from '@/components/UserLinkHoverCard.vue'
 import FilterEditor from '@/components/FilterEditor.vue'
 import SortEditor from '@/components/SortEditor.vue'
+import ColumnPicker from '@/components/ColumnPicker.vue'
+import SortControl from '@/components/SortControl.vue'
+import { useColumnPrefs } from '@/composables/useColumnPrefs'
 import Skeleton from '@/components/Skeleton.vue'
 import { useMeta, useListFields, useFormFields } from '@/data/useMeta'
 import { findModuleByRoute } from '@/data/modules'
 import { linkTitle, isTitledLink, ensureTitlesForRows } from '@/data/linkTitles'
 import { setPageTitle } from '@/data/pageTitle'
+import { timeAgo, fullDatetime } from '@/utils/time'
 import { isStatusLikeField, statusBadgeClasses, statusBorderColor } from '@/utils/statusColors'
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
@@ -606,65 +534,21 @@ const allFields = useFormFields(metaResource)
 // Deriving visibility instead of assigning it collapses both `columns`
 // changes and any visibility toggle into the same recomputation, so
 // there's only ever one dependent state change per tick, not two.
-// `chosenFieldnames` is null until the user touches the Columns picker -
-// the default is the doctype's own in_list_view fields. Once they pick,
-// it's an explicit set over *every* form field (the picker lists them
-// all), kept per doctype in localStorage so the choice survives a reload.
-// Previously the picker listed every field as ticked but could only ever
-// hide the in_list_view ones, so ticking any other field did nothing.
-const COLUMNS_STORAGE_KEY = `janadhikara-list-columns-${props.doctype}`
-function loadChosenFieldnames() {
-  try {
-    const raw = localStorage.getItem(COLUMNS_STORAGE_KEY)
-    const parsed = raw ? JSON.parse(raw) : null
-    return Array.isArray(parsed) ? new Set(parsed) : null
-  } catch {
-    return null
-  }
-}
-const chosenFieldnames = ref(loadChosenFieldnames())
-const visibleColumns = computed(() => {
-  if (!chosenFieldnames.value) return columns.value
-  const picked = allFields.value.filter((f) => chosenFieldnames.value.has(f.fieldname))
-  return picked.length ? picked : columns.value
+// Columns arrangement (order, headings, added/removed fields) from the shared
+// Columns picker - see composables/useColumnPrefs.js. Default = the doctype's
+// own list-view fields.
+const columnPrefs = useColumnPrefs({
+  storageKey: `janadhikara-list-columns-${props.doctype}`,
+  allFields,
+  defaultColumns: columns,
 })
-function isColumnVisible(fieldname) {
-  return visibleColumns.value.some((c) => c.fieldname === fieldname)
-}
-function persistChosenFieldnames() {
-  try {
-    if (chosenFieldnames.value) {
-      localStorage.setItem(COLUMNS_STORAGE_KEY, JSON.stringify([...chosenFieldnames.value]))
-    } else {
-      localStorage.removeItem(COLUMNS_STORAGE_KEY)
-    }
-  } catch {
-    /* storage unavailable - the choice just won't persist */
-  }
-}
-function toggleColumnVisible(fieldname) {
-  const next = new Set(visibleColumns.value.map((c) => c.fieldname))
-  if (next.has(fieldname)) {
-    // Never allow an empty table - the ID column is always there, but at
-    // least one data column should remain.
-    if (next.size === 1) return
-    next.delete(fieldname)
-  } else {
-    next.add(fieldname)
-  }
-  chosenFieldnames.value = next
-  persistChosenFieldnames()
-}
-function resetColumns() {
-  chosenFieldnames.value = null
-  persistChosenFieldnames()
-}
+const visibleColumns = columnPrefs.visibleColumns
 
 // Everything the list must fetch: the record ID, the default in_list_view
 // fields (mobile cards always show those) and whatever extra columns the
 // user picked.
 const fetchFields = computed(() => {
-  const names = new Set(['name'])
+  const names = new Set(['name', 'modified'])
   columns.value.forEach((c) => names.add(c.fieldname))
   visibleColumns.value.forEach((c) => names.add(c.fieldname))
   return [...names]
@@ -691,18 +575,27 @@ function selectOptions(field) {
     .map((v) => ({ label: v, value: v }))
 }
 
+// Fields offered as inline quick filters in the toolbar, as in Helpdesk: the
+// doctype's own "standard filter" fields (up to three), or - if it flags none -
+// its first few list columns.
+const QUICK_FILTER_FIELDTYPES = new Set(['Select', 'Check', 'Data', 'Link', 'Small Text', 'Phone', 'Int', 'Float'])
+const quickFilterFields = computed(() => {
+  const flagged = allFields.value.filter((f) => f.in_standard_filter && QUICK_FILTER_FIELDTYPES.has(f.fieldtype))
+  const pool = flagged.length ? flagged : columns.value.filter((f) => QUICK_FILTER_FIELDTYPES.has(f.fieldtype))
+  return pool.slice(0, 3)
+})
+
 const quickFilterEntries = computed(() => {
   const result = {}
-  if (quickFilters.name) result.name = ['like', `%${quickFilters.name}%`]
-  for (const col of visibleColumns.value) {
-    const value = quickFilters[col.fieldname]
+  for (const field of quickFilterFields.value) {
+    const value = quickFilters[field.fieldname]
     if (value == null || value === '') continue
-    if (col.fieldtype === 'Check') {
-      result[col.fieldname] = Number(value)
-    } else if (col.fieldtype === 'Select') {
-      result[col.fieldname] = value
+    if (field.fieldtype === 'Check') {
+      result[field.fieldname] = Number(value)
+    } else if (field.fieldtype === 'Select') {
+      result[field.fieldname] = value
     } else {
-      result[col.fieldname] = ['like', `%${value}%`]
+      result[field.fieldname] = ['like', `%${value}%`]
     }
   }
   return result
@@ -874,8 +767,11 @@ const showResults = computed(() => !rows.loading && !rows.error && allRows.value
 // The record ID is always the first column - it's what links, exports and
 // support conversations refer to, and isn't a field the picker can hide.
 const ID_COLUMN = { fieldname: 'name', label: 'ID', fieldtype: 'Data' }
+// ...and "Last Modified" is always the last one: when each record was last
+// updated, shown as a relative time (the exact moment on hover).
+const MODIFIED_COLUMN = { fieldname: 'modified', label: 'Last Modified', fieldtype: 'Datetime' }
 const listViewColumns = computed(() =>
-  [ID_COLUMN, ...visibleColumns.value.filter((c) => c.fieldname !== 'name')].map((col) => ({
+  [ID_COLUMN, ...visibleColumns.value.filter((c) => c.fieldname !== 'name' && c.fieldname !== 'modified'), MODIFIED_COLUMN].map((col) => ({
     key: col.fieldname,
     label: col.label,
     docField: col,
@@ -901,6 +797,37 @@ const listViewOptions = computed(() => ({
 // content as desktop's Popovers, just in a bottom sheet instead - see the
 // template's isMobile branch. `rows` above is the one shared data source
 // for both, so there's no separate mobile resource/normalization needed.
+// Filter and Sort popovers ignore frappe-ui's own outside-click handling
+// (:hide-on-blur="false") because the editors inside open dropdowns that render
+// in a portal outside the popover - treating a click on one of those options as
+// "outside" closed the popover before the option registered. So they're
+// controlled here and closed by this pointerdown listener, which skips clicks
+// inside the popover, inside any such nested dropdown, and on the toolbar
+// buttons themselves (their own click already toggles).
+const showFilterPopover = ref(false)
+const showSortPopover = ref(false)
+const showColumnsPopover = ref(false)
+function closeToolbarPopoversOnOutsideClick(event) {
+  if (!showFilterPopover.value && !showSortPopover.value && !showColumnsPopover.value) return
+  const target = event.target
+  if (!(target instanceof Element)) return
+  if (
+    target.closest(
+      '.doctype-list-popover, [data-reka-popper-content-wrapper], [data-slot="content"], [data-toolbar-popover-trigger]',
+    )
+  )
+    return
+  showFilterPopover.value = false
+  showSortPopover.value = false
+  showColumnsPopover.value = false
+}
+// Only one of the two open at a time.
+watch(showFilterPopover, (open) => { if (open) { showSortPopover.value = false; showColumnsPopover.value = false } })
+watch(showSortPopover, (open) => { if (open) { showFilterPopover.value = false; showColumnsPopover.value = false } })
+watch(showColumnsPopover, (open) => { if (open) { showFilterPopover.value = false; showSortPopover.value = false } })
+onMounted(() => document.addEventListener('pointerdown', closeToolbarPopoversOnOutsideClick, true))
+onBeforeUnmount(() => document.removeEventListener('pointerdown', closeToolbarPopoversOnOutsideClick, true))
+
 const showFilterSheet = ref(false)
 const showSortSheet = ref(false)
 

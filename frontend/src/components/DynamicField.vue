@@ -27,7 +27,7 @@
       :model-value="modelValue"
       @update:model-value="$emit('update:modelValue', $event)"
     />
-    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <DoctypeFieldPicker
@@ -58,13 +58,7 @@
         {{ fileName }}
       </a>
       <Tooltip text="Remove file">
-        <button
-          type="button"
-          class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-red-500 dark:hover:bg-gray-800"
-          @click="$emit('update:modelValue', null)"
-        >
-          <FeatherIcon name="x" class="h-4 w-4" />
-        </button>
+        <Button variant="ghost" size="sm" icon="x" @click="$emit('update:modelValue', null)" />
       </Tooltip>
     </div>
     <FileUploader
@@ -79,7 +73,7 @@
         </Button>
       </template>
     </FileUploader>
-    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <FormControl
@@ -130,7 +124,7 @@
       editor-class="prose-sm max-w-none rounded-b-lg border border-t-0 border-gray-200 px-3 py-2 min-h-[8rem] dark:border-gray-700 dark:prose-invert"
       @change="$emit('update:modelValue', $event)"
     />
-    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <div v-else-if="controlType === 'rating'" class="space-y-1.5">
@@ -142,7 +136,7 @@
       :readonly="isReadOnly"
       @update:model-value="$emit('update:modelValue', $event / 5)"
     />
-    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <div v-else-if="controlType === 'time'">
@@ -156,7 +150,7 @@
       :model-value="modelValue"
       @update:model-value="$emit('update:modelValue', $event)"
     />
-    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <div v-else-if="controlType === 'duration'" class="space-y-1.5">
@@ -174,7 +168,7 @@
         />
       </div>
     </div>
-    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <div v-else-if="controlType === 'color'">
@@ -198,7 +192,7 @@
         @update:model-value="$emit('update:modelValue', $event)"
       />
     </div>
-    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <FormControl
@@ -330,6 +324,7 @@ const DOCTYPE_FIELD_SOURCES = {
   trigger_field: 'target_doctype',
   target_field: 'target_doctype',
   input_field: 'target_doctype',
+  policy_field: 'target_doctype',
 }
 const pickerDoctype = computed(() => {
   const source = DOCTYPE_FIELD_SOURCES[props.field.fieldname]

@@ -92,15 +92,37 @@ map (e.g. State's dropdown next to Household profile's map). */
   z-index: 1050 !important;
 }
 
+/* Sidebar text, one step smaller than frappe-ui's defaults. frappe-ui's
+SidebarItem/SidebarSection/SidebarHeader hardcode text-sm (13px) / text-base
+(14px) with no size prop, so they're stepped down here from the outside:
+items and section labels 12px, the app/user title 13px, secondary lines 11px.
+Scoped to .app-sidebar, so it covers the desktop sidebar, the collapsed
+state and the mobile drawer's embedded copy - and nothing else in the app. */
+.app-sidebar .text-sm {
+  font-size: 12px;
+}
+.app-sidebar .text-base {
+  font-size: 13px;
+}
+.app-sidebar .text-xs {
+  font-size: 11px;
+}
+
 /* Branding: the app logo takes 30% of the header row's width (frappe-ui's
 SidebarHeader hardcodes it to a 32px tile, with no size prop). The row keeps
-its normal height (h-12) - the logo is capped at the row's inner 2rem and
+its normal height (h-12) - the logo is capped at 2.5rem (the row's vertical
+padding is trimmed to fit it) and
 uses object-contain, so a wide logo scales to fit rather than being cropped
 to a square or making the row taller. The collapsed icon-only sidebar
 (w-12) keeps frappe-ui's default tile. */
+.app-sidebar > div.w-60 > button.h-12 {
+  /* Less vertical padding so a 2.5rem logo fits inside the unchanged h-12 row. */
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
 .app-sidebar > div.w-60 > button.h-12 > div:first-child {
   width: 30%;
-  height: 2rem;
+  height: 2.5rem;
   flex-shrink: 0;
 }
 .app-sidebar > div.w-60 > button.h-12 > div:first-child img {

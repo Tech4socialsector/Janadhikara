@@ -17,13 +17,7 @@
         />
       </div>
       <Tooltip v-if="linkedRoute" :text="`Open ${field.label}`">
-        <button
-          type="button"
-          class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-          @click="openLinkedRecord"
-        >
-          <FeatherIcon name="arrow-up-right" class="h-4 w-4" />
-        </button>
+        <Button variant="ghost" size="sm" icon="arrow-up-right" @click="openLinkedRecord" />
       </Tooltip>
       <!-- Extension point for a caller-supplied affordance next to the
       combobox - currently only DynamicField.vue's isUserLink case (a
@@ -35,7 +29,7 @@
       the same way. -->
       <slot name="suffix" />
     </div>
-    <p v-if="field.description" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">
       {{ field.description }}
     </p>
 
@@ -46,12 +40,7 @@
             <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">
               New {{ field.options }}
             </h3>
-            <button
-              class="flex h-7 w-7 items-center justify-center rounded text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-              @click="showCreateDialog = false"
-            >
-              <FeatherIcon name="x" class="h-4 w-4" />
-            </button>
+            <Button variant="ghost" size="sm" icon="x" @click="showCreateDialog = false" />
           </div>
 
           <div class="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4">

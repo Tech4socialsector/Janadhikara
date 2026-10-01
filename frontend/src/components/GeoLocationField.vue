@@ -3,13 +3,7 @@
     <div class="mb-1.5 flex items-center justify-between">
       <label class="text-sm text-gray-700 dark:text-gray-300">{{ field.label }}</label>
       <Tooltip v-if="hasShapes" text="Clear everything on the map">
-        <button
-          type="button"
-          class="flex h-6 w-6 items-center justify-center rounded text-gray-400 hover:bg-gray-100 hover:text-red-500 dark:hover:bg-gray-800"
-          @click="clearLocation"
-        >
-          <FeatherIcon name="x" class="h-3.5 w-3.5" />
-        </button>
+        <Button variant="ghost" size="sm" icon="x" @click="clearLocation" />
       </Tooltip>
     </div>
 
@@ -20,10 +14,10 @@
     </div>
 
     <p v-if="locateError" class="mt-1.5 text-xs text-red-500">{{ locateError }}</p>
-    <p v-if="resolvingAddress" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+    <p v-if="resolvingAddress" class="mt-1.5 text-p-xs text-ink-gray-5">
       Looking up address...
     </p>
-    <p v-else class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+    <p v-else class="mt-1.5 text-p-xs text-ink-gray-5">
       {{ field.description || 'Click the map to drop a pin, or use the toolbar to draw lines, shapes and circles.' }}
     </p>
   </div>
@@ -31,7 +25,7 @@
 
 <script setup>
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
-import { FeatherIcon, Tooltip } from 'frappe-ui'
+import { FeatherIcon, Tooltip, Button } from 'frappe-ui'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-draw/dist/leaflet.draw.css'

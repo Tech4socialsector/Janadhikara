@@ -4,12 +4,7 @@
       <div class="settings-dialog-panel flex flex-col">
         <div class="flex h-12 flex-shrink-0 items-center justify-between border-b px-4 dark:border-gray-800">
           <h1 class="text-base font-semibold text-gray-900 dark:text-gray-100">Settings</h1>
-          <button
-            class="flex h-7 w-7 items-center justify-center rounded text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-            @click="show = false"
-          >
-            <FeatherIcon name="x" class="h-4 w-4" />
-          </button>
+          <Button variant="ghost" size="sm" icon="x" @click="show = false" />
         </div>
 
         <!-- Below sm: the side-by-side nav+content layout squeezes the
@@ -146,7 +141,7 @@ that has a Geo Location map on it. */
 
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { Dialog, FeatherIcon, TabButtons } from 'frappe-ui'
+import { Dialog, FeatherIcon, TabButtons, Button } from 'frappe-ui'
 import SettingsDoctypePanel from '@/components/SettingsDoctypePanel.vue'
 import ProfilePanel from '@/components/ProfilePanel.vue'
 import NotificationSettingsPanel from '@/components/NotificationSettingsPanel.vue'

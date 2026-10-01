@@ -7,7 +7,7 @@
       <div class="min-w-0 flex-1">
         <div class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ entry.label }}</div>
         <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">{{ entry.description }}</p>
-        <p v-if="entry.count !== null" class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+        <p v-if="entry.count !== null" class="mt-2 text-p-xs text-ink-gray-5">
           {{ entry.count }} {{ entry.count === 1 ? 'record' : 'records' }}
         </p>
       </div>

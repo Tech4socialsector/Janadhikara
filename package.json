@@ -1,0 +1,9 @@
+{
+  "name": "janadhikara",
+  "private": true,
+  "description": "Root package.json so `bench build` (and Frappe Cloud's deploy build) builds the Vue app in frontend/. Frappe only runs the `build` script of an app's top-level package.json.",
+  "scripts": {
+    "dev": "cd frontend && yarn dev",
+    "build": "cd frontend && yarn install --frozen-lockfile && yarn build"
+  }
+}

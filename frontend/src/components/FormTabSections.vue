@@ -1,10 +1,10 @@
 <template>
   <div class="space-y-6">
     <div v-for="(section, sIdx) in sections" :key="sIdx" v-show="isSectionVisible(section)">
-      <h3 v-if="section.label" class="text-sm font-medium text-gray-700 dark:text-gray-300" :class="section.description ? 'mb-1' : 'mb-3'">
+      <h3 v-if="section.label" class="text-base font-medium text-gray-700 dark:text-gray-300" :class="section.description ? 'mb-1' : 'mb-3'">
         {{ section.label }}
       </h3>
-      <p v-if="section.description" class="mb-3 text-xs text-gray-500 dark:text-gray-400">{{ section.description }}</p>
+      <p v-if="section.description" class="mb-3 text-p-xs text-ink-gray-5">{{ section.description }}</p>
       <div class="flex flex-col gap-4 sm:flex-row sm:gap-6">
         <div v-if="sIdx === 0 && showNameField" class="flex-1">
           <FormControl

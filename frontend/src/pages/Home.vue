@@ -2,7 +2,7 @@
   <AppLayout>
     <PageHeader>
       <template #title>
-        <h1 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ greeting }}</h1>
+        <h1 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ greeting }}</h1>
       </template>
     </PageHeader>
 
@@ -21,7 +21,7 @@
           </span>
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2">
-              <span class="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide" :class="styleFor(current).chip">
+              <span class="rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-wide" :class="styleFor(current).chip">
                 {{ current.announcement_type || 'Info' }}
               </span>
               <span v-if="announcements.length > 1" class="text-xs text-gray-500 dark:text-gray-400">
@@ -45,20 +45,12 @@
               <span v-else />
               <div class="flex items-center gap-2">
                 <template v-if="announcements.length > 1">
-                  <button class="flex h-7 w-7 items-center justify-center rounded-full bg-white/70 text-gray-600 hover:bg-white disabled:opacity-40 dark:bg-white/10 dark:text-gray-300" :disabled="index === 0" aria-label="Previous" @click="index--">
-                    <FeatherIcon name="chevron-left" class="h-4 w-4" />
-                  </button>
-                  <button class="flex h-7 w-7 items-center justify-center rounded-full bg-white/70 text-gray-600 hover:bg-white disabled:opacity-40 dark:bg-white/10 dark:text-gray-300" :disabled="index >= announcements.length - 1" aria-label="Next" @click="index++">
-                    <FeatherIcon name="chevron-right" class="h-4 w-4" />
-                  </button>
+                  <Button variant="ghost" size="sm" icon="chevron-left" :disabled="index === 0" aria-label="Previous" @click="index--" />
+                  <Button variant="ghost" size="sm" icon="chevron-right" :disabled="index >= announcements.length - 1" aria-label="Next" @click="index++" />
                 </template>
-                <button
-                  v-if="current.dismissible"
-                  class="rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-gray-700 shadow-sm hover:bg-white dark:bg-white/10 dark:text-gray-200 dark:hover:bg-white/20"
-                  @click="dismissAnnouncement(current.name)"
-                >
+                <Button v-if="current.dismissible" variant="subtle" size="sm" @click="dismissAnnouncement(current.name)">
                   Dismiss
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -104,14 +96,7 @@
     </div>
 
     <div v-else ref="sliderContainerRef" class="flex items-center gap-2">
-      <button
-        v-if="modulePageCount > 1"
-        class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border text-gray-500 disabled:opacity-30 dark:border-gray-700 dark:text-gray-400"
-        :disabled="modulePage === 0"
-        @click="modulePage--"
-      >
-        <FeatherIcon name="chevron-left" class="h-4 w-4" />
-      </button>
+      <Button variant="ghost" size="sm" icon="chevron-left" v-if="modulePageCount > 1" :disabled="modulePage === 0" @click="modulePage--" />
 
       <div class="flex min-w-0 flex-1 justify-center gap-3">
         <button
@@ -130,14 +115,7 @@
         </button>
       </div>
 
-      <button
-        v-if="modulePageCount > 1"
-        class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border text-gray-500 disabled:opacity-30 dark:border-gray-700 dark:text-gray-400"
-        :disabled="modulePage === modulePageCount - 1"
-        @click="modulePage++"
-      >
-        <FeatherIcon name="chevron-right" class="h-4 w-4" />
-      </button>
+      <Button variant="ghost" size="sm" icon="chevron-right" v-if="modulePageCount > 1" :disabled="modulePage === modulePageCount - 1" @click="modulePage++" />
     </div>
 
     <!-- Desktop already surfaces the active module's doctypes in the
@@ -151,12 +129,7 @@
         <span class="text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500">
           {{ activeModule.label }}
         </span>
-        <button
-          class="flex h-6 w-6 items-center justify-center rounded text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-          @click="clearActiveModule"
-        >
-          <FeatherIcon name="x" class="h-4 w-4" />
-        </button>
+        <Button variant="ghost" size="sm" icon="x" @click="clearActiveModule" />
       </div>
       <router-link
         v-for="item in activeModule.doctypes || []"
@@ -183,7 +156,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { breakpointsTailwind, useBreakpoints, useElementSize } from '@vueuse/core'
-import { FeatherIcon, ErrorMessage } from 'frappe-ui'
+import { FeatherIcon, ErrorMessage, Button } from 'frappe-ui'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import Skeleton from '@/components/Skeleton.vue'
