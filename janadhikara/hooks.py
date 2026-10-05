@@ -14,7 +14,7 @@ app_license = "mit"
 add_to_apps_screen = [
 	{
 		"name": "janadhikara",
-		"logo": "/assets/janadhikara/frontend/favicon.png",
+		"logo": "/assets/janadhikara/default-logo.png",
 		"title": "Janadhikara",
 		"route": "/janadhikara",
 	}

@@ -29,3 +29,4 @@ janadhikara.patches.v1_1.household_member_standalone
 janadhikara.patches.v1_1.remove_unused_baseline_doctypes
 janadhikara.patches.v1_1.backfill_record_date
 janadhikara.patches.v1_1.individual_profile_child_tables
+janadhikara.patches.v1_1.desk_icon_janadhikara
