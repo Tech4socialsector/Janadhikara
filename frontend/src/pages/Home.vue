@@ -99,7 +99,7 @@
         class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
       >
         <span class="module-tile-icon relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md dark:bg-gray-800 dark:ring-gray-700 sm:h-[4.5rem] sm:w-[4.5rem]">
-          <LucideIcon name="cloud-upload" class="h-7 w-7 text-gray-600 dark:text-gray-300 sm:h-8 sm:w-8" />
+          <SyncCloudIcon class="h-7 w-7 text-gray-600 dark:text-gray-300 sm:h-8 sm:w-8" />
           <span
             v-if="pendingCount > 0"
             class="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-xs font-semibold text-white ring-2 ring-white dark:ring-gray-900"
@@ -131,6 +131,7 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import Skeleton from '@/components/Skeleton.vue'
 import LucideIcon from '@/components/LucideIcon.vue'
+import SyncCloudIcon from '@/components/SyncCloudIcon.vue'
 import { modulesResource } from '@/data/modules'
 import { pendingCount } from '@/data/offlineQueue'
 import { announcementsResource, dismissAnnouncement } from '@/data/announcements'

@@ -24,14 +24,49 @@ export const session = reactive({
   full_name: null,
 })
 
+const LAST_USER = 'janadhikara-last-user'
+const rememberUser = (user) => {
+  try {
+    if (user && user !== 'Guest') localStorage.setItem(LAST_USER, user)
+  } catch {
+    // not remembered
+  }
+}
+const rememberedUser = () => {
+  try {
+    return localStorage.getItem(LAST_USER) || null
+  } catch {
+    return null
+  }
+}
+// Signed out: nothing of the last user may linger on the device (the saved page shell and
+// cached reads carry their name and data).
+async function forgetDevice() {
+  try {
+    localStorage.removeItem(LAST_USER)
+    const worker = (await navigator.serviceWorker?.getRegistration('/janadhikara/'))?.active
+    worker?.postMessage('janadhikara-clear-caches')
+    await Promise.all(['janadhikara-shell', 'janadhikara-api-reads'].map((name) => caches.delete(name)))
+  } catch {
+    // best effort
+  }
+}
+
 export const userResource = createResource({
   url: 'frappe.auth.get_logged_user',
   cache: 'frappe-user',
-  onError() {
+  onError(error) {
+    // No connection is not "signed out": keep the user this device last saw, so the app
+    // still opens offline. A real rejection from the server does sign them out.
+    if (!navigator.onLine || error instanceof TypeError || /failed to fetch|network|load failed/i.test(String(error?.message || error))) {
+      if (!session.user) session.user = rememberedUser()
+      return
+    }
     session.user = null
   },
   onSuccess(user) {
     session.user = user
+    rememberUser(user)
     fetchUserLanguage()
   },
 })
@@ -82,9 +117,10 @@ export const loginResource = createResource({
 
 export const logoutResource = createResource({
   url: 'logout',
-  onSuccess() {
+  async onSuccess() {
     session.user = null
     userResource.reset()
+    await forgetDevice()
     window.location.reload()
   },
 })

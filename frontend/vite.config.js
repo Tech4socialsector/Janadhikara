@@ -62,7 +62,7 @@ export default defineConfig({
       },
       workbox: {
         // Web Push handlers (push + notificationclick) live in public/push-sw.js.
-        importScripts: ['/assets/janadhikara/frontend/push-sw.js'],
+        importScripts: ['/assets/janadhikara/frontend/offline-nav.js', '/assets/janadhikara/frontend/push-sw.js'],
         // Drop precache entries from previous builds on activation, so an
         // old shell never keeps serving chunks the new build replaced.
         cleanupOutdatedCaches: true,
@@ -81,25 +81,15 @@ export default defineConfig({
         // ever be glob-precached: Frappe serves a Jinja-templated
         // janadhikara.html (with a per-request CSRF token) for every
         // /janadhikara/* route, not a static build file. The runtimeCaching
-        // rule below is the actual offline-shell mechanism instead: it
-        // caches /janadhikara the first time it's visited online, and
-        // serves that cached copy on later requests if the network fails -
-        // no precache entry required. (workbox-build's schema only accepts
+        // public/offline-nav.js (imported above) is the actual offline-shell
+        // mechanism instead: it keeps the latest shell while online and serves
+        // it for ANY /janadhikara/... address when the network fails - no
+        // precache entry required. (workbox-build's schema only accepts
         // null or a string here - false fails validation even though the
         // SW template's own check would have treated it the same as
         // null.)
         navigateFallback: null,
         runtimeCaching: [
-          {
-            urlPattern: ({ url, request }) =>
-              request.mode === 'navigate' && url.pathname.startsWith('/janadhikara'),
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'janadhikara-app-shell',
-              networkTimeoutSeconds: 5,
-              expiration: { maxEntries: 5 },
-            },
-          },
           // GET-only reads - document list/detail fetches
           // (/api/v2/document/...) and RPC/meta lookups
           // (/api/v2/method/..., /api/v2/doctype/.../meta) the app already

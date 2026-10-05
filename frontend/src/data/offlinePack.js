@@ -75,6 +75,8 @@ export async function downloadPack() {
     memory.value = pack
     packInfo.value = info
     await cacheAppIcon()
+    setStep('Saving form layouts…', 90)
+    await warmAppCaches(pack.meta_doctypes || [])
     setStep('Done', 100)
     await tick(500)
   } catch (e) {
@@ -145,6 +147,29 @@ export async function localTitle(doctype, name) {
   const titleIndex = table.columns.indexOf(table.title_field || 'name')
   const row = table.rows.find((r) => String(r[0]) === String(name))
   return row ? row[titleIndex] : undefined
+}
+
+// The app's own pages ask the server for a few things (the form layout of each doctype, the
+// module list, settings) with plain GET requests, which the service worker keeps for offline
+// use once they have been made. Make them now - for this app's own doctypes only - so forms
+// open offline even if they were never opened online.
+const WARM_METHODS = [
+  'janadhikara.api.get_app_modules',
+  'janadhikara.api.get_app_branding',
+  'janadhikara.api.get_current_user_context',
+  'janadhikara.api.get_settings_entries',
+  'janadhikara.api.get_field_function_rules',
+  'janadhikara.api.get_field_function_registry',
+]
+async function warmAppCaches(doctypes) {
+  const urls = [
+    ...WARM_METHODS.map((m) => `/api/v2/method/${m}`),
+    ...doctypes.map((d) => `/api/v2/doctype/${encodeURIComponent(d)}/meta`),
+  ]
+  // A few at a time; one that fails (no permission, say) never stops the rest.
+  for (let i = 0; i < urls.length; i += 6) {
+    await Promise.all(urls.slice(i, i + 6).map((url) => fetch(url, { credentials: 'include' }).catch(() => null)))
+  }
 }
 
 // Only the app icon is kept as an image - small, and made on the device from the logo.

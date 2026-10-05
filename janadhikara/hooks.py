@@ -20,6 +20,11 @@ add_to_apps_screen = [
 	}
 ]
 
+# Fixtures
+# ---------
+# The sidebar modules (and their items) travel with the app, so a new site gets them on install.
+fixtures = [{"dt": "App Module Setting"}]
+
 # Includes in <head>
 # ------------------
 

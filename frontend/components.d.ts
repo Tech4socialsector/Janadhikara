@@ -45,6 +45,7 @@ declare module 'vue' {
     SortControl: typeof import('./src/components/SortControl.vue')['default']
     SortEditor: typeof import('./src/components/SortEditor.vue')['default']
     SparklesIcon: typeof import('./src/components/SparklesIcon.vue')['default']
+    SyncCloudIcon: typeof import('./src/components/SyncCloudIcon.vue')['default']
     TableMultiSelectField: typeof import('./src/components/TableMultiSelectField.vue')['default']
     TaskHoverCard: typeof import('./src/components/TaskHoverCard.vue')['default']
     TopNavbar: typeof import('./src/components/TopNavbar.vue')['default']

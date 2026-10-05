@@ -18,7 +18,13 @@
       </h1>
       <AwesomeBar />
       <NetworkPill compact />
-      <TabButtons v-model="theme" :buttons="themeButtons" />
+      <Button
+        variant="ghost"
+        :icon="theme === 'dark' ? 'moon' : 'sun'"
+        :tooltip="theme === 'dark' ? 'Dark theme - switch to light' : 'Light theme - switch to dark'"
+        aria-label="Switch theme"
+        @click="theme = theme === 'dark' ? 'light' : 'dark'"
+      />
 
       <!-- Alerts in the top-right corner (the profile is in the bottom bar). -->
       <span class="relative inline-flex flex-shrink-0">
@@ -47,7 +53,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Button, FeatherIcon, TabButtons } from 'frappe-ui'
+import { Button, FeatherIcon } from 'frappe-ui'
 import AwesomeBar from '@/components/AwesomeBar.vue'
 import NetworkPill from '@/components/NetworkPill.vue'
 import MobileNav from '@/components/MobileNav.vue'
@@ -72,11 +78,6 @@ function goBack() {
   if (window.history.state?.back) router.back()
   else router.push({ name: 'Home' })
 }
-
-const themeButtons = [
-  { label: 'Light', value: 'light', icon: 'sun', hideLabel: true, tooltip: 'Light theme' },
-  { label: 'Dark', value: 'dark', icon: 'moon', hideLabel: true, tooltip: 'Dark theme' },
-]
 
 const theme = computed({
   get: () => currentTheme.value,

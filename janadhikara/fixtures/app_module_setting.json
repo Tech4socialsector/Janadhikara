@@ -1,0 +1,111 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "App Module Setting",
+  "doctypes": [
+   {
+    "child": 0,
+    "doctype_name": "Partner Details",
+    "icon": "building-2",
+    "item_type": "Link",
+    "label": "Partner Profile",
+    "route": null
+   },
+   {
+    "child": 0,
+    "doctype_name": "Announcement",
+    "icon": "megaphone",
+    "item_type": "Link",
+    "label": "Announcement",
+    "route": null
+   },
+   {
+    "child": 0,
+    "doctype_name": "AI Guide Instruction",
+    "icon": "book-open",
+    "item_type": "Link",
+    "label": "AI Guide Instruction",
+    "route": null
+   }
+  ],
+  "enabled": 1,
+  "icon": "user-cog",
+  "label": "Administrator",
+  "modified": "2026-10-05 14:35:11.357117",
+  "module_name": "Engine",
+  "name": "Engine",
+  "restrict_by_role": 0,
+  "roles": [],
+  "sort_order": 1
+ },
+ {
+  "docstatus": 0,
+  "doctype": "App Module Setting",
+  "doctypes": [
+   {
+    "child": 0,
+    "doctype_name": "Settlement",
+    "icon": "map-pin",
+    "item_type": "Link",
+    "label": null,
+    "route": null
+   },
+   {
+    "child": 0,
+    "doctype_name": "Household Profile",
+    "icon": "house",
+    "item_type": "Link",
+    "label": null,
+    "route": null
+   },
+   {
+    "child": 0,
+    "doctype_name": "Individual Profile",
+    "icon": "users",
+    "item_type": "Link",
+    "label": null,
+    "route": null
+   }
+  ],
+  "enabled": 1,
+  "icon": "house",
+  "label": "Baseline",
+  "modified": "2026-10-05 14:35:11.393251",
+  "module_name": "Baseline",
+  "name": "Baseline",
+  "restrict_by_role": 0,
+  "roles": [],
+  "sort_order": 3
+ },
+ {
+  "docstatus": 0,
+  "doctype": "App Module Setting",
+  "doctypes": [
+   {
+    "child": 0,
+    "doctype_name": "Relationship Type",
+    "icon": "heart-handshake",
+    "item_type": "Link",
+    "label": null,
+    "route": null
+   },
+   {
+    "child": 0,
+    "doctype_name": "Survey",
+    "icon": "clipboard-list",
+    "item_type": "Link",
+    "label": null,
+    "route": null
+   }
+  ],
+  "enabled": 1,
+  "icon": "database",
+  "label": "Master Data",
+  "modified": "2026-10-05 16:31:09.713512",
+  "module_name": "Masters",
+  "name": "Masters",
+  "restrict_by_role": 0,
+  "roles": [],
+  "sort_order": 2
+ }
+]

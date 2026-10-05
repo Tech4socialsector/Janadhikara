@@ -282,6 +282,7 @@ import { brandingResource, appLogo } from '@/data/branding'
 import { activeModule } from '@/data/activeModule'
 import { notificationsResource, unreadCount, toggleNotifications } from '@/data/notifications'
 import { pendingCount } from '@/data/offlineQueue'
+import SyncCloudIcon from '@/components/SyncCloudIcon.vue'
 import { showSettingsDialog, openSettingsDialog } from '@/data/settingsDialog'
 import { assistantConfigResource, toggleAssistant } from '@/data/aiAssistant'
 
@@ -444,7 +445,7 @@ const sections = computed(() => {
         },
         {
           label: 'Sync Data',
-          icon: moduleIcon('cloud-upload'),
+          icon: SyncCloudIcon,
           to: { name: 'SyncData' },
           suffix: pendingCount.value > 0 ? String(pendingCount.value > 9 ? '9+' : pendingCount.value) : undefined,
           isActive: route.name === 'SyncData',

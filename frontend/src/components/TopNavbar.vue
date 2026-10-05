@@ -10,26 +10,24 @@
     <div class="flex flex-shrink-0 items-center gap-2">
       <NetworkPill />
       <AwesomeBar />
-      <TabButtons v-model="theme" :buttons="themeButtons" />
+      <Button
+        variant="ghost"
+        :icon="theme === 'dark' ? 'moon' : 'sun'"
+        :tooltip="theme === 'dark' ? 'Dark theme - switch to light' : 'Light theme - switch to dark'"
+        aria-label="Switch theme"
+        @click="theme = theme === 'dark' ? 'light' : 'dark'"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
-import { TabButtons } from 'frappe-ui'
+import { Button } from 'frappe-ui'
 import AwesomeBar from '@/components/AwesomeBar.vue'
 import NetworkPill from '@/components/NetworkPill.vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import { currentTheme } from '@/data/theme'
-
-// Icon-only (hideLabel) so the pair stays compact in the header bar - same
-// two values/icons as SettingsDialog's Appearance tab, just a different
-// (icon vs text) presentation of the same underlying toggle.
-const themeButtons = [
-  { label: 'Light', value: 'light', icon: 'sun', hideLabel: true, tooltip: 'Light theme' },
-  { label: 'Dark', value: 'dark', icon: 'moon', hideLabel: true, tooltip: 'Dark theme' },
-]
 
 const theme = computed({
   get: () => currentTheme.value,

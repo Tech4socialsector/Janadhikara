@@ -118,4 +118,30 @@ def get_offline_pack():
 			"columns": fields,
 			"rows": [[row.get(f) if not hasattr(row.get(f), "isoformat") else str(row.get(f)) for f in fields] for row in rows],
 		}
-	return {"version": 1, "generated": str(now_datetime()), "user": frappe.session.user, "doctypes": pack}
+	return {
+		"version": 1,
+		"generated": str(now_datetime()),
+		"user": frappe.session.user,
+		"doctypes": pack,
+		# Form layouts to keep for offline use: this app's own doctypes only (never User, Role...).
+		"meta_doctypes": _app_meta_doctypes(),
+	}
+
+
+def _app_meta_doctypes():
+	"""The app's own doctypes whose form layout the signed-in user may need: those they can
+	read, plus the child tables of those (their field definitions, not any data)."""
+	names = frappe.get_all(
+		"DocType", filters={"module": ["in", APP_MODULES], "custom": 0, "issingle": 0}, pluck="name"
+	)
+	readable = [
+		d
+		for d in names
+		if d != "Push Subscription" and not frappe.get_meta(d).istable and frappe.has_permission(d, "read")
+	]
+	children = set()
+	for d in readable:
+		for df in frappe.get_meta(d).fields:
+			if df.fieldtype in ("Table", "Table MultiSelect") and df.options in names:
+				children.add(df.options)
+	return sorted({*readable, *children})
