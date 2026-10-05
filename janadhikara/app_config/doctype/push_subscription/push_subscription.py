@@ -4,5 +4,5 @@
 from frappe.model.document import Document
 
 
-class Survey(Document):
+class PushSubscription(Document):
 	pass

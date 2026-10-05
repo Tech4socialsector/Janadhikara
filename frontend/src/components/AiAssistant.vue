@@ -71,7 +71,7 @@
               @keydown.enter.exact.prevent="submit"
             />
             <Tooltip v-if="voiceSupported" :text="listening ? 'Stop listening' : 'Speak'">
-              <Button variant="ghost" size="sm" :icon="listening ? 'mic-off' : 'mic'" @click="toggleVoice" />
+              <Button variant="ghost" size="sm" :icon="listening ? 'mic-off' : 'mic'" :tooltip="listening ? 'Stop listening' : 'Speak your question'" @click="toggleVoice" />
             </Tooltip>
             <Button variant="solid" :loading="sending.loading" :disabled="!draft.trim()" @click="submit">
               <template #icon>

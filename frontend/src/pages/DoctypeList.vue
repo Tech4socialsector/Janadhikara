@@ -140,7 +140,7 @@
           <div class="filter-sheet-panel flex flex-col">
             <div class="flex h-12 flex-shrink-0 items-center justify-between border-b px-4 dark:border-gray-800">
               <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Filter</h3>
-              <Button variant="ghost" size="sm" icon="x" @click="showFilterSheet = false" />
+              <Button variant="ghost" size="sm" icon="x" tooltip="Close" @click="showFilterSheet = false" />
             </div>
 
             <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
@@ -158,7 +158,7 @@
           <div class="filter-sheet-panel flex flex-col">
             <div class="flex h-12 flex-shrink-0 items-center justify-between border-b px-4 dark:border-gray-800">
               <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Sort</h3>
-              <Button variant="ghost" size="sm" icon="x" @click="showSortSheet = false" />
+              <Button variant="ghost" size="sm" icon="x" tooltip="Close" @click="showSortSheet = false" />
             </div>
             <div class="px-4 py-4">
               <SortEditor :fields="allFields" v-model="sortValue" />
@@ -348,16 +348,7 @@
             <ListRows v-else />
           </template>
           <ListEmptyState v-else />
-          <ListSelectBanner v-if="selectable">
-            <template #actions>
-              <Button variant="solid" theme="red" @click="confirmBulkDelete">
-                <template #prefix>
-                  <FeatherIcon name="trash-2" class="h-4 w-4" />
-                </template>
-                Delete
-              </Button>
-            </template>
-          </ListSelectBanner>
+          <SelectionBar v-if="selectable" @delete="confirmBulkDelete" />
         </template>
       </ListView>
 
@@ -486,7 +477,6 @@ import {
   ListRowItem,
   ListGroups,
   ListEmptyState,
-  ListSelectBanner,
   ListFooter,
   Popover,
   Tooltip,
@@ -496,6 +486,7 @@ import PageHeader from '@/components/PageHeader.vue'
 import UserLinkHoverCard from '@/components/UserLinkHoverCard.vue'
 import FilterEditor from '@/components/FilterEditor.vue'
 import SortEditor from '@/components/SortEditor.vue'
+import SelectionBar from '@/components/SelectionBar.vue'
 import ColumnPicker from '@/components/ColumnPicker.vue'
 import SortControl from '@/components/SortControl.vue'
 import { useColumnPrefs } from '@/composables/useColumnPrefs'

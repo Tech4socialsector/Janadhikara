@@ -57,11 +57,12 @@
    "fieldname": "settlement_code",
    "fieldtype": "Data",
    "label": "Settlement Code",
-   "reqd": 1,
+   "reqd": 0,
    "unique": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "Unique code for this settlement."
+   "description": "Generated automatically when the record is first saved.",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_main",

@@ -20,7 +20,10 @@
   "ai_provider",
   "ai_api_base_url",
   "ai_model",
-  "ai_api_key"
+  "ai_api_key",
+  "section_break_push",
+  "push_public_key",
+  "push_private_key"
  ],
  "fields": [
   {
@@ -134,6 +137,24 @@
    "fieldname": "ai_api_key",
    "fieldtype": "Password",
    "label": "API Key"
+  },
+  {
+   "fieldname": "section_break_push",
+   "fieldtype": "Section Break",
+   "label": "Push notifications"
+  },
+  {
+   "fieldname": "push_public_key",
+   "fieldtype": "Data",
+   "label": "Push Public Key",
+   "read_only": 1,
+   "description": "Generated automatically the first time a user turns alerts on."
+  },
+  {
+   "fieldname": "push_private_key",
+   "fieldtype": "Password",
+   "label": "Push Private Key",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,

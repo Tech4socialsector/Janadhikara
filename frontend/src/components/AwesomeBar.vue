@@ -1,6 +1,6 @@
 <template>
   <Tooltip :text="`Search (${shortcutLabel})`">
-    <Button variant="ghost" size="sm" icon="search" @click="open = true" />
+    <Button variant="ghost" size="sm" icon="search" tooltip="Search" @click="open = true" />
   </Tooltip>
 
   <!-- No :options.title - the input itself is the dialog's only real

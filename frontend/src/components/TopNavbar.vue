@@ -8,6 +8,7 @@
     </div>
 
     <div class="flex flex-shrink-0 items-center gap-2">
+      <NetworkPill />
       <AwesomeBar />
       <TabButtons v-model="theme" :buttons="themeButtons" />
     </div>
@@ -18,6 +19,7 @@
 import { computed } from 'vue'
 import { TabButtons } from 'frappe-ui'
 import AwesomeBar from '@/components/AwesomeBar.vue'
+import NetworkPill from '@/components/NetworkPill.vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import { currentTheme } from '@/data/theme'
 

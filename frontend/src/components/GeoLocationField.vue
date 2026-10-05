@@ -3,7 +3,7 @@
     <div class="mb-1.5 flex items-center justify-between">
       <label class="text-sm text-gray-700 dark:text-gray-300">{{ field.label }}</label>
       <Tooltip v-if="hasShapes" text="Clear everything on the map">
-        <Button variant="ghost" size="sm" icon="x" @click="clearLocation" />
+        <Button variant="ghost" size="sm" icon="x" tooltip="Clear location" @click="clearLocation" />
       </Tooltip>
     </div>
 

@@ -14,7 +14,7 @@ from werkzeug.wrappers import Response
 # real build location, and its sibling workbox-*.js chunk is loaded by
 # sw.js via a same-directory relative import, so that has to be reachable
 # there too.
-ALLOWED_FILENAME = re.compile(r"^(sw\.js|sw\.js\.map|workbox-[\w-]+\.js|workbox-[\w-]+\.js\.map)$")
+ALLOWED_FILENAME = re.compile(r"^(sw\.js|sw\.js\.map|push-worker\.js|workbox-[\w-]+\.js|workbox-[\w-]+\.js\.map)$")
 
 
 class ServiceWorkerRenderer(BaseRenderer):

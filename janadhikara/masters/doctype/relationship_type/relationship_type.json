@@ -4,73 +4,31 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "record_date",
-  "survey_name",
-  "survey_code",
-  "column_break_main",
-  "status",
-  "description"
+  "relationship_name"
  ],
  "fields": [
   {
-   "fieldname": "survey_name",
+   "fieldname": "relationship_name",
    "fieldtype": "Data",
-   "label": "Survey Name",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
-  },
-  {
-   "fieldname": "survey_code",
-   "fieldtype": "Data",
-   "label": "Survey Code",
+   "label": "Relationship",
    "reqd": 1,
    "unique": 1,
    "in_list_view": 1,
-   "in_standard_filter": 1
-  },
-  {
-   "fieldname": "column_break_main",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "label": "Status",
-   "options": "Active\nInactive",
-   "default": "Active",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
-  },
-  {
-   "fieldname": "description",
-   "fieldtype": "Small Text",
-   "label": "Description"
-  },
-  {
-   "fieldname": "record_date",
-   "fieldtype": "Date",
-   "label": "Date",
-   "default": "Today",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "description": "Defaults to today; change it to record a different date."
+   "description": "e.g. Head, Spouse, Son, Daughter, Mother."
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
  "modified": "2026-10-01 10:00:00.000000",
  "modified_by": "Administrator",
- "module": "Baseline",
- "name": "Survey",
+ "module": "Masters",
+ "name": "Relationship Type",
  "owner": "Administrator",
  "row_format": "Dynamic",
  "states": [],
- "autoname": "format:SRV-{#####}",
- "naming_rule": "Expression",
- "title_field": "survey_name",
+ "autoname": "field:relationship_name",
+ "naming_rule": "By fieldname",
+ "title_field": "relationship_name",
  "permissions": [
   {
    "create": 1,
@@ -125,6 +83,5 @@
  "allow_rename": 1,
  "track_changes": 1,
  "sort_field": "modified",
- "sort_order": "DESC",
- "show_title_field_in_link": 1
+ "sort_order": "DESC"
 }

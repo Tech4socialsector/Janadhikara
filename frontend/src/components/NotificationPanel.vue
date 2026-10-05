@@ -17,6 +17,14 @@
             >
               Mark all read
             </Button>
+            <Button
+              v-if="alertsAskable"
+              variant="ghost"
+              size="sm"
+              icon="bell"
+              tooltip="Turn on push alerts for this device"
+              @click="enableAlerts"
+            />
             <Button variant="ghost" size="sm" icon="x" tooltip="Close" @click="show = false" />
           </div>
         </div>
@@ -67,12 +75,19 @@
             class="chat-row group flex w-full items-center gap-3 px-4 text-left hover:bg-surface-gray-1"
             @click="open(n)"
           >
-            <span
-              class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-base font-semibold text-white"
-              :style="{ backgroundColor: avatarColor(n) }"
-            >
-              <template v-if="initials(n)">{{ initials(n) }}</template>
-              <FeatherIcon v-else :name="iconName(n)" class="h-5 w-5" />
+            <!-- An icon for what it is about (a task, a household, a mention...) in a tinted
+            circle; the sender's initials sit on its corner when there is one. -->
+            <span class="relative flex-shrink-0">
+              <span class="flex h-12 w-12 items-center justify-center rounded-full" :class="kind(n).tile">
+                <FeatherIcon :name="kind(n).icon" class="h-5 w-5" />
+              </span>
+              <span
+                v-if="initials(n)"
+                class="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white text-[9px] font-semibold text-white dark:border-gray-900"
+                :style="{ backgroundColor: avatarColor(n) }"
+              >
+                {{ initials(n).slice(0, 1) }}
+              </span>
             </span>
 
             <span class="chat-row-body min-w-0 flex-1 border-b border-outline-gray-1 py-3">
@@ -156,6 +171,7 @@ import {
   markRead,
 } from '@/data/notifications'
 import { findModuleByDoctype } from '@/data/modules'
+import { needsPushSetup, askForDesktopAlerts } from '@/data/realtime'
 
 // Kept so existing callers that still pass them (the old side-panel layout
 // needed the sidebar width / an element to ignore) don't break - a popup has
@@ -167,6 +183,17 @@ defineProps({
 
 const router = useRouter()
 const filter = ref('all')
+
+// Offer system alerts (shown when the app is in the background) until the user has answered.
+const alertsAskable = ref(false)
+needsPushSetup().then((needed) => (alertsAskable.value = needed))
+async function enableAlerts() {
+  try {
+    await askForDesktopAlerts()
+  } finally {
+    alertsAskable.value = await needsPushSetup()
+  }
+}
 
 const show = computed({
   get: () => notificationsState.visible,
@@ -192,6 +219,34 @@ const TYPE_ICONS = {
   'Energy Point': 'zap',
 }
 const iconName = (n) => TYPE_ICONS[n.type] || 'bell'
+
+// What the notification is about -> icon + tint (document first, then its type).
+const DOC_ICONS = {
+  ToDo: 'check-square',
+  'Household Profile': 'home',
+  'Individual Profile': 'users',
+  Settlement: 'map-pin',
+  Survey: 'clipboard',
+  'Partner Details': 'briefcase',
+  Announcement: 'volume-2',
+}
+const TINTS = {
+  task: 'bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-300',
+  record: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300',
+  mention: 'bg-violet-50 text-violet-600 dark:bg-violet-900/30 dark:text-violet-300',
+  share: 'bg-teal-50 text-teal-600 dark:bg-teal-900/30 dark:text-teal-300',
+  alert: 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-300',
+  other: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300',
+}
+function kind(n) {
+  if (n.document_type === 'ToDo') return { icon: 'check-square', tile: TINTS.task }
+  if (n.type === 'Mention') return { icon: 'at-sign', tile: TINTS.mention }
+  if (n.type === 'Share') return { icon: 'share-2', tile: TINTS.share }
+  if (n.type === 'Alert') return { icon: 'alert-circle', tile: TINTS.alert }
+  if (n.type === 'Energy Point') return { icon: 'zap', tile: TINTS.alert }
+  if (DOC_ICONS[n.document_type]) return { icon: DOC_ICONS[n.document_type], tile: TINTS.record }
+  return { icon: iconName(n), tile: n.type === 'Assignment' ? TINTS.task : TINTS.other }
+}
 
 // "Who" the notification is from: the sending user's name when known,
 // otherwise the notification's own title (which is what the old panel led with).
@@ -238,6 +293,21 @@ function formatTime(dateStr) {
 
 function open(n) {
   if (!n.read) markRead(n.name)
+  if (n.document_type === 'ToDo' || String(n.link || '').includes('/janadhikara/worklist')) {
+    // Straight to that task's form (a deleted task has none - just the list).
+    if (n.document_type === 'ToDo' && n.document_name) {
+      router.push({ name: 'DoctypeForm', params: { doctypeRoute: 'todo', name: n.document_name } })
+    } else {
+      router.push({ name: 'Worklist' })
+    }
+    notificationsState.visible = false
+    return
+  }
+  if (n.document_type === 'Announcement') {
+    router.push({ name: 'Home' })
+    notificationsState.visible = false
+    return
+  }
   const mod = n.document_type ? findModuleByDoctype(n.document_type) : null
   if (mod && n.document_name) {
     router.push({

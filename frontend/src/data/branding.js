@@ -2,6 +2,8 @@ import { computed, watchEffect } from 'vue'
 import { useCall } from 'frappe-ui'
 import { currentTheme } from '@/data/theme'
 import defaultLogo from '@/assets/default-logo.png'
+import { online } from '@/data/connection'
+import { appIconDataUrl } from '@/data/offlinePack'
 
 // The app's configurable name/logo, from App Setting (allow_guest=True
 // so the Login page can also show it before authentication).
@@ -22,6 +24,7 @@ export const DEFAULT_LOGO = defaultLogo
 
 export const appLogo = computed(
   () =>
+    (!online.value && appIconDataUrl.value) ||
     (currentTheme.value === 'dark'
       ? brandingResource.data?.app_logo_dark || brandingResource.data?.app_logo
       : brandingResource.data?.app_logo) || DEFAULT_LOGO,

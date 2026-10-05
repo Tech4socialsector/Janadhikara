@@ -44,6 +44,14 @@ const crumbs = computed(() => {
   const doctypeRoute = route.params.doctypeRoute
   if (!doctypeRoute) return []
 
+  if (doctypeRoute === 'todo') {
+    return [
+      { label: 'Home', to: { name: 'Home' } },
+      { label: 'Worklist', to: { name: 'Worklist' } },
+      { label: route.name === 'DoctypeNew' ? 'New task' : pageTitle.value || 'Task' },
+    ]
+  }
+
   const moduleItem = findModuleByRoute(doctypeRoute)
   const listLabel = moduleItem?.label || findSettingsEntryByRoute(doctypeRoute)?.label || doctypeRoute
   const list = [{ label: 'Home', to: { name: 'Home' } }]

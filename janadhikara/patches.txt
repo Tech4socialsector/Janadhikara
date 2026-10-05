@@ -30,3 +30,9 @@ janadhikara.patches.v1_1.remove_unused_baseline_doctypes
 janadhikara.patches.v1_1.backfill_record_date
 janadhikara.patches.v1_1.individual_profile_child_tables
 janadhikara.patches.v1_1.desk_icon_janadhikara
+janadhikara.patches.v1_1.organise_app_modules
+janadhikara.patches.v1_1.set_sidebar_icons
+janadhikara.patches.v1_1.seed_relationship_types
+janadhikara.patches.v1_1.todo_task_title
+janadhikara.patches.v1_1.todo_task_time
+janadhikara.patches.v1_1.todo_form_fields

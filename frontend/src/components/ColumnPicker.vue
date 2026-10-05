@@ -55,8 +55,8 @@
               @blur="commitEdit"
             />
             <span v-else class="min-w-0 flex-1 truncate">{{ col.label }}</span>
-            <Button variant="ghost" size="sm" icon="lucide-pencil" title="Rename column" @click="startEdit(col)" />
-            <Button variant="ghost" size="sm" icon="x" title="Remove column" @click="prefs.removeColumn(col.fieldname)" />
+            <Button variant="ghost" size="sm" icon="lucide-pencil" tooltip="Rename column" @click="startEdit(col)" />
+            <Button variant="ghost" size="sm" icon="x" tooltip="Remove column" @click="prefs.removeColumn(col.fieldname)" />
           </div>
         </div>
         <div class="mt-1 flex flex-col gap-0.5 border-t border-outline-gray-1 pt-1.5">

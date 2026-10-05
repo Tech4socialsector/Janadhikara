@@ -12,6 +12,7 @@
     <div class="flex min-w-0 flex-1 flex-col">
       <TopNavbar />
       <main class="flex-1 overflow-y-auto bg-surface-white px-5 py-4 sm:px-6">
+        <ConnectionBanner />
         <slot />
       </main>
     </div>
@@ -23,7 +24,15 @@ import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import AppSidebar from '@/components/AppSidebar.vue'
 import TopNavbar from '@/components/TopNavbar.vue'
 import MobileShell from '@/components/MobileShell.vue'
+import ConnectionBanner from '@/components/ConnectionBanner.vue'
+import { startRealtime } from '@/data/realtime'
+import { startAutoCleanup } from '@/data/offlineCleanup'
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('sm')
+
+// Live notifications (a task assigned to you shows up at once).
+startRealtime()
+// Back online: upload what was saved offline and clear the device (see data/offlineCleanup.js).
+startAutoCleanup()
 </script>

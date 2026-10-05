@@ -3,6 +3,9 @@
 
 from frappe.model.document import Document
 
+from janadhikara.naming import autoname_with_code
+
 
 class SettlementInterventionUnit(Document):
-	pass
+	def autoname(self):
+		autoname_with_code(self, "SIU", "intervention_unit_code")

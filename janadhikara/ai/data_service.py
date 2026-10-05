@@ -44,7 +44,7 @@ ALWAYS_BLOCKED = {
     'Activity Log', 'Version', 'Patch Log', 'Scheduled Job Type', 'Server Script', 'Client Script',
     'App Setting', 'App Module Setting', 'App Module DocType Item', 'App Module Setting Role',
     'AI Guide Section', 'AI Guide Instruction', 'AI Data Policy', 'AI Data Policy Field',
-    'Field Function Mapping', 'Field Function Mapping Item', 'Announcement Dismissal',
+    'Field Function Mapping', 'Field Function Mapping Item', 'Announcement Dismissal', 'Push Subscription',
 }
 
 LAYOUT_FIELDTYPES = {'Section Break', 'Column Break', 'Tab Break', 'HTML', 'Heading', 'Button', 'Image'}

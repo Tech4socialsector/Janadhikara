@@ -212,3 +212,61 @@ textarea,
 [contenteditable='true'] {
   user-select: text;
 }
+
+/* The selection bar under a list/child table sits in the page flow (frappe-ui's
+stock banner is absolutely positioned and overlaps the rows of a short table). */
+.selection-bar,
+.selection-bar:where([class]) {
+  min-width: 0;
+}
+.relative > .absolute.inset-x-0.bottom-6:has(.selection-bar),
+div.absolute.inset-x-0.bottom-6:has(> .selection-bar) {
+  position: sticky;
+  bottom: 0.75rem;
+  margin-top: 0.75rem;
+  z-index: 5;
+}
+
+/* Worklist filter tabs on a phone: the strip spans the full width, every tab gets
+an equal share and the selected one (the only one with a label) gets a bigger one. */
+@media (max-width: 639px) {
+  .worklist-filter-tabs {
+    width: 100%;
+  }
+  .worklist-filter-tabs > div {
+    display: flex;
+    width: 100%;
+  }
+  .worklist-filter-tabs [data-slot='tab-button'] {
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    height: 2.25rem;
+  }
+  .worklist-filter-tabs [data-slot='tab-button'][data-state='checked'] {
+    flex: 2.4 1 0;
+  }
+}
+
+/* Phone toolbar: the list/calendar toggle matches the height of the search box beside it. */
+@media (max-width: 639px) {
+  .worklist-view-toggle [data-slot='tab-button'] {
+    height: 1.875rem;
+    width: 2rem;
+  }
+}
+
+/* Worklist tabs: the count badge floats on an icon-only tab's corner. */
+.worklist-filter-tabs [data-slot='tab-button'] {
+  position: relative;
+  overflow: visible;
+}
+
+/* Phones have no hover: a tap must not pop tooltips up over the screen. */
+@media (max-width: 639px), (hover: none) {
+  [role='tooltip'],
+  [data-radix-popper-content-wrapper]:has([role='tooltip']),
+  [data-reka-popper-content-wrapper]:has([role='tooltip']) {
+    display: none !important;
+  }
+}

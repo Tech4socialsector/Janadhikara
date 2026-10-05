@@ -58,7 +58,7 @@
         {{ fileName }}
       </a>
       <Tooltip text="Remove file">
-        <Button variant="ghost" size="sm" icon="x" @click="$emit('update:modelValue', null)" />
+        <Button variant="ghost" size="sm" icon="x" tooltip="Clear" @click="$emit('update:modelValue', null)" />
       </Tooltip>
     </div>
     <FileUploader

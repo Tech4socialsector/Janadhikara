@@ -5,8 +5,13 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
+from janadhikara.naming import autoname_with_code
+
 
 class Settlement(Document):
+	def autoname(self):
+		autoname_with_code(self, "SET", "settlement_code")
+
 	def validate(self):
 		self.validate_worker_assignments()
 

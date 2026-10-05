@@ -50,11 +50,12 @@
    "fieldname": "hhid",
    "fieldtype": "Data",
    "label": "Household ID",
-   "reqd": 1,
+   "reqd": 0,
    "unique": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "The Household ID from the questionnaire."
+   "description": "Generated automatically when the record is first saved.",
+   "read_only": 1
   },
   {
    "fieldname": "survey",

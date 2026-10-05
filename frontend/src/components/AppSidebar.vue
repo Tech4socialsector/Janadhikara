@@ -281,6 +281,7 @@ import { clearSiteData } from '@/data/clearSiteData'
 import { brandingResource, appLogo } from '@/data/branding'
 import { activeModule } from '@/data/activeModule'
 import { notificationsResource, unreadCount, toggleNotifications } from '@/data/notifications'
+import { pendingCount } from '@/data/offlineQueue'
 import { showSettingsDialog, openSettingsDialog } from '@/data/settingsDialog'
 import { assistantConfigResource, toggleAssistant } from '@/data/aiAssistant'
 
@@ -440,6 +441,13 @@ const sections = computed(() => {
           icon: moduleIcon('check-square'),
           to: { name: 'Worklist' },
           isActive: route.name === 'Worklist',
+        },
+        {
+          label: 'Sync Data',
+          icon: moduleIcon('cloud-upload'),
+          to: { name: 'SyncData' },
+          suffix: pendingCount.value > 0 ? String(pendingCount.value > 9 ? '9+' : pendingCount.value) : undefined,
+          isActive: route.name === 'SyncData',
         },
       ],
     },

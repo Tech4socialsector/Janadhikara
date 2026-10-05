@@ -4,6 +4,8 @@
 import frappe
 from frappe.model.document import Document
 
+from janadhikara.naming import autoname_with_code
+
 # The 5 roles this app hands out via an Employee row's own Role field -
 # the only roles ensure_employee_user is ever allowed to grant or revoke.
 # Kept as an explicit list (not "whatever Employee.role's Select options
@@ -21,6 +23,9 @@ EMPLOYEE_MANAGED_ROLES = {
 
 
 class PartnerDetails(Document):
+	def autoname(self):
+		autoname_with_code(self, "ORG", "organization_code")
+
 	def validate(self):
 		for row in self.employees:
 			self.ensure_employee_user(row)

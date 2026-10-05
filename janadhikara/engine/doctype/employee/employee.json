@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_bulk_edit": 1,
- "autoname": "field:worker_code",
+ "autoname": "format:EMP-{#####}",
  "creation": "2026-09-30 11:27:14.603840",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -25,8 +25,10 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Worker Code",
-   "reqd": 1,
-   "unique": 1
+   "reqd": 0,
+   "unique": 1,
+   "read_only": 1,
+   "description": "Generated automatically when the record is first saved."
   },
   {
    "fieldname": "column_break_worker_1",
@@ -111,5 +113,6 @@
  "states": [],
  "title_field": "worker_name",
  "track_changes": 1,
- "show_title_field_in_link": 1
+ "show_title_field_in_link": 1,
+ "naming_rule": "Expression"
 }

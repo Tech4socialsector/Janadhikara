@@ -1,9 +1,11 @@
 <template>
   <div class="fixed inset-0 flex flex-col bg-gray-50 pt-[env(safe-area-inset-top)] dark:bg-gray-900">
     <div class="flex flex-shrink-0 items-center gap-2 border-b bg-white px-3 py-3 dark:border-gray-800 dark:bg-gray-900">
-      <Button variant="ghost" size="sm" icon="menu" tooltip="Menu" class="-ml-1 flex-shrink-0" @click="openMobileMenu" />
+      <!-- Back on every page except Home (where there is nowhere to go back to). -->
+      <Button v-if="canGoBack" variant="ghost" size="sm" icon="arrow-left" aria-label="Back" class="-ml-1 flex-shrink-0" @click="goBack" />
+      <Button variant="ghost" size="sm" icon="menu" aria-label="Menu" class="flex-shrink-0" :class="canGoBack ? '' : '-ml-1'" @click="openMobileMenu" />
       <!-- The app icon goes Home. -->
-      <router-link :to="{ name: 'Home' }" class="flex flex-shrink-0 items-center" aria-label="Home">
+      <router-link v-if="!canGoBack" :to="{ name: 'Home' }" class="flex flex-shrink-0 items-center" aria-label="Home">
         <img
           v-if="appLogo"
           :src="appLogo"
@@ -15,6 +17,7 @@
         {{ pageTitle }}
       </h1>
       <AwesomeBar />
+      <NetworkPill compact />
       <TabButtons v-model="theme" :buttons="themeButtons" />
 
       <!-- Alerts in the top-right corner (the profile is in the bottom bar). -->
@@ -30,6 +33,7 @@
     </div>
 
     <main class="flex-1 overflow-y-auto px-4 py-4 pb-20">
+      <ConnectionBanner />
       <slot />
     </main>
 
@@ -42,9 +46,12 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { Button, FeatherIcon, TabButtons } from 'frappe-ui'
 import AwesomeBar from '@/components/AwesomeBar.vue'
+import NetworkPill from '@/components/NetworkPill.vue'
 import MobileNav from '@/components/MobileNav.vue'
+import ConnectionBanner from '@/components/ConnectionBanner.vue'
 import NotificationPanel from '@/components/NotificationPanel.vue'
 import AiAssistant from '@/components/AiAssistant.vue'
 import SettingsDialog from '@/components/SettingsDialog.vue'
@@ -54,6 +61,17 @@ import { pageTitle } from '@/data/pageTitle'
 import { showSettingsDialog } from '@/data/settingsDialog'
 import { unreadCount, toggleNotifications } from '@/data/notifications'
 import { currentTheme } from '@/data/theme'
+
+const route = useRoute()
+const router = useRouter()
+const canGoBack = computed(() => route.name !== 'Home')
+
+// One step back through the app's own history; if this page was opened directly
+// (a link, a push alert) there is none, so go Home instead of leaving the app.
+function goBack() {
+  if (window.history.state?.back) router.back()
+  else router.push({ name: 'Home' })
+}
 
 const themeButtons = [
   { label: 'Light', value: 'light', icon: 'sun', hideLabel: true, tooltip: 'Light theme' },

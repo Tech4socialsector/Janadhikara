@@ -254,7 +254,26 @@ home_page = "janadhikara"
 # ------------------
 # Every doctype of this app gets a (disabled) AI Data Policy so the AI assistant
 # can't see it until someone has reviewed it - see janadhikara/ai/policy.py.
-after_migrate = ["janadhikara.ai.policy.ensure_policies"]
+after_request = ["janadhikara.security.add_security_headers"]
+after_migrate = ["janadhikara.ai.policy.ensure_policies", "janadhikara.menu.ensure_master_sidebar"]
 doc_events = {
 	"DocType": {"after_insert": "janadhikara.ai.policy.on_doctype_created"},
+	"Household Profile": {"on_update": "janadhikara.worklist.household_updated"},
+	"Notification Log": {"after_insert": "janadhikara.push.notification_created"},
+	"Announcement": {"on_update": "janadhikara.announcements.announcement_saved"},
+	"ToDo": {
+		"before_validate": "janadhikara.worklist.ensure_task_title",
+		"after_insert": "janadhikara.worklist.notify_new_task",
+		"on_update": "janadhikara.worklist.todo_changed",
+		"on_trash": "janadhikara.worklist.todo_deleted",
+	},
+}
+
+# Scheduled Jobs
+# ---------------
+scheduler_events = {
+	"daily": [
+		"janadhikara.worklist.nudge_stale_households",
+		"janadhikara.announcements.notify_started_announcements",
+	],
 }

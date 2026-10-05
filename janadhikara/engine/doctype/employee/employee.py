@@ -4,6 +4,9 @@
 # import frappe
 from frappe.model.document import Document
 
+from janadhikara.naming import autoname_with_code
+
 
 class Employee(Document):
-	pass
+	def autoname(self):
+		autoname_with_code(self, "EMP", "worker_code")

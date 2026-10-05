@@ -67,7 +67,7 @@
     <template v-if="isMobile">
       <div
         v-if="rows.length"
-        class="mb-2 flex items-center justify-between gap-2 rounded-lg border bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-900"
+        class="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-lg border bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-900"
       >
         <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
           <input
@@ -77,7 +77,7 @@
             :indeterminate.prop="someSelected"
             @change="toggleSelectAll"
           />
-          {{ selectedKeys.length ? `${selectedKeys.length} selected` : 'Select all' }}
+          <span class="whitespace-nowrap">{{ allSelected ? 'Unselect all' : selectedKeys.length ? `${selectedKeys.length} selected` : 'Select all' }}</span>
         </label>
         <div v-if="selectedKeys.length" class="flex items-center gap-1.5">
           <Button size="sm" @click="duplicateSelected">
@@ -88,7 +88,7 @@
             <template #prefix><FeatherIcon name="trash-2" class="h-3.5 w-3.5" /></template>
             Delete
           </Button>
-          <Button variant="ghost" size="sm" icon="x" aria-label="Clear selection" @click="selectedKeys = []" />
+          <Button variant="ghost" size="sm" icon="x" tooltip="Clear selection" aria-label="Clear selection" @click="selectedKeys = []" />
         </div>
       </div>
 
@@ -125,7 +125,7 @@
             </div>
             <Dropdown placement="bottom-end" :options="rowActions(rows.indexOf(row))">
               <template #default="{ open }">
-                <Button variant="ghost" size="sm" icon="more-vertical" aria-label="Row actions" />
+                <Button variant="ghost" size="sm" icon="more-vertical" tooltip="Row actions" aria-label="Row actions" />
               </template>
             </Dropdown>
           </div>
@@ -160,7 +160,7 @@
               </Tooltip>
               <Dropdown placement="bottom-end" :options="rowActions(rows.indexOf(row))">
                 <template #default="{ open }">
-                  <Button variant="ghost" size="sm" icon="more-horizontal" />
+                  <Button variant="ghost" size="sm" icon="more-horizontal" tooltip="More actions" />
                 </template>
               </Dropdown>
             </div>
@@ -182,16 +182,7 @@
           No rows match "{{ searchQuery }}".
         </div>
         <ListEmptyState v-else />
-        <ListSelectBanner v-if="selectable">
-          <template #actions>
-            <Button variant="solid" theme="red" @click="confirmBulkRemove">
-              <template #prefix>
-                <FeatherIcon name="trash-2" class="h-4 w-4" />
-              </template>
-              Delete
-            </Button>
-          </template>
-        </ListSelectBanner>
+        <SelectionBar v-if="selectable" duplicate @duplicate="duplicateSelected" @delete="confirmBulkRemove" />
       </template>
     </ListView>
 
@@ -210,7 +201,7 @@
             <h3 class="truncate text-base font-semibold text-gray-900 dark:text-gray-100">
               {{ field.label }} - Row {{ (editingIdx ?? 0) + 1 }}
             </h3>
-            <Button variant="ghost" size="sm" icon="x" @click="showRowEditor = false" />
+            <Button variant="ghost" size="sm" icon="x" tooltip="Close" @click="showRowEditor = false" />
           </div>
 
           <div class="min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-6">
@@ -311,7 +302,6 @@ import {
   ListRowItem,
   ListGroups,
   ListEmptyState,
-  ListSelectBanner,
   Tooltip,
 } from 'frappe-ui'
 import DynamicField from '@/components/DynamicField.vue'
@@ -320,6 +310,7 @@ import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { useFieldFunctions } from '@/composables/useFieldFunctions'
 import { useFetchFromFields } from '@/composables/useFetchFromFields'
 import { useColumnPrefs } from '@/composables/useColumnPrefs'
+import SelectionBar from '@/components/SelectionBar.vue'
 import ColumnPicker from '@/components/ColumnPicker.vue'
 import { linkTitle, isTitledLink, ensureTitlesForRows } from '@/data/linkTitles'
 import { resolveFrappeDefault } from '@/composables/useCommonFieldDefaults'

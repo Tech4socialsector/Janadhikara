@@ -35,10 +35,11 @@
    "fieldname": "intervention_unit_code",
    "fieldtype": "Data",
    "label": "Intervention Unit Code",
-   "reqd": 1,
+   "reqd": 0,
    "unique": 1,
    "in_list_view": 1,
-   "description": "Unique code for this unit."
+   "description": "Generated automatically when the record is first saved.",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_main",
@@ -144,8 +145,8 @@
  "istable": 1,
  "editable_grid": 1,
  "permissions": [],
- "autoname": "field:intervention_unit_code",
- "naming_rule": "By fieldname",
+ "autoname": "format:SIU-{#####}",
+ "naming_rule": "Expression",
  "title_field": "intervention_unit_name",
  "show_title_field_in_link": 1
 }

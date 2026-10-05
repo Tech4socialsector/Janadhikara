@@ -40,7 +40,7 @@
             <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">
               New {{ field.options }}
             </h3>
-            <Button variant="ghost" size="sm" icon="x" @click="showCreateDialog = false" />
+            <Button variant="ghost" size="sm" icon="x" tooltip="Close" @click="showCreateDialog = false" />
           </div>
 
           <div class="min-h-0 flex-1 space-y-4 overflow-y-auto px-4 py-4">
@@ -127,8 +127,12 @@ controls painted through the dialog instead of being covered by it. */
 import { computed, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { Combobox, Dialog, Button, ErrorMessage, FeatherIcon, FormControl, Tooltip, call, useCall, toast } from 'frappe-ui'
+import { useOnline } from '@vueuse/core'
 import { findModuleByDoctype } from '@/data/modules'
+import { getPack, localRows } from '@/data/offlinePack'
 import DynamicField from '@/components/DynamicField.vue'
+
+const online = useOnline()
 
 const props = defineProps({
   field: { type: Object, required: true },
@@ -155,7 +159,10 @@ const metaResource = useCall({
   method: 'GET',
   cacheKey: `janadhikara-meta-${props.field.options}`,
 })
-const titleField = computed(() => metaResource.data?.title_field || 'name')
+// Rows / title field taken from the copy kept on this device (declared before anything reads them).
+const localRowsData = ref(null)
+const localTitleField = ref(null)
+const titleField = computed(() => metaResource.data?.title_field || localTitleField.value || 'name')
 
 // A cascading filter (e.g. District's `state`) resolves to undefined/null
 // until the field it depends on is actually filled in - fetching with that
@@ -208,12 +215,30 @@ const recordsResource = useCall({
 // back-to-back, the second silently aborting the first (harmless, but
 // noisy: "AbortError: The user aborted a request" in the console on
 // every single Link field, every time its containing form loads).
+// No connection (or the server can't be reached): fill the picker from the copy of the
+// reference data kept on this device (see data/offlinePack.js).
+async function loadFromDevice() {
+  if (!props.field.options || filtersPending.value) return
+  const pack = await getPack()
+  const table = pack?.doctypes?.[props.field.options]
+  if (!table) return
+  localTitleField.value = table.title_field || 'name'
+  const rows = await localRows(props.field.options, props.filters)
+  localRowsData.value = rows
+}
+
 watch(
-  () => [props.field.options, JSON.stringify(props.filters), filtersPending.value, !!metaResource.data],
+  () => [props.field.options, JSON.stringify(props.filters), filtersPending.value, !!metaResource.data, online.value],
   () => {
-    if (props.field.options && !filtersPending.value && metaResource.data) recordsResource.fetch()
+    if (!props.field.options || filtersPending.value) return
+    if (!online.value) return loadFromDevice()
+    if (metaResource.data) recordsResource.fetch()?.catch?.(loadFromDevice)
   },
   { immediate: true },
+)
+watch(
+  () => recordsResource.error,
+  (error) => error && loadFromDevice(),
 )
 
 // Frappe desk only offers "Create a New X" from a Link field when the
@@ -242,7 +267,7 @@ const canCreate = computed(() => !!createPermissionResource.data)
 
 const options = computed(() => {
   if (filtersPending.value) return []
-  const rows = recordsResource.data || []
+  const rows = recordsResource.data || localRowsData.value || []
   // r.name is coerced to a string - a doctype named with autoname:
   // "autoincrement" (e.g. District) comes back from the API as a JSON
   // number (6, not "6"), while modelValue (whatever's actually stored on

@@ -45,8 +45,8 @@
               <span v-else />
               <div class="flex items-center gap-2">
                 <template v-if="announcements.length > 1">
-                  <Button variant="ghost" size="sm" icon="chevron-left" :disabled="index === 0" aria-label="Previous" @click="index--" />
-                  <Button variant="ghost" size="sm" icon="chevron-right" :disabled="index >= announcements.length - 1" aria-label="Next" @click="index++" />
+                  <Button variant="ghost" size="sm" icon="chevron-left" :disabled="index === 0" tooltip="Previous announcement" aria-label="Previous" @click="index--" />
+                  <Button variant="ghost" size="sm" icon="chevron-right" :disabled="index >= announcements.length - 1" tooltip="Next announcement" aria-label="Next" @click="index++" />
                 </template>
                 <Button v-if="current.dismissible" variant="subtle" size="sm" @click="dismissAnnouncement(current.name)">
                   Dismiss
@@ -78,37 +78,37 @@
     open module - on a phone that opens the menu drawer straight onto that module's
     configured sidebar items, which is why the old inline items list is gone. -->
     <div v-else class="grid grid-cols-3 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(7rem,max-content))] sm:gap-4">
-      <!-- Hover a tile (desktop) for a card listing what's inside the module. -->
-      <Popover v-for="mod in modulesResource.data" :key="mod.label" trigger="hover" :hover-delay="0.3" placement="bottom-start">
-        <template #target>
-          <button
-            class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
-            :class="{ 'bg-gray-100 dark:bg-gray-800': activeModule?.label === mod.label }"
-            @click="toggleModule(mod)"
-          >
-            <span class="module-tile-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-gray-300 group-active:translate-y-0 group-active:scale-95 group-active:shadow-sm dark:bg-gray-800 dark:ring-gray-700 dark:group-hover:ring-gray-600 sm:h-[4.5rem] sm:w-[4.5rem]">
-              <LucideIcon :name="mod.icon" class="h-7 w-7 text-gray-600 transition-colors duration-150 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100 sm:h-8 sm:w-8" />
-            </span>
-            <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">
-              {{ mod.label }}
-            </span>
-          </button>
+      <button
+        v-for="mod in modulesResource.data"
+        :key="mod.label"
+        class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
+        :class="{ 'bg-gray-100 dark:bg-gray-800': activeModule?.label === mod.label }"
+        @click="toggleModule(mod)"
+      >
+        <span class="module-tile-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-gray-300 group-active:translate-y-0 group-active:scale-95 group-active:shadow-sm dark:bg-gray-800 dark:ring-gray-700 dark:group-hover:ring-gray-600 sm:h-[4.5rem] sm:w-[4.5rem]">
+          <LucideIcon :name="mod.icon" class="h-7 w-7 text-gray-600 transition-colors duration-150 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100 sm:h-8 sm:w-8" />
+        </span>
+        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">
+          {{ mod.label }}
+        </span>
+      </button>
 
-        </template>
-        <template #body-main>
-          <div class="w-56 max-w-[80vw] p-3">
-            <div class="mb-1.5 text-sm font-semibold text-ink-gray-9">{{ mod.label }}</div>
-            <ul v-if="mod.doctypes?.length" class="space-y-1">
-              <li v-for="d in mod.doctypes.slice(0, 8)" :key="d.route" class="flex items-center gap-2 text-sm text-ink-gray-6">
-                <LucideIcon :name="d.icon || mod.icon" class="h-3.5 w-3.5 flex-shrink-0" />
-                <span class="truncate">{{ d.label || d.doctype_name }}</span>
-              </li>
-              <li v-if="mod.doctypes.length > 8" class="text-xs text-ink-gray-5">+ {{ mod.doctypes.length - 8 }} more</li>
-            </ul>
-            <div v-else class="text-sm text-ink-gray-5">Nothing here yet.</div>
-          </div>
-        </template>
-      </Popover>
+      <!-- Offline data waiting to be uploaded lives here. -->
+      <router-link
+        :to="{ name: 'SyncData' }"
+        class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
+      >
+        <span class="module-tile-icon relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md dark:bg-gray-800 dark:ring-gray-700 sm:h-[4.5rem] sm:w-[4.5rem]">
+          <LucideIcon name="cloud-upload" class="h-7 w-7 text-gray-600 dark:text-gray-300 sm:h-8 sm:w-8" />
+          <span
+            v-if="pendingCount > 0"
+            class="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-xs font-semibold text-white ring-2 ring-white dark:ring-gray-900"
+          >
+            {{ pendingCount > 99 ? '99+' : pendingCount }}
+          </span>
+        </span>
+        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">Sync Data</span>
+      </router-link>
     </div>
 
   </AppLayout>
@@ -126,12 +126,13 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
-import { FeatherIcon, ErrorMessage, Button, Popover } from 'frappe-ui'
+import { FeatherIcon, ErrorMessage, Button } from 'frappe-ui'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import Skeleton from '@/components/Skeleton.vue'
 import LucideIcon from '@/components/LucideIcon.vue'
 import { modulesResource } from '@/data/modules'
+import { pendingCount } from '@/data/offlineQueue'
 import { announcementsResource, dismissAnnouncement } from '@/data/announcements'
 import { activeModule, setActiveModule, clearActiveModule } from '@/data/activeModule'
 import { openMobileMenu } from '@/data/mobileMenu'

@@ -10,13 +10,14 @@
             variant="ghost"
             size="sm"
             icon="arrow-left"
+            tooltip="Back"
             @click="mobileScreen = 'list'"
           />
           <h1 class="min-w-0 flex-1 truncate text-base font-semibold text-gray-900 dark:text-gray-100">
             <span :class="mobileScreen === 'panel' ? 'hidden sm:inline' : ''">Settings</span>
             <span v-if="mobileScreen === 'panel'" class="sm:hidden">{{ activeLabel }}</span>
           </h1>
-          <Button variant="ghost" size="sm" icon="x" @click="show = false" />
+          <Button variant="ghost" size="sm" icon="x" tooltip="Close" @click="show = false" />
         </div>
 
         <!-- Phone, first screen: a Settings-app style list - grouped rows with an

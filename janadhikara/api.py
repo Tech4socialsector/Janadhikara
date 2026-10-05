@@ -280,7 +280,15 @@ def search_list(doctype, search_term, fields, search_fields):
     since this can't do anything a permitted, filtered list fetch couldn't."""
     fields = frappe.parse_json(fields)
     search_fields = frappe.parse_json(search_fields)
-    search_term = (search_term or '').strip()
+    search_term = (search_term or '').strip()[:100]
+
+    # Only plain, readable fields of this doctype - never a SQL expression, and never a field
+    # the user's permission level hides (a LIKE on one would let them probe its values).
+    allowed = set(frappe.get_meta(doctype).get_permitted_fieldnames(parenttype=None)) | {'name', 'modified', 'creation'}
+    if not isinstance(fields, list) or not isinstance(search_fields, list):
+        frappe.throw(_('Invalid request'), frappe.ValidationError)
+    if any(f not in allowed for f in [*fields, *search_fields]):
+        frappe.throw(_('Invalid field'), frappe.PermissionError)
 
     if not search_term or not search_fields:
         return frappe.get_list(doctype, fields=fields, limit_page_length=20, order_by='modified desc')
@@ -485,7 +493,11 @@ def get_link_options(doctype, filters=None, limit=1000):
     title_field = meta.title_field if meta.title_field else 'name'
     fields = ['name'] if title_field == 'name' else ['name', title_field]
     filters = frappe.parse_json(filters) or {}
-    limit = min(int(limit), 1000)
+    limit = max(1, min(int(limit), 1000))
+    # Filters name fields of this doctype only (Link pickers send e.g. {"settlement": "SET-00001"}).
+    known = {df.fieldname for df in meta.fields} | {'name', 'parent', 'parenttype', 'parentfield'}
+    if not isinstance(filters, dict) or any(key not in known for key in filters):
+        frappe.throw(_('Invalid filter'), frappe.ValidationError)
 
     if meta.istable:
         rows = frappe.get_all(
@@ -708,7 +720,7 @@ def get_active_announcements():
     return announcements
 
 
-@frappe.whitelist()
+@frappe.whitelist(methods=["POST"])
 def dismiss_announcement(name):
     """Record that the logged-in user has dismissed an Announcement, so
     get_active_announcements stops returning it for them."""
@@ -773,3 +785,9 @@ def validate_phone_number(phone_number):
     if phone_number and not phone_number.isdigit():
         frappe.throw(_('Phone Number must contain digits only'))
 
+
+
+@frappe.whitelist()
+def get_realtime_config():
+    """What the app needs to open its live (socket.io) connection."""
+    return {'port': frappe.conf.socketio_port, 'site': frappe.local.site}

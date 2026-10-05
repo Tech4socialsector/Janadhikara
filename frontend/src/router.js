@@ -3,6 +3,7 @@ import { session, initialUserCheck, userResource } from '@/data/session'
 import { modulesResource, findModuleByRoute } from '@/data/modules'
 import { settingsEntriesResource, findSettingsEntryByRoute } from '@/data/settingsEntries'
 import { setActiveModule } from '@/data/activeModule'
+import { queue, queueReady } from '@/data/offlineQueue'
 
 const routes = [
   {
@@ -23,6 +24,26 @@ const routes = [
     path: '/worklist',
     name: 'Worklist',
     component: () => import('@/pages/Worklist.vue'),
+  },
+  {
+    path: '/sync-data',
+    name: 'SyncData',
+    component: () => import('@/pages/SyncData.vue'),
+  },
+  {
+    // Edit a record that is saved on this device and not uploaded yet.
+    path: '/sync-data/:offlineId',
+    name: 'OfflineEdit',
+    component: () => import('@/pages/DoctypeForm.vue'),
+    beforeEnter: async (to) => {
+      await queueReady
+      if (!queue.value.some((i) => i.id === to.params.offlineId)) return { name: 'SyncData' }
+    },
+    props: (route) => {
+      const item = queue.value.find((i) => i.id === route.params.offlineId)
+      return { doctype: item?.doctype, name: item?.name, isNew: item?.action === 'insert', offlineId: route.params.offlineId }
+    },
+    meta: { remountOnParamChange: true },
   },
   {
     path: '/email-accounts',
@@ -162,6 +183,17 @@ router.beforeEach(async (to, from, next) => {
 
   if (session.user) {
     await ensureModulesLoaded()
+  }
+
+  // Tasks (ToDo) have no module of their own: /todo/<id> is the task's form, /todo is the Worklist.
+  if (to.params.doctypeRoute === 'todo') {
+    if (to.name === 'DoctypeList') {
+      next({ name: 'Worklist' })
+      return
+    }
+    to.meta.resolvedDoctype = 'ToDo'
+    next()
+    return
   }
 
   if (to.params.doctypeRoute) {

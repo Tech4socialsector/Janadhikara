@@ -61,6 +61,8 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // Web Push handlers (push + notificationclick) live in public/push-sw.js.
+        importScripts: ['/assets/janadhikara/frontend/push-sw.js'],
         // Drop precache entries from previous builds on activation, so an
         // old shell never keeps serving chunks the new build replaced.
         cleanupOutdatedCaches: true,

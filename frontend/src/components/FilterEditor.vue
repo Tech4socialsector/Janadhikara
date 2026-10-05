@@ -56,7 +56,7 @@
           placeholder="Value"
           v-model="row.value"
         />
-        <Button variant="ghost" size="sm" icon="x" @click="removeRow(row.id)" />
+        <Button variant="ghost" size="sm" icon="x" tooltip="Remove this filter" @click="removeRow(row.id)" />
       </div>
 
       <div v-if="rows.length === 0" class="px-1 py-2 text-sm text-gray-400 dark:text-gray-500">

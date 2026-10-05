@@ -1,5 +1,5 @@
 <template>
-  <Popover trigger="hover" :hover-delay="0.2" placement="bottom-start">
+  <Popover trigger="hover" :hover-delay="0" :leave-delay="0.15" placement="bottom-start">
     <template #target>
       <slot />
     </template>

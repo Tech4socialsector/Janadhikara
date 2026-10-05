@@ -9,6 +9,7 @@
 // when a record has no title, or the user can't read it - the ID is shown.
 import { reactive } from 'vue'
 import { call } from 'frappe-ui'
+import { localTitle } from '@/data/offlinePack'
 
 const titles = reactive({})
 const keyOf = (doctype, name) => `${doctype}\u0000${name}`
@@ -33,7 +34,11 @@ async function ensureLinkTitles(doctype, names) {
     const map = (res && !Array.isArray(res) && (res.message ?? res)) || {}
     missing.forEach((n) => (titles[keyOf(doctype, n)] = map[n] || ''))
   } catch {
-    // best-effort cosmetic lookup - the ID stays visible
+    // No connection: take the titles from the copy of the data kept on this device.
+    for (const n of missing) {
+      const title = await localTitle(doctype, n)
+      if (title) titles[keyOf(doctype, n)] = title
+    }
   }
 }
 

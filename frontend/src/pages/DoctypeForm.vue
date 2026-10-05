@@ -41,8 +41,21 @@
       <template #actions>
         <!-- Icons on both, always; the text labels drop away on phones so the
         two buttons stay compact next to the record ID / Not Saved chips. -->
+        <!-- A task tied to a record (a household, a partner...): jump straight to it. -->
         <Button
-          v-if="!isNew && !loadError && canDelete"
+          v-if="linkedRecord"
+          variant="outline"
+          aria-label="Open record"
+          :tooltip="`Open ${values.reference_type} ${values.reference_name}`"
+          @click="openLinkedRecord"
+        >
+          <template #prefix>
+            <FeatherIcon name="external-link" class="h-4 w-4" />
+          </template>
+          <span class="max-sm:hidden">Open {{ values.reference_type }}</span>
+        </Button>
+        <Button
+          v-if="!isNew && !offlineId && !loadError && canDelete"
           variant="subtle"
           theme="red"
           :loading="deleting"
@@ -103,6 +116,8 @@
       </template>
     </Dialog>
 
+    <RecordTasks v-if="!isNew && name && !offlineId" :doctype="doctype" :name="name" />
+
     <div v-if="metaResource.loading && !metaResource.data" class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
       <div v-for="i in 6" :key="i" class="space-y-1.5">
         <Skeleton width="30%" height="0.75rem" />
@@ -111,7 +126,7 @@
     </div>
     <ErrorMessage v-else-if="loadError" :message="loadError" />
 
-    <div v-else-if="!isNew && existingDoc.loading && !existingDoc.doc" class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+    <div v-else-if="!isNew && existingDoc?.loading && !existingDoc?.doc" class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
       <div v-for="i in 6" :key="i" class="space-y-1.5">
         <Skeleton width="30%" height="0.75rem" />
         <Skeleton height="2.25rem" />
@@ -248,7 +263,7 @@
       <ErrorMessage class="mt-4" :message="saveError" />
 
       <ConnectionsPanel
-        v-if="!isNew && metaResource.data?.links?.length"
+        v-if="!isNew && !offlineId && metaResource.data?.links?.length"
         :doctype="doctype"
         :name="name"
         :links="metaResource.data.links"
@@ -264,6 +279,9 @@ import { onKeyStroke } from '@vueuse/core'
 import { useDoc, useNewDoc, useCall, call, Button, Dialog, ErrorMessage, FeatherIcon, toast } from 'frappe-ui'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
+import RecordTasks from '@/components/RecordTasks.vue'
+import { findModuleByDoctype } from '@/data/modules'
+import { enqueueRecord, isNetworkError, queue, updateRecord } from '@/data/offlineQueue'
 import Skeleton from '@/components/Skeleton.vue'
 import ChildTable from '@/components/ChildTable.vue'
 import FormTabSections from '@/components/FormTabSections.vue'
@@ -279,11 +297,14 @@ import { usePincodeLookup } from '@/composables/usePincodeLookup'
 import { getValidatorForField } from '@/utils/validation'
 import { evaluateDependsOn } from '@/utils/dependsOn'
 
-const { doctype, isNew, name } = defineProps({
+const { doctype, isNew, name, offlineId } = defineProps({
   doctype: { type: String, required: true },
   isNew: { type: Boolean, default: false },
   name: { type: String, default: null },
+  // Set when editing a record saved on this device that has not been uploaded yet.
+  offlineId: { type: String, default: null },
 })
+const localItem = offlineId ? queue.value.find((i) => i.id === offlineId) : null
 
 const route = useRoute()
 const router = useRouter()
@@ -293,8 +314,22 @@ const router = useRouter()
 // have their own List route name derived the same way.
 const isGenericRoute = route.name === 'DoctypeNew' || route.name === 'DoctypeForm'
 
+// ToDo only: the record the task is about, when this app has a page for it.
+const linkedRecord = computed(() => {
+  if (doctype !== 'ToDo' || !values.reference_type || !values.reference_name) return null
+  return findModuleByDoctype(values.reference_type) || null
+})
+function openLinkedRecord() {
+  if (!linkedRecord.value) return
+  router.push({ name: 'DoctypeForm', params: { doctypeRoute: linkedRecord.value.route, name: values.reference_name } })
+}
+
 function goBack() {
-  if (isGenericRoute) {
+  if (offlineId) {
+    router.push({ name: 'SyncData' })
+  } else if (route.params.doctypeRoute === 'todo') {
+    router.push({ name: 'Worklist' })
+  } else if (isGenericRoute) {
     router.push({ name: 'DoctypeList', params: { doctypeRoute: route.params.doctypeRoute } })
   } else {
     router.push({ name: route.name.replace('New', 'List').replace('Form', 'List') })
@@ -356,7 +391,7 @@ const isPromptNamed = computed(() => metaResource.data?.autoname === 'prompt')
 const newDocName = ref('')
 
 const newDoc = isNew ? useNewDoc(doctype) : null
-const existingDoc = isNew ? null : useDoc({ doctype, name })
+const existingDoc = isNew || localItem ? null : useDoc({ doctype, name })
 
 // existingDoc.error used to be silently ignored - a failed record fetch
 // (permission denied, the record renamed/deleted since the link that led
@@ -849,7 +884,7 @@ watch(tableFields, initEmptyTableFields)
 
 // --- Load doc into `values` -------------------------------------------
 watch(
-  () => (isNew ? newDoc?.doc : existingDoc?.doc),
+  () => (localItem ? localItem.doc : isNew ? newDoc?.doc : existingDoc?.doc),
   (doc) => {
     if (!doc) return
     suppressDirtyTracking.value = true
@@ -864,7 +899,7 @@ watch(
     })
     initEmptyTableFields()
     initSnapshots()
-    if (isNew && hooks?.onLoad) {
+    if (isNew && !localItem && hooks?.onLoad) {
       applyingHookChange = true
       hooks.onLoad(values, hookCtx())
       applyingHookChange = false
@@ -944,6 +979,39 @@ async function collectChildErrors() {
   return errors
 }
 
+async function saveLocalEdit() {
+  try {
+    const titleField = metaResource.data?.title_field
+    await updateRecord(localItem.id, {
+      doc: JSON.parse(JSON.stringify(values)),
+      title: (titleField && values[titleField]) || localItem.title,
+    })
+    toast.success('Updated - it is still waiting on this device. Upload it from Sync Data.')
+    markClean()
+    router.push({ name: 'SyncData' })
+  } catch {
+    toast.error('Could not update the saved copy.')
+  }
+}
+
+async function saveOffline() {
+  try {
+    const titleField = metaResource.data?.title_field
+    await enqueueRecord({
+      doctype,
+      name: isNew ? null : name,
+      action: isNew ? 'insert' : 'update',
+      doc: { ...JSON.parse(JSON.stringify(values)), ...(isNew ? {} : { modified: existingDoc.doc?.modified }) },
+      title: (titleField && values[titleField]) || (isNew ? `New ${doctype}` : name),
+    })
+    toast.success('No connection - saved on this device. Upload it from Sync Data.')
+    markClean()
+    router.push({ name: 'SyncData' })
+  } catch {
+    toast.error('Could not save on this device.')
+  }
+}
+
 async function save() {
   if (isNew && isPromptNamed.value && !newDocName.value.trim()) {
     saveError.value = 'Name is required.'
@@ -964,6 +1032,10 @@ async function save() {
     if (childErrors.length > 5) toast.error(`...and ${childErrors.length - 5} more - see the list below the form.`)
     return
   }
+  // Editing something still waiting on this device: update the saved copy, nothing goes to the server.
+  if (localItem) return saveLocalEdit()
+  // No connection: keep the record on this device (Sync Data uploads it later).
+  if (!navigator.onLine) return saveOffline()
   saving.value = true
   saveError.value = null
   try {
@@ -998,6 +1070,11 @@ async function save() {
       markClean()
     }
   } catch (e) {
+    // The connection dropped mid-save: nothing reached the server, so keep it locally.
+    if (isNetworkError(e)) {
+      saving.value = false
+      return saveOffline()
+    }
     saveError.value = e
     // The inline message sits at the very bottom of the form, easy to miss
     // on a long one - toast it too so a failed save is never silent.

@@ -3,7 +3,7 @@
   Log out. Opens on hover. On a touch screen a tap does the same - the target slot
   gets `open` / `isOpen`, so a tap can open it (a hover trigger alone never
   fires there). Used for the desktop sidebar footer and the mobile bottom bar. -->
-  <Popover trigger="hover" :hover-delay="0.15" :placement="placement" class="w-full">
+  <Popover trigger="hover" :hover-delay="0" :leave-delay="0.15" :placement="placement" class="w-full">
     <template #target="{ open, isOpen }">
       <slot :open="open" :is-open="isOpen" />
     </template>

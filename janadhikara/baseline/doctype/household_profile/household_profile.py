@@ -5,10 +5,15 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
+from janadhikara.naming import autoname_with_code
+
 from janadhikara.api import get_user_employee
 
 
 class HouseholdProfile(Document):
+	def autoname(self):
+		autoname_with_code(self, "HH", "hhid")
+
 	def validate(self):
 		self.capture_from_logged_in_user()
 		self.capture_surveyor()
