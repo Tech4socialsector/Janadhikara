@@ -53,9 +53,12 @@
         </div>
       </template>
       <template #actions>
-        <Button icon-left="lock" variant="solid" class="w-full" :loading="changingPassword" @click="changePassword">
-          Update Password
-        </Button>
+        <div class="flex w-full justify-end gap-2">
+          <Button icon-left="x" @click="showPasswordDialog = false" size="sm">Close</Button>
+          <Button icon-left="lock" variant="solid" :loading="changingPassword" @click="changePassword" size="sm">
+            Update Password
+          </Button>
+        </div>
       </template>
     </Dialog>
   </div>

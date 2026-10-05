@@ -1,0 +1,68 @@
+{
+ "actions": [],
+ "creation": "2026-10-01 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "education_level",
+  "institution_name",
+  "year",
+  "column_break_edu",
+  "status",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "education_level",
+   "fieldtype": "Select",
+   "label": "Education Level",
+   "options": "\nNone\nPrimary\nSecondary\nHigher Secondary\nGraduate\nPost Graduate\nVocational",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "institution_name",
+   "fieldtype": "Data",
+   "label": "School / Institution",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "year",
+   "fieldtype": "Int",
+   "label": "Year"
+  },
+  {
+   "fieldname": "column_break_edu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Studying\nCompleted\nDropped Out",
+   "default": "Studying",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-10-01 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Baseline",
+ "name": "Education Record",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "states": [],
+ "autoname": "format:EDU-{#####}",
+ "naming_rule": "Expression",
+ "title_field": "education_level",
+ "show_title_field_in_link": 1
+}

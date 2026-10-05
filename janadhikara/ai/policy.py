@@ -30,8 +30,19 @@ SEED = {
             'validation_status': 'set by validators', 'validation_comments': 'set by validators',
         },
     },
-    'Household Member': {
-        'read_only': {'surveyor': 'set from the signed-in user', 'surveyor_name': 'set from the signed-in user'},
+    'Individual Profile': {
+        'hidden': {
+            'date_of_birth': 'personal detail', 'age': 'personal detail', 'mobile_number': 'contact number',
+            'monthly_income': 'income', 'health_conditions': 'health information',
+            'entitlements': 'entitlement details (consent-based)', 'documents': 'identity documents (consent-based)',
+            'consent_purpose': 'consent record',
+        },
+        'read_only': {
+            'surveyor': 'set from the signed-in user', 'surveyor_name': 'set from the signed-in user',
+            'consent_given': 'recorded with the person, not by the assistant', 'consent_mode': 'consent record',
+            'consent_date': 'consent record', 'consent_taken_by': 'consent record',
+            'consent_withdrawn_on': 'consent record',
+        },
     },
     'Settlement': {
         'can_write': 1,
@@ -61,9 +72,7 @@ SEED = {
         'hidden': {'mobile_number': 'contact number', 'email': 'email address', 'user': 'login account'},
     },
     'Survey': {},
-    'Survey Field Unit': {},
     'Relationship Type': {},
-    'Individual Profile': {},
     'Announcement': {},
 }
 

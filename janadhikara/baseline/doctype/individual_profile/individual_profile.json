@@ -4,19 +4,87 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "individual_name",
+  "tab_details",
+  "record_date",
+  "household",
+  "member_name",
+  "relationship_to_household",
+  "is_respondent",
   "status",
-  "section_break_note",
-  "note"
+  "column_break_collector",
+  "surveyor",
+  "surveyor_name",
+  "section_personal",
+  "date_of_birth",
+  "age",
+  "gender",
+  "marital_status",
+  "column_break_personal",
+  "mobile_number",
+  "section_education_work",
+  "education_records",
+  "occupation",
+  "monthly_income",
+  "tab_health",
+  "health_conditions",
+  "tab_entitlements",
+  "section_consent",
+  "consent_given",
+  "consent_mode",
+  "consent_date",
+  "column_break_consent",
+  "consent_taken_by",
+  "consent_purpose",
+  "consent_withdrawn_on",
+  "entitlements",
+  "documents"
  ],
  "fields": [
   {
-   "fieldname": "individual_name",
-   "fieldtype": "Data",
-   "label": "Individual Name",
+   "fieldname": "tab_details",
+   "fieldtype": "Tab Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "default": "Today",
    "reqd": 1,
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "description": "Defaults to today; change it to record a different date."
+  },
+  {
+   "fieldname": "household",
+   "fieldtype": "Link",
+   "label": "Household",
+   "options": "Household Profile",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "The household this person lives in."
+  },
+  {
+   "fieldname": "member_name",
+   "fieldtype": "Data",
+   "label": "Member Name",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "relationship_to_household",
+   "fieldtype": "Link",
+   "label": "Relationship to Household",
+   "options": "Relationship Type",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "is_respondent",
+   "fieldtype": "Check",
+   "label": "Is Respondent",
+   "in_list_view": 1
   },
   {
    "fieldname": "status",
@@ -24,19 +92,169 @@
    "label": "Status",
    "options": "Active\nInactive",
    "default": "Active",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_collector",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "surveyor",
+   "fieldtype": "Link",
+   "label": "Data Collector",
+   "options": "User",
+   "read_only": 1,
+   "default": "__user"
+  },
+  {
+   "fieldname": "surveyor_name",
+   "fieldtype": "Data",
+   "label": "Data Collector Name",
+   "read_only": 1,
    "in_list_view": 1,
+   "fetch_from": "surveyor.full_name"
+  },
+  {
+   "fieldname": "section_personal",
+   "fieldtype": "Section Break",
+   "label": "Personal"
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date of Birth"
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Int",
+   "label": "Age (years)"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "\nFemale\nMale\nOther",
    "in_standard_filter": 1
   },
   {
-   "fieldname": "section_break_note",
-   "fieldtype": "Section Break"
+   "fieldname": "marital_status",
+   "fieldtype": "Select",
+   "label": "Marital Status",
+   "options": "\nNever Married\nMarried\nWidowed\nSeparated\nDivorced"
   },
   {
-   "fieldname": "note",
-   "fieldtype": "Small Text",
-   "label": "Note",
+   "fieldname": "column_break_personal",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "Mobile Number",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "section_education_work",
+   "fieldtype": "Section Break",
+   "label": "Education & Work"
+  },
+  {
+   "fieldname": "education_records",
+   "fieldtype": "Table",
+   "label": "Education",
+   "options": "Education Record"
+  },
+  {
+   "fieldname": "occupation",
+   "fieldtype": "Data",
+   "label": "Occupation"
+  },
+  {
+   "fieldname": "monthly_income",
+   "fieldtype": "Currency",
+   "label": "Monthly Income"
+  },
+  {
+   "fieldname": "tab_health",
+   "fieldtype": "Tab Break",
+   "label": "Health"
+  },
+  {
+   "fieldname": "health_conditions",
+   "fieldtype": "Table",
+   "label": "Health Conditions",
+   "options": "Health Condition"
+  },
+  {
+   "fieldname": "tab_entitlements",
+   "fieldtype": "Tab Break",
+   "label": "Entitlements & Documents"
+  },
+  {
+   "fieldname": "section_consent",
+   "fieldtype": "Section Break",
+   "label": "Consent (DPDP)",
+   "description": "Entitlement and document details are personal data. Record the person's consent before collecting them."
+  },
+  {
+   "fieldname": "consent_given",
+   "fieldtype": "Check",
+   "label": "Consent Given"
+  },
+  {
+   "fieldname": "consent_mode",
+   "fieldtype": "Select",
+   "label": "Consent Mode",
+   "options": "\nWritten\nVerbal (recorded)\nDigital",
+   "depends_on": "eval:doc.consent_given",
+   "mandatory_depends_on": "eval:doc.consent_given"
+  },
+  {
+   "fieldname": "consent_date",
+   "fieldtype": "Date",
+   "label": "Consent Date",
+   "depends_on": "eval:doc.consent_given",
+   "mandatory_depends_on": "eval:doc.consent_given"
+  },
+  {
+   "fieldname": "column_break_consent",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "consent_taken_by",
+   "fieldtype": "Link",
+   "label": "Consent Taken By",
+   "options": "User",
    "read_only": 1,
-   "default": "Placeholder - the full Individual Profile (primary details, education, documents, schemes ...) is still to be designed."
+   "depends_on": "eval:doc.consent_given"
+  },
+  {
+   "fieldname": "consent_purpose",
+   "fieldtype": "Small Text",
+   "label": "Purpose Explained",
+   "default": "To record and help the person access government schemes, documents and services.",
+   "depends_on": "eval:doc.consent_given"
+  },
+  {
+   "fieldname": "consent_withdrawn_on",
+   "fieldtype": "Date",
+   "label": "Consent Withdrawn On",
+   "depends_on": "eval:doc.consent_given",
+   "description": "Set when the person withdraws consent: entitlement and document details can no longer be added or changed."
+  },
+  {
+   "fieldname": "entitlements",
+   "fieldtype": "Table",
+   "label": "Entitlements",
+   "options": "Entitlement",
+   "depends_on": "eval:doc.consent_given && !doc.consent_withdrawn_on"
+  },
+  {
+   "fieldname": "documents",
+   "fieldtype": "Table",
+   "label": "Documents",
+   "options": "Individual Document",
+   "depends_on": "eval:doc.consent_given && !doc.consent_withdrawn_on"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -50,7 +268,8 @@
  "states": [],
  "autoname": "format:IND-{#####}",
  "naming_rule": "Expression",
- "title_field": "individual_name",
+ "title_field": "member_name",
+ "show_title_field_in_link": 1,
  "permissions": [
   {
    "create": 1,
@@ -77,24 +296,32 @@
    "write": 1
   },
   {
+   "create": 1,
    "read": 1,
    "report": 1,
-   "role": "Program Manager"
+   "role": "Program Manager",
+   "write": 1
   },
   {
+   "create": 1,
    "read": 1,
    "report": 1,
-   "role": "Organization Admin"
+   "role": "Organization Admin",
+   "write": 1
   },
   {
+   "create": 1,
    "read": 1,
    "report": 1,
-   "role": "Supervisor"
+   "role": "Supervisor",
+   "write": 1
   },
   {
+   "create": 1,
    "read": 1,
    "report": 1,
-   "role": "Data Collector"
+   "role": "Data Collector",
+   "write": 1
   },
   {
    "read": 1,
@@ -105,6 +332,5 @@
  "allow_rename": 1,
  "track_changes": 1,
  "sort_field": "modified",
- "sort_order": "DESC",
- "show_title_field_in_link": 1
+ "sort_order": "DESC"
 }

@@ -126,9 +126,12 @@
         </p>
       </template>
       <template #actions>
-        <Button icon-left="send" variant="solid" :loading="resetLoading" class="w-full" @click="submitForgotPassword">
-          Send reset link
-        </Button>
+        <div class="flex w-full justify-end gap-2">
+          <Button icon-left="x" @click="showForgotPassword = false" size="sm">Close</Button>
+          <Button icon-left="send" variant="solid" :loading="resetLoading" @click="submitForgotPassword" size="sm">
+            Send reset link
+          </Button>
+        </div>
       </template>
     </Dialog>
   </div>

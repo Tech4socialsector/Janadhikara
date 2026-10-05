@@ -146,6 +146,9 @@
             <div class="min-h-0 flex-1 overflow-y-auto px-4 py-4">
               <FilterEditor :fields="allFields" v-model="advancedFilters" @update:model-value="showFilterSheet = false" />
             </div>
+            <div class="flex flex-shrink-0 justify-end border-t px-4 py-3 dark:border-gray-800">
+              <Button icon-left="x" @click="showFilterSheet = false" size="sm">Close</Button>
+            </div>
           </div>
         </template>
       </Dialog>
@@ -159,6 +162,10 @@
             </div>
             <div class="px-4 py-4">
               <SortEditor :fields="allFields" v-model="sortValue" />
+            </div>
+            <div class="flex justify-end gap-2 border-t px-4 py-3 dark:border-gray-800">
+              <Button icon-left="x" @click="showSortSheet = false" size="sm">Close</Button>
+              <Button variant="solid" icon-left="check" @click="showSortSheet = false" size="sm">Done</Button>
             </div>
           </div>
         </template>

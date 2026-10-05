@@ -435,34 +435,14 @@ def get_user_employee(user=None):
     return frappe._dict(rows[0]) if rows else None
 
 
-def find_survey_field_units(settlement, intervention_unit=None, survey=None):
-    """Active Survey Field Units covering a settlement (and, when given, one
-    of its intervention units). A unit with no intervention unit set covers
-    the whole settlement, so it matches either way."""
-    filters = {'settlement': settlement, 'status': 'Active'}
-    if survey:
-        filters['survey'] = survey
-    units = frappe.get_all(
-        'Survey Field Unit',
-        filters=filters,
-        fields=['name', 'survey', 'settlement_intervention_unit'],
-        order_by='creation asc',
-    )
-    if intervention_unit:
-        exact = [u for u in units if u.settlement_intervention_unit == intervention_unit]
-        if exact:
-            return exact
-    return [u for u in units if not u.settlement_intervention_unit]
-
-
 @frappe.whitelist()
 def get_household_field_defaults():
     """What a new Household Profile can fill in for the logged-in user: their
     partner and worker record, and every place they're tagged to work (a
     settlement, or one of its intervention units, through the Settlement's
-    Workers table) with the Survey Field Unit covering that place.
+    Workers table).
     Shape: { partner_organization, assigned_worker, assignments: [{ settlement,
-    settlement_intervention_unit, survey_field_unit, survey }] } - empty for
+    settlement_intervention_unit }] } - empty for
     anyone who isn't a partner worker."""
     employee = get_user_employee()
     if not employee:
@@ -479,18 +459,11 @@ def get_household_field_defaults():
     for row in tagged:
         if not frappe.has_permission('Settlement', 'read', doc=row.parent):
             continue
-        units = find_survey_field_units(row.parent, row.intervention_unit) or [None]
-        for unit in units:
-            key = (row.parent, row.intervention_unit, unit.name if unit else None)
-            if key in seen:
-                continue
-            seen.add(key)
-            assignments.append({
-                'settlement': row.parent,
-                'settlement_intervention_unit': row.intervention_unit,
-                'survey_field_unit': unit.name if unit else None,
-                'survey': unit.survey if unit else None,
-            })
+        key = (row.parent, row.intervention_unit)
+        if key in seen:
+            continue
+        seen.add(key)
+        assignments.append({'settlement': row.parent, 'settlement_intervention_unit': row.intervention_unit})
     return {
         'partner_organization': employee.parent,
         'assigned_worker': employee.name,

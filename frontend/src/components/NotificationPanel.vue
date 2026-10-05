@@ -101,6 +101,10 @@
             </span>
           </button>
         </div>
+
+        <div class="flex flex-shrink-0 justify-end border-t border-outline-gray-1 px-4 py-3">
+          <Button icon-left="x" @click="show = false" size="sm">Close</Button>
+        </div>
       </div>
     </template>
   </Dialog>

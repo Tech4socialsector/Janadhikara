@@ -57,9 +57,9 @@
             <ErrorMessage :message="createError" />
           </div>
 
-          <div class="flex flex-shrink-0 justify-end gap-2 border-t p-4 dark:border-gray-800">
-            <Button @click="showCreateDialog = false">Cancel</Button>
-            <Button icon-left="plus" variant="solid" :loading="creating" @click="submitNewRecord">Create</Button>
+          <div class="flex flex-shrink-0 justify-end gap-2 border-t px-4 py-3 dark:border-gray-800">
+            <Button icon-left="x" @click="showCreateDialog = false" size="sm">Close</Button>
+            <Button icon-left="plus" variant="solid" :loading="creating" @click="submitNewRecord" size="sm">Create</Button>
           </div>
         </div>
       </template>
@@ -317,6 +317,12 @@ const createFields = computed(() => {
 })
 
 function openCreateDialog() {
+  // A doctype with its own page here: go to its full "new" form (also from a
+  // child-table row). Only an unregistered one falls back to the quick popup.
+  if (linkedModuleItem.value) {
+    router.push({ name: 'DoctypeNew', params: { doctypeRoute: linkedModuleItem.value.route } })
+    return
+  }
   for (const key of Object.keys(newRecordValues)) delete newRecordValues[key]
   newRecordName.value = ''
   createError.value = null

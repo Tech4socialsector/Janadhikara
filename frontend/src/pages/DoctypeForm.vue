@@ -63,6 +63,33 @@
       </template>
     </PageHeader>
 
+    <Dialog v-model="notice.show" :options="{ title: notice.title, size: 'lg' }">
+      <template #body-content>
+        <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-surface-green-2 text-ink-green-3">
+          <FeatherIcon name="shield" class="h-6 w-6" />
+        </div>
+        <p v-if="notice.intro" class="mb-3 text-sm text-ink-gray-7">{{ notice.intro }}</p>
+        <ul class="space-y-2 text-sm text-ink-gray-8">
+          <li
+            v-for="(point, i) in notice.bullets"
+            :key="point.text || point"
+            class="flex items-start gap-2.5"
+          >
+            <span
+              class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-surface-gray-2 text-ink-gray-7"
+            >
+              <FeatherIcon :name="point.icon || 'check'" class="h-3.5 w-3.5" />
+            </span>
+            <span class="pt-0.5">{{ point.text || point }}</span>
+          </li>
+        </ul>
+        <div class="mt-5 flex justify-end gap-2">
+          <Button size="sm" icon-left="x" @click="notice.show = false">Close</Button>
+          <Button size="sm" variant="solid" icon-left="check" @click="acceptNotice">{{ notice.confirmLabel }}</Button>
+        </div>
+      </template>
+    </Dialog>
+
     <Dialog v-model="showDeleteConfirm" :options="{ title: 'Delete this record?', size: 'sm' }">
       <template #body-content>
         <p class="text-sm text-gray-600 dark:text-gray-400">
@@ -70,8 +97,8 @@
         </p>
         <ErrorMessage class="mt-3" :message="deleteError" />
         <div class="mt-4 flex justify-end gap-2">
-          <Button icon-left="x" @click="showDeleteConfirm = false">Cancel</Button>
-          <Button icon-left="trash-2" variant="solid" theme="red" :loading="deleting" @click="confirmDelete">Delete</Button>
+          <Button icon-left="x" @click="showDeleteConfirm = false" size="sm">Close</Button>
+          <Button icon-left="trash-2" variant="solid" theme="red" :loading="deleting" @click="confirmDelete" size="sm">Delete</Button>
         </div>
       </template>
     </Dialog>
@@ -508,8 +535,28 @@ function childRowsSnapshot() {
 }
 
 function hookCtx() {
-  return { isNew, call }
+  return { isNew, call, confirmNotice }
 }
+
+// A notice a hook can raise (e.g. the DPDP consent explanation): bullet points
+// and a confirm button. Closing it any other way runs the hook's onCancel.
+const notice = reactive({ show: false, title: '', intro: '', bullets: [], confirmLabel: 'OK', onCancel: null })
+let noticeConfirmed = false
+function confirmNotice(options) {
+  Object.assign(notice, { title: '', intro: '', bullets: [], confirmLabel: 'OK', onCancel: null }, options)
+  noticeConfirmed = false
+  notice.show = true
+}
+function acceptNotice() {
+  noticeConfirmed = true
+  notice.show = false
+}
+watch(
+  () => notice.show,
+  (open) => {
+    if (!open && !noticeConfirmed) notice.onCancel?.()
+  },
+)
 
 // --- Hook wiring state -----------------------------------------------
 // doctype-hooks reimplements frappe.ui.form.on(...) client scripts, which

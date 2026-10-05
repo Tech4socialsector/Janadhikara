@@ -229,10 +229,9 @@
             </div>
           </div>
 
-          <div class="flex-shrink-0 border-t p-4 dark:border-gray-800">
-            <Button variant="solid" class="w-full" @click="showRowEditor = false">
-              Done
-            </Button>
+          <div class="flex flex-shrink-0 justify-end gap-2 border-t px-4 py-3 dark:border-gray-800">
+            <Button icon-left="x" @click="showRowEditor = false" size="sm">Close</Button>
+            <Button variant="solid" icon-left="check" @click="showRowEditor = false" size="sm">Done</Button>
           </div>
         </div>
       </template>
@@ -467,7 +466,7 @@ const filteredRows = computed(() => {
 })
 
 // A freshly added row gets each field's own `default` (Frappe desk does the
-// same) - including "__user"/"Today", e.g. a Household Member's Surveyor
+// same) - including "__user"/"Today", e.g. a Individual Profile's Surveyor
 // becomes whoever is logged in.
 function newRowDefaults() {
   const defaults = {}

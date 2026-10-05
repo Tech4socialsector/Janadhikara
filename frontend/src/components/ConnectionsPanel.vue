@@ -52,7 +52,8 @@
               class="block w-full truncate rounded px-2 py-1.5 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
               @click="openRecord(conn, row.name)"
             >
-              {{ row.name }}
+              {{ linkTitle(conn.linkDoctype, row.name) }}
+              <span class="ml-1 text-xs text-gray-400">{{ row.name }}</span>
             </button>
           </div>
         </div>
@@ -66,6 +67,7 @@ import { reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { FeatherIcon, Button, useCall } from 'frappe-ui'
 import { findModuleByDoctype } from '@/data/modules'
+import { ensureTitlesForRows, linkTitle } from '@/data/linkTitles'
 
 // Frappe desk's own "Connections" tab, driven the same way it is in real
 // Desk: a doctype's own `links` metadata (DocType Link child rows) names
@@ -117,6 +119,8 @@ const connections = props.links
         limit: 20,
       }),
       immediate: false,
+      // Show members by their title (name), not just the record ID.
+      onSuccess: (rows) => ensureTitlesForRows(rows, [{ fieldname: 'name', fieldtype: 'Link', options: l.link_doctype }]),
     })
     return {
       key,

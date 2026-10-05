@@ -1,6 +1,7 @@
 [pre_model_sync]
 # Patches added in this section will be executed before doctypes are migrated
 # Read docs to understand patches: https://frappeframework.com/docs/v14/user/en/database-migrations
+janadhikara.patches.v1_1.rename_household_member_to_individual_profile
 
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
@@ -24,3 +25,7 @@ janadhikara.patches.v1_1.seed_geo_field_rules
 janadhikara.patches.v1_1.seed_household_geo_rule
 janadhikara.patches.v1_1.seed_ai_data_policies
 janadhikara.patches.v1_1.set_sidebar_item_types
+janadhikara.patches.v1_1.household_member_standalone
+janadhikara.patches.v1_1.remove_unused_baseline_doctypes
+janadhikara.patches.v1_1.backfill_record_date
+janadhikara.patches.v1_1.individual_profile_child_tables

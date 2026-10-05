@@ -5,11 +5,11 @@
  "engine": "InnoDB",
  "field_order": [
   "tab_details",
+  "record_date",
   "section_break_household",
   "hhid",
   "survey",
   "partner_organization",
-  "survey_field_unit",
   "assigned_worker",
   "column_break_household",
   "settlement",
@@ -33,9 +33,7 @@
   "section_break_surveyor",
   "surveyor",
   "column_break_surveyor",
-  "surveyor_name",
-  "tab_members",
-  "household_members"
+  "surveyor_name"
  ],
  "fields": [
   {
@@ -73,16 +71,6 @@
    "options": "Partner Details",
    "reqd": 1,
    "in_standard_filter": 1
-  },
-  {
-   "fieldname": "survey_field_unit",
-   "fieldtype": "Link",
-   "label": "Survey Field Unit",
-   "options": "Survey Field Unit",
-   "reqd": 1,
-   "in_standard_filter": 1,
-   "link_filters": "[[\"Survey Field Unit\", \"settlement\", \"=\", \"eval:doc.settlement\"]]",
-   "description": "Filled in automatically from the settlement / intervention unit the logged-in worker is tagged to."
   },
   {
    "fieldname": "assigned_worker",
@@ -214,12 +202,12 @@
   {
    "fieldname": "section_break_surveyor",
    "fieldtype": "Section Break",
-   "label": "Surveyor"
+   "label": "Data Collector"
   },
   {
    "fieldname": "surveyor",
    "fieldtype": "Link",
-   "label": "Surveyor",
+   "label": "Data Collector",
    "options": "User",
    "read_only": 1,
    "default": "__user",
@@ -233,26 +221,30 @@
   {
    "fieldname": "surveyor_name",
    "fieldtype": "Data",
-   "label": "Surveyor Name",
+   "label": "Data Collector Name",
    "read_only": 1,
    "in_list_view": 1,
    "fetch_from": "surveyor.full_name"
   },
   {
-   "fieldname": "tab_members",
-   "fieldtype": "Tab Break",
-   "label": "Household Members"
-  },
-  {
-   "fieldname": "household_members",
-   "fieldtype": "Table",
-   "label": "Household Members",
-   "options": "Household Member",
-   "description": "The household listing - everyone living in this household."
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "default": "Today",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "Defaults to today; change it to record a different date."
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
+ "links": [
+  {
+   "link_doctype": "Individual Profile",
+   "link_fieldname": "household",
+   "group": "Individuals"
+  }
+ ],
  "modified": "2026-10-01 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "Baseline",
