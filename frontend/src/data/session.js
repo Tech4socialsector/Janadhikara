@@ -1,6 +1,7 @@
 import { reactive } from 'vue'
 import { createResource, setConfig, frappeRequest } from 'frappe-ui'
 import router from '@/router'
+import { clearSnapshots } from '@/data/localSnapshot'
 
 // createResource() below fires an immediate fetch at module-evaluation time
 // (see initialUserCheck) - that's before main.js reaches its own
@@ -44,6 +45,7 @@ const rememberedUser = () => {
 async function forgetDevice() {
   try {
     localStorage.removeItem(LAST_USER)
+    clearSnapshots()
     const worker = (await navigator.serviceWorker?.getRegistration('/janadhikara/'))?.active
     worker?.postMessage('janadhikara-clear-caches')
     await Promise.all(['janadhikara-shell', 'janadhikara-api-reads'].map((name) => caches.delete(name)))

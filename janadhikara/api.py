@@ -331,6 +331,7 @@ SETTINGS_CATALOG = [
     ('AI Data Policy', 'Application', 'shield-check', 'What the AI assistant may read or change, and which fields it can never see.'),
     ('Announcement', 'Content', 'megaphone', 'Banners shown to users on the Home page.'),
     ('AI Guide Section', 'Content', 'book-open', 'Guide content the AI assistant answers from.'),
+    ('Question Bank', 'Content', 'list-checks', 'Questions asked on forms, and when each one is shown.'),
     ('App Module Setting', 'Access', 'layout-grid', 'Modules, sidebar items and which roles can see them.'),
 ]
 

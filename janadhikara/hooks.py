@@ -25,6 +25,14 @@ add_to_apps_screen = [
 # The sidebar modules (and their items) travel with the app, so a new site gets them on install.
 fixtures = [{"dt": "App Module Setting"}]
 
+# Validation Status options are role-restricted (see masters/doctype/validation_status).
+permission_query_conditions = {
+	"Validation Status": "janadhikara.masters.doctype.validation_status.validation_status.get_permission_query_conditions",
+}
+has_permission = {
+	"Validation Status": "janadhikara.masters.doctype.validation_status.validation_status.has_permission",
+}
+
 # Includes in <head>
 # ------------------
 
@@ -262,6 +270,7 @@ home_page = "janadhikara"
 after_request = ["janadhikara.security.add_security_headers"]
 after_migrate = ["janadhikara.ai.policy.ensure_policies", "janadhikara.menu.ensure_master_sidebar"]
 doc_events = {
+	"*": {"validate": "janadhikara.questions.validate_answers"},
 	"DocType": {"after_insert": "janadhikara.ai.policy.on_doctype_created"},
 	"Household Profile": {"on_update": "janadhikara.worklist.household_updated"},
 	"Notification Log": {"after_insert": "janadhikara.push.notification_created"},

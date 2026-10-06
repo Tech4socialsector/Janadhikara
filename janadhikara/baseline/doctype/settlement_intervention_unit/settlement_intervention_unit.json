@@ -39,7 +39,8 @@
    "unique": 1,
    "in_list_view": 1,
    "description": "Generated automatically when the record is first saved.",
-   "read_only": 1
+   "read_only": 1,
+   "depends_on": "eval:doc.intervention_unit_code"
   },
   {
    "fieldname": "column_break_main",

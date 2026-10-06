@@ -64,20 +64,34 @@
         <Skeleton width="3.5rem" height="0.75rem" />
       </div>
     </div>
-    <ErrorMessage v-else-if="modulesResource.error" :message="modulesResource.error" />
-    <div
-      v-else-if="!modulesResource.data || modulesResource.data.length === 0"
-      class="py-10 text-center text-gray-500 dark:text-gray-400"
-    >
-      No modules are configured for your account yet. Ask a coordinator to
-      enable modules in App Module Setting.
-    </div>
+    <div v-else>
+      <!-- The modules could not be loaded (usually: no connection and nothing saved yet). -->
+      <div
+        v-if="modulesResource.error && !modulesResource.data?.length"
+        class="mb-5 flex items-start gap-3 rounded-xl border border-outline-amber-1 bg-surface-amber-1 p-4 text-sm"
+      >
+        <FeatherIcon name="wifi-off" class="mt-0.5 h-5 w-5 flex-shrink-0 text-ink-amber-3" />
+        <div>
+          <p class="font-semibold text-ink-gray-9">Your modules could not be loaded</p>
+          <p class="text-ink-gray-6">
+            {{ online ? 'Please try again in a moment.' : 'You are offline. Open the app once with internet and it will remember your modules for next time.' }}
+            You can still open <b>Sync Data</b> below.
+          </p>
+        </div>
+      </div>
+      <div
+        v-else-if="!modulesResource.data?.length"
+        class="mb-5 py-6 text-center text-gray-500 dark:text-gray-400"
+      >
+        No modules are configured for your account yet. Ask a coordinator to
+        enable modules in App Module Setting.
+      </div>
 
     <!-- Every module as a tile, on every screen size: a wrapping grid, so on a
     phone they're all visible at once (no paging arrows). Tapping one makes it the
     open module - on a phone that opens the menu drawer straight onto that module's
     configured sidebar items, which is why the old inline items list is gone. -->
-    <div v-else class="grid grid-cols-3 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(7rem,max-content))] sm:gap-4">
+      <div class="grid grid-cols-3 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(7rem,max-content))] sm:gap-4">
       <button
         v-for="mod in modulesResource.data"
         :key="mod.label"
@@ -109,6 +123,7 @@
         </span>
         <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">Sync Data</span>
       </router-link>
+      </div>
     </div>
 
   </AppLayout>
@@ -134,6 +149,7 @@ import LucideIcon from '@/components/LucideIcon.vue'
 import SyncCloudIcon from '@/components/SyncCloudIcon.vue'
 import { modulesResource } from '@/data/modules'
 import { pendingCount } from '@/data/offlineQueue'
+import { online } from '@/data/connection'
 import { announcementsResource, dismissAnnouncement } from '@/data/announcements'
 import { activeModule, setActiveModule, clearActiveModule } from '@/data/activeModule'
 import { openMobileMenu } from '@/data/mobileMenu'

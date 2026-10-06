@@ -1,39 +1,51 @@
 {
  "actions": [],
- "creation": "2026-10-01 10:00:00.000000",
+ "allow_rename": 1,
+ "autoname": "format:HH-{#####}",
+ "creation": "2026-10-01 10:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "tab_details",
-  "record_date",
   "section_break_household",
   "hhid",
+  "respondent_name",
+  "household_head_name",
+  "contact_number",
+  "respondent_relationship",
   "survey",
-  "partner_organization",
-  "assigned_worker",
   "column_break_household",
+  "assigned_worker",
   "settlement",
   "settlement_intervention_unit",
-  "respondent_name",
-  "respondent_contact",
-  "respondent_relationship",
+  "partner_organization",
   "section_break_location",
   "address",
   "landmark",
   "latitude",
   "longitude",
+  "record_date",
   "column_break_location",
   "geo_location",
   "section_break_status",
-  "documentation_status",
   "validation_status",
+  "validation_comments",
   "column_break_status",
   "status",
-  "validation_comments",
-  "section_break_surveyor",
-  "surveyor",
-  "column_break_surveyor",
-  "surveyor_name"
+  "tab_house_details",
+  "house_ownership",
+  "house_structure",
+  "floor_number",
+  "column_break_house",
+  "member_count",
+  "stay_years",
+  "stay_months",
+  "section_break_utilities",
+  "electricity_supply",
+  "column_break_utilities",
+  "cooking_fuels",
+  "tab_questions",
+  "question_answers"
  ],
  "fields": [
   {
@@ -47,42 +59,42 @@
    "label": "Household Details"
   },
   {
+   "depends_on": "eval:doc.hhid",
+   "description": "Generated automatically when the record is first saved.",
    "fieldname": "hhid",
    "fieldtype": "Data",
-   "label": "Household ID",
-   "reqd": 0,
-   "unique": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "Generated automatically when the record is first saved.",
-   "read_only": 1
+   "label": "Household ID",
+   "read_only": 1,
+   "unique": 1
   },
   {
    "fieldname": "survey",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Survey",
    "options": "Survey",
-   "reqd": 1,
-   "in_standard_filter": 1
+   "reqd": 1
   },
   {
    "fieldname": "partner_organization",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Partner Organization",
    "options": "Partner Details",
-   "reqd": 1,
-   "in_standard_filter": 1
+   "reqd": 1
   },
   {
+   "description": "The worker collecting this household's data. Filled in from your login; choose another from the partner's workers if needed.",
    "fieldname": "assigned_worker",
    "fieldtype": "Link",
-   "label": "Assigned Worker",
-   "options": "Employee",
-   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
+   "label": "Data Collector",
    "link_filters": "[[\"Employee\", \"parent\", \"=\", \"eval:doc.partner_organization\"]]",
-   "description": "A worker of the selected partner."
+   "options": "Employee",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_household",
@@ -91,33 +103,27 @@
   {
    "fieldname": "settlement",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Settlement",
    "options": "Settlement",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
+   "reqd": 1
   },
   {
+   "description": "Only if the settlement is divided into intervention units.",
    "fieldname": "settlement_intervention_unit",
    "fieldtype": "Link",
    "label": "Settlement Intervention Unit",
-   "options": "Settlement Intervention Unit",
    "link_filters": "[[\"Settlement Intervention Unit\", \"parent\", \"=\", \"eval:doc.settlement\"]]",
-   "description": "Only if the settlement is divided into intervention units."
+   "options": "Settlement Intervention Unit"
   },
   {
    "fieldname": "respondent_name",
    "fieldtype": "Data",
-   "label": "Respondent Name",
-   "reqd": 1,
    "in_list_view": 1,
-   "in_standard_filter": 1
-  },
-  {
-   "fieldname": "respondent_contact",
-   "fieldtype": "Data",
-   "label": "Respondent Contact",
-   "options": "Phone"
+   "in_standard_filter": 1,
+   "label": "Respondent Name",
+   "reqd": 1
   },
   {
    "fieldname": "respondent_relationship",
@@ -157,10 +163,10 @@
    "fieldtype": "Column Break"
   },
   {
+   "description": "Pick the household's point on the map.",
    "fieldname": "geo_location",
    "fieldtype": "Geolocation",
-   "label": "Geo Location",
-   "description": "Pick the household's point on the map."
+   "label": "Geo Location"
   },
   {
    "fieldname": "section_break_status",
@@ -168,32 +174,26 @@
    "label": "Household Status"
   },
   {
-   "fieldname": "documentation_status",
-   "fieldtype": "Select",
-   "label": "Documentation Status",
-   "options": "\nCompleted\nPartially Completed",
-   "in_standard_filter": 1
-  },
-  {
+   "description": "Only the statuses your role may use are listed.",
    "fieldname": "validation_status",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Validation Status",
-   "options": "\nRevision Needed\nValidated",
-   "in_standard_filter": 1
+   "options": "Validation Status"
   },
   {
    "fieldname": "column_break_status",
    "fieldtype": "Column Break"
   },
   {
+   "default": "Draft",
    "fieldname": "status",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Status",
    "options": "Draft\nIn Progress\nCompleted\nRevision Needed\nValidated",
-   "default": "Draft",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
+   "reqd": 1
   },
   {
    "fieldname": "validation_comments",
@@ -201,61 +201,125 @@
    "label": "Validation Comments"
   },
   {
-   "fieldname": "section_break_surveyor",
-   "fieldtype": "Section Break",
-   "label": "Data Collector"
-  },
-  {
-   "fieldname": "surveyor",
-   "fieldtype": "Link",
-   "label": "Data Collector",
-   "options": "User",
-   "read_only": 1,
-   "default": "__user",
+   "default": "Today",
+   "description": "Defaults to today; change it to record a different date.",
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "Set automatically to the logged-in user who creates the record."
+   "label": "Date",
+   "reqd": 1
   },
   {
-   "fieldname": "column_break_surveyor",
+   "fieldname": "household_head_name",
+   "fieldtype": "Data",
+   "label": "Household Head Name",
+   "options": "Phone",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tab_house_details",
+   "fieldtype": "Tab Break",
+   "label": "House Details"
+  },
+  {
+   "fieldname": "house_ownership",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Nature of house ownership",
+   "options": "\nOwn House\nRented"
+  },
+  {
+   "fieldname": "house_structure",
+   "fieldtype": "Select",
+   "label": "Type / structure of the house",
+   "options": "\nHut\nKutcha\nSemi-pucca\nPucca\nMulti-storied\nOther"
+  },
+  {
+   "depends_on": "eval:doc.house_structure==\"Multi-storied\"",
+   "description": "For a multi-storied house, the floor the household lives on.",
+   "fieldname": "floor_number",
+   "fieldtype": "Int",
+   "label": "Floor number",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "column_break_house",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "surveyor_name",
-   "fieldtype": "Data",
-   "label": "Data Collector Name",
-   "read_only": 1,
-   "in_list_view": 1,
-   "fetch_from": "surveyor.full_name"
+   "fieldname": "member_count",
+   "fieldtype": "Int",
+   "label": "No. of members staying here",
+   "non_negative": 1
   },
   {
-   "fieldname": "record_date",
-   "fieldtype": "Date",
-   "label": "Date",
-   "default": "Today",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "description": "Defaults to today; change it to record a different date."
+   "fieldname": "stay_years",
+   "fieldtype": "Int",
+   "label": "How long in this house - years",
+   "non_negative": 1
+  },
+  {
+   "description": "0 to 11.",
+   "fieldname": "stay_months",
+   "fieldtype": "Int",
+   "label": "How long in this house - months",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "section_break_utilities",
+   "fieldtype": "Section Break",
+   "label": "Utilities"
+  },
+  {
+   "fieldname": "electricity_supply",
+   "fieldtype": "Select",
+   "label": "Does the house have electricity supply?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "column_break_utilities",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Pick all that are used.",
+   "fieldname": "cooking_fuels",
+   "fieldtype": "Table MultiSelect",
+   "label": "Fuels used for cooking",
+   "options": "Household Cooking Fuel"
+  },
+  {
+   "fieldname": "contact_number",
+   "fieldtype": "Data",
+   "label": "Contact Number",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "tab_questions",
+   "fieldtype": "Tab Break",
+   "label": "Questions"
+  },
+  {
+   "fieldname": "question_answers",
+   "fieldtype": "Table",
+   "label": "Questions",
+   "options": "Question Answer"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [
   {
+   "group": "Individuals",
    "link_doctype": "Individual Profile",
-   "link_fieldname": "household",
-   "group": "Individuals"
+   "link_fieldname": "household"
   }
  ],
- "modified": "2026-10-01 10:00:00.000000",
+ "modified": "2026-10-06 07:28:31.504859",
  "modified_by": "Administrator",
  "module": "Baseline",
  "name": "Household Profile",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
- "row_format": "Dynamic",
- "states": [],
- "autoname": "format:HH-{#####}",
- "naming_rule": "Expression",
- "title_field": "respondent_name",
  "permissions": [
   {
    "create": 1,
@@ -315,9 +379,11 @@
    "role": "Report Viewer"
   }
  ],
- "allow_rename": 1,
- "track_changes": 1,
+ "row_format": "Dynamic",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "show_title_field_in_link": 1
+ "states": [],
+ "title_field": "household_head_name",
+ "track_changes": 1
 }

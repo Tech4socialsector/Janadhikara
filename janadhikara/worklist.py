@@ -30,8 +30,16 @@ def _has_open_task(doctype, name, user):
 	)
 
 
+def _worker_user(employee):
+	"""The login of a worker (Employee row): its User link, or its email."""
+	if not employee:
+		return None
+	user, email = frappe.db.get_value("Employee", employee, ["user", "email"]) or (None, None)
+	return user or (email if email and frappe.db.exists("User", email) else None)
+
+
 def _assign(doc, description, priority="Medium", due_in_days=3):
-	user = doc.get("surveyor")
+	user = _worker_user(doc.get("assigned_worker"))
 	if not user or not frappe.db.get_value("User", user, "enabled"):
 		return
 	if _has_open_task(doc.doctype, doc.name, user):
@@ -77,7 +85,7 @@ def nudge_stale_households():
 	households = frappe.get_all(
 		"Household Profile",
 		filters={"status": ["in", OPEN_STATUSES], "modified": ["<", cutoff]},
-		fields=["name", "respondent_name", "surveyor", "status"],
+		fields=["name", "respondent_name", "assigned_worker", "status"],
 		limit=500,
 	)
 	for row in households:

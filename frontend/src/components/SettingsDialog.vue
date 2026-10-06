@@ -96,6 +96,12 @@
                 </div>
               </div>
 
+              <QuestionConditionsPanel
+                v-else-if="activeEntry?.doctype === 'Question Bank'"
+                :key="activeEntry.doctype"
+                :entry="activeEntry"
+                @close="show = false"
+              />
               <SettingsDoctypePanel
                 v-else-if="activeEntry?.is_single"
                 :key="activeEntry.doctype"
@@ -163,6 +169,7 @@ import SettingsDoctypePanel from '@/components/SettingsDoctypePanel.vue'
 import ProfilePanel from '@/components/ProfilePanel.vue'
 import NotificationSettingsPanel from '@/components/NotificationSettingsPanel.vue'
 import SettingsManagePanel from '@/components/SettingsManagePanel.vue'
+import QuestionConditionsPanel from '@/components/QuestionConditionsPanel.vue'
 import EmailSettingsPanel from '@/components/EmailSettingsPanel.vue'
 import Skeleton from '@/components/Skeleton.vue'
 import moduleIcon from '@/components/moduleIcon'

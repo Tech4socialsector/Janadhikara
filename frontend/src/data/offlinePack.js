@@ -66,7 +66,7 @@ export async function downloadPack() {
     setStep('Saving on this device…', 80)
     await tick()
     const counts = Object.fromEntries(Object.entries(pack.doctypes).map(([d, v]) => [d, v.rows.length]))
-    const info = { generated: pack.generated, user: pack.user, bytes: compressed.byteLength, counts }
+    const info = { generated: pack.generated, user: pack.user, bytes: compressed.byteLength, counts, metaDoctypes: pack.meta_doctypes || [] }
     const encInfo = await encryptJson(info)
     const encData = await encryptBytes(new Uint8Array(compressed))
     await tx('readwrite', (store) =>
@@ -190,6 +190,51 @@ async function cacheAppIcon() {
   } catch {
     // the default Janadhikara icon is built into the app, so nothing is lost
   }
+}
+
+// ---- "Is this device ready to work offline?" ------------------------------------------
+// Each thing the app needs to start and work without a connection, and whether it is in place.
+export async function checkOfflineReadiness() {
+  const checks = []
+  const add = (key, label, ok, detail) => checks.push({ key, label, ok, detail })
+
+  // 1. The service worker that serves the app with no connection.
+  let worker = null
+  try {
+    const registration = await navigator.serviceWorker?.getRegistration('/janadhikara/')
+    worker = registration?.active || null
+    add('worker', 'Offline engine installed', !!worker, worker ? 'Active' : 'Not active yet - reload the app once, and accept the update prompt if one appears.')
+  } catch {
+    add('worker', 'Offline engine installed', false, 'This browser does not allow it.')
+  }
+
+  // 2. The saved copy of the app page (served for any address when offline).
+  try {
+    const shell = await (await caches.open('janadhikara-shell')).match('/janadhikara/__shell')
+    add('shell', 'App page saved', !!shell, shell ? 'Ready' : 'Open the app once with internet.')
+  } catch {
+    add('shell', 'App page saved', false, 'Open the app once with internet.')
+  }
+
+  // 3. The module list (Home screen and sidebar).
+  const modules = (await import('@/data/localSnapshot')).readSnapshot('app-modules')
+  add('modules', 'Modules saved', Array.isArray(modules) && modules.length > 0, modules?.length ? `${modules.length} modules` : 'Open Home once with internet.')
+
+  // 4. Form layouts for this app's own doctypes.
+  try {
+    const wanted = packInfo.value?.metaDoctypes || []
+    const keys = await (await caches.open('janadhikara-api-reads')).keys()
+    const metaUrls = new Set(keys.map((r) => new URL(r.url).pathname))
+    const have = wanted.filter((d) => metaUrls.has(`/api/v2/doctype/${encodeURIComponent(d)}/meta`))
+    const known = wanted.length > 0
+    add('layouts', 'Form layouts saved', known && have.length === wanted.length, known ? `${have.length} of ${wanted.length}` : 'Press Download on this page.')
+  } catch {
+    add('layouts', 'Form layouts saved', false, 'Press Download on this page.')
+  }
+
+  // 5. The records for dropdowns.
+  add('pack', 'Dropdown data saved', !!packInfo.value, packInfo.value ? 'Ready' : 'Press Download on this page.')
+  return checks
 }
 
 export const packReady = loadPackInfo()

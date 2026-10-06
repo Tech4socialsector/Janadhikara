@@ -1,5 +1,6 @@
 import { computed } from 'vue'
 import { useCall } from 'frappe-ui'
+import { withSnapshot } from '@/data/localSnapshot'
 
 // Shared across the app so every page resolves the same module list without
 // re-fetching: Home (nav tiles), and the sidebar/router (route slug -> item).
@@ -11,12 +12,14 @@ import { useCall } from 'frappe-ui'
 //
 // Shape returned by janadhikara.api.get_app_modules:
 // [{ label, icon, doctypes: [{ doctype_name, label, icon, route }] }]
-export const modulesResource = useCall({
-  url: '/api/v2/method/janadhikara.api.get_app_modules',
-  method: 'GET',
-  immediate: false,
-  cacheKey: 'janadhikara-app-modules',
-})
+export const modulesResource = useCall(
+  withSnapshot('app-modules', {
+    url: '/api/v2/method/janadhikara.api.get_app_modules',
+    method: 'GET',
+    immediate: false,
+    cacheKey: 'janadhikara-app-modules',
+  }),
+)
 
 // Flat list of every sidebar item across all modules, each tagged with its
 // parent module, so a route slug can resolve back to both the DocType to

@@ -22,6 +22,9 @@ ITEM_ICONS = {
 	"Partner Details": "building-2",
 	"Announcement": "megaphone",
 	"AI Guide Section": "book-open",
+	"Validation Status": "badge-check",
+	"Cooking Fuel": "flame",
+	"Question Bank": "list-checks",
 	"AI Guide Instruction": "book-open",
 }
 MODULE_ICONS = {

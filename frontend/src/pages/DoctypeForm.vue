@@ -204,7 +204,10 @@
       />
       <div v-if="tabs.length > 1 && activeTabTables.length" class="mt-6 hidden space-y-6 sm:block">
         <template v-for="field in activeTabTables" :key="field.fieldname">
-          <ChildTable v-if="isTableVisible(field)" :field="field" :parent-values="values" v-model="values[field.fieldname]" />
+          <template v-if="isTableVisible(field)">
+            <QuestionnairePanel v-if="field.options === 'Question Answer'" :doctype="doctype" :parent-values="values" :tab="field.questionTab" v-model="values[field.fieldname]" />
+            <ChildTable v-else :field="field" :parent-values="values" v-model="values[field.fieldname]" />
+          </template>
         </template>
       </div>
 
@@ -247,7 +250,10 @@
             />
             <div v-if="tab.tables.length" class="mt-6 space-y-6">
               <template v-for="field in tab.tables" :key="field.fieldname">
-                <ChildTable v-if="isTableVisible(field)" :field="field" :parent-values="values" v-model="values[field.fieldname]" />
+                <template v-if="isTableVisible(field)">
+            <QuestionnairePanel v-if="field.options === 'Question Answer'" :doctype="doctype" :parent-values="values" :tab="field.questionTab" v-model="values[field.fieldname]" />
+            <ChildTable v-else :field="field" :parent-values="values" v-model="values[field.fieldname]" />
+          </template>
               </template>
             </div>
           </div>
@@ -256,7 +262,10 @@
 
       <div v-if="bottomTableFields.length" class="mt-6 space-y-6">
         <template v-for="field in bottomTableFields" :key="field.fieldname">
-          <ChildTable v-if="isTableVisible(field)" :field="field" :parent-values="values" v-model="values[field.fieldname]" />
+          <template v-if="isTableVisible(field)">
+            <QuestionnairePanel v-if="field.options === 'Question Answer'" :doctype="doctype" :parent-values="values" :tab="field.questionTab" v-model="values[field.fieldname]" />
+            <ChildTable v-else :field="field" :parent-values="values" v-model="values[field.fieldname]" />
+          </template>
         </template>
       </div>
 
@@ -268,6 +277,12 @@
         :name="name"
         :links="metaResource.data.links"
       />
+
+      <!-- Activity belongs to the record as a whole, so on desktop it only shows on the first tab;
+      the phone accordion lists every tab at once, so there it always shows. -->
+      <div v-if="!isNew && !offlineId && name" :class="activeTabIdx === 0 ? '' : 'hidden max-sm:block'">
+        <ActivityPanel :key="`${doctype}:${name}`" :doctype="doctype" :name="name" />
+      </div>
     </form>
   </AppLayout>
 </template>
@@ -280,12 +295,15 @@ import { useDoc, useNewDoc, useCall, call, Button, Dialog, ErrorMessage, Feather
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import RecordTasks from '@/components/RecordTasks.vue'
+import QuestionnairePanel from '@/components/QuestionnairePanel.vue'
+import { loadQuestions, missingAnswers, questionsFor, answersMap, isShown } from '@/data/questions'
 import { findModuleByDoctype } from '@/data/modules'
 import { enqueueRecord, isNetworkError, queue, updateRecord } from '@/data/offlineQueue'
 import Skeleton from '@/components/Skeleton.vue'
 import ChildTable from '@/components/ChildTable.vue'
 import FormTabSections from '@/components/FormTabSections.vue'
 import ConnectionsPanel from '@/components/ConnectionsPanel.vue'
+import ActivityPanel from '@/components/ActivityPanel.vue'
 import { useMeta, useFormFields, useFormTabs, useTableFields } from '@/data/useMeta'
 import { useFieldFunctions } from '@/composables/useFieldFunctions'
 import { childTableErrors } from '@/utils/childRows'
@@ -337,8 +355,31 @@ function goBack() {
 }
 
 const metaResource = useMeta(doctype)
+// A doctype that holds questions (a Question Answer table) loads them up front, so the form can check them on save.
+watch(() => metaResource.data, (meta) => {
+  if (meta?.fields?.some((f) => f.fieldtype === 'Table' && f.options === 'Question Answer')) loadQuestions(doctype)
+}, { immediate: true })
 const fields = useFormFields(metaResource)
-const tabs = useFormTabs(metaResource)
+const formTabs = useFormTabs(metaResource)
+// Questions put in a "Tab" in the Question Bank get a real tab of their own on the form, after the
+// doctype's own tabs. Each one is a tab holding the questionnaire filtered to that tab's name.
+const answersField = computed(() => metaResource.data?.fields?.find((f) => f.fieldtype === 'Table' && f.options === 'Question Answer'))
+const tabs = computed(() => {
+  const field = answersField.value
+  if (!field) return formTabs.value
+  const names = [...new Set(questionsFor(doctype).map((q) => q.tab_group).filter(Boolean))]
+  return [
+    ...formTabs.value,
+    ...names.map((name) => ({
+      label: name,
+      dependsOn: null,
+      sections: [],
+      tables: [{ ...field, questionTab: name }],
+      questionTab: name,
+      answersField: field.fieldname,
+    })),
+  ]
+})
 const tableFields = useTableFields(metaResource)
 const hooks = getDoctypeHooks(doctype)
 const { applyFetchFrom, applyInitialFetchFrom } = useFetchFromFields({ metaResource })
@@ -475,6 +516,11 @@ const values = reactive({})
 // FormTabSections.vue's sections, applied to a Tab Break itself - a tab
 // with no condition always shows.
 function isTabVisible(tab) {
+  // A question tab shows only while at least one of its questions is shown for this record.
+  if (tab.questionTab) {
+    const answers = answersMap(values[tab.answersField])
+    return questionsFor(doctype).some((q) => q.tab_group === tab.questionTab && isShown(q, values, answers, doctype))
+  }
   return evaluateDependsOn(tab.dependsOn, values)
 }
 
@@ -953,6 +999,11 @@ function missingRequiredFields() {
 }
 
 function firstValidationError() {
+  const unanswered = missingAnswers(doctype, values)
+  if (unanswered.length) {
+    unanswered.slice(0, 5).forEach((q) => toast.error(`Question ${q} is required`))
+    return `Required: ${unanswered.join(', ')}`
+  }
   const missing = missingRequiredFields()
   if (missing.length) {
     // One toast per empty mandatory field, so each is called out on its own.
@@ -973,7 +1024,7 @@ function firstValidationError() {
 async function collectChildErrors() {
   const errors = []
   for (const tableField of tableFields.value) {
-    if (!isTableVisible(tableField)) continue
+    if (!isTableVisible(tableField) || tableField.options === 'Question Answer') continue
     errors.push(...(await childTableErrors(tableField, values[tableField.fieldname], values)))
   }
   return errors
@@ -1075,10 +1126,15 @@ async function save() {
       saving.value = false
       return saveOffline()
     }
-    saveError.value = e
+    // When the server rejects a save, frappe-ui can throw its own cache error ("Invalid doc: must
+    // have doctype and name") while trying to store the error response; the server's real message
+    // is on the resource's `.error`, so show that one.
+    const serverError = isNew ? newDoc.error : existingDoc?.setValue?.error
+    const shown = e?.messages?.length || !serverError ? e : serverError
+    saveError.value = shown
     // The inline message sits at the very bottom of the form, easy to miss
     // on a long one - toast it too so a failed save is never silent.
-    toast.error(e?.messages?.[0] || e?.message || 'Could not save')
+    toast.error(String(shown?.messages?.[0] || shown?.message || 'Could not save').replace(/<[^>]+>/g, ''))
   } finally {
     saving.value = false
   }

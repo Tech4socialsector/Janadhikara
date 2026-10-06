@@ -23,10 +23,11 @@ SEED = {
         'can_write': 1,
         'hidden': {
             'address': 'home address', 'landmark': 'home location', 'latitude': 'home location',
-            'longitude': 'home location', 'geo_location': 'home location', 'respondent_contact': 'contact number',
+            'longitude': 'home location', 'geo_location': 'home location', 'contact_number': 'contact number',
+            'question_answers': 'questionnaire answers',
         },
         'read_only': {
-            'surveyor': 'set from the signed-in user', 'surveyor_name': 'set from the signed-in user',
+            'assigned_worker': 'set from the signed-in user',
             'validation_status': 'set by validators', 'validation_comments': 'set by validators',
         },
     },

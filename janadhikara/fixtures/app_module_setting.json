@@ -31,7 +31,7 @@
   "enabled": 1,
   "icon": "user-cog",
   "label": "Administrator",
-  "modified": "2026-10-05 14:35:11.357117",
+  "modified": "2026-10-06 07:45:30.928823",
   "module_name": "Engine",
   "name": "Engine",
   "restrict_by_role": 0,
@@ -70,7 +70,7 @@
   "enabled": 1,
   "icon": "house",
   "label": "Baseline",
-  "modified": "2026-10-05 14:35:11.393251",
+  "modified": "2026-10-06 07:45:30.972883",
   "module_name": "Baseline",
   "name": "Baseline",
   "restrict_by_role": 0,
@@ -96,12 +96,36 @@
     "item_type": "Link",
     "label": null,
     "route": null
+   },
+   {
+    "child": 0,
+    "doctype_name": "Validation Status",
+    "icon": "badge-check",
+    "item_type": "Link",
+    "label": null,
+    "route": null
+   },
+   {
+    "child": 0,
+    "doctype_name": "Cooking Fuel",
+    "icon": "flame",
+    "item_type": "Link",
+    "label": null,
+    "route": null
+   },
+   {
+    "child": 0,
+    "doctype_name": "Question Bank",
+    "icon": "list-checks",
+    "item_type": "Link",
+    "label": null,
+    "route": null
    }
   ],
   "enabled": 1,
   "icon": "database",
   "label": "Master Data",
-  "modified": "2026-10-05 16:31:09.713512",
+  "modified": "2026-10-06 07:45:30.956333",
   "module_name": "Masters",
   "name": "Masters",
   "restrict_by_role": 0,

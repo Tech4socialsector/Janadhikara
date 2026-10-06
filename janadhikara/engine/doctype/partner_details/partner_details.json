@@ -53,7 +53,8 @@
    "reqd": 0,
    "unique": 1,
    "read_only": 1,
-   "description": "Generated automatically when the record is first saved."
+   "description": "Generated automatically when the record is first saved.",
+   "depends_on": "eval:doc.organization_code"
   },
   {
    "fieldname": "column_break_org_1",

@@ -1,0 +1,72 @@
+{
+ "actions": [],
+ "creation": "2026-10-06 13:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-06 13:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Masters",
+ "name": "Question Answer",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "states": [],
+ "istable": 1,
+ "editable_grid": 1,
+ "autoname": "format:QA-{#####}",
+ "naming_rule": "Expression",
+ "title_field": "question_text",
+ "show_title_field_in_link": 1,
+ "field_order": [
+  "question",
+  "question_no",
+  "question_text",
+  "answer_type",
+  "section_group",
+  "answer"
+ ],
+ "fields": [
+  {
+   "fieldname": "question",
+   "fieldtype": "Link",
+   "label": "Question",
+   "options": "Question Bank",
+   "reqd": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "question_no",
+   "fieldtype": "Data",
+   "label": "Question No",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "question_text",
+   "fieldtype": "Small Text",
+   "label": "Question",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "answer_type",
+   "fieldtype": "Data",
+   "label": "Answer Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_group",
+   "fieldtype": "Data",
+   "label": "Section / Group",
+   "read_only": 1
+  },
+  {
+   "fieldname": "answer",
+   "fieldtype": "Text",
+   "label": "Answer",
+   "in_list_view": 1,
+   "description": "A multi-select answer is one choice per line."
+  }
+ ]
+}

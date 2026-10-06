@@ -1,0 +1,316 @@
+{
+ "actions": [],
+ "creation": "2026-10-06 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-06 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Masters",
+ "name": "Question Bank",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "states": [],
+ "autoname": "format:QB-{#####}",
+ "naming_rule": "Expression",
+ "title_field": "question",
+ "show_title_field_in_link": 1,
+ "field_order": [
+  "for_doctype",
+  "question_no",
+  "enabled",
+  "column_break_main",
+  "group_type",
+  "section_group",
+  "tab_group",
+  "is_mandatory",
+  "section_break_question",
+  "question",
+  "answer_type",
+  "column_break_options",
+  "options",
+  "section_break_condition",
+  "depends_on_question",
+  "column_break_condition",
+  "depends_on_answer",
+  "section_break_show_if",
+  "show_if_doctype",
+  "show_if_field",
+  "column_break_show_if",
+  "show_if_operator",
+  "show_if_value",
+  "section_break_section_show_if",
+  "section_show_if_doctype",
+  "section_show_if_field",
+  "column_break_section_show_if",
+  "section_show_if_operator",
+  "section_show_if_value"
+ ],
+ "fields": [
+  {
+   "fieldname": "for_doctype",
+   "fieldtype": "Link",
+   "label": "Asked on (doctype)",
+   "options": "DocType",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "The form this question is part of. It is shown on that form and its answer is kept with the record - no field is added to the doctype."
+  },
+  {
+   "fieldname": "question_no",
+   "fieldtype": "Data",
+   "label": "Question No",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "The number the question carries on the questionnaire, e.g. 12 or 4.2."
+  },
+  {
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled",
+   "default": "1",
+   "in_list_view": 1,
+   "description": "Switch off to stop asking it, without deleting."
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "group_type",
+   "fieldtype": "Select",
+   "label": "Group as",
+   "options": "Individual question\nSection\nTab",
+   "default": "Individual question",
+   "in_standard_filter": 1,
+   "description": "Individual question: shown on its own. Section: shown with the other questions of the same section. Tab: shown in its own tab on the form, next to the form's other tabs."
+  },
+  {
+   "fieldname": "section_group",
+   "fieldtype": "Data",
+   "label": "Section",
+   "in_standard_filter": 1,
+   "description": "Questions with the same section name are shown together under it, e.g. Rent details. In a tab, this is optional.",
+   "depends_on": "eval:[\"Section\",\"Tab\"].includes(doc.group_type)",
+   "mandatory_depends_on": "eval:doc.group_type==\"Section\""
+  },
+  {
+   "fieldname": "tab_group",
+   "fieldtype": "Data",
+   "label": "Tab",
+   "depends_on": "eval:doc.group_type==\"Tab\"",
+   "mandatory_depends_on": "eval:doc.group_type==\"Tab\"",
+   "in_standard_filter": 1,
+   "description": "Becomes a tab on the form, e.g. Health Survey. Questions with the same tab name share it."
+  },
+  {
+   "fieldname": "is_mandatory",
+   "fieldtype": "Check",
+   "label": "Mandatory",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "section_break_question",
+   "fieldtype": "Section Break",
+   "label": "Question"
+  },
+  {
+   "fieldname": "question",
+   "fieldtype": "Small Text",
+   "label": "Question",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "answer_type",
+   "fieldtype": "Select",
+   "label": "Answer Type",
+   "options": "Text\nNumber\nDate\nYes / No\nSelect\nMulti-select",
+   "default": "Text",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "column_break_options",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "options",
+   "fieldtype": "Small Text",
+   "label": "Options",
+   "depends_on": "eval:[\"Select\",\"Multi-select\"].includes(doc.answer_type)",
+   "mandatory_depends_on": "eval:[\"Select\",\"Multi-select\"].includes(doc.answer_type)",
+   "description": "One option per line. Used for Select and Multi-select."
+  },
+  {
+   "fieldname": "section_break_condition",
+   "fieldtype": "Section Break",
+   "label": "Show only if (optional)",
+   "description": "Show this question only when another question has a given answer, e.g. show \"Which scheme?\" only when \"Do you receive a government scheme?\" = Yes."
+  },
+  {
+   "fieldname": "depends_on_question",
+   "fieldtype": "Link",
+   "label": "Another question",
+   "options": "Question Bank",
+   "link_filters": "[[\"Question Bank\", \"enabled\", \"=\", 1]]",
+   "description": "Show this question only when that question has the answer below. e.g. Do you receive a government scheme?"
+  },
+  {
+   "fieldname": "column_break_condition",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "depends_on_answer",
+   "fieldtype": "Data",
+   "label": "Has the answer",
+   "depends_on": "eval:doc.depends_on_question",
+   "mandatory_depends_on": "eval:doc.depends_on_question",
+   "description": "The exact answer that makes this question appear, e.g. Yes (or Rented, Widowed)."
+  },
+  {
+   "fieldname": "section_break_show_if",
+   "fieldtype": "Section Break",
+   "label": "Display depends on (optional)",
+   "description": "Show this question only while a field of a doctype has a value, e.g. Household Profile > House Ownership = Rented."
+  },
+  {
+   "fieldname": "show_if_doctype",
+   "fieldtype": "Link",
+   "label": "Doctype",
+   "options": "DocType",
+   "description": "The form that holds the deciding field, e.g. Household Profile."
+  },
+  {
+   "fieldname": "show_if_field",
+   "fieldtype": "Data",
+   "label": "Field",
+   "depends_on": "eval:doc.show_if_doctype",
+   "mandatory_depends_on": "eval:doc.show_if_doctype",
+   "description": "The field whose value decides, e.g. House Ownership (use the field name: house_ownership)."
+  },
+  {
+   "fieldname": "column_break_show_if",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "show_if_operator",
+   "fieldtype": "Select",
+   "label": "Condition",
+   "options": "=\n!=\nis set\nis not set",
+   "default": "=",
+   "depends_on": "eval:doc.show_if_doctype",
+   "description": "How to compare. e.g. \"=\" Rented shows it for rented houses; \"!=\" Owned shows it for all but owned; \"is set\" shows it once any value is filled; \"is not set\" shows it while the field is empty."
+  },
+  {
+   "fieldname": "show_if_value",
+   "fieldtype": "Data",
+   "label": "Value",
+   "depends_on": "eval:doc.show_if_doctype && [\"=\",\"!=\"].includes(doc.show_if_operator)",
+   "mandatory_depends_on": "eval:doc.show_if_doctype && [\"=\",\"!=\"].includes(doc.show_if_operator)",
+   "description": "The value to compare with, e.g. Rented. Not needed for \"is set\" / \"is not set\"."
+  },
+  {
+   "fieldname": "section_break_section_show_if",
+   "fieldtype": "Section Break",
+   "label": "Section display depends on (optional)",
+   "description": "Applies to the whole section above. Saving it here updates every other question in the same section. e.g. show the whole \"Rent details\" section only while Household Profile > House Ownership = Rented."
+  },
+  {
+   "fieldname": "section_show_if_doctype",
+   "fieldtype": "Link",
+   "label": "Doctype",
+   "options": "DocType",
+   "description": "The form that holds the deciding field, e.g. Household Profile."
+  },
+  {
+   "fieldname": "section_show_if_field",
+   "fieldtype": "Data",
+   "label": "Field",
+   "depends_on": "eval:doc.section_show_if_doctype",
+   "mandatory_depends_on": "eval:doc.section_show_if_doctype",
+   "description": "The field whose value decides for the whole section, e.g. House Ownership (house_ownership)."
+  },
+  {
+   "fieldname": "column_break_section_show_if",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_show_if_operator",
+   "fieldtype": "Select",
+   "label": "Condition",
+   "options": "=\n!=\nis set\nis not set",
+   "default": "=",
+   "depends_on": "eval:doc.section_show_if_doctype",
+   "description": "How to compare. e.g. \"=\" Rented shows the section for rented houses; \"is set\" shows it once the field has any value."
+  },
+  {
+   "fieldname": "section_show_if_value",
+   "fieldtype": "Data",
+   "label": "Value",
+   "depends_on": "eval:doc.section_show_if_doctype && [\"=\",\"!=\"].includes(doc.section_show_if_operator)",
+   "mandatory_depends_on": "eval:doc.section_show_if_doctype && [\"=\",\"!=\"].includes(doc.section_show_if_operator)",
+   "description": "The value to compare with, e.g. Rented. Not needed for \"is set\" / \"is not set\"."
+  }
+ ],
+ "permissions": [
+  {
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "share": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Program Coordinator",
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "share": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Program Manager"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Organization Admin"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Supervisor"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Data Collector"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Report Viewer"
+  }
+ ],
+ "sort_field": "question_no",
+ "sort_order": "ASC",
+ "track_changes": 1,
+ "allow_rename": 1
+}

@@ -36,3 +36,9 @@ janadhikara.patches.v1_1.seed_relationship_types
 janadhikara.patches.v1_1.todo_task_title
 janadhikara.patches.v1_1.todo_task_time
 janadhikara.patches.v1_1.todo_form_fields
+janadhikara.patches.v1_1.seed_validation_statuses
+janadhikara.patches.v1_1.seed_cooking_fuels
+janadhikara.patches.v1_1.household_data_collector_single_field
+janadhikara.patches.v1_1.household_single_status
+janadhikara.patches.v1_1.household_questions_policy
+janadhikara.patches.v1_1.question_group_type

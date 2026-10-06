@@ -1,0 +1,94 @@
+{
+ "actions": [],
+ "creation": "2026-10-06 11:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-06 11:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Masters",
+ "name": "Cooking Fuel",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "states": [],
+ "autoname": "field:fuel_name",
+ "naming_rule": "By fieldname",
+ "title_field": "fuel_name",
+ "show_title_field_in_link": 1,
+ "field_order": [
+  "fuel_name",
+  "enabled"
+ ],
+ "fields": [
+  {
+   "fieldname": "fuel_name",
+   "fieldtype": "Data",
+   "label": "Fuel",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled",
+   "default": "1",
+   "in_list_view": 1
+  }
+ ],
+ "permissions": [
+  {
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "share": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Program Coordinator",
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "share": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Program Manager"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Organization Admin"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Supervisor"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Data Collector"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Report Viewer"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "allow_rename": 1
+}

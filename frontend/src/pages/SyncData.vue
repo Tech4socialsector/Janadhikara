@@ -215,6 +215,28 @@
         </div>
       </dl>
 
+      <!-- Is this device ready for offline? -->
+      <div class="mt-5 rounded-xl border border-outline-gray-1 p-4">
+        <div class="mb-3 flex items-center justify-between gap-2">
+          <h3 class="text-sm font-semibold text-ink-gray-9">Ready for offline?</h3>
+          <Button size="sm" variant="ghost" icon-left="refresh-cw" :loading="checking" @click="runReadiness">Check again</Button>
+        </div>
+        <ul class="space-y-2">
+          <li v-for="c in readiness" :key="c.key" class="flex items-start gap-2.5 text-sm">
+            <span
+              class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
+              :class="c.ok ? 'bg-surface-green-2 text-ink-green-3' : 'bg-surface-red-2 text-ink-red-4'"
+            >
+              <FeatherIcon :name="c.ok ? 'check' : 'x'" class="h-3 w-3" />
+            </span>
+            <p class="min-w-0">
+              <span class="font-medium text-ink-gray-8">{{ c.label }}</span>
+              <span class="block text-xs text-ink-gray-5">{{ c.detail }}</span>
+            </p>
+          </li>
+        </ul>
+      </div>
+
       <div v-if="packState.downloading" class="mt-4">
         <p class="mb-1.5 text-sm text-ink-gray-6">{{ packState.step }}</p>
         <div class="h-2 overflow-hidden rounded-full bg-surface-gray-3">
@@ -305,7 +327,7 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import LucideIcon from '@/components/LucideIcon.vue'
 import { queue, syncState, syncAll, discard, downloadJson, downloadCsv, loadQueue } from '@/data/offlineQueue'
-import { packInfo, packState, downloadPack, removePack, getPack, loadPackInfo } from '@/data/offlinePack'
+import { packInfo, packState, downloadPack, removePack, getPack, loadPackInfo, checkOfflineReadiness } from '@/data/offlinePack'
 import { setPageTitle } from '@/data/pageTitle'
 
 setPageTitle('Sync Data')
@@ -405,6 +427,16 @@ const steps = [
   { title: 'Upload here', text: 'Check the list, then press Upload. Each record is removed once it is uploaded.' },
 ]
 const queueBytes = computed(() => new Blob([JSON.stringify(queue.value.map((i) => i.doc))]).size)
+const readiness = ref([])
+const checking = ref(false)
+async function runReadiness() {
+  checking.value = true
+  try {
+    readiness.value = await checkOfflineReadiness()
+  } finally {
+    checking.value = false
+  }
+}
 const tab = ref('sync')
 const tabButtons = computed(() => [
   { label: queue.value.length ? `Offline Sync (${queue.value.length})` : 'Offline Sync', value: 'sync', icon: 'upload-cloud' },
@@ -420,6 +452,10 @@ const formatBytes = (n) => (n > 1048576 ? `${(n / 1048576).toFixed(1)} MB` : `${
 const browseOptions = computed(() =>
   Object.entries(packInfo.value?.counts || {}).map(([d, n]) => ({ label: `${d} (${n})`, value: d })),
 )
+watch([tab, () => packInfo.value, () => packState.value.downloading], ([t, , busy]) => {
+  if (t === 'download' && !busy) runReadiness()
+}, { immediate: true })
+
 watch(showBrowse, async (open) => {
   if (!open) return
   pack.value = await getPack()

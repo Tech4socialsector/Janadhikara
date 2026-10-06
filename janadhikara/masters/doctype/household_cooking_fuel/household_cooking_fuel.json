@@ -1,0 +1,35 @@
+{
+ "actions": [],
+ "creation": "2026-10-06 11:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-10-06 11:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Masters",
+ "name": "Household Cooking Fuel",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "states": [],
+ "istable": 1,
+ "editable_grid": 1,
+ "autoname": "format:HCF-{#####}",
+ "naming_rule": "Expression",
+ "title_field": "fuel",
+ "show_title_field_in_link": 1,
+ "field_order": [
+  "fuel"
+ ],
+ "fields": [
+  {
+   "fieldname": "fuel",
+   "fieldtype": "Link",
+   "label": "Fuel",
+   "options": "Cooking Fuel",
+   "reqd": 1,
+   "in_list_view": 1,
+   "link_filters": "[[\"Cooking Fuel\", \"enabled\", \"=\", 1]]"
+  }
+ ]
+}

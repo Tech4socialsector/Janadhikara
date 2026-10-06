@@ -1,5 +1,6 @@
 import { computed, watchEffect } from 'vue'
 import { useCall } from 'frappe-ui'
+import { withSnapshot } from '@/data/localSnapshot'
 import { currentTheme } from '@/data/theme'
 import defaultLogo from '@/assets/default-logo.png'
 import { online } from '@/data/connection'
@@ -7,11 +8,13 @@ import { appIconDataUrl } from '@/data/offlinePack'
 
 // The app's configurable name/logo, from App Setting (allow_guest=True
 // so the Login page can also show it before authentication).
-export const brandingResource = useCall({
-  url: '/api/v2/method/janadhikara.api.get_app_branding',
-  method: 'GET',
-  cacheKey: 'janadhikara-app-branding',
-})
+export const brandingResource = useCall(
+  withSnapshot('app-branding', {
+    url: '/api/v2/method/janadhikara.api.get_app_branding',
+    method: 'GET',
+    cacheKey: 'janadhikara-app-branding',
+  }),
+)
 
 // Single source of truth for "which logo to render right now" - every
 // header/login-page consumer wants the same light/dark pick, and

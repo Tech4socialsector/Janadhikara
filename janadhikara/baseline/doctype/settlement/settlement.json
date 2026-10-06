@@ -62,7 +62,8 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "description": "Generated automatically when the record is first saved.",
-   "read_only": 1
+   "read_only": 1,
+   "depends_on": "eval:doc.settlement_code"
   },
   {
    "fieldname": "column_break_main",

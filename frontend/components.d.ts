@@ -8,6 +8,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ActivityPanel: typeof import('./src/components/ActivityPanel.vue')['default']
     AiAssistant: typeof import('./src/components/AiAssistant.vue')['default']
     AppSidebar: typeof import('./src/components/AppSidebar.vue')['default']
     AwesomeBar: typeof import('./src/components/AwesomeBar.vue')['default']
@@ -34,6 +35,8 @@ declare module 'vue' {
     PageHeader: typeof import('./src/components/PageHeader.vue')['default']
     ProfilePanel: typeof import('./src/components/ProfilePanel.vue')['default']
     PwaUpdatePrompt: typeof import('./src/components/PwaUpdatePrompt.vue')['default']
+    QuestionConditionsPanel: typeof import('./src/components/QuestionConditionsPanel.vue')['default']
+    QuestionnairePanel: typeof import('./src/components/QuestionnairePanel.vue')['default']
     RecordTasks: typeof import('./src/components/RecordTasks.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

@@ -28,7 +28,8 @@
    "reqd": 0,
    "unique": 1,
    "read_only": 1,
-   "description": "Generated automatically when the record is first saved."
+   "description": "Generated automatically when the record is first saved.",
+   "depends_on": "eval:doc.worker_code"
   },
   {
    "fieldname": "column_break_worker_1",
@@ -93,7 +94,8 @@
    "fieldtype": "Link",
    "label": "User",
    "options": "User",
-   "read_only": 1
+   "read_only": 1,
+   "depends_on": "eval:doc.user"
   }
  ],
  "grid_page_length": 50,

@@ -76,6 +76,28 @@
     <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
+  <!-- Question Bank display condition: the value to compare with is picked from the chosen
+  field's own choices (a Select's options, Yes/No for a tick box, or a Link's records). -->
+  <LinkField
+    v-else-if="controlType === 'condition-value' && conditionField.fieldtype === 'Link'"
+    :field="{ ...field, fieldtype: 'Link', options: conditionField.options }"
+    :disabled="isReadOnly"
+    :model-value="modelValue"
+    @update:model-value="$emit('update:modelValue', $event)"
+  />
+  <FormControl
+    v-else-if="controlType === 'condition-value'"
+    type="select"
+    class="[&_[data-slot=trigger]]:w-full"
+    :label="field.label"
+    :required="!!field.reqd"
+    :disabled="isReadOnly"
+    :options="conditionValueOptions"
+    :description="`Pick one of ${conditionField.label || conditionField.fieldname}'s values.`"
+    :model-value="modelValue"
+    @update:model-value="$emit('update:modelValue', $event)"
+  />
+
   <FormControl
     v-else-if="controlType === 'select'"
     type="select"
@@ -85,7 +107,7 @@
     :required="!!field.reqd"
     :disabled="isReadOnly"
     :options="selectOptions"
-    :description="field.description"
+    :description="selectDescription"
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
   />
@@ -276,6 +298,7 @@ import { fieldFunctionRegistryResource } from '@/data/fieldFunctionRegistry'
 import TableMultiSelectField from '@/components/TableMultiSelectField.vue'
 import { getValidatorForField } from '@/utils/validation'
 import { evaluateDependsOn } from '@/utils/dependsOn'
+import { loadDoctypeFields } from '@/data/doctypeMeta'
 
 const props = defineProps({
   field: { type: Object, required: true },
@@ -325,6 +348,9 @@ const DOCTYPE_FIELD_SOURCES = {
   target_field: 'target_doctype',
   input_field: 'target_doctype',
   policy_field: 'target_doctype',
+  // Question Bank: the field a question / section's display condition looks at.
+  show_if_field: 'show_if_doctype',
+  section_show_if_field: 'section_show_if_doctype',
 }
 const pickerDoctype = computed(() => {
   const source = DOCTYPE_FIELD_SOURCES[props.field.fieldname]
@@ -356,8 +382,62 @@ watch(doctypeFieldSource, (isPicker) => {
   }
 }, { immediate: true })
 
+// Question Bank "Display depends on" (and the section version): the Condition and Value fields
+// know which field was picked above them, so they can speak plainly and offer real choices.
+//   Condition: "is" / "is not" / "has a value" / "is empty"  (stored as = / != / is set / is not set)
+//   Value:     House Ownership is a Select -> a dropdown of Owned, Rented, ...
+//   Summary:   "This question is shown only while House Ownership is Rented."
+const CONDITION_FIELDS = {
+  show_if_operator: ['show_if', 'operator'],
+  show_if_value: ['show_if', 'value'],
+  section_show_if_operator: ['section_show_if', 'operator'],
+  section_show_if_value: ['section_show_if', 'value'],
+}
+const OPERATOR_LABELS = { '=': 'is', '!=': 'is not', 'is set': 'has a value', 'is not set': 'is empty' }
+const conditionPart = computed(() => {
+  const part = CONDITION_FIELDS[props.field.fieldname]
+  return part && `${part[0]}_doctype` in (props.siblingValues || {}) ? part : null
+})
+const conditionField = ref(null)
+watch(
+  () => {
+    const part = conditionPart.value
+    return part && [props.siblingValues[`${part[0]}_doctype`], props.siblingValues[`${part[0]}_field`]]
+  },
+  async (target) => {
+    conditionField.value = null
+    if (!target?.[0] || !target?.[1]) return
+    const fields = await loadDoctypeFields(target[0])
+    conditionField.value = fields.find((f) => f.fieldname === target[1]) || null
+  },
+  { immediate: true },
+)
+const conditionValueOptions = computed(() => {
+  const f = conditionField.value
+  if (f?.fieldtype === 'Check') {
+    return [{ label: 'Select option', value: '' }, { label: 'Ticked (Yes)', value: '1' }, { label: 'Not ticked (No)', value: '0' }]
+  }
+  const opts = (f?.options || '').split('\n').map((v) => v.trim()).filter(Boolean).map((v) => ({ label: v, value: v }))
+  return [{ label: 'Select option', value: '' }, ...opts]
+})
+const conditionSummary = computed(() => {
+  const part = conditionPart.value
+  const f = conditionField.value
+  if (!part || part[1] !== 'operator' || !f) return null
+  const op = props.siblingValues[`${part[0]}_operator`] || '='
+  const value = props.siblingValues[`${part[0]}_value`]
+  const needsValue = op === '=' || op === '!='
+  if (needsValue && !value) return null
+  const shown = part[0] === 'section_show_if' ? 'This whole section is shown' : 'This question is shown'
+  return `${shown} only while ${f.label || f.fieldname} ${OPERATOR_LABELS[op]}${needsValue ? ` ${value}` : ''}.`
+})
+const selectDescription = computed(() => conditionSummary.value || props.field.description)
+
 const controlType = computed(() => {
   if (doctypeFieldSource.value) return 'doctype-field'
+  if (conditionPart.value?.[1] === 'value' && ['Select', 'Check', 'Link'].includes(conditionField.value?.fieldtype)) {
+    return 'condition-value'
+  }
   if (props.field.fieldtype === 'Data' && INDIA_GEO_OPTIONS.has(props.field.options)) {
     return 'india-geo'
   }
@@ -545,7 +625,7 @@ const fileName = computed(() => {
 const selectOptions = computed(() => {
   const raw = props.field.options || ''
   const lines = raw.split('\n').map((v) => v.trim())
-  const opts = lines.filter(Boolean).map((v) => ({ label: v, value: v }))
+  const opts = lines.filter(Boolean).map((v) => ({ label: OPERATOR_LABELS[v] && conditionPart.value ? OPERATOR_LABELS[v] : v, value: v }))
   opts.unshift({ label: 'Select option', value: '' })
   return opts
 })
