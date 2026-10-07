@@ -46,6 +46,9 @@ async function forgetDevice() {
   try {
     localStorage.removeItem(LAST_USER)
     clearSnapshots()
+    // the dropdown data downloaded for offline use holds household and people records
+    const { removePack } = await import('@/data/offlinePack')
+    await removePack()
     const worker = (await navigator.serviceWorker?.getRegistration('/janadhikara/'))?.active
     worker?.postMessage('janadhikara-clear-caches')
     await Promise.all(['janadhikara-shell', 'janadhikara-api-reads'].map((name) => caches.delete(name)))
@@ -126,7 +129,3 @@ export const logoutResource = createResource({
     window.location.reload()
   },
 })
-
-export function isLoggedIn() {
-  return Boolean(session.user)
-}

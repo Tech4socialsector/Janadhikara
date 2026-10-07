@@ -10,9 +10,9 @@ export function ymd(d) {
 
 export function plain(html) {
   if (!html) return ''
-  const div = document.createElement('div')
-  div.innerHTML = html
-  return (div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim()
+  // DOMParser builds an inert document: nothing in the markup runs or loads
+  const text = new DOMParser().parseFromString(String(html), 'text/html').body.textContent || ''
+  return text.replace(/\s+/g, ' ').trim()
 }
 
 // A task's short title and its details. Tasks made before titles existed (or by

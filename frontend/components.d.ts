@@ -19,6 +19,8 @@ declare module 'vue' {
     ConnectionsPanel: typeof import('./src/components/ConnectionsPanel.vue')['default']
     DoctypeFieldPicker: typeof import('./src/components/DoctypeFieldPicker.vue')['default']
     DoneIcon: typeof import('./src/components/DoneIcon.vue')['default']
+    DrillChart: typeof import('./src/components/DrillChart.vue')['default']
+    DrillDialog: typeof import('./src/components/DrillDialog.vue')['default']
     DynamicField: typeof import('./src/components/DynamicField.vue')['default']
     EmailSettingsPanel: typeof import('./src/components/EmailSettingsPanel.vue')['default']
     FilterEditor: typeof import('./src/components/FilterEditor.vue')['default']

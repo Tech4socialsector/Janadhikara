@@ -9,6 +9,8 @@ export default defineConfig({
   plugins: [
     frappeui({
       frontendRoute: '/janadhikara',
+      // no source maps in the shipped build: they were 15 MB of the 20 MB output
+      buildConfig: { sourcemap: false },
     }),
     vue(),
     Components({

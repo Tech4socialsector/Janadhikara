@@ -67,6 +67,19 @@ value needs raising too. */
   z-index: 1100 !important;
 }
 
+/* The option list of a Select (frappe-ui's Select has no height limit of its own): a doctype with
+dozens of fields - a Sort or Filter field picker - grew past the screen and could not be scrolled.
+Cap its height to what fits (at most 20rem) and let it scroll inside, and cap its width so a long
+label wraps instead of stretching the list across the page. */
+[data-slot='content'][data-state='open'] {
+  max-width: min(26rem, 92vw);
+}
+[data-slot='content-body'] {
+  max-height: min(20rem, var(--reka-select-content-available-height, 20rem)) !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+}
+
 /* Typography - one font, one scale, following Frappe Helpdesk.
 
 Helpdesk is built from frappe-ui, so the sizes below are the ones frappe-ui's

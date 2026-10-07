@@ -17,6 +17,7 @@
   "field_mappings",
   "section_break_notes",
   "description",
+  "column_break_section_break_notes_x",
   "expression"
  ],
  "fields": [
@@ -110,6 +111,10 @@
    "description": "Why this rule exists - free text for other admins."
   },
   {
+   "fieldname": "column_break_section_break_notes_x",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "expression",
    "fieldtype": "Small Text",
    "label": "Expression",
@@ -159,5 +164,6 @@
    "write": 1
   }
  ],
- "show_title_field_in_link": 1
+ "show_title_field_in_link": 1,
+ "search_fields": "rule_name,target_doctype"
 }

@@ -71,8 +71,9 @@ export function useFormTabs(metaResource) {
     const meta = metaResource.data
     if (!meta) return []
 
+    let sectionId = 0
     function newSection() {
-      return { label: null, dependsOn: null, columns: [[]] }
+      return { id: sectionId++, label: null, dependsOn: null, columns: [[]] }
     }
     function newTab() {
       return { label: null, dependsOn: null, sections: [newSection()], tables: [] }
@@ -87,7 +88,7 @@ export function useFormTabs(metaResource) {
       const tab = tabs[tabs.length - 1]
       if (f.fieldtype === 'Section Break') {
         if (!f.hidden) {
-          tab.sections.push({ label: f.label || null, description: f.description || null, dependsOn: f.depends_on || null, columns: [[]] })
+          tab.sections.push({ id: sectionId++, label: f.label || null, description: f.description || null, dependsOn: f.depends_on || null, columns: [[]] })
         }
         continue
       }
@@ -96,7 +97,7 @@ export function useFormTabs(metaResource) {
       // child table sits under the tab it was declared in instead of below
       // the whole form.
       if (f.fieldtype === 'Table' && isDisplayField(f)) {
-        tab.tables.push(f)
+        tab.tables.push({ ...f, afterSection: tab.sections[tab.sections.length - 1].id })
         continue
       }
       const section = tab.sections[tab.sections.length - 1]

@@ -4,7 +4,7 @@
   the task closes when the household moves on (Validated / Completed / back to
   work).
 - A daily job nudges the data collector of a household that has sat in Draft /
-  In Progress for STALE_DAYS without an update.
+  Partially Completed for STALE_DAYS without an update.
 
 Everything goes through Frappe's own assignment (`assign_to`), so the tasks are
 ordinary ToDos (reference = the household) and show up in the Worklist."""
@@ -15,7 +15,7 @@ from frappe.desk.form.assign_to import _add, close_all_assignments
 from frappe.utils import add_days, getdate, nowdate
 
 STALE_DAYS = 7
-OPEN_STATUSES = ("Draft", "In Progress")
+OPEN_STATUSES = ("Partially Completed",)
 DONE_STATUSES = ("Validated", "Completed")
 
 
@@ -59,7 +59,10 @@ def _assign(doc, description, priority="Medium", due_in_days=3):
 
 def household_updated(doc, method=None):
 	"""Household Profile on_update."""
-	if doc.status == "Revision Needed":
+	if doc.get("validation_status") == "Revision Needed":
+		before = doc.get_doc_before_save()
+		if before and before.get("validation_status") == "Revision Needed" and not doc.is_new():
+			return  # already has its revision task: unrelated saves don't re-assign
 		note = f" - {doc.validation_comments}" if doc.get("validation_comments") else ""
 		_assign(
 			doc,
@@ -70,7 +73,7 @@ def household_updated(doc, method=None):
 		return
 
 	before = doc.get_doc_before_save()
-	if (before and before.status == "Revision Needed") or doc.status in DONE_STATUSES:
+	if (before and before.get("validation_status") == "Revision Needed") or doc.get("validation_status") == "Validated" or doc.status in DONE_STATUSES:
 		# Frappe tells the assignee itself when an assignment is closed - don't say it twice.
 		frappe.flags.janadhikara_system_close = True
 		try:
@@ -80,12 +83,13 @@ def household_updated(doc, method=None):
 
 
 def nudge_stale_households():
-	"""Scheduler (daily): Draft / In Progress households with no update for STALE_DAYS."""
+	"""Scheduler (daily): Draft / Partially Completed households with no update for STALE_DAYS."""
 	cutoff = add_days(nowdate(), -STALE_DAYS)
 	households = frappe.get_all(
 		"Household Profile",
 		filters={"status": ["in", OPEN_STATUSES], "modified": ["<", cutoff]},
 		fields=["name", "respondent_name", "assigned_worker", "status"],
+		order_by="modified asc",
 		limit=500,
 	)
 	for row in households:

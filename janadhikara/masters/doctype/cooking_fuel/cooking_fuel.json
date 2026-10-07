@@ -18,6 +18,7 @@
  "show_title_field_in_link": 1,
  "field_order": [
   "fuel_name",
+  "column_break_main_x",
   "enabled"
  ],
  "fields": [
@@ -28,6 +29,10 @@
    "reqd": 1,
    "unique": 1,
    "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_main_x",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "enabled",
@@ -90,5 +95,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "allow_rename": 1
+ "allow_rename": 1,
+ "search_fields": "fuel_name"
 }

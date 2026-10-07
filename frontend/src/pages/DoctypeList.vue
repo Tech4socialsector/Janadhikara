@@ -563,6 +563,17 @@ const fetchFields = computed(() => {
 // more deliberate, explicit action of the two.
 const quickFilters = reactive({})
 const advancedFilters = ref({})
+// Opened from the Dashboard (or any link) with ?filters={...} in Frappe's filter shape.
+function filtersFromRoute() {
+  try {
+    const parsed = route.query.filters ? JSON.parse(route.query.filters) : null
+    return parsed && typeof parsed === 'object' ? parsed : {}
+  } catch {
+    return {}
+  }
+}
+advancedFilters.value = filtersFromRoute()
+watch(() => route.query.filters, () => { advancedFilters.value = filtersFromRoute() })
 const searchQuery = ref('')
 
 function selectOptions(field) {

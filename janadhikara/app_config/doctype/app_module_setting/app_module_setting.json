@@ -135,5 +135,6 @@
  "states": [],
  "title_field": "label",
  "track_changes": 1,
- "show_title_field_in_link": 1
+ "show_title_field_in_link": 1,
+ "search_fields": "module_name,label"
 }

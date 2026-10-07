@@ -438,6 +438,12 @@ const sections = computed(() => {
           isActive: route.name === 'Home',
         },
         {
+          label: 'Dashboard',
+          icon: moduleIcon('layout-dashboard'),
+          to: { name: 'Dashboard' },
+          isActive: route.name === 'Dashboard',
+        },
+        {
           label: 'Worklist',
           icon: moduleIcon('check-square'),
           to: { name: 'Worklist' },

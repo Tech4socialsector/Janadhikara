@@ -50,7 +50,7 @@ def get_my_notifications(limit: int = 20):
 	logs = frappe.get_all(
 		"Notification Log",
 		filters={"for_user": frappe.session.user},
-		fields=["*"],
+		fields=["name", "subject", "type", "read", "creation", "document_type", "document_name", "link", "from_user", "for_user", "email_content"],
 		order_by="creation desc",
 		limit_page_length=max(1, min(int(limit), 100)),
 	)

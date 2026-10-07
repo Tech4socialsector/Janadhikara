@@ -7,6 +7,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { toast } from 'frappe-ui'
 
 // virtual:pwa-register bakes its service-worker URL as `buildBase + filename`
@@ -20,6 +21,7 @@ import { toast } from 'frappe-ui'
 // here (bypassing virtual:pwa-register) with that URL hardcoded.
 const needRefresh = ref(false)
 const updateServiceWorker = ref(() => {})
+const router = useRouter()
 
 onMounted(async () => {
   if (!('serviceWorker' in navigator)) return
@@ -30,6 +32,15 @@ onMounted(async () => {
   let refreshPromptShown = false
   const showRefreshPrompt = () => {
     refreshPromptShown = true
+    // The toast is easy to miss, and an old copy of the app keeps running until it is accepted: apply the
+    // update on the next page change too (never in the middle of filling in a form).
+    needRefresh.value = true
+    router.afterEach(() => {
+      if (needRefresh.value) {
+        needRefresh.value = false
+        updateServiceWorker.value()
+      }
+    })
     wb.addEventListener('controlling', () => window.location.reload())
     toast.info('A new version of the app is available.', {
       duration: 0,

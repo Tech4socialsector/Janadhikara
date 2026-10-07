@@ -12,6 +12,7 @@ class QuestionBank(Document):
 	def validate(self):
 		self.question_no = (self.question_no or "").strip()
 		self.validate_for_doctype()
+		self.validate_unique_number()
 		self.validate_grouping()
 		self.validate_options()
 		self.validate_condition()
@@ -49,10 +50,29 @@ class QuestionBank(Document):
 			self.options = None
 
 	def validate_condition(self):
-		if bool(self.depends_on_question) != bool((self.depends_on_answer or "").strip()):
-			frappe.throw(_("Set both the other question and the answer it must have - or neither."))
-		if self.depends_on_question and self.depends_on_question == self.name:
-			frappe.throw(_("A question cannot depend on itself."))
+		operator = self.depends_on_operator or "="
+		self.depends_on_operator = operator
+		needs_answer = operator in ("=", "!=", "contains")
+		if self.depends_on_question and needs_answer and not (self.depends_on_answer or "").strip():
+			frappe.throw(_("Enter the answer the other question must have."))
+		if not self.depends_on_question:
+			self.depends_on_answer = None
+			self.depends_on_operator = "="
+		elif not needs_answer:
+			self.depends_on_answer = None
+		if bool(self.section_depends_on_question) != bool((self.section_depends_on_answer or "").strip()):
+			frappe.throw(_("Set both the question the section depends on and its answer - or neither."))
+		for field in ("depends_on_question", "section_depends_on_question"):
+			if self.get(field) and self.get(field) == self.name:
+				frappe.throw(_("A question cannot depend on itself."))
+
+	def validate_unique_number(self):
+		"""Question numbers repeat across forms, but not within one."""
+		clash = frappe.db.exists(
+			"Question Bank", {"for_doctype": self.for_doctype, "question_no": self.question_no, "name": ["!=", self.name]}
+		)
+		if clash:
+			frappe.throw(_("{0} already has a question numbered {1}.").format(frappe.bold(self.for_doctype), frappe.bold(self.question_no)))
 
 	def validate_display_conditions(self):
 		"""'Display depends on': a field of a doctype, a condition and (for = / !=) a value."""
@@ -77,12 +97,12 @@ class QuestionBank(Document):
 		"""Everyone in a section follows the section's own display condition."""
 		if not self.section_group:
 			return
-		values = {
-			key: self.get(f"section_show_if_{key}") for key in ("doctype", "field", "operator", "value")
-		}
+		values = {f"section_show_if_{key}": self.get(f"section_show_if_{key}") for key in ("doctype", "field", "operator", "value")}
+		values["section_depends_on_question"] = self.section_depends_on_question
+		values["section_depends_on_answer"] = self.section_depends_on_answer
 		frappe.db.set_value(
 			"Question Bank",
-			{"section_group": self.section_group, "name": ["!=", self.name]},
-			{f"section_show_if_{key}": value for key, value in values.items()},
+			{"for_doctype": self.for_doctype, "section_group": self.section_group, "name": ["!=", self.name]},
+			values,
 			update_modified=False,
 		)

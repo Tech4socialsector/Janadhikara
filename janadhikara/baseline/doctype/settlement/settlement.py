@@ -4,55 +4,61 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
+from frappe.utils import flt
 
-from janadhikara.naming import autoname_with_code
+from janadhikara.security import enforce_own_partner
+from janadhikara.validation import clear_hidden_answers, require_shown_answers
 
 
 class Settlement(Document):
-	def autoname(self):
-		autoname_with_code(self, "SET", "settlement_code")
-
 	def validate(self):
-		self.validate_worker_assignments()
+		self.fill_partner()
+		enforce_own_partner(self)
+		self.fill_orw_name()
+		clear_hidden_answers(self)
+		require_shown_answers(self)
+		self.validate_questionnaire()
 
-	def validate_worker_assignments(self):
-		rows = self.worker_assignments or []
-		if not rows:
+	def validate_questionnaire(self):
+		# values can arrive as text from the form: compare them as numbers
+		# a "Yes" to a housing type means there is at least one such house
+		for key in range(1, 10):
+			answer = next((df.fieldname for df in self.meta.fields if df.fieldname.startswith(f"q6_{key}_") and df.fieldtype == "Select"), None)
+			count = next((df.fieldname for df in self.meta.fields if df.fieldname.startswith(f"q6_{key}_1_")), None)
+			if answer and count and self.get(answer) == "Yes" and self.get(count) not in (None, "") and flt(self.get(count)) < 1:
+				frappe.throw(_("{0}: enter at least 1, or answer No above.").format(self.meta.get_label(count)))
+
+		total = flt(self.get("q7_1_indicate_total_number_houses_physical"))
+		families = self.get("q7_2_specify_total_number_families_currently")
+		if families not in (None, "") and flt(families) < 0:
+			frappe.throw(_("Number of families can't be negative."))
+
+		shares = [flt(self.get(f"q16_1_{n}_proportion_children_going_{kind}")) for n, kind in ((2, "private_school"), (3, "government_sch"), (4, "government_aid"))]
+		if sum(shares) > 100:
+			frappe.throw(_("The shares of children going to private, government and government-aided schools add up to more than 100."))
+
+		partial = flt(self.get("q20_3_if_yes_partially_no_houses"))
+		if partial and total and partial > total:
+			frappe.throw(_("Houses considered for the programme can't be more than the total number of houses in the settlement."))
+
+	def fill_partner(self):
+		"""The partner organisation of the signed-in worker, when none was chosen."""
+		if self.partner_organization:
 			return
-		if not self.partner_organization:
-			frappe.throw(_("Choose the Partner Organization before tagging workers."))
+		from janadhikara.api import get_user_employee
 
-		# A unit's own name is its code (see Settlement Intervention Unit's autoname).
-		unit_codes = {u.intervention_unit_code for u in (self.intervention_units or [])}
-		seen = set()
-		for row in rows:
-			worker_partner = frappe.db.get_value("Employee", row.worker, "parent")
-			if worker_partner != self.partner_organization:
-				frappe.throw(
-					_("Row {0}: {1} is not a worker of {2}.").format(
-						row.idx, frappe.bold(row.worker), frappe.bold(self.partner_organization)
-					)
-				)
-			if row.intervention_unit:
-				if not self.has_intervention_units:
-					frappe.throw(
-						_("Row {0}: this settlement has no intervention units - clear the unit or tick {1}.").format(
-							row.idx, frappe.bold(_("Has Intervention Units"))
-						)
-					)
-				if row.intervention_unit not in unit_codes:
-					frappe.throw(
-						_("Row {0}: {1} is not one of this settlement's intervention units.").format(
-							row.idx, frappe.bold(row.intervention_unit)
-						)
-					)
-			key = (row.worker, row.intervention_unit or "")
-			if key in seen:
-				frappe.throw(
-					_("Row {0}: {1} is already tagged{2}.").format(
-						row.idx,
-						frappe.bold(row.worker),
-						_(" to {0}").format(row.intervention_unit) if row.intervention_unit else "",
-					)
-				)
-			seen.add(key)
+		employee = get_user_employee()
+		if employee:
+			self.partner_organization = employee.parent
+
+	def fill_orw_name(self):
+		"""Name of the ORW: whoever is creating the record, when left empty."""
+		if self.orw_name:
+			return
+		from janadhikara.api import get_user_employee
+
+		employee = get_user_employee()
+		self.orw_name = (employee.worker_name if employee else None) or frappe.db.get_value(
+			"User", frappe.session.user, "full_name"
+		)
+

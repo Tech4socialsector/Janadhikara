@@ -107,6 +107,17 @@
         </span>
       </button>
 
+      <!-- Numbers and charts across the households and individuals recorded. -->
+      <router-link
+        :to="{ name: 'Dashboard' }"
+        class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
+      >
+        <span class="module-tile-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-gray-300 group-active:translate-y-0 group-active:scale-95 group-active:shadow-sm dark:bg-gray-800 dark:ring-gray-700 dark:group-hover:ring-gray-600 sm:h-[4.5rem] sm:w-[4.5rem]">
+          <LucideIcon name="layout-dashboard" class="h-7 w-7 text-gray-600 transition-colors duration-150 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100 sm:h-8 sm:w-8" />
+        </span>
+        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">Dashboard</span>
+      </router-link>
+
       <!-- Offline data waiting to be uploaded lives here. -->
       <router-link
         :to="{ name: 'SyncData' }"

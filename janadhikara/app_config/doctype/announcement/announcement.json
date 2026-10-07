@@ -2,7 +2,7 @@
  "actions": [],
  "allow_bulk_edit": 1,
  "allow_rename": 1,
- "autoname": "format:ANN-{#####}",
+ "autoname": "ANN.####",
  "creation": "2026-09-30 13:02:31.135978",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -10,8 +10,8 @@
  "field_order": [
   "enabled",
   "title",
-  "message",
   "column_break_type",
+  "message",
   "announcement_type",
   "section_break_schedule",
   "start_date",
@@ -42,15 +42,15 @@
    "reqd": 1
   },
   {
+   "fieldname": "column_break_type",
+   "fieldtype": "Column Break"
+  },
+  {
    "description": "Shown in the announcement banner on the Home page.",
    "fieldname": "message",
    "fieldtype": "Small Text",
    "label": "Message",
    "reqd": 1
-  },
-  {
-   "fieldname": "column_break_type",
-   "fieldtype": "Column Break"
   },
   {
    "default": "Info",
@@ -176,5 +176,6 @@
  "states": [],
  "title_field": "title",
  "track_changes": 1,
- "show_title_field_in_link": 1
+ "show_title_field_in_link": 1,
+ "search_fields": "title"
 }

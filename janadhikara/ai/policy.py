@@ -10,11 +10,34 @@ a doctype available from the start, add it to SEED below (and write a patch
 that seeds it - see patches/v1_1/seed_ai_data_policies.py).
 """
 
+import json
+
 import frappe
 
 from janadhikara.ai.data_service import ALWAYS_BLOCKED, POLICY_CACHE_KEY
 
 APP_MODULES = ('Masters', 'Common', 'App Config', 'Engine', 'Baseline')
+
+INDIVIDUAL_PROFILE_VISIBLE = {
+    'individual_id', 'household', 'implementing_org', 'hhid', 'settlement_intervention_unit',
+    'respondent_name', 'member_name', 'documentation_status', 'validation_status',
+    'consent_given', 'consent_mode', 'consent_date', 'consent_taken_by', 'consent_withdrawn_on',
+}
+
+
+def _individual_profile_hidden():
+    """Every answer field of Individual Profile except the few in INDIVIDUAL_PROFILE_VISIBLE,
+    read from the doctype definition so a new question is confidential until someone reviews it."""
+    path = frappe.get_app_path('janadhikara', 'baseline', 'doctype', 'individual_profile', 'individual_profile.json')
+    with open(path) as f:
+        fields = json.load(f)['fields']
+    return {
+        df['fieldname']: 'personal detail (individual questionnaire)'
+        for df in fields
+        if df['fieldtype'] not in ('Tab Break', 'Section Break', 'Column Break')
+        and df['fieldname'] not in INDIVIDUAL_PROFILE_VISIBLE
+    }
+
 
 # doctype -> what the assistant may do, and its confidential / protected fields.
 # `hidden`: never seen, filtered on or set. `read_only`: seen, never set.
@@ -22,47 +45,41 @@ SEED = {
     'Household Profile': {
         'can_write': 1,
         'hidden': {
-            'address': 'home address', 'landmark': 'home location', 'latitude': 'home location',
-            'longitude': 'home location', 'geo_location': 'home location', 'contact_number': 'contact number',
-            'question_answers': 'questionnaire answers',
+            'house_no': 'home address', 'street_name': 'home address', 'address': 'home address',
+            'latitude': 'home location', 'longitude': 'home location', 'geo_location': 'home location',
+            'contact_number': 'contact number', 'head_age': 'personal detail', 'head_sex': 'personal detail',
+            'caste': 'caste', 'languages_spoken': 'personal detail',
+            'terminally_ill_member': 'health information', 'terminal_illness_nature': 'health information',
+            'pregnant_woman': 'health information', 'person_with_disability': 'health information',
+            'ayushman_bharat': 'health information', 'new_child_birth': 'health information',
+            'birth_certificate': 'health information', 'death_in_family': 'health information',
+            'death_certificate': 'health information', 'health_observations': 'health information',
+            'children_observations': 'observations about children',
         },
         'read_only': {
-            'assigned_worker': 'set from the signed-in user',
+            'assigned_worker': 'set from the signed-in user', 'house_id': 'generated',
+            'partner_organization': 'controls who can see the record', 'settlement': 'controls who can see the record',
             'validation_status': 'set by validators', 'validation_comments': 'set by validators',
+            'consent_given': 'recorded with the respondent, not by the assistant', 'consent_mode': 'consent record',
+            'consent_date': 'consent record', 'consent_taken_by': 'consent record', 'consent_withdrawn_on': 'consent record',
         },
     },
     'Individual Profile': {
-        'hidden': {
-            'date_of_birth': 'personal detail', 'age': 'personal detail', 'mobile_number': 'contact number',
-            'monthly_income': 'income', 'health_conditions': 'health information',
-            'entitlements': 'entitlement details (consent-based)', 'documents': 'identity documents (consent-based)',
-            'consent_purpose': 'consent record',
-        },
+        # Every answer on the individual questionnaire is personal (health, disability, caste
+        # certificate, documents, schemes, income source...), so only identifying / record-keeping
+        # fields stay visible - see _individual_profile_hidden.
+        'hidden': _individual_profile_hidden(),
         'read_only': {
-            'surveyor': 'set from the signed-in user', 'surveyor_name': 'set from the signed-in user',
+            'validation_status': 'set by validators',
             'consent_given': 'recorded with the person, not by the assistant', 'consent_mode': 'consent record',
-            'consent_date': 'consent record', 'consent_taken_by': 'consent record',
-            'consent_withdrawn_on': 'consent record',
+            'consent_date': 'consent record', 'consent_taken_by': 'consent record', 'consent_withdrawn_on': 'consent record',
         },
     },
     'Settlement': {
         'can_write': 1,
-        'hidden': {
-            'latitude': 'location', 'longitude': 'location', 'geo_location': 'location',
-            'settlement_boundary': 'boundary geometry',
-        },
-        'read_only': {
-            'partner_organization': 'controls which workers can be tagged', 'boundary_area': 'computed from the map',
-            'boundary_perimeter': 'computed from the map', 'boundary_captured_by': 'set by the system',
-            'boundary_captured_on': 'set by the system',
-        },
+        'hidden': {'latitude': 'location', 'longitude': 'location', 'geo_location': 'location'},
+        'read_only': {'partner_organization': 'controls which records the worker can see'},
     },
-    'Settlement Intervention Unit': {
-        'hidden': {
-            'latitude': 'location', 'longitude': 'location', 'geo_location': 'location', 'boundary': 'boundary geometry',
-        },
-    },
-    'Settlement Worker': {},
     'Partner Details': {
         'hidden': {
             'contact_person': 'personal contact', 'contact_number': 'contact number', 'email': 'email address',

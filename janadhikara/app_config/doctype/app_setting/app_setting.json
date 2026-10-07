@@ -6,23 +6,26 @@
  "field_order": [
   "app_name",
   "app_logo",
+  "column_break_main_x",
   "app_logo_dark",
   "section_break_appearance",
   "accent_color",
   "section_break_login",
   "login_headline",
+  "column_break_section_break_login_x",
   "login_description",
   "section_break_ai",
   "ai_assistant_enabled",
   "ai_bot_name",
   "ai_daily_message_limit",
-  "column_break_ai",
   "ai_provider",
+  "column_break_ai",
   "ai_api_base_url",
   "ai_model",
   "ai_api_key",
   "section_break_push",
   "push_public_key",
+  "column_break_section_break_push_x",
   "push_private_key"
  ],
  "fields": [
@@ -38,6 +41,10 @@
    "fieldname": "app_logo",
    "fieldtype": "Attach Image",
    "label": "App Logo (Light Mode)"
+  },
+  {
+   "fieldname": "column_break_main_x",
+   "fieldtype": "Column Break"
   },
   {
    "description": "Shown in the Janadhikara Vue app's header when the app is in dark mode. Falls back to the light-mode logo, then a plain initial-letter mark, if left blank.",
@@ -70,6 +77,10 @@
    "fieldname": "login_headline",
    "fieldtype": "Small Text",
    "label": "Login Headline"
+  },
+  {
+   "fieldname": "column_break_section_break_login_x",
+   "fieldtype": "Column Break"
   },
   {
    "default": "Track visits, follow-ups, and growth monitoring in one place \u2014 built for community health workers on the ground.",
@@ -107,26 +118,26 @@
    "non_negative": 1
   },
   {
-   "fieldname": "column_break_ai",
-   "fieldtype": "Column Break"
-  },
-  {
    "default": "Custom",
-   "description": "Convenience label only - the actual request always uses the Base URL below, so any OpenAI-compatible endpoint works.",
+   "description": "Choose OpenRouter to fill in its address and the model this app uses (google/gemini-3.1-flash-lite). Then paste your OpenRouter API key below.",
    "fieldname": "ai_provider",
    "fieldtype": "Select",
    "label": "Provider Preset",
    "options": "Custom\nOpenAI\nGemini\nGroq\nOpenRouter\nOllama (self-hosted)"
   },
   {
-   "description": "OpenAI-compatible chat completions endpoint, e.g. https://api.groq.com/openai/v1",
+   "fieldname": "column_break_ai",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "OpenAI-compatible chat completions endpoint, e.g. https://openrouter.ai/api/v1",
    "fieldname": "ai_api_base_url",
    "fieldtype": "Data",
    "label": "API Base URL",
    "mandatory_depends_on": "eval:doc.ai_assistant_enabled"
   },
   {
-   "description": "Model name as expected by the provider, e.g. llama-3.1-8b-instant, gemini-flash-latest, gpt-4o-mini. Check the provider's docs for their current model names - they change these over time.",
+   "description": "Model name as the provider lists it, e.g. google/gemini-3.1-flash-lite on OpenRouter.",
    "fieldname": "ai_model",
    "fieldtype": "Data",
    "label": "Model",
@@ -149,6 +160,10 @@
    "label": "Push Public Key",
    "read_only": 1,
    "description": "Generated automatically the first time a user turns alerts on."
+  },
+  {
+   "fieldname": "column_break_section_break_push_x",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "push_private_key",

@@ -84,7 +84,7 @@ def get_push_config():
 # whatever address is stored, so only those services are accepted (never an arbitrary URL -
 # that would let a user make the server call internal addresses).
 PUSH_HOST_SUFFIXES = (
-	".googleapis.com",  # Chrome / Edge / Opera / Brave (FCM)
+	".fcm.googleapis.com",  # Chrome / Edge / Opera / Brave (FCM)
 	".push.services.mozilla.com",  # Firefox
 	".push.apple.com",  # Safari
 	".notify.windows.com",  # Windows (WNS)

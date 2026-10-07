@@ -18,28 +18,55 @@
             <label class="mb-1.5 block text-sm text-ink-gray-7">
               <span class="text-ink-gray-5">{{ q.question_no }}.</span> {{ q.question }}<span v-if="q.is_mandatory" class="text-red-500"> *</span>
             </label>
+            <p v-if="q.description" class="mb-1.5 whitespace-pre-line text-p-xs text-ink-gray-5">{{ q.description }}</p>
 
-            <!-- Pick several -->
-            <div v-if="q.answer_type === 'Multi-select'" class="flex flex-wrap gap-2">
-              <button
-                v-for="option in optionsOf(q)"
-                :key="option"
-                type="button"
-                class="rounded-full border px-3 py-1.5 text-sm transition-colors"
-                :class="chosen(q).includes(option)
-                  ? 'border-outline-gray-5 bg-surface-gray-3 font-medium text-ink-gray-9'
-                  : 'border-outline-gray-2 text-ink-gray-6 hover:bg-surface-gray-1'"
-                @click="toggleOption(q, option)"
-              >
-                {{ option }}
-              </button>
-            </div>
+            <!-- Pick several: a dropdown that takes more than one value -->
+            <MultiSelect
+              v-if="q.answer_type === 'Multi-select'"
+              class="w-full [&_button]:w-full"
+              :model-value="chosen(q)"
+              :options="optionsOf(q).map((o) => ({ label: o, value: o }))"
+              placeholder="Select options"
+              @update:model-value="(value) => setAnswer(q, (value || []).join('\n'))"
+            />
 
             <FormControl
               v-else-if="q.answer_type === 'Select' || q.answer_type === 'Yes / No'"
               type="select"
               class="[&_[data-slot=trigger]]:w-full"
               :options="selectOptions(q)"
+              :model-value="answers[q.name] || ''"
+              @update:model-value="setAnswer(q, $event)"
+            />
+            <!-- A place: "latitude, longitude" - typed, or taken from this device -->
+            <div v-else-if="q.answer_type === 'Location'" class="flex items-center gap-2">
+              <FormControl class="min-w-0 flex-1" type="text" placeholder="latitude, longitude" :model-value="answers[q.name] || ''" @update:model-value="setAnswer(q, $event)" />
+              <Button icon-left="map-pin" :loading="locating === q.name" @click="useMyLocation(q)">My location</Button>
+            </div>
+
+            <!-- A photo: only its address is kept with the record -->
+            <div v-else-if="q.answer_type === 'Photo'" class="flex items-center gap-3">
+              <img v-if="answers[q.name]" :src="answers[q.name]" alt="" class="h-16 w-16 rounded-lg border border-outline-gray-1 object-cover" />
+              <FileUploader file-types="image/*" :upload-args="{ private: true }" @success="(file) => setAnswer(q, file.file_url)">
+                <template #default="{ uploading, progress, openFileSelector }">
+                  <Button icon-left="camera" :loading="uploading" @click="openFileSelector">
+                    {{ uploading ? `Uploading ${progress}%` : answers[q.name] ? 'Replace photo' : 'Add photo' }}
+                  </Button>
+                </template>
+              </FileUploader>
+              <Button v-if="answers[q.name]" variant="ghost" icon="x" tooltip="Remove photo" aria-label="Remove photo" @click="setAnswer(q, '')" />
+            </div>
+
+            <FormControl
+              v-else-if="q.answer_type === 'Long Text'"
+              type="textarea"
+              :rows="3"
+              :model-value="answers[q.name] || ''"
+              @update:model-value="setAnswer(q, $event)"
+            />
+            <DatePicker
+              v-else-if="q.answer_type === 'Date'"
+              format="DD MMM YYYY"
               :model-value="answers[q.name] || ''"
               @update:model-value="setAnswer(q, $event)"
             />
@@ -58,7 +85,7 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { FormControl } from 'frappe-ui'
+import { Button, FileUploader, FormControl, DatePicker, MultiSelect, toast } from 'frappe-ui'
 import { loadQuestions, questionsFor, answersMap, isShown } from '@/data/questions'
 
 const props = defineProps({
@@ -96,7 +123,7 @@ const groups = computed(() => {
   return [...map.entries()].filter(([, items]) => items.length).map(([name, items]) => ({ name, items }))
 })
 
-const isWide = (q) => q.answer_type === 'Multi-select'
+const isWide = (q) => ['Long Text', 'Location', 'Photo'].includes(q.answer_type)
 const optionsOf = (q) => (q.options || '').split('\n').map((o) => o.trim()).filter(Boolean)
 const selectOptions = (q) => [
   { label: '', value: '' },
@@ -104,9 +131,21 @@ const selectOptions = (q) => [
 ]
 const chosen = (q) => (answers.value[q.name] || '').split('\n').map((v) => v.trim()).filter(Boolean)
 
-function toggleOption(q, option) {
-  const current = chosen(q)
-  setAnswer(q, (current.includes(option) ? current.filter((o) => o !== option) : [...current, option]).join('\n'))
+const locating = ref(null)
+function useMyLocation(q) {
+  if (!navigator.geolocation) return toast.error('This device cannot give its location.')
+  locating.value = q.name
+  navigator.geolocation.getCurrentPosition(
+    ({ coords }) => {
+      setAnswer(q, `${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`)
+      locating.value = null
+    },
+    () => {
+      toast.error('Could not get the location - allow location access and try again.')
+      locating.value = null
+    },
+    { enableHighAccuracy: true, timeout: 15000 },
+  )
 }
 
 // Writes the answer into the table: a row per answered question, none for blanks.

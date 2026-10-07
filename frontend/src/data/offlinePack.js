@@ -131,15 +131,6 @@ export async function localRows(doctype, filters = {}) {
   return toObjects(table).filter((row) => wanted.every(([field, value]) => String(row[field] ?? '') === String(value)))
 }
 
-// Options for a Link picker: [{ label, value }].
-export async function localLinkOptions(doctype, filters = {}) {
-  const pack = await getPack()
-  const table = pack?.doctypes?.[doctype]
-  if (!table) return null
-  const title = table.title_field || 'name'
-  return (await localRows(doctype, filters)).map((row) => ({ label: row[title] || row.name, value: String(row.name) }))
-}
-
 // A record's title for display (the Link picker's label), or undefined.
 export async function localTitle(doctype, name) {
   const table = (await getPack())?.doctypes?.[doctype]
@@ -237,4 +228,4 @@ export async function checkOfflineReadiness() {
   return checks
 }
 
-export const packReady = loadPackInfo()
+loadPackInfo()

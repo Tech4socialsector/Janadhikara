@@ -28,9 +28,15 @@ fixtures = [{"dt": "App Module Setting"}]
 # Validation Status options are role-restricted (see masters/doctype/validation_status).
 permission_query_conditions = {
 	"Validation Status": "janadhikara.masters.doctype.validation_status.validation_status.get_permission_query_conditions",
+	"Household Profile": "janadhikara.security.household_conditions",
+	"Settlement": "janadhikara.security.settlement_conditions",
+	"Individual Profile": "janadhikara.security.individual_conditions",
 }
 has_permission = {
 	"Validation Status": "janadhikara.masters.doctype.validation_status.validation_status.has_permission",
+	"Household Profile": "janadhikara.security.household_has_permission",
+	"Settlement": "janadhikara.security.settlement_has_permission",
+	"Individual Profile": "janadhikara.security.individual_has_permission",
 }
 
 # Includes in <head>
@@ -270,8 +276,12 @@ home_page = "janadhikara"
 after_request = ["janadhikara.security.add_security_headers"]
 after_migrate = ["janadhikara.ai.policy.ensure_policies", "janadhikara.menu.ensure_master_sidebar"]
 doc_events = {
-	"*": {"validate": "janadhikara.questions.validate_answers"},
+	"*": {
+		"before_validate": "janadhikara.validation.resolve_default_tokens",
+		"validate": ["janadhikara.questions.validate_answers", "janadhikara.validation.validate_doc"],
+	},
 	"DocType": {"after_insert": "janadhikara.ai.policy.on_doctype_created"},
+	"Error Log": {"before_insert": "janadhikara.security.scrub_error_log"},
 	"Household Profile": {"on_update": "janadhikara.worklist.household_updated"},
 	"Notification Log": {"after_insert": "janadhikara.push.notification_created"},
 	"Announcement": {"on_update": "janadhikara.announcements.announcement_saved"},

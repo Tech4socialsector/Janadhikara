@@ -33,13 +33,20 @@ const RULES = []
 // time a doctype adds a new auto-captured date/user field. Any other
 // literal default (a Select's first option value, a fixed Data string,
 // etc.) is returned as-is, same as Frappe desk does.
-export function resolveFrappeDefault(rawDefault) {
+export function resolveFrappeDefault(rawDefault, fieldtype) {
   const value = String(rawDefault)
   if (value === '__user' || value.toLowerCase() === 'user') return session.user
   if (value === 'Today') {
     const d = new Date()
     const pad = (n) => String(n).padStart(2, '0')
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+  }
+  if (value === 'Now' || value === 'now') {
+    const d = new Date()
+    const pad = (n) => String(n).padStart(2, '0')
+    const time = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+    if (fieldtype === 'Time') return time
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${time}`
   }
   return rawDefault
 }
@@ -79,7 +86,7 @@ export function useCommonFieldDefaults({ doctype, fields, values, isNew, onAppli
     for (const field of fields.value) {
       if (!field.default) continue
       if (values[field.fieldname]) continue
-      const defaultValue = resolveFrappeDefault(field.default)
+      const defaultValue = resolveFrappeDefault(field.default, field.fieldtype)
       if (defaultValue) values[field.fieldname] = defaultValue
     }
     for (const rule of applicableRules) {

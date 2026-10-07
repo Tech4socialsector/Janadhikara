@@ -2,11 +2,9 @@ import frappe
 
 # Field Function Mapping rules that reproduce what the map field used to do
 # purely by field-name convention, now as editable records: drawing on a
-# Settlement's (or an Intervention Unit's) Geo Location fills its centre
-# point, boundary, area, perimeter, capture stamp and address breakdown.
+# Settlement's Geo Location fills its centre point, address and ward.
 RULES = [
 	("Settlement", "Settlement map capture", "settlement_boundary"),
-	("Settlement Intervention Unit", "Intervention Unit map capture", "boundary"),
 ]
 
 
@@ -17,20 +15,13 @@ def execute():
 		mappings = [
 			("latitude", "latitude"),
 			("longitude", "longitude"),
-			("boundary", boundary_field),
 			("area", "boundary_area"),
 			("perimeter", "boundary_perimeter"),
-			("captured_by", "boundary_captured_by"),
-			("captured_on", "boundary_captured_on"),
 		]
 		if doctype == "Settlement":
 			mappings += [
-				("address", "address"),
-				("pincode", "pincode"),
-				("state", "state"),
-				("district", "district"),
-				("city", "city"),
-				("ward", "ward"),
+				("address", "q19_1_location_details_settlement"),
+				("ward", "q3_ward_no_city_corporation"),
 			]
 		frappe.get_doc({
 			"doctype": "Field Function Mapping",

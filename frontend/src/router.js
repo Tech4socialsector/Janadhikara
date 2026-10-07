@@ -21,6 +21,11 @@ const routes = [
     component: () => import('@/pages/Home.vue'),
   },
   {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: () => import('@/pages/Dashboard.vue'),
+  },
+  {
     path: '/worklist',
     name: 'Worklist',
     component: () => import('@/pages/Worklist.vue'),

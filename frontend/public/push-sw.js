@@ -34,7 +34,8 @@ self.addEventListener('push', (event) => {
       const log = await newestUnread()
       // A browser must show something for every push it receives.
       await self.registration.showNotification('Janadhikara', {
-        body: log ? plain(log.subject || log.title) : 'You have a new notification',
+        // Task notices can name a household or person: the lock screen only says a task changed.
+        body: !log ? 'You have a new notification' : log.document_type === 'ToDo' ? 'You have a task update. Open the app to see it.' : plain(log.subject || log.title),
         icon: '/assets/janadhikara/default-logo.png',
         badge: '/assets/janadhikara/default-logo.png',
         tag: log ? log.name : 'janadhikara',

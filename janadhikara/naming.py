@@ -5,6 +5,6 @@ from frappe.model.naming import make_autoname
 
 
 def autoname_with_code(doc, prefix, code_fieldname):
-	"""Controller `autoname`: name the record `<prefix>-00001` and copy it into the code field."""
-	doc.name = make_autoname(f"{prefix}-.#####", doc.doctype)
+	"""Controller `autoname`: name the record `<prefix>0001` and copy it into the code field."""
+	doc.name = make_autoname(f"{prefix}.####", doc.doctype)
 	doc.set(code_fieldname, doc.name)

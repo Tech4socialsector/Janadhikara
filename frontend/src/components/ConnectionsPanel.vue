@@ -102,6 +102,15 @@ const connections = props.links
       method: 'GET',
       params: () => ({ doctype: l.link_doctype, filters: JSON.stringify({ [l.link_fieldname]: props.name }) }),
       immediate: false,
+      // Open a connection that has records the first time its count arrives, so a household's
+      // family members are listed (and one click from their profile) without expanding anything.
+      // A connection the user closed stays closed.
+      onSuccess: (count) => {
+        if (count > 0 && expanded[key] === undefined) {
+          expanded[key] = true
+          rowsResource.fetch()
+        }
+      },
     })
     // Plain string, not `() => ...` - useCall's `url` goes through Vue's
     // unref() internally, which only unwraps a ref/computed; a plain arrow
@@ -116,7 +125,7 @@ const connections = props.links
       params: () => ({
         fields: JSON.stringify(['name']),
         filters: JSON.stringify({ [l.link_fieldname]: props.name }),
-        limit: 20,
+        limit: 100,
       }),
       immediate: false,
       // Show members by their title (name), not just the record ID.

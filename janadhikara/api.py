@@ -264,45 +264,6 @@ def _render_pwa_icon(app_logo, size, is_maskable):
     return buffer.getvalue()
 
 
-@frappe.whitelist()
-def search_list(doctype, search_term, fields, search_fields):
-    """OR-search search_term across search_fields, returning the given
-    fields - the mobile list view's single search box (replacing several
-    stacked per-field filters, which don't fit well on a small screen) needs
-    to match any one of several fields at once. The v2 REST document-list
-    endpoint DoctypeList.vue otherwise uses (/api/v2/document/<doctype>)
-    only takes `filters`, which Frappe always ANDs together field-by-field -
-    there's no way to express "Village OR Head of Family OR ..." through it.
-    frappe.get_list's or_filters parameter (unlike that REST endpoint) does
-    support this directly. Runs with the same permission enforcement as any
-    other list fetch (frappe.get_list checks doctype/row permissions itself,
-    same as DoctypeList's normal query) - no extra doctype allowlist here,
-    since this can't do anything a permitted, filtered list fetch couldn't."""
-    fields = frappe.parse_json(fields)
-    search_fields = frappe.parse_json(search_fields)
-    search_term = (search_term or '').strip()[:100]
-
-    # Only plain, readable fields of this doctype - never a SQL expression, and never a field
-    # the user's permission level hides (a LIKE on one would let them probe its values).
-    allowed = set(frappe.get_meta(doctype).get_permitted_fieldnames(parenttype=None)) | {'name', 'modified', 'creation'}
-    if not isinstance(fields, list) or not isinstance(search_fields, list):
-        frappe.throw(_('Invalid request'), frappe.ValidationError)
-    if any(f not in allowed for f in [*fields, *search_fields]):
-        frappe.throw(_('Invalid field'), frappe.PermissionError)
-
-    if not search_term or not search_fields:
-        return frappe.get_list(doctype, fields=fields, limit_page_length=20, order_by='modified desc')
-
-    or_filters = [[field, 'like', f'%{search_term}%'] for field in search_fields]
-    return frappe.get_list(
-        doctype,
-        fields=fields,
-        or_filters=or_filters,
-        limit_page_length=20,
-        order_by='modified desc',
-    )
-
-
 SYSTEM_ADMIN_ROLES = {'Administrator', 'System Manager'}
 
 
@@ -315,9 +276,15 @@ def get_current_user_context():
     Administrator check, for UI that's more sensitive than general app
     content settings (e.g. email server configuration)."""
     user_roles = set(frappe.get_roles())
+    employee = get_user_employee()
     return {
         'is_privileged': bool(PRIVILEGED_ROLES & user_roles),
         'is_system_admin': bool(SYSTEM_ADMIN_ROLES & user_roles),
+        # For rows that belong to one worker (a unit's assigned worker): who may edit them.
+        'employee': employee.name if employee else None,
+        'can_manage_assigned_rows': bool(
+            ({'Administrator', 'System Manager', 'Program Coordinator', 'Program Manager', 'Organization Admin', 'Supervisor'}) & user_roles
+        ),
     }
 
 
@@ -376,8 +343,7 @@ SEARCHABLE_FIELDTYPES = {'Data', 'Small Text', 'Text', 'Long Text', 'Select', 'L
 def search_record_names(doctype, txt, limit=500):
     """Names of `doctype` records matching `txt` anywhere a person would look:
     the record ID, its title, any of its own text-like fields, and the
-    text-like fields of rows in its child tables (so searching a Settlement
-    finds it by the name of one of its Intervention Units). Only a candidate
+    text-like fields of rows in its child tables . Only a candidate
     list - the list view still fetches the records themselves through normal
     permission-checked queries."""
     txt = (txt or '').strip()
@@ -409,15 +375,16 @@ def search_record_names(doctype, txt, limit=500):
         child_filters = [[table_field.options, fieldname, 'like', pattern] for fieldname in text_fields(child_meta)]
         if not child_filters:
             continue
-        names.update(
-            frappe.get_all(
-                table_field.options,
-                filters={'parenttype': doctype, 'parentfield': table_field.fieldname},
-                or_filters=child_filters,
-                pluck='parent',
-                limit_page_length=limit,
-            )
+        parents = frappe.get_all(
+            table_field.options,
+            filters={'parenttype': doctype, 'parentfield': table_field.fieldname},
+            or_filters=child_filters,
+            pluck='parent',
+            limit_page_length=limit,
         )
+        if parents:
+            # only parents this user may read: a match inside a row must not reveal a record
+            names.update(frappe.get_list(doctype, filters={'name': ['in', parents]}, pluck='name', limit_page_length=limit))
     return list(names)[:limit]
 
 
@@ -447,32 +414,23 @@ def get_user_employee(user=None):
 @frappe.whitelist()
 def get_household_field_defaults():
     """What a new Household Profile can fill in for the logged-in user: their
-    partner and worker record, and every place they're tagged to work (a
-    settlement, or one of its intervention units, through the Settlement's
-    Workers table).
-    Shape: { partner_organization, assigned_worker, assignments: [{ settlement,
-    settlement_intervention_unit }] } - empty for
+    partner and worker record, and the settlements of their partner.
+    Shape: { partner_organization, assigned_worker, assignments: [{ settlement }] } - empty for
     anyone who isn't a partner worker."""
     employee = get_user_employee()
     if not employee:
         return {}
 
-    tagged = frappe.get_all(
-        'Settlement Worker',
-        filters={'worker': employee.name, 'parenttype': 'Settlement'},
-        fields=['parent', 'intervention_unit'],
-        order_by='creation asc',
-    )
-    assignments = []
-    seen = set()
-    for row in tagged:
-        if not frappe.has_permission('Settlement', 'read', doc=row.parent):
-            continue
-        key = (row.parent, row.intervention_unit)
-        if key in seen:
-            continue
-        seen.add(key)
-        assignments.append({'settlement': row.parent, 'settlement_intervention_unit': row.intervention_unit})
+    # The partner's settlements (only those this user may read).
+    assignments = [
+        {'settlement': settlement}
+        for settlement in frappe.get_list(
+            'Settlement',
+            filters={'partner_organization': employee.parent},
+            pluck='name',
+            limit_page_length=50,
+        )
+    ]
     return {
         'partner_organization': employee.parent,
         'assigned_worker': employee.name,
@@ -501,16 +459,18 @@ def get_link_options(doctype, filters=None, limit=1000):
         frappe.throw(_('Invalid filter'), frappe.ValidationError)
 
     if meta.istable:
+        from janadhikara.security import can_read_parent
+
         rows = frappe.get_all(
-            doctype, filters=filters, fields=[*fields, 'parenttype'], order_by='creation asc', limit_page_length=limit
+            doctype, filters=filters, fields=[*fields, 'parenttype', 'parent'], order_by='creation asc', limit_page_length=limit
         )
         readable = {}
         out = []
         for r in rows:
-            pt = r.pop('parenttype', None)
-            if pt not in readable:
-                readable[pt] = bool(pt) and frappe.has_permission(pt, 'read')
-            if readable[pt]:
+            pt, parent = r.pop('parenttype', None), r.pop('parent', None)
+            if (pt, parent) not in readable:
+                readable[(pt, parent)] = can_read_parent(pt, parent)
+            if readable[(pt, parent)]:
                 out.append(r)
         return out
 
@@ -538,12 +498,14 @@ def get_link_titles(doctype, names):
 
     if meta.istable:
         # A child row is readable if its parent is.
+        from janadhikara.security import can_read_parent
+
         rows = frappe.get_all(
             doctype,
             filters={'name': ['in', names]},
-            fields=['name', title_field, 'parenttype'],
+            fields=['name', title_field, 'parenttype', 'parent'],
         )
-        rows = [r for r in rows if r.parenttype and frappe.has_permission(r.parenttype, 'read')]
+        rows = [r for r in rows if can_read_parent(r.parenttype, r.parent)]
     else:
         if not frappe.has_permission(doctype, 'read'):
             return {}
@@ -781,14 +743,9 @@ def global_search(txt):
     return results[:30]
 
 
-def validate_phone_number(phone_number):
-    """Raise if phone_number contains anything other than digits."""
-    if phone_number and not phone_number.isdigit():
-        frappe.throw(_('Phone Number must contain digits only'))
-
-
-
 @frappe.whitelist()
 def get_realtime_config():
     """What the app needs to open its live (socket.io) connection."""
     return {'port': frappe.conf.socketio_port, 'site': frappe.local.site}
+
+

@@ -1,250 +1,1780 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:SET-{#####}",
- "creation": "2026-09-30 17:00:00.000000",
+ "autoname": "SET.####",
+ "creation": "2026-09-30 17:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "tab_details",
+  "tab_settlement_profile",
+  "section_identifiers",
   "record_date",
+  "record_time",
   "settlement_name",
-  "settlement_code",
   "column_break_main",
-  "status",
   "partner_organization",
-  "has_intervention_units",
-  "section_break_address",
-  "state",
-  "district",
-  "city",
-  "column_break_address",
-  "ward",
-  "pincode",
-  "address",
-  "section_break_location_point",
+  "orw_name",
+  "cluster",
+  "section_settlement_details",
+  "q1_legislative_assembly_constituency",
+  "q2_gmc_zone_number",
+  "q3_ward_no_city_corporation",
+  "column_break_settlement_details",
+  "q4_age_settlement_overall_years",
+  "q5_settlement_officially_notified_by_govern",
+  "q6_type_settlement",
+  "section_types_of_housing",
+  "q6_1_temporary_shacks_made_with_tarpaulin",
+  "section_temporary_shacks_made_with_tarpaulin_and_bamboo",
+  "q6_1_1_no_temporary_shacks",
+  "q6_1_2_no_families_living_these_type",
+  "column_break_temporary_shacks_made_with_tarpaulin_and_bamboo",
+  "q6_1_3_remarks_regarding_temporary_shacks",
+  "section_break_q6_2",
+  "q6_2_tin_roof_houses_with_bamboo",
+  "section_tin_roof_houses_with_bamboo_mud_walls",
+  "q6_2_1_no_tin_roof_houses_with",
+  "q6_2_2_no_families_living_these_type",
+  "column_break_tin_roof_houses_with_bamboo_mud_walls",
+  "q6_2_3_remarks_regarding_tin_roof_houses",
+  "section_break_q6_3",
+  "q6_3_tin_roof_houses_with_half",
+  "section_tin_roof_houses_with_half_brick_wall_and_half_bamb",
+  "q6_3_1_no_tin_roof_houses_with",
+  "q6_3_2_no_families_living_these_type",
+  "column_break_tin_roof_houses_with_half_brick_wall_and_half_bamb",
+  "q6_3_3_remarks_regarding_tin_roof_houses",
+  "section_break_q6_4",
+  "q6_4_stilt_dwellings_with_bamboo_posts",
+  "section_stilt_dwellings_with_bamboo_posts",
+  "q6_4_1_no_houses_with_stilt_dwellings",
+  "q6_4_2_no_families_living_these_type",
+  "column_break_stilt_dwellings_with_bamboo_posts",
+  "q6_4_3_remarks_regarding_houses_with_stilt",
+  "section_break_q6_5",
+  "q6_5_stilt_dwellings_with_cement_posts",
+  "section_stilt_dwellings_with_cement_posts",
+  "q6_5_1_no_houses_with_stilt_dwellings",
+  "q6_5_2_no_families_living_these_type",
+  "column_break_stilt_dwellings_with_cement_posts",
+  "q6_5_3_remarks_regarding_houses_with_stilt",
+  "section_break_q6_6",
+  "q6_6_hill_slope_terraced_structures_settlemen",
+  "section_hill_slope_terraced_structures",
+  "q6_6_1_no_hill_slope_terraced_structures",
+  "q6_6_2_no_families_living_these_type",
+  "column_break_hill_slope_terraced_structures",
+  "q6_6_3_remarks_regarding_hill_slope_terraced",
+  "section_break_q6_7",
+  "q6_7_full_concrete_houses_settlement",
+  "section_concrete_houses",
+  "q6_7_1_no_concrete_houses",
+  "q6_7_2_no_families_living_these_type",
+  "column_break_concrete_houses",
+  "q6_7_3_remarks_regarding_concrete_houses",
+  "section_break_q6_8",
+  "q6_8_tenement_constructed_by_gmc_govt",
+  "section_tenement_constructed_by_gmc_govt_authorities",
+  "q6_8_1_no_houses_as_tenement_constructed",
+  "q6_8_2_no_families_living_these_type",
+  "column_break_tenement_constructed_by_gmc_govt_authorities",
+  "q6_8_3_remarks_regarding_tenement_constructed_b",
+  "section_break_q6_9",
+  "q6_9_tenement_residing_tin_roof_house",
+  "section_tenement_residing_in_tin_roof_house_with_bamboo_mu",
+  "q6_9_1_no_tenements_residing_tin_roof",
+  "q6_9_2_no_families_living_these_type",
+  "column_break_tenement_residing_in_tin_roof_house_with_bamboo_mu",
+  "q6_9_3_remarks_regarding_structures",
+  "section_households_family_count",
+  "q7_1_indicate_total_number_houses_physical",
+  "column_break_households_family_count",
+  "q7_2_specify_total_number_families_currently",
+  "section_others",
+  "q8_houses_rented_out",
+  "q9_migrants_staying_here",
+  "q10_predominant_type_occupation_men_multiple",
+  "q10_other_please_specify",
+  "column_break_others",
+  "q11_predominant_type_occupation_women_multip",
+  "q11_other_please_specify",
+  "q12_predominant_caste_groups_present_settlem",
+  "q12_other_please_specify",
+  "tab_land_surroundings",
+  "section_land_housing",
+  "q13_1_community_eligible_land_housing_rights",
+  "q13_2_discussion_points_on_housing_pattas",
+  "q13_3_land_owning_board_department_multi",
+  "column_break_land_housing",
+  "q13_3_other_please_specify",
+  "q13_4_other_land_owning_department_involved",
+  "section_settlement_surroundings",
+  "q14_settlement_located_near_multi_select",
+  "column_break_settlement_surroundings",
+  "q14_other_please_specify",
+  "section_eviction_details",
+  "q15_1_eviction_threat",
+  "q15_2_describe_eviction_scenario",
+  "column_break_eviction_details",
+  "q15_3_probable_factors_eviction",
+  "tab_services",
+  "section_schooling",
+  "q16_1_1_accessibility_primary_secondary_schools",
+  "q16_1_1a_reasons_low_accessibility_primary_second",
+  "q16_1_1a_other_please_specify",
+  "q16_1_2_proportion_children_going_private_school",
+  "column_break_schooling",
+  "q16_1_3_proportion_children_going_government_sch",
+  "q16_1_4_proportion_children_going_government_aid",
+  "q16_1_5_name_schools_where_children_going",
+  "q16_1_6_summarise_remarks_community_your_own",
+  "section_anganwadi",
+  "q16_2_1_accessibility_anganwadis_early_childhood",
+  "q16_2_1a_reasons_low_accessibility_awcs",
+  "q16_2_1a_other_please_specify",
+  "column_break_anganwadi",
+  "q16_2_2_number_anganwadis_available_settlement_w",
+  "q16_2_3_list_anganwadis_where_children_going",
+  "q16_2_4_summarise_remarks_community_your_own",
+  "section_healthcare",
+  "q16_3_1_accessibility_nearest_uphc_government_pr",
+  "q16_3_1a_reasons_low_accessibility_uphc_governmen",
+  "q16_3_1a_other_please_specify",
+  "q16_3_2_name_distance_uphcs_government_private",
+  "q16_3_3_regular_mosquito_fogging_pest_control",
+  "column_break_healthcare",
+  "q16_3_4_other_health_services_available_communit",
+  "q16_3_5_when_last_time_asha_worker",
+  "q16_3_6_provision_paved_unblocked_access_lanes",
+  "q16_3_7_summarise_remarks_community_on_operation",
+  "section_pds_shop",
+  "q16_4_1_name_nearest_ration_shop",
+  "q16_4_2_if_pds_shop_outside_settlement",
+  "column_break_pds_shop",
+  "q16_4_3_other_concern_about_pds_shop",
+  "section_police_station",
+  "q16_5_1_settlement_comes_under_which_police",
+  "q16_5_2_distance_nearest_police_station",
+  "q16_5_3_where_nearest_all_woman_police",
+  "column_break_police_station",
+  "q16_5_4_distance_nearest_all_woman_police",
+  "q16_5_5_police_booth_inside_settlement",
+  "q16_5_6_summarise_safety_concerns_shared_by",
+  "section_other_services",
+  "q17_1_where_they_go_availing_entitlements",
+  "q17_2_distance_arunoday_kendra_csc_public",
+  "q17_3_name_nearest_csc_pfc",
+  "q17_4_access_shared_autorickshaw_stands_bus",
+  "column_break_other_services",
+  "q17_5_small_multi_purpose_community_halls",
+  "q17_6_easily_accessible_municipal_centres_wher",
+  "q17_7_other_services_by_government_settlement",
+  "q17_8_list_active_ngos_engaged_settlements",
+  "tab_civic_amenities",
+  "section_water_supply",
+  "q18_1_1_settlement_have_individual_household_wat",
+  "q18_1_2_how_many_hours_they_get",
+  "q18_1_3_if_no_what_sources_drinking",
+  "column_break_water_supply",
+  "q18_1_4_if_no_what_sources_water",
+  "q18_1_5_what_challenges_related_water_services",
+  "section_sewage_and_toilets",
+  "q18_2_1_settlement_have_individual_sewer_lines",
+  "q18_2_2_if_yes_it_functional",
+  "q18_2_3_settlement_have_common_functional_toilet",
+  "column_break_sewage_and_toilets",
+  "q18_2_4_if_yes_how_many_toilets",
+  "q18_2_5_summarise_remarks_concerns_on_availabili",
+  "section_flood_and_drain_system",
+  "q18_3_1_settlement_have_storm_water_drains",
+  "q18_3_1a_if_yes_it_covered",
+  "q18_3_2_settlement_have_greywater_drains_system",
+  "q18_3_2b_if_yes_it_covered",
+  "column_break_flood_and_drain_system",
+  "q18_3_3_settlement_prone_flooding",
+  "q18_3_4_flooding_caused_due_poor_drainage",
+  "q18_3_5_flooding_caused_by_high_water",
+  "q18_3_6_if_yes_what_impacts_flood",
+  "section_waste_management",
+  "q18_4_1_door_door_street_wise_garbage",
+  "q18_4_2_where_they_dispose_waste",
+  "q18_4_3_adequate_bins_within_near_settlement",
+  "q18_4_4_who_collects_waste",
+  "column_break_waste_management",
+  "q18_4_5_fee_waste_collection",
+  "q18_4_6_what_fee_cycle",
+  "q18_4_7_how_much_fee",
+  "q18_4_8_summarise_remarks_concerns_on_waste",
+  "section_street_lighting",
+  "q18_5_1_settlement_have_adequate_streetlights",
+  "q18_5_2_dark_unsafe_spaces_where_need",
+  "column_break_street_lighting",
+  "q18_5_3_summarise_remarks_concerns_on_lighting",
+  "section_parks_play_area_for_children",
+  "q18_6_1_playground_park_nearby_settlement",
+  "q18_6_2_where_children_play_settlement",
+  "column_break_parks_play_area_for_children",
+  "q18_6_3_summarise_concerns_shared_by_community",
+  "section_safety_amenities",
+  "q18_7_1_cctv_camera_common_areas_around",
+  "q18_7_2_if_not_at_all_inadequate",
+  "column_break_safety_amenities",
+  "q18_7_3_other_general_remarks_on_need",
+  "q18_7_4_general_safety_concerns_summarise",
+  "section_electricity",
+  "q18_8_1_households_settlement_have_access_formal",
+  "q18_8_2_what_other_arrangements_practices_househ",
+  "column_break_electricity",
+  "q18_8_3_other_practice_accessing_electricity",
+  "q18_8_4_remarks_observations_related_aseb_apdcl",
+  "tab_location_selection",
+  "section_location_and_other_details",
+  "q19_1_location_details_settlement",
+  "section_location_coordinates",
   "latitude",
   "longitude",
-  "column_break_location_point",
-  "geo_location",
-  "section_break_boundary",
-  "settlement_boundary",
   "boundary_area",
   "boundary_perimeter",
-  "column_break_boundary",
-  "boundary_captured_by",
-  "boundary_captured_on",
-  "tab_intervention_units",
-  "intervention_units",
-  "tab_workers",
-  "worker_assignments"
+  "column_break_location_coordinates",
+  "geo_location",
+  "section_break_location_point",
+  "q19_3_street_view_photos",
+  "section_implementing_org_recommendation",
+  "q20_1_implementing_org_team_s_recommendation",
+  "q20_2_if_yes_we_taking_all",
+  "q20_3_if_yes_partially_no_houses",
+  "q20_4_brief_rationale_your_recommendation",
+  "column_break_implementing_org_recommendation",
+  "q20_5_general_remarks",
+  "q20_6_profiling_status",
+  "q20_7_profiled_by",
+  "section_apf_team_selection",
+  "q21_1_apf_team_visit_status",
+  "q21_2_visited_by",
+  "q21_3_visit_observation",
+  "q21_4_apf_team_recommendation",
+  "column_break_apf_team_selection",
+  "q21_5_team_rationale",
+  "q21_6_final_selection_intervention_units",
+  "q21_7_no_hhs_considered",
+  "q21_8_statement_selection"
  ],
  "fields": [
   {
-   "fieldname": "tab_details",
+   "fieldname": "tab_settlement_profile",
    "fieldtype": "Tab Break",
-   "label": "Details"
+   "label": "Settlement Profile"
+  },
+  {
+   "fieldname": "section_identifiers",
+   "fieldtype": "Section Break",
+   "label": "Identifiers"
+  },
+  {
+   "default": "Today",
+   "description": "Defaults to today; change it to record a different date.",
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Date",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "default": "Now",
+   "description": "Filled in with the time the record is created.",
+   "fieldname": "record_time",
+   "fieldtype": "Time",
+   "label": "Time"
   },
   {
    "fieldname": "settlement_name",
    "fieldtype": "Data",
-   "label": "Settlement Name",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
-  },
-  {
-   "fieldname": "settlement_code",
-   "fieldtype": "Data",
-   "label": "Settlement Code",
-   "reqd": 0,
-   "unique": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "Generated automatically when the record is first saved.",
-   "read_only": 1,
-   "depends_on": "eval:doc.settlement_code"
+   "label": "Settlement Name",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_main",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "label": "Status",
-   "options": "Active\nInactive",
-   "default": "Active",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
-  },
-  {
+   "description": "The partner working in this settlement. Its workers can be tagged on the Workers tab.",
    "fieldname": "partner_organization",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Partner Organization",
    "options": "Partner Details",
-   "in_standard_filter": 1,
-   "description": "The partner working in this settlement. Its workers can be tagged on the Workers tab."
+   "search_index": 1
   },
   {
-   "fieldname": "has_intervention_units",
-   "fieldtype": "Check",
-   "label": "Has Intervention Units",
-   "description": "Tick if this settlement is divided into intervention units. Adds an Intervention Units tab."
+   "description": "Filled in from your login when empty.",
+   "fieldname": "orw_name",
+   "fieldtype": "Data",
+   "label": "Name of the ORW"
   },
   {
-   "fieldname": "section_break_address",
+   "fieldname": "cluster",
+   "fieldtype": "Data",
+   "label": "Cluster"
+  },
+  {
+   "fieldname": "section_settlement_details",
    "fieldtype": "Section Break",
-   "label": "Address"
+   "label": "Settlement Details"
   },
   {
-   "fieldname": "state",
+   "description": "The Legislative Assembly Constituency the settlement falls in.",
+   "fieldname": "q1_legislative_assembly_constituency",
    "fieldtype": "Data",
-   "label": "State",
-   "in_standard_filter": 1
+   "label": "1. Legislative Assembly Constituency",
+   "length": 100
   },
   {
-   "fieldname": "district",
+   "description": "As per the new list. If it is not in City Corporation limit, please enter \"0\"",
+   "fieldname": "q2_gmc_zone_number",
    "fieldtype": "Data",
-   "label": "District",
-   "in_standard_filter": 1
+   "label": "2. GMC Zone Number",
+   "length": 100
   },
   {
-   "fieldname": "city",
+   "fieldname": "q3_ward_no_city_corporation",
    "fieldtype": "Data",
-   "label": "City"
+   "label": "3. Ward No: (of City Corporation)",
+   "length": 100
   },
   {
-   "fieldname": "column_break_address",
+   "fieldname": "column_break_settlement_details",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "ward",
-   "fieldtype": "Data",
-   "label": "Ward"
+   "description": "Tentative based on an average of multiple responses from the conversation",
+   "fieldname": "q4_age_settlement_overall_years",
+   "fieldtype": "Int",
+   "label": "4. Age of the Settlement (overall in years)"
   },
   {
-   "fieldname": "pincode",
-   "fieldtype": "Data",
-   "label": "Pincode"
+   "description": "If \"Yes, Notified\" is chosen, the follow-up sections on land rights, documents, government services and settlement-specific benefits are shown. If \"No, Non-Notified / Unrecognized\" is chosen they are not.",
+   "fieldname": "q5_settlement_officially_notified_by_govern",
+   "fieldtype": "Select",
+   "label": "5. Is the settlement officially notified by the government?",
+   "length": 64,
+   "options": "\nYes, Notified\nNo, Non-Notified / Unrecognized\nDon't Know / Unsure"
   },
   {
-   "fieldname": "address",
-   "fieldtype": "Small Text",
-   "label": "Address",
-   "description": "Location / address of the settlement."
+   "description": "Category A \u2013 Settlements with one room pucca houses or tin/bamboo houses with basic amenities\n\n\n\nCategory B \u2013 Settlements with pucca, semi pucca or tin/bamboo/stilt houses mainly on railway land/army land or other government land with basic amenities\n\n\nCategory C \u2013 Settlements in private land - rented gated compounds with small rooms primarily made of tin/bamboo with pucca houses only in some pockets. Shared toilets and basic amenities provided by the owners\n\n\nCategory D \u2013 Settlements near railway or dumping ground in make-shift houses with no amenities",
+   "fieldname": "q6_type_settlement",
+   "fieldtype": "Select",
+   "label": "6. Type of Settlement",
+   "length": 64,
+   "options": "\nCategory A\nCategory B\nCategory C\nCategory D"
   },
   {
-   "fieldname": "section_break_location_point",
+   "fieldname": "section_types_of_housing",
    "fieldtype": "Section Break",
-   "label": "Location"
+   "label": "Types of Housing"
   },
   {
+   "fieldname": "q6_1_temporary_shacks_made_with_tarpaulin",
+   "fieldtype": "Select",
+   "label": "6.1. Are there temporary shacks made with tarpaulin and bamboo in the Settlement?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q6_1_temporary_shacks_made_with_tarpaulin==\"Yes\"",
+   "fieldname": "section_temporary_shacks_made_with_tarpaulin_and_bamboo",
+   "fieldtype": "Section Break",
+   "label": "Temporary Shacks made with tarpaulin and bamboo"
+  },
+  {
+   "fieldname": "q6_1_1_no_temporary_shacks",
+   "fieldtype": "Int",
+   "label": "6.1.1. No. of Temporary Shacks",
+   "mandatory_depends_on": "eval:doc.q6_1_temporary_shacks_made_with_tarpaulin==\"Yes\""
+  },
+  {
+   "fieldname": "q6_1_2_no_families_living_these_type",
+   "fieldtype": "Int",
+   "label": "6.1.2. No. of Families living in these type of structures",
+   "mandatory_depends_on": "eval:doc.q6_1_temporary_shacks_made_with_tarpaulin==\"Yes\""
+  },
+  {
+   "fieldname": "column_break_temporary_shacks_made_with_tarpaulin_and_bamboo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q6_1_3_remarks_regarding_temporary_shacks",
+   "fieldtype": "Small Text",
+   "label": "6.1.3. Any remarks regarding Temporary Shacks"
+  },
+  {
+   "fieldname": "section_break_q6_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q6_2_tin_roof_houses_with_bamboo",
+   "fieldtype": "Select",
+   "label": "6.2. Are there tin-roof houses with bamboo/mud walls in the Settlement?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q6_2_tin_roof_houses_with_bamboo==\"Yes\"",
+   "fieldname": "section_tin_roof_houses_with_bamboo_mud_walls",
+   "fieldtype": "Section Break",
+   "label": "Tin-roof houses with bamboo/mud walls"
+  },
+  {
+   "fieldname": "q6_2_1_no_tin_roof_houses_with",
+   "fieldtype": "Int",
+   "label": "6.2.1. No. of Tin-roof houses with bamboo/mud walls",
+   "mandatory_depends_on": "eval:doc.q6_2_tin_roof_houses_with_bamboo==\"Yes\""
+  },
+  {
+   "fieldname": "q6_2_2_no_families_living_these_type",
+   "fieldtype": "Int",
+   "label": "6.2.2. No. of Families living in these type of structures",
+   "mandatory_depends_on": "eval:doc.q6_2_tin_roof_houses_with_bamboo==\"Yes\""
+  },
+  {
+   "fieldname": "column_break_tin_roof_houses_with_bamboo_mud_walls",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q6_2_3_remarks_regarding_tin_roof_houses",
+   "fieldtype": "Small Text",
+   "label": "6.2.3. Any remarks regarding Tin-roof houses with bamboo/mud walls"
+  },
+  {
+   "fieldname": "section_break_q6_3",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q6_3_tin_roof_houses_with_half",
+   "fieldtype": "Select",
+   "label": "6.3. Are there tin-roof houses with half brick wall and half bamboo/mud walls in the Settlement?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q6_3_tin_roof_houses_with_half==\"Yes\"",
+   "fieldname": "section_tin_roof_houses_with_half_brick_wall_and_half_bamb",
+   "fieldtype": "Section Break",
+   "label": "Tin-roof houses with half brick wall and half bamboo/mud walls"
+  },
+  {
+   "fieldname": "q6_3_1_no_tin_roof_houses_with",
+   "fieldtype": "Int",
+   "label": "6.3.1. No. of Tin-roof houses with half brick wall and half bamboo/mud walls",
+   "mandatory_depends_on": "eval:doc.q6_3_tin_roof_houses_with_half==\"Yes\""
+  },
+  {
+   "fieldname": "q6_3_2_no_families_living_these_type",
+   "fieldtype": "Int",
+   "label": "6.3.2. No. of Families living in these type of structures",
+   "mandatory_depends_on": "eval:doc.q6_3_tin_roof_houses_with_half==\"Yes\""
+  },
+  {
+   "fieldname": "column_break_tin_roof_houses_with_half_brick_wall_and_half_bamb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q6_3_3_remarks_regarding_tin_roof_houses",
+   "fieldtype": "Small Text",
+   "label": "6.3.3. Any remarks regarding Tin-roof houses with half brick wall and half bamboo/mud walls"
+  },
+  {
+   "fieldname": "section_break_q6_4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q6_4_stilt_dwellings_with_bamboo_posts",
+   "fieldtype": "Select",
+   "label": "6.4. Are there Stilt Dwellings with bamboo posts in the Settlement?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q6_4_stilt_dwellings_with_bamboo_posts==\"Yes\"",
+   "fieldname": "section_stilt_dwellings_with_bamboo_posts",
+   "fieldtype": "Section Break",
+   "label": "Stilt Dwellings with bamboo posts"
+  },
+  {
+   "fieldname": "q6_4_1_no_houses_with_stilt_dwellings",
+   "fieldtype": "Int",
+   "label": "6.4.1. No. of houses with Stilt Dwellings with bamboo posts",
+   "mandatory_depends_on": "eval:doc.q6_4_stilt_dwellings_with_bamboo_posts==\"Yes\""
+  },
+  {
+   "fieldname": "q6_4_2_no_families_living_these_type",
+   "fieldtype": "Int",
+   "label": "6.4.2. No. of Families living in these type of structures",
+   "mandatory_depends_on": "eval:doc.q6_4_stilt_dwellings_with_bamboo_posts==\"Yes\""
+  },
+  {
+   "fieldname": "column_break_stilt_dwellings_with_bamboo_posts",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q6_4_3_remarks_regarding_houses_with_stilt",
+   "fieldtype": "Small Text",
+   "label": "6.4.3. Any remarks regarding the houses with Stilt Dwellings with bamboo posts"
+  },
+  {
+   "fieldname": "section_break_q6_5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q6_5_stilt_dwellings_with_cement_posts",
+   "fieldtype": "Select",
+   "label": "6.5. Are there Stilt Dwellings with cement posts in the settlement?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q6_5_stilt_dwellings_with_cement_posts==\"Yes\"",
+   "fieldname": "section_stilt_dwellings_with_cement_posts",
+   "fieldtype": "Section Break",
+   "label": "Stilt Dwellings with cement posts"
+  },
+  {
+   "fieldname": "q6_5_1_no_houses_with_stilt_dwellings",
+   "fieldtype": "Int",
+   "label": "6.5.1. No. of houses with Stilt Dwellings with cement posts",
+   "mandatory_depends_on": "eval:doc.q6_5_stilt_dwellings_with_cement_posts==\"Yes\""
+  },
+  {
+   "fieldname": "q6_5_2_no_families_living_these_type",
+   "fieldtype": "Int",
+   "label": "6.5.2. No. of Families living in these type of structures",
+   "mandatory_depends_on": "eval:doc.q6_5_stilt_dwellings_with_cement_posts==\"Yes\""
+  },
+  {
+   "fieldname": "column_break_stilt_dwellings_with_cement_posts",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q6_5_3_remarks_regarding_houses_with_stilt",
+   "fieldtype": "Small Text",
+   "label": "6.5.3. Any remarks regarding the houses with Stilt Dwellings with cement posts"
+  },
+  {
+   "fieldname": "section_break_q6_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q6_6_hill_slope_terraced_structures_settlemen",
+   "fieldtype": "Select",
+   "label": "6.6. Are there Hill-Slope Terraced Structures in the settlement?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q6_6_hill_slope_terraced_structures_settlemen==\"Yes\"",
+   "fieldname": "section_hill_slope_terraced_structures",
+   "fieldtype": "Section Break",
+   "label": "Hill-Slope Terraced Structures"
+  },
+  {
+   "fieldname": "q6_6_1_no_hill_slope_terraced_structures",
+   "fieldtype": "Int",
+   "label": "6.6.1. No. of Hill-Slope Terraced Structures",
+   "mandatory_depends_on": "eval:doc.q6_6_hill_slope_terraced_structures_settlemen==\"Yes\""
+  },
+  {
+   "fieldname": "q6_6_2_no_families_living_these_type",
+   "fieldtype": "Int",
+   "label": "6.6.2. No. of Families living in these type of structures",
+   "mandatory_depends_on": "eval:doc.q6_6_hill_slope_terraced_structures_settlemen==\"Yes\""
+  },
+  {
+   "fieldname": "column_break_hill_slope_terraced_structures",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q6_6_3_remarks_regarding_hill_slope_terraced",
+   "fieldtype": "Small Text",
+   "label": "6.6.3. Any remarks regarding Hill-Slope Terraced Structures"
+  },
+  {
+   "fieldname": "section_break_q6_7",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q6_7_full_concrete_houses_settlement",
+   "fieldtype": "Select",
+   "label": "6.7. Are there full Concrete Houses in the settlement?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q6_7_full_concrete_houses_settlement==\"Yes\"",
+   "fieldname": "section_concrete_houses",
+   "fieldtype": "Section Break",
+   "label": "Concrete Houses"
+  },
+  {
+   "fieldname": "q6_7_1_no_concrete_houses",
+   "fieldtype": "Int",
+   "label": "6.7.1. No. of Concrete Houses",
+   "mandatory_depends_on": "eval:doc.q6_7_full_concrete_houses_settlement==\"Yes\""
+  },
+  {
+   "fieldname": "q6_7_2_no_families_living_these_type",
+   "fieldtype": "Int",
+   "label": "6.7.2. No. of Families living in these type of structures",
+   "mandatory_depends_on": "eval:doc.q6_7_full_concrete_houses_settlement==\"Yes\""
+  },
+  {
+   "fieldname": "column_break_concrete_houses",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q6_7_3_remarks_regarding_concrete_houses",
+   "fieldtype": "Small Text",
+   "label": "6.7.3. Any remarks regarding Concrete Houses"
+  },
+  {
+   "fieldname": "section_break_q6_8",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q6_8_tenement_constructed_by_gmc_govt",
+   "fieldtype": "Select",
+   "label": "6.8. Are there tenement constructed by GMC/Govt. Authorities",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q6_8_tenement_constructed_by_gmc_govt==\"Yes\"",
+   "fieldname": "section_tenement_constructed_by_gmc_govt_authorities",
+   "fieldtype": "Section Break",
+   "label": "Tenement constructed by GMC/Govt. Authorities"
+  },
+  {
+   "fieldname": "q6_8_1_no_houses_as_tenement_constructed",
+   "fieldtype": "Int",
+   "label": "6.8.1. No. of houses as tenement constructed by GMC/Govt. Authorities",
+   "mandatory_depends_on": "eval:doc.q6_8_tenement_constructed_by_gmc_govt==\"Yes\""
+  },
+  {
+   "fieldname": "q6_8_2_no_families_living_these_type",
+   "fieldtype": "Int",
+   "label": "6.8.2. No. of Families living in these type of structures",
+   "mandatory_depends_on": "eval:doc.q6_8_tenement_constructed_by_gmc_govt==\"Yes\""
+  },
+  {
+   "fieldname": "column_break_tenement_constructed_by_gmc_govt_authorities",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q6_8_3_remarks_regarding_tenement_constructed_b",
+   "fieldtype": "Small Text",
+   "label": "6.8.3. Any remarks regarding tenement constructed by GMC/Govt. Authorities"
+  },
+  {
+   "fieldname": "section_break_q6_9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "q6_9_tenement_residing_tin_roof_house",
+   "fieldtype": "Select",
+   "label": "6.9. Are there tenement residing in tin-roof house with bamboo/mud/concrete walls inside GMC/Government Land (which includes railway land, army land, forest land, etc.)",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q6_9_tenement_residing_tin_roof_house==\"Yes\"",
+   "fieldname": "section_tenement_residing_in_tin_roof_house_with_bamboo_mu",
+   "fieldtype": "Section Break",
+   "label": "Tenement residing in tin-roof house with bamboo/mud/concrete walls inside GMC/Government Land"
+  },
+  {
+   "fieldname": "q6_9_1_no_tenements_residing_tin_roof",
+   "fieldtype": "Int",
+   "label": "6.9.1. No. of tenements residing in tin-roof house with bamboo/mud/concrete walls inside GMC/Government Land",
+   "mandatory_depends_on": "eval:doc.q6_9_tenement_residing_tin_roof_house==\"Yes\""
+  },
+  {
+   "fieldname": "q6_9_2_no_families_living_these_type",
+   "fieldtype": "Int",
+   "label": "6.9.2. No. of Families living in these type of structures",
+   "mandatory_depends_on": "eval:doc.q6_9_tenement_residing_tin_roof_house==\"Yes\""
+  },
+  {
+   "fieldname": "column_break_tenement_residing_in_tin_roof_house_with_bamboo_mu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q6_9_3_remarks_regarding_structures",
+   "fieldtype": "Small Text",
+   "label": "6.9.3. Any remarks regarding the structures"
+  },
+  {
+   "fieldname": "section_households_family_count",
+   "fieldtype": "Section Break",
+   "label": "Households & Family Count"
+  },
+  {
+   "fieldname": "q7_1_indicate_total_number_houses_physical",
+   "fieldtype": "Int",
+   "label": "7.1. Indicate the total number of houses or physical structures present in this settlement"
+  },
+  {
+   "fieldname": "column_break_households_family_count",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q7_2_specify_total_number_families_currently",
+   "fieldtype": "Int",
+   "label": "7.2. Specify the total number of families currently residing in this settlement"
+  },
+  {
+   "fieldname": "section_others",
+   "fieldtype": "Section Break",
+   "label": "Others"
+  },
+  {
+   "fieldname": "q8_houses_rented_out",
+   "fieldtype": "Select",
+   "label": "8. Are houses rented out?",
+   "length": 64,
+   "options": "\nYes\nNo\nUnsure"
+  },
+  {
+   "fieldname": "q9_migrants_staying_here",
+   "fieldtype": "Select",
+   "label": "9. Are there migrants staying here?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "description": "Describe what occupations men and women are largely involved in. Share an impression from the conversation\nPick all that apply.",
+   "fieldname": "q10_predominant_type_occupation_men_multiple",
+   "fieldtype": "Small Text",
+   "label": "10. Predominant type of occupation for men (multiple selection)",
+   "options": "Casual Daily Wage & Construction Labor\nMunicipal Sanitation & Waste Management\nStreet Vending, Hawking & Petty Retail\nLow-Tier Private Sector Employment\nInformal Transport & Driving Operations\nSkilled Vocational Trades & Artisanal Services\nSelf-Employment\nOthers? Specify"
+  },
+  {
+   "depends_on": "eval:(doc.q10_predominant_type_occupation_men_multiple||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")",
+   "fieldname": "q10_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q10)",
+   "length": 100,
+   "mandatory_depends_on": "eval:(doc.q10_predominant_type_occupation_men_multiple||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")"
+  },
+  {
+   "fieldname": "column_break_others",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Describe what occupations men and women are largely involved in. Share an impression from the conversation\nPick all that apply.",
+   "fieldname": "q11_predominant_type_occupation_women_multip",
+   "fieldtype": "Small Text",
+   "label": "11. Predominant type of occupation for women (multiple selection)",
+   "options": "Domestic and care work\nHomemaker\nSmall-Scale Trading\nStreet Vending\nHawking\nHome-based micro-enterprises\nCasual wage labour and construction-related work\nHome based manufacturing and piece-rate work\nHome-based tailoring\nLow-Tier Private Sector Employment\nSelf-employment\nOthers? Specify"
+  },
+  {
+   "depends_on": "eval:(doc.q11_predominant_type_occupation_women_multip||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")",
+   "fieldname": "q11_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q11)",
+   "length": 100,
+   "mandatory_depends_on": "eval:(doc.q11_predominant_type_occupation_women_multip||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")"
+  },
+  {
+   "description": "From the conversations, please describe which caste groups largely reside in the settlement. This is only to help us understand potential vulnerabilities or exclusions, and not to differentiate or label any settlements\nPick all that apply.",
+   "fieldname": "q12_predominant_caste_groups_present_settlem",
+   "fieldtype": "Small Text",
+   "label": "12. Predominant caste groups present in the settlements",
+   "options": "SC\nST\nOBC\nMOBC\nOthers? Specify"
+  },
+  {
+   "depends_on": "eval:(doc.q12_predominant_caste_groups_present_settlem||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")",
+   "fieldname": "q12_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q12)",
+   "length": 100,
+   "mandatory_depends_on": "eval:(doc.q12_predominant_caste_groups_present_settlem||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")"
+  },
+  {
+   "fieldname": "tab_land_surroundings",
+   "fieldtype": "Tab Break",
+   "label": "Land & Surroundings"
+  },
+  {
+   "fieldname": "section_land_housing",
+   "fieldtype": "Section Break",
+   "label": "Land & Housing"
+  },
+  {
+   "description": "Even if 1 person got it, select Yes and mention details in the next descriptive response",
+   "fieldname": "q13_1_community_eligible_land_housing_rights",
+   "fieldtype": "Select",
+   "label": "13.1. Is the community eligible for land/housing rights and have they obtained pattas/sale deed?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "q13_2_discussion_points_on_housing_pattas",
+   "fieldtype": "Small Text",
+   "label": "13.2. Any discussion points on Housing, Pattas, Sale deed etc."
+  },
+  {
+   "description": "Ownership of the land may be distributed across different departments - please choose multiple options accordingly\nPick all that apply.",
+   "fieldname": "q13_3_land_owning_board_department_multi",
+   "fieldtype": "Small Text",
+   "label": "13.3. Land owning Board/Department (Multi-select option)",
+   "options": "PWD\nGMC/GMDA\nASHB (Assam State Housing Board)\nRailways\nAirport\nReligious Land\nPrivate Land\nDefence / Cantonment\nAny other, Specify"
+  },
+  {
+   "fieldname": "column_break_land_housing",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:(doc.q13_3_land_owning_board_department_multi||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Any other, Specify\")",
+   "fieldname": "q13_3_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q13.3)",
+   "length": 100,
+   "mandatory_depends_on": "eval:(doc.q13_3_land_owning_board_department_multi||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Any other, Specify\")"
+  },
+  {
+   "depends_on": "eval:(doc.q13_3_land_owning_board_department_multi||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Any other, Specify\")",
+   "description": "Use \",\" to separate multiple responses",
+   "fieldname": "q13_4_other_land_owning_department_involved",
+   "fieldtype": "Data",
+   "label": "13.4. Any other land owning department involved",
+   "length": 100
+  },
+  {
+   "fieldname": "section_settlement_surroundings",
+   "fieldtype": "Section Break",
+   "label": "Settlement Surroundings"
+  },
+  {
+   "description": "If the settlement is located near any other vulnerable location/site, please specify\nPick all that apply.",
+   "fieldname": "q14_settlement_located_near_multi_select",
+   "fieldtype": "Small Text",
+   "label": "14. Is the settlement located near (Multi-select option)",
+   "options": "Factory or Industrial plant\nGodowns or Warehouses\nLake or Wetland\nHigh-tide river or stream\nPolluted river, stream, Drain or water body\nWaste dump site or landfill\nMajor highway or busy transit road\nRailway lines\nAirport Periphery\nReligious Institutions\nGraveyards\nMajor Markets\nAny other vulnerable locations - Specify"
+  },
+  {
+   "fieldname": "column_break_settlement_surroundings",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:(doc.q14_settlement_located_near_multi_select||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Any other vulnerable locations - Specify\")",
+   "fieldname": "q14_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q14)",
+   "length": 100,
+   "mandatory_depends_on": "eval:(doc.q14_settlement_located_near_multi_select||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Any other vulnerable locations - Specify\")"
+  },
+  {
+   "fieldname": "section_eviction_details",
+   "fieldtype": "Section Break",
+   "label": "Eviction Details"
+  },
+  {
+   "description": "Settlements that eventually will face eviction threat: 1. Settlement with close proximity to water bodies (rivers, lakes and canals), railway lines, located above conduit pipes, close to the seashore and road margins. 2. Settlement on railway land or defence land. 3. Settlement on private land. 4. Settlement on temple land.\n\nHow to identify if a settlement is facing immediate eviction threat? Lead questions (to be asked only in the above-mentioned categories): 1. Has there been any information about eviction? 2. Any enumeration conducted with or without stating reasons? 3. Any eviction notices issued? 4. Any formal or informal meetings regarding eviction or resettlement conducted? 5. Any pending court case related to eviction?",
+   "fieldname": "q15_1_eviction_threat",
+   "fieldtype": "Select",
+   "label": "15.1. Is there an Eviction threat?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q15_1_eviction_threat==\"Yes\"",
+   "description": "Survey conducted, notice given, token given, survey stone, settlements partially evicted - describe eviction chances, stage under which eviction is in progress, possibilities for eviction etc.",
+   "fieldname": "q15_2_describe_eviction_scenario",
+   "fieldtype": "Small Text",
+   "label": "15.2. Describe eviction scenario",
+   "mandatory_depends_on": "eval:doc.q15_1_eviction_threat==\"Yes\""
+  },
+  {
+   "fieldname": "column_break_eviction_details",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Pick all that apply.",
+   "fieldname": "q15_3_probable_factors_eviction",
+   "fieldtype": "Small Text",
+   "label": "15.3. Probable factors for eviction",
+   "options": "Encroachment on public/government land\nMunicipal Infrastructure Expansion (Roads/metro lines)\nPrivate Developer buyouts\nNeighbourhood crime syndicates\nExclusionary Urban Modernization\nFlood and disaster vulnerability\nEnvironmental protection measures\nHealth and sanitation concerns\nLegal disputes over land ownership\nPolitical and administrative decisions"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "tab_services",
+   "fieldtype": "Tab Break",
+   "label": "Services"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_schooling",
+   "fieldtype": "Section Break",
+   "label": "Schooling"
+  },
+  {
+   "fieldname": "q16_1_1_accessibility_primary_secondary_schools",
+   "fieldtype": "Select",
+   "label": "16.1.1. Accessibility to primary and secondary schools",
+   "length": 64,
+   "options": "\nHigh\nModerate\nLow"
+  },
+  {
+   "depends_on": "eval:doc.q16_1_1_accessibility_primary_secondary_schools==\"Low\"",
+   "description": "Pick all that apply.",
+   "fieldname": "q16_1_1a_reasons_low_accessibility_primary_second",
+   "fieldtype": "Small Text",
+   "label": "16.1.1a. Reasons for Low accessibility to primary and secondary schools",
+   "options": "Distance\nBusy Roads\nPoor Public Infrastructure\nTraffic Accidents\nHarassment Risks\nCrime Exposure\nChild Labour\nSibling Care\nParental Illiteracy\nHidden Costs\nOvercrowded Schools\nLack of Documents\nOthers? Specify"
+  },
+  {
+   "depends_on": "eval:(doc.q16_1_1a_reasons_low_accessibility_primary_second||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")",
+   "fieldname": "q16_1_1a_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q16.1.1a)",
+   "length": 100,
+   "mandatory_depends_on": "eval:(doc.q16_1_1a_reasons_low_accessibility_primary_second||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")"
+  },
+  {
+   "fieldname": "q16_1_2_proportion_children_going_private_school",
+   "fieldtype": "Float",
+   "label": "16.1.2. Proportion of children going to the Private Schools from the settlement"
+  },
+  {
+   "fieldname": "column_break_schooling",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q16_1_3_proportion_children_going_government_sch",
+   "fieldtype": "Float",
+   "label": "16.1.3. Proportion of children going to the Government Schools from the settlement"
+  },
+  {
+   "fieldname": "q16_1_4_proportion_children_going_government_aid",
+   "fieldtype": "Float",
+   "label": "16.1.4. Proportion of children going to the Government Aided Schools from the settlement"
+  },
+  {
+   "description": "Both Private and Government. If possible, list the schools.",
+   "fieldname": "q16_1_5_name_schools_where_children_going",
+   "fieldtype": "Small Text",
+   "label": "16.1.5. Name the Schools where children are going from the Settlement"
+  },
+  {
+   "fieldname": "q16_1_6_summarise_remarks_community_your_own",
+   "fieldtype": "Small Text",
+   "label": "16.1.6. Summarise the remarks of the community and your own observations, impressions on schooling available to the residents of the Settlement"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_anganwadi",
+   "fieldtype": "Section Break",
+   "label": "Anganwadi"
+  },
+  {
+   "fieldname": "q16_2_1_accessibility_anganwadis_early_childhood",
+   "fieldtype": "Select",
+   "label": "16.2.1. Accessibility to Anganwadis, Early Childhood Daycare or creche facilities",
+   "length": 64,
+   "options": "\nHigh\nModerate\nLow"
+  },
+  {
+   "depends_on": "eval:doc.q16_2_1_accessibility_anganwadis_early_childhood==\"Low\"",
+   "description": "Pick all that apply.",
+   "fieldname": "q16_2_1a_reasons_low_accessibility_awcs",
+   "fieldtype": "Small Text",
+   "label": "16.2.1a. Reasons for Low accessibility to AWCs",
+   "options": "Distance\nBusy Roads\nPoor Public Infrastructure\nTraffic Accidents\nHarassment Risks\nCrime Exposure\nChild Labour\nSibling Care\nParental Illiteracy\nOvercrowded AWCs\nLack of Documents\nOthers? Specify"
+  },
+  {
+   "depends_on": "eval:(doc.q16_2_1a_reasons_low_accessibility_awcs||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")",
+   "fieldname": "q16_2_1a_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q16.2.1a)",
+   "length": 100,
+   "mandatory_depends_on": "eval:(doc.q16_2_1a_reasons_low_accessibility_awcs||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")"
+  },
+  {
+   "fieldname": "column_break_anganwadi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q16_2_2_number_anganwadis_available_settlement_w",
+   "fieldtype": "Int",
+   "label": "16.2.2. Number of Anganwadis available in settlement or within accessible distance"
+  },
+  {
+   "description": "Name and location of the Anganwadi to be mentioned",
+   "fieldname": "q16_2_3_list_anganwadis_where_children_going",
+   "fieldtype": "Small Text",
+   "label": "16.2.3. List the Anganwadis where children are going from the Settlement"
+  },
+  {
+   "fieldname": "q16_2_4_summarise_remarks_community_your_own",
+   "fieldtype": "Small Text",
+   "label": "16.2.4. Summarise the remarks of the community and your own observations, impressions on Anganwadi services available for them"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_healthcare",
+   "fieldtype": "Section Break",
+   "label": "Healthcare"
+  },
+  {
+   "fieldname": "q16_3_1_accessibility_nearest_uphc_government_pr",
+   "fieldtype": "Select",
+   "label": "16.3.1. Accessibility to nearest UPHC, Government or Private Hospital",
+   "length": 64,
+   "options": "\nHigh\nModerate\nLow"
+  },
+  {
+   "depends_on": "eval:doc.q16_3_1_accessibility_nearest_uphc_government_pr==\"Low\"",
+   "description": "Pick all that apply.",
+   "fieldname": "q16_3_1a_reasons_low_accessibility_uphc_governmen",
+   "fieldtype": "Small Text",
+   "label": "16.3.1a. Reasons for Low accessibility to UPHC, Government or Private Hospital",
+   "options": "Distance & poor connectivity\nFinancial barriers\nOvercrowded facilities\nLimited distribution of UPHCs\nAwareness & social barriers\nWork & livelihood constraints\nOthers, specify"
+  },
+  {
+   "depends_on": "eval:(doc.q16_3_1a_reasons_low_accessibility_uphc_governmen||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, specify\")",
+   "fieldname": "q16_3_1a_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q16.3.1a)",
+   "length": 100,
+   "mandatory_depends_on": "eval:(doc.q16_3_1a_reasons_low_accessibility_uphc_governmen||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, specify\")"
+  },
+  {
+   "fieldname": "q16_3_2_name_distance_uphcs_government_private",
+   "fieldtype": "Small Text",
+   "label": "16.3.2. Name & Distance of the UPHCs, Government or Private Hospitals where residents from the settlement are accessing the health services"
+  },
+  {
+   "fieldname": "q16_3_3_regular_mosquito_fogging_pest_control",
+   "fieldtype": "Select",
+   "label": "16.3.3. Are there regular mosquito fogging, pest control drives, and anti-malaria/dengue campaigns run by municipal health workers (Vector Control)",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "column_break_healthcare",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q16_3_4_other_health_services_available_communit",
+   "fieldtype": "Small Text",
+   "label": "16.3.4. Any other health services available in the community?"
+  },
+  {
+   "fieldname": "q16_3_5_when_last_time_asha_worker",
+   "fieldtype": "Select",
+   "label": "16.3.5. When is the last time an Asha Worker or ANM reach out to any community member in the settlement?",
+   "length": 64,
+   "options": "\nLess than 1 month\n1-3 months\n4-6 months\nMore than 6 months\nNever came\nUnsure"
+  },
+  {
+   "fieldname": "q16_3_6_provision_paved_unblocked_access_lanes",
+   "fieldtype": "Select",
+   "label": "16.3.6. Is there provision of paved, unblocked access lanes wide enough for ambulances to enter during disasters/emergencies?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "q16_3_7_summarise_remarks_community_on_operation",
+   "fieldtype": "Small Text",
+   "label": "16.3.7. Summarise the remarks of the community on operations of the UPHCs and any other unmet health needs"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_pds_shop",
+   "fieldtype": "Section Break",
+   "label": "PDS Shop"
+  },
+  {
+   "description": "Street name or any other identifier. Capture only if functioning",
+   "fieldname": "q16_4_1_name_nearest_ration_shop",
+   "fieldtype": "Data",
+   "label": "16.4.1. Name the nearest Ration Shop",
+   "length": 100
+  },
+  {
+   "description": "If it is within the settlement, mark as \"0\"",
+   "fieldname": "q16_4_2_if_pds_shop_outside_settlement",
+   "fieldtype": "Float",
+   "label": "16.4.2. If PDS Shop is outside the settlement, state the distance in KM"
+  },
+  {
+   "fieldname": "column_break_pds_shop",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q16_4_3_other_concern_about_pds_shop",
+   "fieldtype": "Small Text",
+   "label": "16.4.3. Any other concern about the PDS Shop - a summary from the conversation"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_police_station",
+   "fieldtype": "Section Break",
+   "label": "Police Station"
+  },
+  {
+   "description": "Capture the complete name with number",
+   "fieldname": "q16_5_1_settlement_comes_under_which_police",
+   "fieldtype": "Data",
+   "label": "16.5.1. Settlement comes under which Police station?",
+   "length": 100
+  },
+  {
+   "description": "Distance in km",
+   "fieldname": "q16_5_2_distance_nearest_police_station",
+   "fieldtype": "Float",
+   "label": "16.5.2. Distance to the nearest Police station"
+  },
+  {
+   "description": "Capture the complete name with number",
+   "fieldname": "q16_5_3_where_nearest_all_woman_police",
+   "fieldtype": "Data",
+   "label": "16.5.3. Where is the nearest All Woman Police Station located?",
+   "length": 100
+  },
+  {
+   "fieldname": "column_break_police_station",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Distance in km",
+   "fieldname": "q16_5_4_distance_nearest_all_woman_police",
+   "fieldtype": "Float",
+   "label": "16.5.4. Distance to the nearest All Woman Police Station"
+  },
+  {
+   "description": "Mark \"yes\" only if Functional",
+   "fieldname": "q16_5_5_police_booth_inside_settlement",
+   "fieldtype": "Select",
+   "label": "16.5.5. Is there a police booth inside the settlement?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "q16_5_6_summarise_safety_concerns_shared_by",
+   "fieldtype": "Small Text",
+   "label": "16.5.6. Summarise safety concerns shared by the community"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_other_services",
+   "fieldtype": "Section Break",
+   "label": "Other Services"
+  },
+  {
+   "description": "Mention who is helping them - community leaders, fellows, does directly with some offices, other NGOs etc. - state it",
+   "fieldname": "q17_1_where_they_go_availing_entitlements",
+   "fieldtype": "Small Text",
+   "label": "17.1. Where do they go for availing entitlements and related services?"
+  },
+  {
+   "description": "In km",
+   "fieldname": "q17_2_distance_arunoday_kendra_csc_public",
+   "fieldtype": "Float",
+   "label": "17.2. Distance to Arunoday Kendra (CSC)/Public Facilitation Centre (PFC)"
+  },
+  {
+   "fieldname": "q17_3_name_nearest_csc_pfc",
+   "fieldtype": "Data",
+   "label": "17.3. Name of the nearest CSC/PFC",
+   "length": 100
+  },
+  {
+   "description": "Highlight the cost involved in a day's transit from home to place to work",
+   "fieldname": "q17_4_access_shared_autorickshaw_stands_bus",
+   "fieldtype": "Small Text",
+   "label": "17.4. Is there access to shared autorickshaw stands, bus stops, or railway stations located within walking distance to connect residents to informal and formal city job markets?"
+  },
+  {
+   "fieldname": "column_break_other_services",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Highlight the type of infrastructure available and the cost involved in using it",
+   "fieldname": "q17_5_small_multi_purpose_community_halls",
+   "fieldtype": "Small Text",
+   "label": "17.5. Are there small, multi-purpose community halls available for public meetings, training and skill development workshops, or social gatherings within or near to the settlement?"
+  },
+  {
+   "fieldname": "q17_6_easily_accessible_municipal_centres_wher",
+   "fieldtype": "Select",
+   "label": "17.6. Are there easily accessible municipal centres where residents can register births, deaths, marriages, and apply for identity/ration cards?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "description": "What, how, where, when, by whom",
+   "fieldname": "q17_7_other_services_by_government_settlement",
+   "fieldtype": "Small Text",
+   "label": "17.7. Any other services by the government in the settlement"
+  },
+  {
+   "description": "Mention name of the NGOs and what they do in the settlements",
+   "fieldname": "q17_8_list_active_ngos_engaged_settlements",
+   "fieldtype": "Small Text",
+   "label": "17.8. List the active NGOs engaged in the settlements"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "tab_civic_amenities",
+   "fieldtype": "Tab Break",
+   "label": "Civic Amenities"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_water_supply",
+   "fieldtype": "Section Break",
+   "label": "Water Supply"
+  },
+  {
+   "description": "Mark \"yes\" if majority of the houses got piped water connection",
+   "fieldname": "q18_1_1_settlement_have_individual_household_wat",
+   "fieldtype": "Select",
+   "label": "18.1.1. Does the settlement have individual household water connection?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q18_1_1_settlement_have_individual_household_wat==\"Yes\"",
+   "fieldname": "q18_1_2_how_many_hours_they_get",
+   "fieldtype": "Int",
+   "label": "18.1.2. For how many hours do they get running water services?",
+   "mandatory_depends_on": "eval:doc.q18_1_1_settlement_have_individual_household_wat==\"Yes\""
+  },
+  {
+   "depends_on": "eval:doc.q18_1_1_settlement_have_individual_household_wat==\"No\"",
+   "fieldname": "q18_1_3_if_no_what_sources_drinking",
+   "fieldtype": "Small Text",
+   "label": "18.1.3. If no, what are the sources for drinking water?"
+  },
+  {
+   "fieldname": "column_break_water_supply",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.q18_1_1_settlement_have_individual_household_wat==\"No\"",
+   "fieldname": "q18_1_4_if_no_what_sources_water",
+   "fieldtype": "Small Text",
+   "label": "18.1.4. If no, what are the sources of water for other residential utilities?"
+  },
+  {
+   "fieldname": "q18_1_5_what_challenges_related_water_services",
+   "fieldtype": "Small Text",
+   "label": "18.1.5. What are the challenges related to Water services? - Summarise the conversations"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_sewage_and_toilets",
+   "fieldtype": "Section Break",
+   "label": "Sewage and Toilets"
+  },
+  {
+   "fieldname": "q18_2_1_settlement_have_individual_sewer_lines",
+   "fieldtype": "Select",
+   "label": "18.2.1. Does the settlement have individual sewer lines?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q18_2_1_settlement_have_individual_sewer_lines==\"Yes\"",
+   "fieldname": "q18_2_2_if_yes_it_functional",
+   "fieldtype": "Select",
+   "label": "18.2.2. If yes, is it functional?",
+   "length": 64,
+   "mandatory_depends_on": "eval:doc.q18_2_1_settlement_have_individual_sewer_lines==\"Yes\"",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "q18_2_3_settlement_have_common_functional_toilet",
+   "fieldtype": "Select",
+   "label": "18.2.3. Does the settlement have common Functional toilets?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "column_break_sewage_and_toilets",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.q18_2_3_settlement_have_common_functional_toilet==\"Yes\"",
+   "description": "Include only Functional",
+   "fieldname": "q18_2_4_if_yes_how_many_toilets",
+   "fieldtype": "Int",
+   "label": "18.2.4. If yes, How many toilets?",
+   "mandatory_depends_on": "eval:doc.q18_2_3_settlement_have_common_functional_toilet==\"Yes\""
+  },
+  {
+   "fieldname": "q18_2_5_summarise_remarks_concerns_on_availabili",
+   "fieldtype": "Small Text",
+   "label": "18.2.5. Summarise the remarks and concerns on the availability of Sewage and Toilets"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_flood_and_drain_system",
+   "fieldtype": "Section Break",
+   "label": "Flood and Drain System"
+  },
+  {
+   "description": "Select \"yes\" only if functional and reparable",
+   "fieldname": "q18_3_1_settlement_have_storm_water_drains",
+   "fieldtype": "Select",
+   "label": "18.3.1. Does the settlement have storm water drains system?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q18_3_1_settlement_have_storm_water_drains==\"Yes\"",
+   "fieldname": "q18_3_1a_if_yes_it_covered",
+   "fieldtype": "Select",
+   "label": "18.3.1a. If \"Yes\" is it covered?",
+   "length": 64,
+   "mandatory_depends_on": "eval:doc.q18_3_1_settlement_have_storm_water_drains==\"Yes\"",
+   "options": "\nYes\nNo"
+  },
+  {
+   "description": "Select \"yes\" only if functional and reparable",
+   "fieldname": "q18_3_2_settlement_have_greywater_drains_system",
+   "fieldtype": "Select",
+   "label": "18.3.2. Does the settlement have greywater drains system?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q18_3_2_settlement_have_greywater_drains_system==\"Yes\"",
+   "fieldname": "q18_3_2b_if_yes_it_covered",
+   "fieldtype": "Select",
+   "label": "18.3.2b. If \"Yes\" is it covered?",
+   "length": 64,
+   "mandatory_depends_on": "eval:doc.q18_3_2_settlement_have_greywater_drains_system==\"Yes\"",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "column_break_flood_and_drain_system",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Based on last 5 years",
+   "fieldname": "q18_3_3_settlement_prone_flooding",
+   "fieldtype": "Select",
+   "label": "18.3.3. Is the settlement prone to flooding?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q18_3_3_settlement_prone_flooding==\"Yes\"",
+   "fieldname": "q18_3_4_flooding_caused_due_poor_drainage",
+   "fieldtype": "Select",
+   "label": "18.3.4. Is the flooding caused due to poor drainage?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q18_3_3_settlement_prone_flooding==\"Yes\"",
+   "fieldname": "q18_3_5_flooding_caused_by_high_water",
+   "fieldtype": "Select",
+   "label": "18.3.5. Is the flooding caused by high water level in rivers and other water bodies near by?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.q18_3_3_settlement_prone_flooding==\"Yes\"",
+   "fieldname": "q18_3_6_if_yes_what_impacts_flood",
+   "fieldtype": "Small Text",
+   "label": "18.3.6. If yes, what are the impacts of the flood? Summarise the conversation"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_waste_management",
+   "fieldtype": "Section Break",
+   "label": "Waste Management"
+  },
+  {
+   "fieldname": "q18_4_1_door_door_street_wise_garbage",
+   "fieldtype": "Select",
+   "label": "18.4.1. Is there a door-to-door / street-wise garbage collection mechanism?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "q18_4_2_where_they_dispose_waste",
+   "fieldtype": "Data",
+   "label": "18.4.2. Where do they dispose waste?",
+   "length": 100
+  },
+  {
+   "fieldname": "q18_4_3_adequate_bins_within_near_settlement",
+   "fieldtype": "Select",
+   "label": "18.4.3. Are there adequate bins within and near to the settlement?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "q18_4_4_who_collects_waste",
+   "fieldtype": "Data",
+   "label": "18.4.4. Who collects the waste?",
+   "length": 100
+  },
+  {
+   "fieldname": "column_break_waste_management",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q18_4_5_fee_waste_collection",
+   "fieldtype": "Select",
+   "label": "18.4.5. Is there a fee for waste collection?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "q18_4_6_what_fee_cycle",
+   "fieldtype": "Select",
+   "label": "18.4.6. What is the fee cycle?",
+   "length": 64,
+   "options": "\nMonthly\nFortnightly\nWeekly\nNo Fees"
+  },
+  {
+   "depends_on": "eval:doc.q18_4_5_fee_waste_collection==\"Yes\"",
+   "fieldname": "q18_4_7_how_much_fee",
+   "fieldtype": "Float",
+   "label": "18.4.7. How much is the fee?",
+   "mandatory_depends_on": "eval:doc.q18_4_5_fee_waste_collection==\"Yes\""
+  },
+  {
+   "depends_on": "eval:doc.q18_4_5_fee_waste_collection==\"Yes\"",
+   "fieldname": "q18_4_8_summarise_remarks_concerns_on_waste",
+   "fieldtype": "Small Text",
+   "label": "18.4.8. Summarise the remarks and concerns on waste management in the settlement"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_street_lighting",
+   "fieldtype": "Section Break",
+   "label": "Street Lighting"
+  },
+  {
+   "fieldname": "q18_5_1_settlement_have_adequate_streetlights",
+   "fieldtype": "Select",
+   "label": "18.5.1. Does the settlement have adequate streetlights?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "q18_5_2_dark_unsafe_spaces_where_need",
+   "fieldtype": "Select",
+   "label": "18.5.2. Are there any dark unsafe spaces where there is a need for lighting?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "column_break_street_lighting",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q18_5_3_summarise_remarks_concerns_on_lighting",
+   "fieldtype": "Small Text",
+   "label": "18.5.3. Summarise remarks and concerns on the lighting available in the settlements"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_parks_play_area_for_children",
+   "fieldtype": "Section Break",
+   "label": "Parks / Play Area for Children"
+  },
+  {
+   "fieldname": "q18_6_1_playground_park_nearby_settlement",
+   "fieldtype": "Select",
+   "label": "18.6.1. Is there a Playground or Park nearby to the settlement?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "q18_6_2_where_children_play_settlement",
+   "fieldtype": "Data",
+   "label": "18.6.2. Where do children play in the settlement?",
+   "length": 100
+  },
+  {
+   "fieldname": "column_break_parks_play_area_for_children",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q18_6_3_summarise_concerns_shared_by_community",
+   "fieldtype": "Small Text",
+   "label": "18.6.3. Summarise the concerns shared by the Community on Parks/ Play area for children in the settlements"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_safety_amenities",
+   "fieldtype": "Section Break",
+   "label": "Safety Amenities"
+  },
+  {
+   "fieldname": "q18_7_1_cctv_camera_common_areas_around",
+   "fieldtype": "Select",
+   "label": "18.7.1. Is there a CCTV camera for the common areas in and around the settlements?",
+   "length": 64,
+   "options": "\nYes\nInadequate\nNot at all"
+  },
+  {
+   "depends_on": "eval:doc.q18_7_1_cctv_camera_common_areas_around && doc.q18_7_1_cctv_camera_common_areas_around!=\"Yes\"",
+   "fieldname": "q18_7_2_if_not_at_all_inadequate",
+   "fieldtype": "Small Text",
+   "label": "18.7.2. If not at all or inadequate, specify where and why, the need for CCTV?"
+  },
+  {
+   "fieldname": "column_break_safety_amenities",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q18_7_3_other_general_remarks_on_need",
+   "fieldtype": "Small Text",
+   "label": "18.7.3. Any other general remarks on need for CCTV camera - Summarise the conversation"
+  },
+  {
+   "description": "Substance usage in public spaces, teasing, bullying, etc.",
+   "fieldname": "q18_7_4_general_safety_concerns_summarise",
+   "fieldtype": "Small Text",
+   "label": "18.7.4. General Safety concerns - Summarise"
+  },
+  {
+   "depends_on": "eval:doc.q5_settlement_officially_notified_by_govern==\"Yes, Notified\"",
+   "fieldname": "section_electricity",
+   "fieldtype": "Section Break",
+   "label": "Electricity"
+  },
+  {
+   "fieldname": "q18_8_1_households_settlement_have_access_formal",
+   "fieldtype": "Select",
+   "label": "18.8.1. Do households in the settlement have access to formal grid electricity connections?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "q18_8_2_what_other_arrangements_practices_househ",
+   "fieldtype": "Small Text",
+   "label": "18.8.2. What other arrangements or practices do households in this settlement rely on to obtain electricity connections?"
+  },
+  {
+   "fieldname": "column_break_electricity",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q18_8_3_other_practice_accessing_electricity",
+   "fieldtype": "Small Text",
+   "label": "18.8.3. Other practice of accessing electricity"
+  },
+  {
+   "fieldname": "q18_8_4_remarks_observations_related_aseb_apdcl",
+   "fieldtype": "Small Text",
+   "label": "18.8.4. Remarks and observations related to ASEB/APDCL services"
+  },
+  {
+   "fieldname": "tab_location_selection",
+   "fieldtype": "Tab Break",
+   "label": "Location & Selection"
+  },
+  {
+   "fieldname": "section_location_and_other_details",
+   "fieldtype": "Section Break",
+   "label": "Location and Other Details"
+  },
+  {
+   "fieldname": "q19_1_location_details_settlement",
+   "fieldtype": "Small Text",
+   "label": "19.1. Location details of the Settlement"
+  },
+  {
+   "fieldname": "section_location_coordinates",
+   "fieldtype": "Section Break",
+   "label": "Location Coordinates"
+  },
+  {
+   "description": "Reference point",
    "fieldname": "latitude",
    "fieldtype": "Float",
    "label": "Latitude",
    "precision": "9",
-   "description": "Reference point"
+   "read_only": 1
   },
   {
+   "description": "Reference point",
    "fieldname": "longitude",
    "fieldtype": "Float",
    "label": "Longitude",
    "precision": "9",
-   "description": "Reference point"
+   "read_only": 1
   },
   {
-   "fieldname": "column_break_location_point",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "geo_location",
-   "fieldtype": "Geolocation",
-   "label": "Geo Location",
-   "description": "Pick the point on the map."
-  },
-  {
-   "fieldname": "section_break_boundary",
-   "fieldtype": "Section Break",
-   "label": "Boundary"
-  },
-  {
-   "fieldname": "settlement_boundary",
-   "fieldtype": "JSON",
-   "label": "Settlement Boundary",
-   "description": "Polygon as GeoJSON. Optional."
-  },
-  {
+   "description": "Calculated from the shape drawn on the map.",
    "fieldname": "boundary_area",
    "fieldtype": "Float",
-   "label": "Boundary Area",
-   "description": "Area enclosed by the boundary, in square metres."
+   "label": "Area (sq m)",
+   "read_only": 1
   },
   {
+   "description": "Calculated from the shape drawn on the map.",
    "fieldname": "boundary_perimeter",
    "fieldtype": "Float",
-   "label": "Boundary Perimeter",
-   "description": "Length around the boundary, in metres."
+   "label": "Perimeter (m)",
+   "read_only": 1
   },
   {
-   "fieldname": "column_break_boundary",
+   "fieldname": "column_break_location_coordinates",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "boundary_captured_by",
-   "fieldtype": "Link",
-   "label": "Boundary Captured By",
-   "options": "User"
+   "description": "Pick the point on the map.",
+   "fieldname": "geo_location",
+   "fieldtype": "Geolocation",
+   "label": "19.2. Record location of the settlement (coordinates)"
   },
   {
-   "fieldname": "boundary_captured_on",
-   "fieldtype": "Datetime",
-   "label": "Boundary Captured On"
+   "fieldname": "section_break_location_point",
+   "fieldtype": "Section Break",
+   "label": "Location Supporting Documents"
   },
   {
-   "fieldname": "tab_intervention_units",
-   "fieldtype": "Tab Break",
-   "label": "Intervention Units",
-   "depends_on": "eval:doc.has_intervention_units"
-  },
-  {
-   "fieldname": "intervention_units",
+   "description": "Add as many photos as needed.",
+   "fieldname": "q19_3_street_view_photos",
    "fieldtype": "Table",
-   "label": "Intervention Units",
-   "options": "Settlement Intervention Unit",
-   "depends_on": "eval:doc.has_intervention_units"
+   "label": "19.3. Capture street view photos",
+   "options": "Settlement Street Photo"
   },
   {
-   "fieldname": "tab_workers",
-   "fieldtype": "Tab Break",
-   "label": "Workers"
+   "fieldname": "section_implementing_org_recommendation",
+   "fieldtype": "Section Break",
+   "label": "Implementing Org Recommendation"
   },
   {
-   "fieldname": "worker_assignments",
-   "fieldtype": "Table",
-   "label": "Workers",
-   "options": "Settlement Worker",
-   "description": "Tag the partner's workers to the whole settlement, or - when it has intervention units - to a specific unit."
+   "fieldname": "q20_1_implementing_org_team_s_recommendation",
+   "fieldtype": "Select",
+   "label": "20.1. Implementing Org Team's recommendation - Considering this settlement for proposed program?",
+   "length": 64,
+   "options": "\nYes\nYes, Partially\nNo"
   },
   {
-   "fieldname": "record_date",
-   "fieldtype": "Date",
-   "label": "Date",
-   "default": "Today",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "description": "Defaults to today; change it to record a different date."
+   "depends_on": "eval:doc.q20_1_implementing_org_team_s_recommendation && doc.q20_1_implementing_org_team_s_recommendation!=\"No\"",
+   "fieldname": "q20_2_if_yes_we_taking_all",
+   "fieldtype": "Small Text",
+   "label": "20.2. If yes, are we taking all the Households or partially? - Mention any streets or HHs to be exempted"
+  },
+  {
+   "depends_on": "eval:doc.q20_1_implementing_org_team_s_recommendation==\"Yes, Partially\"",
+   "description": "Suggested by the Implementing org",
+   "fieldname": "q20_3_if_yes_partially_no_houses",
+   "fieldtype": "Int",
+   "label": "20.3. If Yes Partially, No. of Houses to be considered",
+   "mandatory_depends_on": "eval:doc.q20_1_implementing_org_team_s_recommendation==\"Yes, Partially\""
+  },
+  {
+   "description": "Both Yes and No should be rationalised in your words",
+   "fieldname": "q20_4_brief_rationale_your_recommendation",
+   "fieldtype": "Small Text",
+   "label": "20.4. Brief the rationale for your recommendation"
+  },
+  {
+   "fieldname": "column_break_implementing_org_recommendation",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q20_5_general_remarks",
+   "fieldtype": "Small Text",
+   "label": "20.5. General Remarks"
+  },
+  {
+   "fieldname": "q20_6_profiling_status",
+   "fieldtype": "Select",
+   "label": "20.6. Profiling Status",
+   "length": 64,
+   "options": "\nCompleted\nNot Completed"
+  },
+  {
+   "fieldname": "q20_7_profiled_by",
+   "fieldtype": "Data",
+   "label": "20.7. Profiled by",
+   "length": 100
+  },
+  {
+   "fieldname": "section_apf_team_selection",
+   "fieldtype": "Section Break",
+   "label": "APF Team Selection"
+  },
+  {
+   "description": "Updated by APF Team",
+   "fieldname": "q21_1_apf_team_visit_status",
+   "fieldtype": "Select",
+   "label": "21.1. APF Team Visit Status",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "q21_2_visited_by",
+   "fieldtype": "Data",
+   "label": "21.2. Visited By",
+   "length": 100
+  },
+  {
+   "fieldname": "q21_3_visit_observation",
+   "fieldtype": "Small Text",
+   "label": "21.3. Visit Observation"
+  },
+  {
+   "description": "1st level of recommendation after visit and discussion on individual settlements with Implementing org team",
+   "fieldname": "q21_4_apf_team_recommendation",
+   "fieldtype": "Select",
+   "label": "21.4. APF Team Recommendation",
+   "length": 64,
+   "options": "\nNo\nYes\nYes, Partially"
+  },
+  {
+   "fieldname": "column_break_apf_team_selection",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "q21_5_team_rationale",
+   "fieldtype": "Small Text",
+   "label": "21.5. Team Rationale"
+  },
+  {
+   "description": "Final selection based on inputs from the Implementing org, Technical partners and field visits by the APF Team",
+   "fieldname": "q21_6_final_selection_intervention_units",
+   "fieldtype": "Select",
+   "label": "21.6. Final Selection of Intervention Units",
+   "length": 64,
+   "options": "\nNo\nYes\nYes, Partially\nYes, but not for Phase 1"
+  },
+  {
+   "description": "Number of houses considered for intervention in both scenarios, where a settlement is fully or partially included. The count in 7.1 is an estimate for the entire settlement. In cases where a settlement is considered only partially, this field will indicate the estimated number of houses included for intervention.",
+   "fieldname": "q21_7_no_hhs_considered",
+   "fieldtype": "Int",
+   "label": "21.7. No. of HHs considered"
+  },
+  {
+   "description": "Prepared by the Foundation Team for both Yes and No decisions, this explains the rationale for choosing to intervene or not intervene in a settlement. The decision is based on primary information collected by the Partner organization, and insights from field visits conducted by the APF Team. In cases where only a portion of the settlement is selected for intervention, this will also be clearly explained here.",
+   "fieldname": "q21_8_statement_selection",
+   "fieldtype": "Small Text",
+   "label": "21.8. Statement of Selection"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-30 17:00:00.000000",
+ "modified": "2026-10-06 14:16:30.819044",
  "modified_by": "Administrator",
  "module": "Baseline",
  "name": "Settlement",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -298,10 +1828,11 @@
   }
  ],
  "row_format": "Dynamic",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
  "title_field": "settlement_name",
  "track_changes": 1,
- "show_title_field_in_link": 1
+ "search_fields": "settlement_name,partner_organization,cluster,orw_name"
 }

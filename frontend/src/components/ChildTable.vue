@@ -5,7 +5,7 @@
         <h3 class="text-base font-medium text-gray-900 dark:text-gray-100">{{ field.label }}</h3>
         <p v-if="field.description" class="mt-0.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
       </div>
-      <Button variant="ghost" @click="addRow">
+      <Button v-if="canManage" variant="ghost" @click="addRow">
         <template #prefix>
           <FeatherIcon name="plus" class="h-4 w-4" />
         </template>
@@ -66,7 +66,7 @@
     the same `rows` / `selectedKeys` the grid uses. -->
     <template v-if="isMobile">
       <div
-        v-if="rows.length"
+        v-if="rows.length && canManage"
         class="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-lg border bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-900"
       >
         <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
@@ -101,6 +101,7 @@
         >
           <div class="flex items-start gap-3">
             <input
+              v-if="canManage"
               type="checkbox"
               class="form-checkbox mt-0.5 h-4 w-4 flex-shrink-0 !rounded-[3px] border-gray-300 dark:border-gray-600 dark:bg-gray-800"
               :checked="selectedKeys.includes(row.__key)"
@@ -123,7 +124,7 @@
                 </div>
               </dl>
             </div>
-            <Dropdown placement="bottom-end" :options="rowActions(rows.indexOf(row))">
+            <Dropdown v-if="canEditRow(row)" placement="bottom-end" :options="rowActions(rows.indexOf(row))">
               <template #default="{ open }">
                 <Button variant="ghost" size="sm" icon="more-vertical" tooltip="Row actions" aria-label="Row actions" />
               </template>
@@ -155,10 +156,10 @@
         <ListRowItem :column="column" :row="row" :item="formatValue(item, column.docField)">
           <template v-if="column.key === lastColumnKey" #suffix>
             <div class="ml-auto flex items-center gap-1" @click.stop>
-              <Tooltip text="Edit row">
-                <Button variant="ghost" size="sm" icon="edit-2" @click="openRow(rows.indexOf(row))" />
+              <Tooltip :text="canEditRow(row) ? 'Edit row' : 'View row'">
+                <Button variant="ghost" size="sm" :icon="canEditRow(row) ? 'edit-2' : 'eye'" @click="openRow(rows.indexOf(row))" />
               </Tooltip>
-              <Dropdown placement="bottom-end" :options="rowActions(rows.indexOf(row))">
+              <Dropdown v-if="canEditRow(row)" placement="bottom-end" :options="rowActions(rows.indexOf(row))">
                 <template #default="{ open }">
                   <Button variant="ghost" size="sm" icon="more-horizontal" tooltip="More actions" />
                 </template>
@@ -214,6 +215,7 @@
                 :docname="docname"
                 :sibling-values="editingRow"
                 :parent-values="parentValues"
+                :read-only="editingReadOnly"
                 v-model="editingRow[col.fieldname]"
                 @geo-changed="onRowGeoChanged"
               />
@@ -222,7 +224,7 @@
 
           <div class="flex flex-shrink-0 justify-end gap-2 border-t px-4 py-3 dark:border-gray-800">
             <Button icon-left="x" @click="showRowEditor = false" size="sm">Close</Button>
-            <Button variant="solid" icon-left="check" @click="showRowEditor = false" size="sm">Done</Button>
+            <Button v-if="!editingReadOnly" variant="solid" icon-left="check" @click="showRowEditor = false" size="sm">Done</Button>
           </div>
         </div>
       </template>
@@ -311,6 +313,7 @@ import { useFieldFunctions } from '@/composables/useFieldFunctions'
 import { useFetchFromFields } from '@/composables/useFetchFromFields'
 import { useColumnPrefs } from '@/composables/useColumnPrefs'
 import SelectionBar from '@/components/SelectionBar.vue'
+import { userContextResource } from '@/data/userContext'
 import ColumnPicker from '@/components/ColumnPicker.vue'
 import { linkTitle, isTitledLink, ensureTitlesForRows } from '@/data/linkTitles'
 import { resolveFrappeDefault } from '@/composables/useCommonFieldDefaults'
@@ -327,6 +330,18 @@ const emit = defineEmits(['update:modelValue'])
 
 const childMetaResource = useMeta(field.options)
 const columns = useFormFields(childMetaResource)
+
+// Rows that carry an Assigned Worker (a settlement's intervention units) belong to that worker:
+// everyone else can look but not change them, and only supervisors / admins add, remove or assign.
+const workerScoped = computed(() => columns.value.some((c) => c.fieldname === 'assigned_worker'))
+const userContext = computed(() => userContextResource.data || {})
+// A read-only table (e.g. a settlement's Employees tab, filled in automatically) is only for looking.
+const readOnlyTable = computed(() => !!field.read_only)
+const canManage = computed(() => !readOnlyTable.value && (!workerScoped.value || !!userContext.value.can_manage_assigned_rows))
+const canEditRow = (row) =>
+  !readOnlyTable.value && (canManage.value || (!!userContext.value.employee && row?.assigned_worker === userContext.value.employee))
+if (!userContextResource.data && !userContextResource.loading) userContextResource.fetch()
+const editingReadOnly = computed(() => !!editingRow.value && !canEditRow(editingRow.value))
 
 // The row summary in the table only needs enough columns to identify the
 // row at a glance - matching Desk's grid, which shows a handful of
@@ -373,7 +388,7 @@ const selectedKeys = ref([])
 // key remounts the grid with a clean selection.
 const gridKey = ref(0)
 const listViewOptions = computed(() => ({
-  selectable: true,
+  selectable: canManage.value,
   showTooltip: false,
   onRowClick: (row) => openRow(rows.value.indexOf(row)),
   emptyState: { title: 'No rows yet' },
@@ -463,7 +478,7 @@ function newRowDefaults() {
   const defaults = {}
   for (const col of columns.value) {
     if (col.default === undefined || col.default === null || col.default === '') continue
-    defaults[col.fieldname] = col.fieldtype === 'Check' ? Number(col.default) : resolveFrappeDefault(col.default)
+    defaults[col.fieldname] = col.fieldtype === 'Check' ? Number(col.default) : resolveFrappeDefault(col.default, col.fieldtype)
   }
   return defaults
 }

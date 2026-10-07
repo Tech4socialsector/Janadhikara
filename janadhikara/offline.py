@@ -76,8 +76,19 @@ def _rows_for(doctype, meta, columns):
 
 
 def _user_pack():
-	"""Users as a picker needs them: id and name only."""
-	rows = frappe.get_all("User", filters={"enabled": 1, "user_type": "System User"}, fields=["name", "full_name"], limit_page_length=MAX_ROWS)
+	"""Users as a picker needs them: id and name only. A partner worker gets only the people of their own
+	partner organisation (never the whole user list); the programme team gets everyone."""
+	from janadhikara.security import user_scope
+
+	filters = {"enabled": 1, "user_type": "System User"}
+	kind, partner = user_scope()
+	if kind == "partner":
+		workers = frappe.get_all("Employee", filters={"parenttype": "Partner Details", "parent": partner}, fields=["user", "email"])
+		allowed = {frappe.session.user} | {w.user for w in workers if w.user} | {w.email for w in workers if w.email}
+		filters["name"] = ["in", list(allowed)]
+	elif kind == "none":
+		filters["name"] = frappe.session.user
+	rows = frappe.get_all("User", filters=filters, fields=["name", "full_name"], limit_page_length=MAX_ROWS)
 	return {"title_field": "full_name", "istable": 0, "columns": ["name", "full_name"], "rows": [[r.name, r.full_name] for r in rows]}
 
 

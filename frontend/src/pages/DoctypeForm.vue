@@ -187,27 +187,31 @@
         @location-resolved="onLocationResolved"
         @geo-changed="onGeoChanged"
       />
-      <FormTabSections
-        v-else
-        class="hidden sm:block"
-        :sections="activeTabSections"
-        :doctype="doctype"
-        :name="name"
-        :is-new="isNew"
-        v-model:new-doc-name="newDocName"
-        :values="values"
-        :show-name-field="activeTabIdx === 0 && isPromptNamed"
-        @address-resolved="onAddressResolved"
-        @pincode-resolved="onPincodeResolved"
-        @location-resolved="onLocationResolved"
-        @geo-changed="onGeoChanged"
-      />
-      <div v-if="tabs.length > 1 && activeTabTables.length" class="mt-6 hidden space-y-6 sm:block">
-        <template v-for="field in activeTabTables" :key="field.fieldname">
-          <template v-if="isTableVisible(field)">
-            <QuestionnairePanel v-if="field.options === 'Question Answer'" :doctype="doctype" :parent-values="values" :tab="field.questionTab" v-model="values[field.fieldname]" />
-            <ChildTable v-else :field="field" :parent-values="values" v-model="values[field.fieldname]" />
-          </template>
+      <!-- A child table renders where it was declared (after the section it follows), not at the end of the tab -->
+      <div v-else class="hidden sm:block">
+        <template v-for="(segment, si) in tabSegments(tabs[activeTabIdx])" :key="si">
+          <FormTabSections
+            v-if="segment.sections.length"
+            :sections="segment.sections"
+            :doctype="doctype"
+            :name="name"
+            :is-new="isNew"
+            v-model:new-doc-name="newDocName"
+            :values="values"
+            :show-name-field="activeTabIdx === 0 && si === 0 && isPromptNamed"
+            @address-resolved="onAddressResolved"
+            @pincode-resolved="onPincodeResolved"
+            @location-resolved="onLocationResolved"
+            @geo-changed="onGeoChanged"
+          />
+          <div v-if="segment.tables.length" class="my-6 space-y-6">
+            <template v-for="field in segment.tables" :key="field.fieldname">
+              <template v-if="isTableVisible(field)">
+                <QuestionnairePanel v-if="field.options === 'Question Answer'" :doctype="doctype" :parent-values="values" :tab="field.questionTab" v-model="values[field.fieldname]" />
+                <ChildTable v-else :field="field" :parent-values="values" v-model="values[field.fieldname]" />
+              </template>
+            </template>
+          </div>
         </template>
       </div>
 
@@ -235,27 +239,30 @@
             />
           </button>
           <div v-if="expandedMobileTabs[idx]" class="border-t px-4 py-4 dark:border-gray-800">
-            <FormTabSections
-              :sections="tab.sections"
-              :doctype="doctype"
-              :name="name"
-              :is-new="isNew"
-              v-model:new-doc-name="newDocName"
-              :values="values"
-              :show-name-field="idx === 0 && isPromptNamed"
-              @address-resolved="onAddressResolved"
-              @pincode-resolved="onPincodeResolved"
-              @location-resolved="onLocationResolved"
-        @geo-changed="onGeoChanged"
-            />
-            <div v-if="tab.tables.length" class="mt-6 space-y-6">
-              <template v-for="field in tab.tables" :key="field.fieldname">
-                <template v-if="isTableVisible(field)">
-            <QuestionnairePanel v-if="field.options === 'Question Answer'" :doctype="doctype" :parent-values="values" :tab="field.questionTab" v-model="values[field.fieldname]" />
-            <ChildTable v-else :field="field" :parent-values="values" v-model="values[field.fieldname]" />
-          </template>
-              </template>
-            </div>
+            <template v-for="(segment, si) in tabSegments(tab)" :key="si">
+              <FormTabSections
+                v-if="segment.sections.length"
+                :sections="segment.sections"
+                :doctype="doctype"
+                :name="name"
+                :is-new="isNew"
+                v-model:new-doc-name="newDocName"
+                :values="values"
+                :show-name-field="idx === 0 && si === 0 && isPromptNamed"
+                @address-resolved="onAddressResolved"
+                @pincode-resolved="onPincodeResolved"
+                @location-resolved="onLocationResolved"
+                @geo-changed="onGeoChanged"
+              />
+              <div v-if="segment.tables.length" class="my-6 space-y-6">
+                <template v-for="field in segment.tables" :key="field.fieldname">
+                  <template v-if="isTableVisible(field)">
+                    <QuestionnairePanel v-if="field.options === 'Question Answer'" :doctype="doctype" :parent-values="values" :tab="field.questionTab" v-model="values[field.fieldname]" />
+                    <ChildTable v-else :field="field" :parent-values="values" v-model="values[field.fieldname]" />
+                  </template>
+                </template>
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -402,6 +409,28 @@ watch(tabSignature, () => { activeTabIdx.value = 0 })
 // no real tabs) stay in the list below the form. A table can also carry its
 // own depends_on (e.g. "eval:doc.has_intervention_units") - checked here so
 // it only shows while its condition holds.
+// A tab's sections split around its child tables, so each table sits right after the section it follows.
+function tabSegments(tab) {
+  const sections = tab?.sections || []
+  const tables = tab?.tables || []
+  if (!tables.length) return [{ sections, tables: [] }]
+  const at = (t) => {
+    let idx = -1
+    const limit = t.afterSection ?? Infinity
+    sections.forEach((s, i) => { if (s.id <= limit) idx = i })
+    return idx
+  }
+  const groups = new Map()
+  for (const t of tables) groups.set(at(t), [...(groups.get(at(t)) || []), t])
+  const segments = []
+  let start = 0
+  for (const idx of [...groups.keys()].sort((a, b) => a - b)) {
+    segments.push({ sections: sections.slice(start, idx + 1), tables: groups.get(idx) })
+    start = idx + 1
+  }
+  if (start < sections.length) segments.push({ sections: sections.slice(start), tables: [] })
+  return segments
+}
 const activeTabTables = computed(() => tabs.value[activeTabIdx.value]?.tables || [])
 const bottomTableFields = computed(() => {
   const inTabs = new Set(tabs.value.flatMap((t) => t.tables.map((f) => f.fieldname)))
@@ -621,16 +650,17 @@ function hookCtx() {
 
 // A notice a hook can raise (e.g. the DPDP consent explanation): bullet points
 // and a confirm button. Closing it any other way runs the hook's onCancel.
-const notice = reactive({ show: false, title: '', intro: '', bullets: [], confirmLabel: 'OK', onCancel: null })
+const notice = reactive({ show: false, title: '', intro: '', bullets: [], confirmLabel: 'OK', onCancel: null, onConfirm: null })
 let noticeConfirmed = false
 function confirmNotice(options) {
-  Object.assign(notice, { title: '', intro: '', bullets: [], confirmLabel: 'OK', onCancel: null }, options)
+  Object.assign(notice, { title: '', intro: '', bullets: [], confirmLabel: 'OK', onCancel: null, onConfirm: null }, options)
   noticeConfirmed = false
   notice.show = true
 }
 function acceptNotice() {
   noticeConfirmed = true
   notice.show = false
+  notice.onConfirm?.()
 }
 watch(
   () => notice.show,
@@ -1093,7 +1123,10 @@ async function save() {
     if (isNew) {
       Object.assign(newDoc.doc, values)
       if (isPromptNamed.value) newDoc.doc.name = newDocName.value.trim()
-      const created = await newDoc.submit()
+      // A plain insert call: when the server rejects the record, its own message (e.g. "The shares of
+      // children ... add up to more than 100") comes back as the error and is shown as it is.
+      const inserted = await call('frappe.client.insert', { doc: { ...JSON.parse(JSON.stringify(newDoc.doc)), doctype } })
+      const created = inserted?.message ?? inserted
       // useCall's submit() resolves even when the server rejects the
       // request (a 4xx/5xx doesn't make the underlying fetch throw) - it
       // only ever populates the resource's own `.error`, so a MandatoryError
@@ -1102,7 +1135,6 @@ async function save() {
       // record never actually having been created. Checking `.error`
       // explicitly is the only reliable way to know the save actually
       // failed.
-      if (newDoc.error) throw newDoc.error
       toast.success('Created')
       if (isGenericRoute) {
         router.replace({
@@ -1131,10 +1163,12 @@ async function save() {
     // is on the resource's `.error`, so show that one.
     const serverError = isNew ? newDoc.error : existingDoc?.setValue?.error
     const shown = e?.messages?.length || !serverError ? e : serverError
-    saveError.value = shown
+    // frappe-ui's own cache error carries no useful text: say what it means instead
+    const unhelpful = /^Invalid doc/.test(String(shown?.message || ''))
+    saveError.value = unhelpful ? new Error('The server did not accept this record. Check the answers marked required and try again.') : shown
     // The inline message sits at the very bottom of the form, easy to miss
     // on a long one - toast it too so a failed save is never silent.
-    toast.error(String(shown?.messages?.[0] || shown?.message || 'Could not save').replace(/<[^>]+>/g, ''))
+    toast.error(String(unhelpful ? 'The server did not accept this record. Check the answers marked required and try again.' : shown?.messages?.[0] || shown?.message || 'Could not save').replace(/<[^>]+>/g, ''))
   } finally {
     saving.value = false
   }

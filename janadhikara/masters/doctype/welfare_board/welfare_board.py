@@ -4,5 +4,5 @@
 from frappe.model.document import Document
 
 
-class SettlementWorker(Document):
+class WelfareBoard(Document):
 	pass

@@ -8,11 +8,13 @@
 import { computed, ref } from 'vue'
 import { call } from 'frappe-ui'
 import { encryptJson, decryptJson } from '@/data/deviceCrypto'
+import { session } from '@/data/session'
 
 const DB_NAME = 'janadhikara-offline'
 const STORE = 'queue'
 
 export const queue = ref([]) // newest last
+let otherUsersCount = 0 // records saved here by someone else: kept, never shown or uploaded for this user
 export const pendingCount = computed(() => queue.value.length)
 export const syncState = ref({ running: false, done: 0, total: 0 })
 
@@ -52,9 +54,16 @@ export async function loadQueue() {
       request.onerror = () => reject(request.error)
     })
     const items = []
+    otherUsersCount = 0
     for (const row of stored.sort((a, b) => a.createdAt - b.createdAt)) {
       try {
         const item = await decryptJson(row.enc)
+        // A record belongs to the person who saved it: on a shared phone it is never shown to,
+        // or uploaded as, someone else.
+        if (item.user && session.user && item.user !== session.user) {
+          otherUsersCount++
+          continue
+        }
         items.push({ ...item, status: item.status === 'syncing' ? 'pending' : item.status })
       } catch {
         // unreadable (its key is gone) - nothing to show
@@ -73,7 +82,7 @@ async function put(item) {
 }
 
 async function dropDatabaseIfEmpty() {
-  if (queue.value.length) return
+  if (queue.value.length || otherUsersCount) return
   try {
     await new Promise((resolve) => {
       const request = indexedDB.deleteDatabase(DB_NAME)
@@ -96,6 +105,7 @@ export async function enqueueRecord({ doctype, name, action, doc, title }) {
     doc: clean({ ...doc, doctype }),
     title: title || name || doctype,
     createdAt: Date.now(),
+    user: session.user || null,
     status: 'pending',
     error: null,
   }

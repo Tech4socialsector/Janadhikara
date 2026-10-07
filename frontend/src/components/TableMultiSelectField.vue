@@ -2,6 +2,7 @@
   <div>
     <label class="mb-1.5 block text-sm text-gray-700 dark:text-gray-300">{{ field.label }}</label>
     <MultiSelect
+      class="w-full [&_button]:w-full"
       :model-value="selectedValues"
       :options="options"
       :placeholder="`Select ${targetDoctype}...`"

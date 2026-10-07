@@ -1,89 +1,988 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:HH-{#####}",
+ "autoname": "HH.####",
  "creation": "2026-10-01 10:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "tab_details",
-  "section_break_household",
+  "tab_household_profile",
+  "section_general",
+  "house_id",
+  "house_no",
+  "street_name",
+  "column_break_general",
+  "household_status",
+  "families_in_house",
+  "section_household_details",
   "hhid",
+  "column_break_household_details",
+  "availability_for_survey",
+  "section_respondent_details",
   "respondent_name",
-  "household_head_name",
   "contact_number",
-  "respondent_relationship",
-  "survey",
-  "column_break_household",
-  "assigned_worker",
-  "settlement",
-  "settlement_intervention_unit",
-  "partner_organization",
-  "section_break_location",
+  "household_head_name",
+  "head_sex",
+  "head_age",
+  "column_break_respondent_details",
+  "languages_spoken",
+  "q15_other_please_specify",
+  "caste",
+  "q16_other_please_specify",
+  "section_house_details",
+  "own_house",
+  "nature_of_ownership",
+  "ownership_other_specify",
+  "ownership_duration",
+  "has_ownership_document",
+  "has_physical_copy",
+  "ownership_documents",
+  "ownership_remarks",
+  "tenant_duration",
+  "floor_number",
+  "member_count",
+  "house_structure",
+  "permitted_to_upgrade",
+  "own_house_elsewhere",
+  "elsewhere_land_type",
+  "column_break_house_details",
+  "allotted_govt_housing",
+  "allotted_where",
+  "allotted_state",
+  "housing_support",
+  "housing_support_details",
+  "slum_redevelopment",
+  "redevelopment_year",
+  "redevelopment_changes",
+  "services_received",
+  "knows_csc",
+  "accesses_csc",
+  "ngo_projects",
+  "ngo_intervention_areas",
+  "q39_1_other_please_specify",
+  "section_basic_amenities",
+  "electricity_supply",
+  "meter_type",
+  "alternate_light_sources",
+  "q40_2_other_please_specify",
+  "free_electricity_connection",
+  "free_led_bulbs",
+  "cooking_fuels",
+  "registered_gas_connection",
+  "cylinder_price_registered",
+  "cylinder_price_unregistered",
+  "free_lpg_connection",
+  "column_break_basic_amenities",
+  "lpg_subsidy",
+  "csc_access",
+  "clean_cooking_initiative",
+  "clean_cooking_support",
+  "q45_1_other_please_specify",
+  "running_water",
+  "drinking_water_source",
+  "drainage_facility",
+  "toilet_type",
+  "public_toilet_charges",
+  "amenities_observations",
+  "section_health",
+  "ayushman_bharat",
+  "primary_health_service",
+  "q53_other_please_specify",
+  "knows_health_post",
+  "knows_uhnd",
+  "terminally_ill_member",
+  "terminal_illness_nature",
+  "pregnant_woman",
+  "column_break_health",
+  "person_with_disability",
+  "new_child_birth",
+  "birth_certificate",
+  "death_in_family",
+  "death_certificate",
+  "health_observations",
+  "children_observations",
+  "section_location_address",
+  "geo_location",
   "address",
-  "landmark",
+  "column_break_location_address",
   "latitude",
   "longitude",
-  "record_date",
-  "column_break_location",
-  "geo_location",
-  "section_break_status",
-  "validation_status",
-  "validation_comments",
-  "column_break_status",
+  "section_general_remarks",
+  "general_remarks",
+  "column_break_general_remarks",
+  "profiles_match_members",
+  "section_record_status",
   "status",
-  "tab_house_details",
-  "house_ownership",
-  "house_structure",
-  "floor_number",
-  "column_break_house",
-  "member_count",
-  "stay_years",
-  "stay_months",
-  "section_break_utilities",
-  "electricity_supply",
-  "column_break_utilities",
-  "cooking_fuels",
-  "tab_questions",
-  "question_answers"
+  "column_break_record_status",
+  "validation_status",
+  "section_consent",
+  "consent_given",
+  "consent_mode",
+  "consent_date",
+  "column_break_consent",
+  "consent_taken_by",
+  "consent_withdrawn_on",
+  "section_assignment",
+  "settlement",
+  "partner_organization",
+  "column_break_assignment",
+  "assigned_worker",
+  "record_date",
+  "section_additional_details",
+  "validation_comments"
  ],
  "fields": [
   {
-   "fieldname": "tab_details",
+   "fieldname": "tab_household_profile",
    "fieldtype": "Tab Break",
-   "label": "Details"
+   "label": "Household Profile"
   },
   {
-   "fieldname": "section_break_household",
+   "fieldname": "section_general",
+   "fieldtype": "Section Break",
+   "label": "General"
+  },
+  {
+   "depends_on": "eval:doc.house_id",
+   "description": "Generated automatically when the record is created.",
+   "fieldname": "house_id",
+   "fieldtype": "Data",
+   "label": "1. House ID",
+   "length": 64,
+   "read_only": 1
+  },
+  {
+   "description": "Enter the official house number available.\nIf no numbers are available please mention Not Applicable.",
+   "fieldname": "house_no",
+   "fieldtype": "Data",
+   "label": "2. House No.",
+   "length": 100
+  },
+  {
+   "fieldname": "street_name",
+   "fieldtype": "Data",
+   "label": "3. Street Name & Number",
+   "length": 100
+  },
+  {
+   "fieldname": "column_break_general",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "If Occupied but no one is available for interview today OR No, house is vacant, end this household interview here.",
+   "fieldname": "household_status",
+   "fieldtype": "Select",
+   "label": "4. Household status",
+   "length": 64,
+   "options": "\nOccupied\nVacant House\nDoor closed\nMoved out",
+   "reqd": 1
+  },
+  {
+   "description": "If more than one family lives in the same house, record details separately for each family. Consider families with separate kitchens as separate families.",
+   "fieldname": "families_in_house",
+   "fieldtype": "Select",
+   "label": "5. How many families reside in this house?",
+   "length": 64,
+   "options": "\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10"
+  },
+  {
+   "description": "This section is for each Household.",
+   "fieldname": "section_household_details",
    "fieldtype": "Section Break",
    "label": "Household Details"
   },
   {
    "depends_on": "eval:doc.hhid",
-   "description": "Generated automatically when the record is first saved.",
+   "description": "Generated automatically when the record is created. Separate from the House ID.",
    "fieldname": "hhid",
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Household ID",
+   "label": "6. Household ID",
    "read_only": 1,
    "unique": 1
   },
   {
-   "fieldname": "survey",
-   "fieldtype": "Link",
-   "in_standard_filter": 1,
-   "label": "Survey",
-   "options": "Survey",
-   "reqd": 1
+   "fieldname": "column_break_household_details",
+   "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:doc.household_status==\"Occupied\"",
+   "description": "If \"Going Ahead\" is selected, the rest of the questions other than the Location & Address and General sections are displayed.",
+   "fieldname": "availability_for_survey",
+   "fieldtype": "Select",
+   "label": "7. Availability for survey",
+   "length": 64,
+   "mandatory_depends_on": "eval:doc.household_status==\"Occupied\"",
+   "options": "\nGoing Ahead\nRefused to respond\nUnsafe to continue survey\nRevisit later"
+  },
+  {
+   "depends_on": "eval:doc.household_status==\"Occupied\" && doc.availability_for_survey==\"Going Ahead\" && Number(doc.consent_given)===1",
+   "fieldname": "section_respondent_details",
+   "fieldtype": "Section Break",
+   "label": "Respondent Details"
+  },
+  {
+   "description": "Always choose the respondent who is more than 18 years of age",
+   "fieldname": "respondent_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "8. Respondent Name",
+   "mandatory_depends_on": "eval:doc.household_status==\"Occupied\" && doc.availability_for_survey==\"Going Ahead\" && Number(doc.consent_given)===1"
+  },
+  {
+   "description": "Numerical; Not more or less than 10 digits",
+   "fieldname": "contact_number",
+   "fieldtype": "Data",
+   "label": "9. Phone Number of the respondent",
+   "options": "Phone"
+  },
+  {
+   "description": "Write the Full name. If the respondent is the same as the Head of the family, this comes automatically.",
+   "fieldname": "household_head_name",
+   "fieldtype": "Data",
+   "label": "10. Name of the Head of the Family",
+   "length": 100
+  },
+  {
+   "fieldname": "head_sex",
+   "fieldtype": "Select",
+   "label": "11. What is the sex of the Head of the Household?",
+   "length": 64,
+   "options": "\nMale\nFemale\nOther"
+  },
+  {
+   "description": "Numerical",
+   "fieldname": "head_age",
+   "fieldtype": "Int",
+   "label": "12. Age of the Family Head"
+  },
+  {
+   "fieldname": "column_break_respondent_details",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Pick all that apply.",
+   "fieldname": "languages_spoken",
+   "fieldtype": "Small Text",
+   "label": "13. Language spoken in the family",
+   "options": "Assamese\nBodo\nRabha\nKarbi\nGaro\nHindi\nDeswali\nBhojpuri\nSadri\nBengali\nRajbanshi\nGoalparia\nPunjabi\nNepali\nSylheti\nOther, Specify"
+  },
+  {
+   "depends_on": "eval:(doc.languages_spoken||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other, Specify\")",
+   "fieldname": "q15_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q13)",
+   "length": 100,
+   "mandatory_depends_on": "eval:(doc.languages_spoken||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other, Specify\")"
+  },
+  {
+   "fieldname": "caste",
+   "fieldtype": "Select",
+   "label": "14. Caste the family belongs to",
+   "length": 64,
+   "options": "\nGeneral\nSC\nST\nOBC\nNot Applicable\nOthers, Specify"
+  },
+  {
+   "depends_on": "eval:doc.caste==\"Others, Specify\"",
+   "fieldname": "q16_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q14)",
+   "length": 100,
+   "mandatory_depends_on": "eval:doc.caste==\"Others, Specify\""
+  },
+  {
+   "depends_on": "eval:doc.household_status==\"Occupied\" && doc.availability_for_survey==\"Going Ahead\" && Number(doc.consent_given)===1",
+   "fieldname": "section_house_details",
+   "fieldtype": "Section Break",
+   "label": "House Details"
+  },
+  {
+   "description": "If Yes, questions 16 to 22 are shown. If No, question 23 is shown.",
+   "fieldname": "own_house",
+   "fieldtype": "Select",
+   "label": "15. Is it your own house?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.own_house==\"Yes\"",
+   "description": "Originally Alloted - applicable in case of houses alloted by govt.",
+   "fieldname": "nature_of_ownership",
+   "fieldtype": "Select",
+   "label": "16. Nature of ownership",
+   "length": 64,
+   "options": "\nOwned by the HH\nTenant\nOriginally allotted by Govt (Government Housing Schemes)\nAllotted to someone else but bought from them\nAllotted to someone else but rented from them\nEncroached\nInformal tenancy\nLeasehold arrangements\nCommunity Land\nShared occupancy\nOthers, specify"
+  },
+  {
+   "depends_on": "eval:doc.nature_of_ownership==\"Others, specify\"",
+   "fieldname": "ownership_other_specify",
+   "fieldtype": "Data",
+   "label": "17. Nature of ownership, if Others - Specify",
+   "length": 100,
+   "mandatory_depends_on": "eval:doc.nature_of_ownership==\"Others, specify\""
+  },
+  {
+   "depends_on": "eval:doc.own_house==\"Yes\"",
+   "fieldname": "ownership_duration",
+   "fieldtype": "Select",
+   "label": "18. Duration of ownership",
+   "length": 64,
+   "options": "\n0-1 Years\n1-3 years\n3-5 years\n5 years and above"
+  },
+  {
+   "depends_on": "eval:doc.own_house==\"Yes\"",
+   "fieldname": "has_ownership_document",
+   "fieldtype": "Select",
+   "label": "19. Do you have any house ownership document?",
+   "length": 64,
+   "options": "\nYes\nNo\nUnable to capture/Unsure"
+  },
+  {
+   "depends_on": "eval:doc.own_house==\"Yes\" && doc.has_ownership_document==\"Yes\"",
+   "fieldname": "has_physical_copy",
+   "fieldtype": "Select",
+   "label": "20. Do you have any physical copy of the land document you hold?",
+   "length": 64,
+   "options": "\nYes\nNo\nUnable to capture/Unsure"
+  },
+  {
+   "depends_on": "eval:doc.own_house==\"Yes\" && doc.has_physical_copy==\"Yes\"",
+   "description": "Pick all that apply.",
+   "fieldname": "ownership_documents",
+   "fieldtype": "Small Text",
+   "label": "21. Which house ownership documents do you have?",
+   "options": "Patta\nSale Deed\nToken"
+  },
+  {
+   "depends_on": "eval:doc.own_house==\"Yes\"",
+   "fieldname": "ownership_remarks",
+   "fieldtype": "Small Text",
+   "label": "22. Remarks on ownership or documents"
+  },
+  {
+   "depends_on": "eval:doc.own_house==\"No\"||doc.nature_of_ownership==\"Tenant\"",
+   "description": "Range can be given",
+   "fieldname": "tenant_duration",
+   "fieldtype": "Select",
+   "label": "23. If Tenant, duration of residence as tenant",
+   "length": 64,
+   "options": "\n0-1 Years\n1-3 years\n3-5 years\n5 years and above"
+  },
+  {
+   "description": "For the ground floor - select \"0\".\nIn case it is a multi-storied house a number can be selected, otherwise Not Applicable.",
+   "fieldname": "floor_number",
+   "fieldtype": "Select",
+   "label": "24. For multi-storied structure, note the floor number",
+   "length": 64,
+   "options": "\n0\n1\n2\n3\n4\n5\nNot Applicable"
+  },
+  {
+   "description": "This includes children also.\nDon't include those who stay here for less than 6 months in the Individual survey.",
+   "fieldname": "member_count",
+   "fieldtype": "Int",
+   "label": "25. No. of members staying in the family"
+  },
+  {
+   "description": "Observation",
+   "fieldname": "house_structure",
+   "fieldtype": "Select",
+   "label": "26. Type/structure of the house",
+   "length": 124,
+   "options": "\nTemporary shacks made with tarpaulin and bamboo\nTin-roof houses with bamboo/mud walls\nTin-roof houses with half brick wall and half bamboo/mud walls\nStilt Dwellings with bamboo posts\nStilt Dwellings with cement posts\nHill-Slope Terraced Structures\nFull Concrete Houses\nTenement constructed by GMC/Govt. Authorities\nTenement residing in tin-roof house with bamboo/mud/concrete walls and temporary shelters inside GMC/Government Land"
+  },
+  {
+   "fieldname": "permitted_to_upgrade",
+   "fieldtype": "Select",
+   "label": "27. Are residents permitted by local authorities to upgrade temporary materials (like tin/tarpaulin/bamboo) into permanent structures (Pucca, like bricks and cement)?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "own_house_elsewhere",
+   "fieldtype": "Select",
+   "label": "28. Do you own house/s any where else",
+   "length": 64,
+   "options": "\nYes\nNo\nUnable to capture/Unsure"
+  },
+  {
+   "depends_on": "eval:doc.own_house_elsewhere==\"Yes\"",
+   "fieldname": "elsewhere_land_type",
+   "fieldtype": "Select",
+   "label": "29. If yes, is it govt land or private land?",
+   "length": 64,
+   "options": "\nGovt\nPvt"
+  },
+  {
+   "fieldname": "column_break_house_details",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "allotted_govt_housing",
+   "fieldtype": "Select",
+   "label": "30. Have you ever been allotted any govt housing?",
+   "length": 64,
+   "options": "\nYes\nNo\nUnsure"
+  },
+  {
+   "depends_on": "eval:doc.allotted_govt_housing==\"Yes\"",
+   "description": "Instruction - Write District & State Name",
+   "fieldname": "allotted_where",
+   "fieldtype": "Link",
+   "label": "31. Where?",
+   "options": "Assam District"
+  },
+  {
+   "depends_on": "eval:doc.allotted_govt_housing==\"Yes\"",
+   "description": "Choose the state",
+   "fieldname": "allotted_state",
+   "fieldtype": "Data",
+   "label": "32. In case the allotted house is outside Assam, please select the state",
+   "options": "india_state"
+  },
+  {
+   "description": "Pradhan Mantri Awas Yojana - Urban (PMAY-U)",
+   "fieldname": "housing_support",
+   "fieldtype": "Select",
+   "label": "33. Have you received housing support such as subsidised houses, home loan subsidies, or help to build your own house?",
+   "length": 64,
+   "options": "\nYes\nNo\nUnsure"
+  },
+  {
+   "depends_on": "eval:doc.housing_support==\"Yes\"",
+   "fieldname": "housing_support_details",
+   "fieldtype": "Data",
+   "label": "33.1. In which year and how much?",
+   "length": 100
+  },
+  {
+   "description": "In-Situ Slum Redevelopment (under PMAY-U)",
+   "fieldname": "slum_redevelopment",
+   "fieldtype": "Select",
+   "label": "34. Has there been any activity related to the redevelopment of slum pockets on existing land with tenure security and new houses?",
+   "length": 64,
+   "options": "\nYes\nNo\nUnsure"
+  },
+  {
+   "depends_on": "eval:doc.slum_redevelopment==\"Yes\"",
+   "fieldname": "redevelopment_year",
+   "fieldtype": "Data",
+   "label": "34.1. In which year?",
+   "length": 100
+  },
+  {
+   "depends_on": "eval:doc.slum_redevelopment==\"Yes\"",
+   "fieldname": "redevelopment_changes",
+   "fieldtype": "Small Text",
+   "label": "34.2. Can you explain the changes post the redevelopment program?"
+  },
+  {
+   "description": "Pick all that apply.",
+   "fieldname": "services_received",
+   "fieldtype": "Small Text",
+   "label": "35. Have you received any of the services?",
+   "options": "Drinking Water Supply\nSanitation\nDrainage\nStreet lighting\nSolid waste management"
+  },
+  {
+   "fieldname": "knows_csc",
+   "fieldtype": "Select",
+   "label": "36. Do you know of the Common Service Centres (CSCs) near your settlement?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.knows_csc==\"Yes\"",
+   "description": "Application assistance for schemes, grievance filing, documentation support.",
+   "fieldname": "accesses_csc",
+   "fieldtype": "Select",
+   "label": "36.1. Do you access Common Service Centres (CSCs) and ward offices for basic civic services?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "ngo_projects",
+   "fieldtype": "Select",
+   "label": "37. Is there any on-going NGO / donor-led slum upgrading projects within the settlement?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.ngo_projects==\"Yes\"",
+   "description": "Pick all that apply.",
+   "fieldname": "ngo_intervention_areas",
+   "fieldtype": "Small Text",
+   "label": "37.1. Which specific areas of intervention?",
+   "options": "Community toilets\nSolarizations\nEducation based initiatives\nHealth initiatives\nAccessible Water points\nIncremental house improvements\nLegal aid\nOthers, Specify"
+  },
+  {
+   "depends_on": "eval:(doc.ngo_intervention_areas||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, Specify\")",
+   "fieldname": "q39_1_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q37.1)",
+   "length": 100,
+   "mandatory_depends_on": "eval:(doc.ngo_intervention_areas||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, Specify\")"
+  },
+  {
+   "depends_on": "eval:doc.household_status==\"Occupied\" && doc.availability_for_survey==\"Going Ahead\" && Number(doc.consent_given)===1",
+   "fieldname": "section_basic_amenities",
+   "fieldtype": "Section Break",
+   "label": "Basic Amenities"
+  },
+  {
+   "description": "If No, 38.1 and 38.2 are shown. If Yes, 38.3 and 38.4 are shown.",
+   "fieldname": "electricity_supply",
+   "fieldtype": "Select",
+   "label": "38. Does the house have electricity supply?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.electricity_supply==\"No\"",
+   "fieldname": "meter_type",
+   "fieldtype": "Data",
+   "label": "38.1. Are the electricity meters registered as individual household lines, or are they informal/shared connections?",
+   "length": 100
+  },
+  {
+   "depends_on": "eval:doc.electricity_supply==\"No\"",
+   "description": "Pick all that apply.",
+   "fieldname": "alternate_light_sources",
+   "fieldtype": "Small Text",
+   "label": "38.2. What is the alternate source of light in your house?",
+   "options": "Earthen lamps\nKerosene lamps\nCandles\nBiomass/wood fires\nBattery-powered torches\nSolar lanterns\nOthers, Specify"
+  },
+  {
+   "depends_on": "eval:doc.electricity_supply==\"No\" && (doc.alternate_light_sources||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, Specify\")",
+   "fieldname": "q40_2_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q38.2)",
+   "length": 100,
+   "mandatory_depends_on": "eval:doc.electricity_supply==\"No\" && (doc.alternate_light_sources||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, Specify\")"
+  },
+  {
+   "depends_on": "eval:doc.electricity_supply==\"Yes\"",
+   "description": "Pradhan Mantri Sahaj Bijli Har Ghar Yojana (SAUBHAGYA)",
+   "fieldname": "free_electricity_connection",
+   "fieldtype": "Select",
+   "label": "38.3. Have you availed free-of-cost electricity connections?",
+   "length": 64,
+   "options": "\nYes\nNo\nUnsure"
+  },
+  {
+   "depends_on": "eval:doc.electricity_supply==\"Yes\"",
+   "description": "Mukhyamantrir Sanchay Pohar Asoni (UJALA Scheme)",
+   "fieldname": "free_led_bulbs",
+   "fieldtype": "Select",
+   "label": "38.4. Have you availed free LED bulbs to help reduce electricity costs?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "cooking_fuels",
+   "fieldtype": "Table MultiSelect",
+   "label": "39. Fuels used for cooking",
+   "options": "Household Cooking Fuel"
+  },
+  {
+   "depends_on": "eval:(doc.cooking_fuels||[]).some(r=>r.fuel==\"Gas\")",
+   "fieldname": "registered_gas_connection",
+   "fieldtype": "Select",
+   "label": "39.1. Do you have a registered gas connection?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.registered_gas_connection==\"Yes\"",
+   "fieldname": "cylinder_price_registered",
+   "fieldtype": "Currency",
+   "label": "39.1.1. What is the price of a cylinder (registered connection)?"
+  },
+  {
+   "depends_on": "eval:doc.registered_gas_connection==\"No\"",
+   "fieldname": "cylinder_price_unregistered",
+   "fieldtype": "Currency",
+   "label": "39.1.2. What is the price of a cylinder (unregistered connection/black)?"
+  },
+  {
+   "description": "Pradhan Mantri Ujjwala Yojana (PMUY)",
+   "fieldname": "free_lpg_connection",
+   "fieldtype": "Select",
+   "label": "40. Have you availed free LPG connection along with a stove and first free refill?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "column_break_basic_amenities",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Direct Benefit Transfer for LPG (DBTL)",
+   "fieldname": "lpg_subsidy",
+   "fieldtype": "Select",
+   "label": "41. Do you receive subsidy (money) directly transferred to your Aadhaar-linked bank account after purchase of LPG cylinders?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "csc_access",
+   "fieldtype": "Select",
+   "label": "42. Do you have access to the Common Service Centres (CSCs) for application support, document upload and grievance filing?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "clean_cooking_initiative",
+   "fieldtype": "Select",
+   "label": "43. Has there been any initiative by any NGO/CSR to promote clean cooking initiatives?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.clean_cooking_initiative==\"Yes\"",
+   "description": "Pick all that apply.",
+   "fieldname": "clean_cooking_support",
+   "fieldtype": "Small Text",
+   "label": "43.1. What support did you receive under the initiatives?",
+   "options": "Distribution of improved cookstoves\nSolar cookers\nSubsidised LPG refills\nOthers, Specify"
+  },
+  {
+   "depends_on": "eval:doc.clean_cooking_initiative==\"Yes\" && (doc.clean_cooking_support||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, Specify\")",
+   "fieldname": "q45_1_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q43.1)",
+   "length": 100,
+   "mandatory_depends_on": "eval:doc.clean_cooking_initiative==\"Yes\" && (doc.clean_cooking_support||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, Specify\")"
+  },
+  {
+   "fieldname": "running_water",
+   "fieldtype": "Select",
+   "label": "44. Do you have running water facility within home?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.running_water==\"No\"",
+   "fieldname": "drinking_water_source",
+   "fieldtype": "Select",
+   "label": "45. If No, what is the source for drinking water?",
+   "length": 64,
+   "options": "\nShared handpump within 100mt distance\nShared handpump between 100mt to 500mt distance\nShared handpump between 500mt to 1000mt distance\nShared handpump beyond 1000mt distance\nShared Tap water supply within 100mt distance\nShared Tap water supply between 100mt to 500mt distance\nShared Tap water supply between 500mt to 1000mt distance\nShared Tap water supply beyond 1000mt distance\nCommunity Well\nRiver or Stream"
+  },
+  {
+   "fieldname": "drainage_facility",
+   "fieldtype": "Select",
+   "label": "46. Do you have drainage facility in house?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "description": "If Public Toilet is selected, the next question is shown.",
+   "fieldname": "toilet_type",
+   "fieldtype": "Select",
+   "label": "47. What type of toilet facility used by your family members?",
+   "length": 64,
+   "options": "\nAttached Private toilet at home\nShared Toilet by 0-10 families\nShared Toilet by 10-20 families\nShared Toilet by more than 20 families\nPublic Toilet\nOpen defecation"
+  },
+  {
+   "depends_on": "eval:doc.toilet_type==\"Public Toilet\"",
+   "fieldname": "public_toilet_charges",
+   "fieldtype": "Data",
+   "label": "48. In case of Public Toilet, is there any charges applicable to use the public toilets",
+   "length": 100
+  },
+  {
+   "description": "Write your observations regarding basic amenities at the HH level. If there are any charges HH is paying you may write about the amount charged here.",
+   "fieldname": "amenities_observations",
+   "fieldtype": "Small Text",
+   "label": "49. Observations on Basic Amenities status"
+  },
+  {
+   "depends_on": "eval:doc.household_status==\"Occupied\" && doc.availability_for_survey==\"Going Ahead\" && Number(doc.consent_given)===1",
+   "fieldname": "section_health",
+   "fieldtype": "Section Break",
+   "label": "Health"
+  },
+  {
+   "fieldname": "ayushman_bharat",
+   "fieldtype": "Select",
+   "label": "50. Are the family members registered under Ayushman Bharat?",
+   "length": 64,
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined\nNot able to capture/ unsure"
+  },
+  {
+   "description": "ORW to describe this to the family what you want to know from this health. Or they can use the recall process.\nDo you generally go to govt facilities to access the health services?\nDo you generally go to private or quack for health services?",
+   "fieldname": "primary_health_service",
+   "fieldtype": "Select",
+   "label": "51. Where do you generally go to access primary health services",
+   "length": 64,
+   "options": "\nPvt\nGovt\nOthers, specify"
+  },
+  {
+   "depends_on": "eval:doc.primary_health_service==\"Others, specify\"",
+   "fieldname": "q53_other_please_specify",
+   "fieldtype": "Data",
+   "label": "Please specify (Q51)",
+   "length": 100,
+   "mandatory_depends_on": "eval:doc.primary_health_service==\"Others, specify\""
+  },
+  {
+   "description": "Need to explain to get the right response",
+   "fieldname": "knows_health_post",
+   "fieldtype": "Select",
+   "label": "52. Do you know about nearest Urban Health Post/Health & Wellness Centre",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "knows_uhnd",
+   "fieldtype": "Select",
+   "label": "53. Do you know about UHND sessions for your settlement",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "terminally_ill_member",
+   "fieldtype": "Select",
+   "label": "54. Are there any terminally ill or bed ridden members in the family?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.terminally_ill_member==\"Yes\"",
+   "fieldname": "terminal_illness_nature",
+   "fieldtype": "Data",
+   "label": "55. Nature of terminal illness",
+   "length": 100
+  },
+  {
+   "description": "If Yes, questions 61 to 70 are shown in the Individual Profile.",
+   "fieldname": "pregnant_woman",
+   "fieldtype": "Select",
+   "label": "56. Are there any pregnant women in the family?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "column_break_health",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "The details about Pension and UDID will come under Individual Profile & Entitlements section.\nIf Yes, questions 105 to 106 are shown in the Individual Profile.",
+   "fieldname": "person_with_disability",
+   "fieldtype": "Select",
+   "label": "57. Is there any person with disability in the HH ?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "new_child_birth",
+   "fieldtype": "Select",
+   "label": "58. Has there been a new child-birth within the family within the last 45 days?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "birth_certificate",
+   "fieldtype": "Select",
+   "label": "59. Have you received the Birth Certificate",
+   "length": 64,
+   "options": "\nYes\nNo\nIn process"
+  },
+  {
+   "fieldname": "death_in_family",
+   "fieldtype": "Select",
+   "label": "60. Is there any person who died within last 45 days in your family?",
+   "length": 64,
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.death_in_family==\"Yes\"",
+   "fieldname": "death_certificate",
+   "fieldtype": "Select",
+   "label": "60.1. Have you received the death certificate",
+   "length": 64,
+   "options": "\nYes\nNo\nIn process"
+  },
+  {
+   "description": "Overall observation on Health at the Household level",
+   "fieldname": "health_observations",
+   "fieldtype": "Small Text",
+   "label": "61. Observations on Health"
+  },
+  {
+   "description": "Overall observation based on some leading questions e.g. childcare is adequate/compromised, etc.",
+   "fieldname": "children_observations",
+   "fieldtype": "Small Text",
+   "label": "62. Observation on Children"
+  },
+  {
+   "description": "Please save the record before you start capturing the location and address.",
+   "fieldname": "section_location_address",
+   "fieldtype": "Section Break",
+   "label": "Location & Address"
+  },
+  {
+   "description": "Pick the household's point on the map.",
+   "fieldname": "geo_location",
+   "fieldtype": "Geolocation",
+   "label": "63. Capture the Location"
+  },
+  {
+   "description": "To capture a simple address with a landmark for revisiting the same Household.\nORW need to write about the landmark.",
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "64. Address & Landmark"
+  },
+  {
+   "fieldname": "column_break_location_address",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Filled in from the location captured on the map; can also be typed.",
+   "fieldname": "latitude",
+   "fieldtype": "Float",
+   "label": "64.1. Latitude",
+   "precision": "9",
+   "read_only": 1
+  },
+  {
+   "description": "Filled in from the location captured on the map; can also be typed.",
+   "fieldname": "longitude",
+   "fieldtype": "Float",
+   "label": "64.2. Longitude",
+   "precision": "9",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_general_remarks",
+   "fieldtype": "Section Break",
+   "label": "General"
+  },
+  {
+   "description": "General remarks about the household level observations and findings",
+   "fieldname": "general_remarks",
+   "fieldtype": "Small Text",
+   "label": "65. General Remarks"
+  },
+  {
+   "fieldname": "column_break_general_remarks",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "description": "Ticked automatically when the number of Individual Profiles equals the members staying in the household.",
+   "fieldname": "profiles_match_members",
+   "fieldtype": "Check",
+   "label": "66. Number of Individual profiles captured are equal to the number of members in the household mentioned above",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_record_status",
+   "fieldtype": "Section Break",
+   "label": "Record Status"
+  },
+  {
+   "default": "Partially Completed",
+   "description": "Community Organisers to state",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "67. Documentation Status",
+   "length": 64,
+   "options": "Completed\nPartially Completed",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_record_status",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Area Coordinator to validate",
+   "fieldname": "validation_status",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "68. Validation Status",
+   "options": "Validation Status",
+   "search_index": 1
+  },
+  {
+   "description": "Recorded when you choose \"Going Ahead\" in Q7.",
+   "fieldname": "section_consent",
+   "fieldtype": "Section Break",
+   "label": "Consent (DPDP)"
+  },
+  {
+   "default": "0",
+   "fieldname": "consent_given",
+   "fieldtype": "Check",
+   "label": "Consent of the respondent taken",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:Number(doc.consent_given)===1",
+   "fieldname": "consent_mode",
+   "fieldtype": "Select",
+   "label": "Consent Mode",
+   "length": 64,
+   "options": "\nWritten\nVerbal (recorded)\nDigital"
+  },
+  {
+   "depends_on": "eval:Number(doc.consent_given)===1",
+   "fieldname": "consent_date",
+   "fieldtype": "Date",
+   "label": "Consent Date",
+   "read_only": 1,
+   "description": "Taken automatically when consent is recorded."
+  },
+  {
+   "fieldname": "column_break_consent",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.consent_taken_by",
+   "fieldname": "consent_taken_by",
+   "fieldtype": "Data",
+   "label": "Consent Taken By",
+   "length": 64,
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:Number(doc.consent_given)===1",
+   "fieldname": "consent_withdrawn_on",
+   "fieldtype": "Date",
+   "label": "Consent Withdrawn On"
+  },
+  {
+   "fieldname": "section_assignment",
+   "fieldtype": "Section Break",
+   "label": "Assignment"
+  },
+  {
+   "fieldname": "settlement",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Settlement",
+   "options": "Settlement",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "description": "Filled in from the settlement.",
    "fieldname": "partner_organization",
    "fieldtype": "Link",
    "in_standard_filter": 1,
    "label": "Partner Organization",
    "options": "Partner Details",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_assignment",
+   "fieldtype": "Column Break"
   },
   {
    "description": "The worker collecting this household's data. Filled in from your login; choose another from the partner's workers if needed.",
@@ -94,111 +993,8 @@
    "label": "Data Collector",
    "link_filters": "[[\"Employee\", \"parent\", \"=\", \"eval:doc.partner_organization\"]]",
    "options": "Employee",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_household",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "settlement",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Settlement",
-   "options": "Settlement",
-   "reqd": 1
-  },
-  {
-   "description": "Only if the settlement is divided into intervention units.",
-   "fieldname": "settlement_intervention_unit",
-   "fieldtype": "Link",
-   "label": "Settlement Intervention Unit",
-   "link_filters": "[[\"Settlement Intervention Unit\", \"parent\", \"=\", \"eval:doc.settlement\"]]",
-   "options": "Settlement Intervention Unit"
-  },
-  {
-   "fieldname": "respondent_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Respondent Name",
-   "reqd": 1
-  },
-  {
-   "fieldname": "respondent_relationship",
-   "fieldtype": "Link",
-   "label": "Respondent Relationship",
-   "options": "Relationship Type"
-  },
-  {
-   "fieldname": "section_break_location",
-   "fieldtype": "Section Break",
-   "label": "Household Location"
-  },
-  {
-   "fieldname": "address",
-   "fieldtype": "Small Text",
-   "label": "Address"
-  },
-  {
-   "fieldname": "landmark",
-   "fieldtype": "Data",
-   "label": "Landmark"
-  },
-  {
-   "fieldname": "latitude",
-   "fieldtype": "Float",
-   "label": "Latitude",
-   "precision": "9"
-  },
-  {
-   "fieldname": "longitude",
-   "fieldtype": "Float",
-   "label": "Longitude",
-   "precision": "9"
-  },
-  {
-   "fieldname": "column_break_location",
-   "fieldtype": "Column Break"
-  },
-  {
-   "description": "Pick the household's point on the map.",
-   "fieldname": "geo_location",
-   "fieldtype": "Geolocation",
-   "label": "Geo Location"
-  },
-  {
-   "fieldname": "section_break_status",
-   "fieldtype": "Section Break",
-   "label": "Household Status"
-  },
-  {
-   "description": "Only the statuses your role may use are listed.",
-   "fieldname": "validation_status",
-   "fieldtype": "Link",
-   "in_standard_filter": 1,
-   "label": "Validation Status",
-   "options": "Validation Status"
-  },
-  {
-   "fieldname": "column_break_status",
-   "fieldtype": "Column Break"
-  },
-  {
-   "default": "Draft",
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Status",
-   "options": "Draft\nIn Progress\nCompleted\nRevision Needed\nValidated",
-   "reqd": 1
-  },
-  {
-   "fieldname": "validation_comments",
-   "fieldtype": "Small Text",
-   "label": "Validation Comments"
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "default": "Today",
@@ -208,102 +1004,18 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Date",
-   "reqd": 1
+   "reqd": 1,
+   "search_index": 1
   },
   {
-   "fieldname": "household_head_name",
-   "fieldtype": "Data",
-   "label": "Household Head Name",
-   "options": "Phone",
-   "reqd": 1
-  },
-  {
-   "fieldname": "tab_house_details",
-   "fieldtype": "Tab Break",
-   "label": "House Details"
-  },
-  {
-   "fieldname": "house_ownership",
-   "fieldtype": "Select",
-   "in_standard_filter": 1,
-   "label": "Nature of house ownership",
-   "options": "\nOwn House\nRented"
-  },
-  {
-   "fieldname": "house_structure",
-   "fieldtype": "Select",
-   "label": "Type / structure of the house",
-   "options": "\nHut\nKutcha\nSemi-pucca\nPucca\nMulti-storied\nOther"
-  },
-  {
-   "depends_on": "eval:doc.house_structure==\"Multi-storied\"",
-   "description": "For a multi-storied house, the floor the household lives on.",
-   "fieldname": "floor_number",
-   "fieldtype": "Int",
-   "label": "Floor number",
-   "non_negative": 1
-  },
-  {
-   "fieldname": "column_break_house",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "member_count",
-   "fieldtype": "Int",
-   "label": "No. of members staying here",
-   "non_negative": 1
-  },
-  {
-   "fieldname": "stay_years",
-   "fieldtype": "Int",
-   "label": "How long in this house - years",
-   "non_negative": 1
-  },
-  {
-   "description": "0 to 11.",
-   "fieldname": "stay_months",
-   "fieldtype": "Int",
-   "label": "How long in this house - months",
-   "non_negative": 1
-  },
-  {
-   "fieldname": "section_break_utilities",
+   "fieldname": "section_additional_details",
    "fieldtype": "Section Break",
-   "label": "Utilities"
+   "label": "Additional Details"
   },
   {
-   "fieldname": "electricity_supply",
-   "fieldtype": "Select",
-   "label": "Does the house have electricity supply?",
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "column_break_utilities",
-   "fieldtype": "Column Break"
-  },
-  {
-   "description": "Pick all that are used.",
-   "fieldname": "cooking_fuels",
-   "fieldtype": "Table MultiSelect",
-   "label": "Fuels used for cooking",
-   "options": "Household Cooking Fuel"
-  },
-  {
-   "fieldname": "contact_number",
-   "fieldtype": "Data",
-   "label": "Contact Number",
-   "options": "Phone"
-  },
-  {
-   "fieldname": "tab_questions",
-   "fieldtype": "Tab Break",
-   "label": "Questions"
-  },
-  {
-   "fieldname": "question_answers",
-   "fieldtype": "Table",
-   "label": "Questions",
-   "options": "Question Answer"
+   "fieldname": "validation_comments",
+   "fieldtype": "Small Text",
+   "label": "Validation Comments"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -314,11 +1026,11 @@
    "link_fieldname": "household"
   }
  ],
- "modified": "2026-10-06 07:28:31.504859",
+ "modified": "2026-10-06 17:14:25.705933",
  "modified_by": "Administrator",
  "module": "Baseline",
  "name": "Household Profile",
- "naming_rule": "Expression (old style)",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -380,6 +1092,7 @@
   }
  ],
  "row_format": "Dynamic",
+ "search_fields": "household_head_name,respondent_name,house_no,street_name,contact_number,settlement",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",

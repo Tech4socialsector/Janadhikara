@@ -1,28 +1,40 @@
-// Individual Profile: ticking "Consent Given" first shows what the person is
-// agreeing to (DPDP Act, 2023). The worker must confirm they explained it;
-// cancelling un-ticks the box, so consent is never recorded by accident.
+// Individual Profile: the age follows the date of birth, and questions 2 to 5 follow the chosen household.
+import { call } from 'frappe-ui'
+import { INDIVIDUAL_NOTICE, confirmConsent } from '@/utils/dpdpNotice'
 
-const NOTICE = {
-  title: 'Consent under the DPDP Act',
-  intro: 'Before you record consent, explain the following to the person (or their guardian) in a language they understand:',
-  bullets: [
-    { icon: 'file-text', text: 'What we collect: their entitlement details (schemes, cards) and identity documents, only for this programme.' },
-    { icon: 'target', text: 'Why: to help them get the schemes, documents and services they are entitled to - nothing else.' },
-    { icon: 'users', text: 'Who sees it: only authorised staff of the partner organisation and the programme. It is not sold or shared for any other purpose.' },
-    { icon: 'toggle-right', text: 'It is optional: they can say no, and still receive other support.' },
-    { icon: 'rotate-ccw', text: 'They can withdraw consent at any time. After that, these details cannot be added or changed.' },
-    { icon: 'user-check', text: 'They can ask to see, correct or erase their data, and can complain to the Data Protection Board of India.' },
-    { icon: 'shield', text: 'For a child or a person with a disability, consent must come from the parent or lawful guardian.' },
-  ],
-  confirmLabel: 'I have explained this',
+// Age (completed years) follows the date of birth, as it does on the server.
+function ageFromDob(dob) {
+  const born = new Date(dob)
+  if (!dob || Number.isNaN(born.getTime())) return null
+  const now = new Date()
+  let age = now.getFullYear() - born.getFullYear()
+  if (now.getMonth() < born.getMonth() || (now.getMonth() === born.getMonth() && now.getDate() < born.getDate())) age -= 1
+  return Math.max(0, age)
+}
+
+export function onLoad(values) {
+  if (values.date_of_birth) values.age = ageFromDob(values.date_of_birth)
 }
 
 export function onFieldChange(fieldname, values, ctx) {
-  if (fieldname !== 'consent_given' || !values.consent_given || !ctx.confirmNotice) return
-  ctx.confirmNotice({
-    ...NOTICE,
-    onCancel: () => {
-      values.consent_given = 0
-    },
-  })
+  if (fieldname === 'date_of_birth') values.age = ageFromDob(values.date_of_birth)
+  confirmConsent(fieldname, values, ctx, INDIVIDUAL_NOTICE)
+  if (fieldname === 'household' && values.household) {
+    call('frappe.client.get_value', {
+      doctype: 'Household Profile',
+      filters: { name: values.household },
+      fieldname: ['hhid', 'partner_organization', 'settlement', 'respondent_name', 'pregnant_woman', 'person_with_disability'],
+    })
+      .then((res) => {
+        const h = res?.message ?? res
+        if (!h) return
+        values.hhid = h.hhid
+        values.implementing_org = h.partner_organization
+        values.settlement_intervention_unit = h.settlement
+        if (!values.respondent_name) values.respondent_name = h.respondent_name
+        values.household_has_pregnant = h.pregnant_woman === 'Yes' ? 1 : 0
+        values.household_has_disability = h.person_with_disability === 'Yes' ? 1 : 0
+      })
+      .catch(() => {})
+  }
 }

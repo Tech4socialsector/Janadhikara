@@ -4,28 +4,67 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-
-from janadhikara.naming import autoname_with_code
+from frappe.model.naming import make_autoname
+from frappe.utils import cint, today
 
 from janadhikara.api import get_user_employee
-from janadhikara.questions import validate_answers
+from janadhikara.naming import autoname_with_code
+from janadhikara.security import enforce_own_partner
+from janadhikara.validation import clear_hidden_answers, require_shown_answers
 
 
 class HouseholdProfile(Document):
 	def autoname(self):
 		autoname_with_code(self, "HH", "hhid")
 
-	def validate(self):
-		self.validate_house_details()
-		validate_answers(self)
-		self.validate_validation_status()
-		self.capture_from_logged_in_user()
+	def before_insert(self):
+		# House ID: generated, never typed
+		if not self.house_id:
+			self.house_id = make_autoname("HOU.####", self.doctype)
 
-	def validate_house_details(self):
-		if self.stay_months is not None and not 0 <= self.stay_months <= 11:
-			frappe.throw(_("Months staying here must be between 0 and 11."))
-		if self.house_structure != "Multi-storied":
-			self.floor_number = None  # only meaningful for a multi-storied house
+	def validate(self):
+		clear_hidden_answers(self)
+		require_shown_answers(self)
+		self.validate_consent()
+		self.head_from_respondent()
+		self.validate_validation_status()
+		self.validate_allotted_state()
+		self.fill_from_places()
+		self.set_profiles_match()
+		self.capture_from_logged_in_user()
+		enforce_own_partner(self)
+
+	def validate_consent(self):
+		"""DPDP: the respondent's details are only collected once consent is recorded."""
+		if self.availability_for_survey != "Going Ahead":
+			return
+		if not self.consent_given:
+			frappe.throw(_("Record the respondent's consent (DPDP) before collecting the household's details."))
+		self.consent_mode = self.consent_mode or "Verbal (recorded)"
+		self.consent_date = self.consent_date or today()
+		self.consent_taken_by = self.consent_taken_by or frappe.session.user
+
+	def head_from_respondent(self):
+		"""When nobody was named as the head, the respondent is the head of the family."""
+		if not self.household_head_name and self.respondent_name:
+			self.household_head_name = self.respondent_name
+
+	def validate_allotted_state(self):
+		if self.allotted_state and self.allotted_state.strip().lower() == "assam":
+			frappe.throw(_("Q32 is for a house outside Assam: choose a state other than Assam, or pick the district of Assam in Q31."))
+
+	def fill_from_places(self):
+		"""The partner follows the settlement."""
+		if self.settlement and not self.partner_organization:
+			self.partner_organization = frappe.db.get_value("Settlement", self.settlement, "partner_organization")
+
+	def set_profiles_match(self):
+		"""Ticked when the Individual Profiles captured equal the members staying in the household."""
+		if self.is_new():
+			return
+		self.profiles_match_members = int(
+			self.member_count not in (None, "") and frappe.db.count("Individual Profile", {"household": self.name}) == cint(self.member_count)
+		)
 
 	def validate_validation_status(self):
 		"""Only a status the user's role may use can be set (the dropdown already hides the rest;

@@ -30,6 +30,8 @@ import json
 import frappe
 from frappe import _
 
+from janadhikara.ai.privacy import NAME_FIELDNAMES, TOKEN_RE, is_personal_field, token
+
 POLICY_CACHE_KEY = 'janadhikara_ai_policies'
 MAX_ROWS_HARD = 50
 MAX_CHILD_ROWS = 100
@@ -144,7 +146,9 @@ def readable_fields(doctype, policy, parenttype=None):
         if _is_exposable(df)
         and df.fieldtype not in TABLE_FIELDTYPES
         and df.fieldname in permitted
-        and df.fieldname not in policy.hidden
+        # personal fields are always returned as placeholders, never as values, so a policy's Hidden rule
+        # (which exists to keep a value from the model) is not needed for them
+        and (df.fieldname not in policy.hidden or is_personal_field(df))
     ]
 
 
@@ -156,10 +160,45 @@ def writable_fields(doctype, policy):
     can_write_levels = set(meta.get_permitted_fieldnames(permission_type='write'))
     return [
         df for df in readable_fields(doctype, policy)
-        if not df.read_only
+        if not is_personal_field(df)  # the model never has such a value to write
+        and not df.read_only
         and df.fieldname not in policy.read_only
         and df.fieldname in can_write_levels
     ]
+
+
+# --- personal values: placeholders out, real values back in -------------
+
+def _placeholder(doctype, name, fieldname, value):
+    return token(doctype, name, fieldname) if value not in (None, '') else value
+
+
+def _reveal(doctype, name, fieldname):
+    """The real value behind a placeholder - only if the signed-in user may read that record and field."""
+    unavailable = _('[not available]')
+    try:
+        require_access(doctype)
+        df = frappe.get_meta(doctype).get_field(fieldname)
+        if not df or not is_personal_field(df) or df.fieldtype in ALWAYS_HIDDEN_FIELDTYPES or df.fieldtype in TABLE_FIELDTYPES:
+            return unavailable
+        if not frappe.has_permission(doctype, 'read', doc=name):
+            return unavailable
+        if fieldname not in frappe.get_meta(doctype).get_permitted_fieldnames(permission_type='read'):
+            return unavailable
+        value = frappe.db.get_value(doctype, name, fieldname)
+    except Exception:
+        return unavailable
+    audit('reveal', doctype, {'name': name, 'field': fieldname})
+    if value in (None, ''):
+        return _('(empty)')
+    return frappe.format(value, df) if df.fieldtype in ('Date', 'Datetime') else str(value)
+
+
+def rehydrate(text):
+    """Replace placeholders in the assistant's reply with the real values, for this signed-in user only."""
+    if not text or '[[' not in text:
+        return text
+    return TOKEN_RE.sub(lambda m: _reveal(m.group(1), m.group(2), m.group(3)), text)
 
 
 # --- queries ------------------------------------------------------------
@@ -236,6 +275,9 @@ def search(doctype, filters=None, fields=None, limit=20):
 
     readable = readable_fields(doctype, policy)
     allowed = {df.fieldname for df in readable} | {'name'}
+    # a name may be searched for; phone, address, position and birth date may not be filtered on
+    filterable = {df.fieldname for df in readable if not is_personal_field(df) or df.fieldname in NAME_FIELDNAMES} | {'name'}
+    personal = {df.fieldname for df in readable if is_personal_field(df)}
 
     if fields:
         bad = [f for f in fields if f not in allowed]
@@ -249,11 +291,14 @@ def search(doctype, filters=None, fields=None, limit=20):
     limit = min(frappe.utils.cint(limit) or 20, policy.max_rows, MAX_ROWS_HARD)
     rows = frappe.get_list(
         doctype,
-        filters=_clean_filters(filters, allowed),
+        filters=_clean_filters(filters, filterable),
         fields=select,
         limit_page_length=limit,
         order_by='modified desc',
     )
+    for row in rows:
+        for fieldname in personal & set(row):
+            row[fieldname] = _placeholder(doctype, row['name'], fieldname, row[fieldname])
     audit('search', doctype, {'returned': len(rows), 'filtered_on': sorted((filters or {}).keys())})
     return rows
 
@@ -262,7 +307,10 @@ def _child_rows(parent_doctype, doc, table_df):
     child_policy = get_policy(table_df.options)
     if not child_policy or not child_policy.can_read:
         return None
-    visible = readable_fields(table_df.options, child_policy, parenttype=parent_doctype)
+    visible = [
+        df for df in readable_fields(table_df.options, child_policy, parenttype=parent_doctype)
+        if not is_personal_field(df)  # rows of a child table are not placeholdered: personal values are left out
+    ]
     return [
         {'name': row.name, **{df.fieldname: row.get(df.fieldname) for df in visible}}
         for row in (doc.get(table_df.fieldname) or [])[:MAX_CHILD_ROWS]
@@ -280,7 +328,8 @@ def read(doctype, name):
 
     data = {'name': doc.name}
     for df in readable_fields(doctype, policy):
-        data[df.fieldname] = doc.get(df.fieldname)
+        value = doc.get(df.fieldname)
+        data[df.fieldname] = _placeholder(doctype, doc.name, df.fieldname, value) if is_personal_field(df) else value
 
     if policy.include_child_tables:
         for table_df in frappe.get_meta(doctype).get_table_fields():

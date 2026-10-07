@@ -4,272 +4,1564 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "tab_details",
-  "record_date",
-  "household",
-  "member_name",
-  "relationship_to_household",
-  "is_respondent",
-  "status",
-  "column_break_collector",
-  "surveyor",
-  "surveyor_name",
-  "section_personal",
-  "date_of_birth",
-  "age",
-  "gender",
-  "marital_status",
-  "column_break_personal",
-  "mobile_number",
-  "section_education_work",
-  "education_records",
-  "occupation",
-  "monthly_income",
-  "tab_health",
-  "health_conditions",
-  "tab_entitlements",
+  "tab_primary",
   "section_consent",
   "consent_given",
   "consent_mode",
-  "consent_date",
   "column_break_consent",
+  "consent_date",
   "consent_taken_by",
-  "consent_purpose",
   "consent_withdrawn_on",
-  "entitlements",
-  "documents"
+  "section_primary",
+  "individual_id",
+  "household",
+  "household_has_pregnant",
+  "household_has_disability",
+  "implementing_org",
+  "hhid",
+  "settlement_intervention_unit",
+  "respondent_name",
+  "column_break_primary",
+  "member_name",
+  "gender",
+  "date_of_birth",
+  "age",
+  "gender_repeat",
+  "mobile_number",
+  "marital_status",
+  "tab_education",
+  "section_education",
+  "highest_education",
+  "currently_studying",
+  "study_level",
+  "institution_type",
+  "school_attendance",
+  "irregular_reason",
+  "column_break_education",
+  "irregular_reason_other",
+  "out_of_school_status",
+  "never_enrolled_reason",
+  "never_enrolled_other",
+  "dropout_reason",
+  "dropout_reason_other",
+  "section_occupation",
+  "occupation_1",
+  "occupation_other",
+  "women_full_time_work",
+  "column_break_occupation",
+  "women_not_working_reason",
+  "women_not_working_other",
+  "occupation_remarks",
+  "tab_children",
+  "section_children",
+  "place_of_delivery",
+  "immunization_completed",
+  "immunization_location",
+  "column_break_children",
+  "immunization_location_other",
+  "enrolled_in_awc",
+  "section_child_under3",
+  "caregiver_working",
+  "caregiver_working_hours",
+  "daytime_caregiver",
+  "daytime_caregiver_other",
+  "column_break_child_under3",
+  "child_unsupervised",
+  "safe_sitting_area",
+  "creche_available",
+  "thr_received",
+  "section_child_3to6",
+  "awc_attendance",
+  "awc_hot_meals",
+  "growth_monitoring_aware",
+  "column_break_child_3to6",
+  "ppf_applied",
+  "post_office_savings",
+  "tab_documents",
+  "section_basic_docs",
+  "doc_ration_card",
+  "doc_aadhaar",
+  "doc_pan",
+  "doc_voter_id",
+  "doc_bank_account",
+  "doc_birth_certificate",
+  "doc_caste_certificate",
+  "doc_marriage_certificate",
+  "doc_income_certificate",
+  "welfare_board_registered",
+  "column_break_basic_docs",
+  "welfare_board_other",
+  "doc_living_certificate",
+  "doc_eshram",
+  "doc_bocw_card",
+  "doc_ews",
+  "disability_in_family",
+  "disability_type",
+  "udid_applied",
+  "udid_number",
+  "doc_pwd_certificate",
+  "doc_transgender_certificate",
+  "tab_schemes",
+  "section_women",
+  "sch_orunodoi",
+  "sch_widow_pension",
+  "sch_mahila_udyamita",
+  "column_break_women",
+  "sch_mahila_awas",
+  "registered_with_shg",
+  "sch_swanirbhar_naari",
+  "section_pregnant",
+  "sch_pmjay_maternity",
+  "sch_jsy",
+  "sch_mamoni",
+  "sch_adarani",
+  "sch_free_diagnostics",
+  "column_break_pregnant",
+  "sch_poshan_pregnant",
+  "sch_pmsma",
+  "sch_nipi_pregnant",
+  "sch_matri_suraksha",
+  "sch_pmmvy",
+  "section_girls",
+  "sch_ssy",
+  "sch_nijut_moina",
+  "sch_pragyan_bharati_girls",
+  "column_break_girls",
+  "sch_rksk_girls",
+  "sch_majoni",
+  "sch_nipi_girls",
+  "section_boys",
+  "sch_nijut_babu_asoni",
+  "sch_cm_jibon_prerana",
+  "column_break_boys",
+  "sch_rksk_boys",
+  "sch_pragyan_bharati_boys",
+  "section_skills",
+  "sch_estp",
+  "sch_sep",
+  "sch_skill_mission_assam",
+  "column_break_skills",
+  "sch_pmkvy_training",
+  "sch_pmkvy_placement",
+  "section_selfemp",
+  "sch_pm_svanidhi",
+  "sch_mudra",
+  "sch_vishwakarma",
+  "sch_pmegp",
+  "column_break_selfemp",
+  "sch_cm_atmanirbhar",
+  "sch_jan_dhan",
+  "sch_startup_india",
+  "section_labour",
+  "sch_pm_shram_yogi",
+  "sch_bocw_94",
+  "sch_bocw_95",
+  "sch_bocw_96",
+  "sch_bocw_97",
+  "sch_bocw_98",
+  "column_break_labour",
+  "sch_bocw_99",
+  "sch_bocw_100",
+  "sch_bocw_101",
+  "sch_bocw_102",
+  "sch_bocw_103",
+  "sch_bocw_104",
+  "section_disability_support",
+  "sch_orunodoi_disability",
+  "column_break_disability_support",
+  "sch_adip",
+  "section_elderly",
+  "sch_orunodoi_3",
+  "sch_pm_sym",
+  "column_break_elderly",
+  "sch_kushal_konwar",
+  "sch_abocwwb_pension",
+  "section_health_finance",
+  "sch_pmjjby",
+  "sch_pmsby",
+  "column_break_health_finance",
+  "sch_pmjay",
+  "sch_apy",
+  "section_housing",
+  "sch_pmay_u",
+  "tab_status",
+  "section_status",
+  "documentation_status",
+  "column_break_status",
+  "validation_status"
  ],
  "fields": [
   {
-   "fieldname": "tab_details",
+   "fieldname": "tab_primary",
    "fieldtype": "Tab Break",
-   "label": "Details"
-  },
-  {
-   "fieldname": "record_date",
-   "fieldtype": "Date",
-   "label": "Date",
-   "default": "Today",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "description": "Defaults to today; change it to record a different date."
-  },
-  {
-   "fieldname": "household",
-   "fieldtype": "Link",
-   "label": "Household",
-   "options": "Household Profile",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "description": "The household this person lives in."
-  },
-  {
-   "fieldname": "member_name",
-   "fieldtype": "Data",
-   "label": "Member Name",
-   "reqd": 1,
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "relationship_to_household",
-   "fieldtype": "Link",
-   "label": "Relationship to Household",
-   "options": "Relationship Type",
-   "reqd": 1,
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "is_respondent",
-   "fieldtype": "Check",
-   "label": "Is Respondent",
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "label": "Status",
-   "options": "Active\nInactive",
-   "default": "Active",
-   "reqd": 1,
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "column_break_collector",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "surveyor",
-   "fieldtype": "Link",
-   "label": "Data Collector",
-   "options": "User",
-   "read_only": 1,
-   "default": "__user",
-   "depends_on": "eval:doc.creation"
-  },
-  {
-   "fieldname": "surveyor_name",
-   "fieldtype": "Data",
-   "label": "Data Collector Name",
-   "read_only": 1,
-   "in_list_view": 1,
-   "fetch_from": "surveyor.full_name",
-   "depends_on": "eval:doc.creation"
-  },
-  {
-   "fieldname": "section_personal",
-   "fieldtype": "Section Break",
-   "label": "Personal"
-  },
-  {
-   "fieldname": "date_of_birth",
-   "fieldtype": "Date",
-   "label": "Date of Birth"
-  },
-  {
-   "fieldname": "age",
-   "fieldtype": "Int",
-   "label": "Age (years)"
-  },
-  {
-   "fieldname": "gender",
-   "fieldtype": "Select",
-   "label": "Gender",
-   "options": "\nFemale\nMale\nOther",
-   "in_standard_filter": 1
-  },
-  {
-   "fieldname": "marital_status",
-   "fieldtype": "Select",
-   "label": "Marital Status",
-   "options": "\nNever Married\nMarried\nWidowed\nSeparated\nDivorced"
-  },
-  {
-   "fieldname": "column_break_personal",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "mobile_number",
-   "fieldtype": "Data",
-   "label": "Mobile Number",
-   "options": "Phone"
-  },
-  {
-   "fieldname": "section_education_work",
-   "fieldtype": "Section Break",
-   "label": "Education & Work"
-  },
-  {
-   "fieldname": "education_records",
-   "fieldtype": "Table",
-   "label": "Education",
-   "options": "Education Record"
-  },
-  {
-   "fieldname": "occupation",
-   "fieldtype": "Data",
-   "label": "Occupation"
-  },
-  {
-   "fieldname": "monthly_income",
-   "fieldtype": "Currency",
-   "label": "Monthly Income"
-  },
-  {
-   "fieldname": "tab_health",
-   "fieldtype": "Tab Break",
-   "label": "Health"
-  },
-  {
-   "fieldname": "health_conditions",
-   "fieldtype": "Table",
-   "label": "Health Conditions",
-   "options": "Health Condition"
-  },
-  {
-   "fieldname": "tab_entitlements",
-   "fieldtype": "Tab Break",
-   "label": "Entitlements & Documents"
+   "label": "Primary Details"
   },
   {
    "fieldname": "section_consent",
    "fieldtype": "Section Break",
    "label": "Consent (DPDP)",
-   "description": "Entitlement and document details are personal data. Record the person's consent before collecting them."
+   "description": "Record consent first. No other question is shown until then."
   },
   {
    "fieldname": "consent_given",
    "fieldtype": "Check",
-   "label": "Consent Given"
+   "label": "Consent of the person (or guardian) taken"
   },
   {
    "fieldname": "consent_mode",
    "fieldtype": "Select",
    "label": "Consent Mode",
    "options": "\nWritten\nVerbal (recorded)\nDigital",
-   "depends_on": "eval:doc.consent_given",
-   "mandatory_depends_on": "eval:doc.consent_given"
-  },
-  {
-   "fieldname": "consent_date",
-   "fieldtype": "Date",
-   "label": "Consent Date",
-   "depends_on": "eval:doc.consent_given",
-   "mandatory_depends_on": "eval:doc.consent_given"
+   "length": 64,
+   "depends_on": "eval:Number(doc.consent_given)===1"
   },
   {
    "fieldname": "column_break_consent",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "consent_taken_by",
-   "fieldtype": "Link",
-   "label": "Consent Taken By",
-   "options": "User",
+   "fieldname": "consent_date",
+   "fieldtype": "Date",
+   "label": "Consent Date",
+   "depends_on": "eval:Number(doc.consent_given)===1",
    "read_only": 1,
-   "depends_on": "eval:doc.consent_taken_by"
+   "description": "Taken automatically when consent is recorded."
   },
   {
-   "fieldname": "consent_purpose",
-   "fieldtype": "Small Text",
-   "label": "Purpose Explained",
-   "default": "To record and help the person access government schemes, documents and services.",
-   "depends_on": "eval:doc.consent_given"
+   "fieldname": "consent_taken_by",
+   "fieldtype": "Data",
+   "label": "Consent Taken By",
+   "length": 64,
+   "read_only": 1,
+   "depends_on": "eval:doc.consent_taken_by"
   },
   {
    "fieldname": "consent_withdrawn_on",
    "fieldtype": "Date",
    "label": "Consent Withdrawn On",
-   "depends_on": "eval:doc.consent_given",
-   "description": "Set when the person withdraws consent: entitlement and document details can no longer be added or changed."
+   "depends_on": "eval:Number(doc.consent_given)===1"
   },
   {
-   "fieldname": "entitlements",
-   "fieldtype": "Table",
-   "label": "Entitlements",
-   "options": "Entitlement",
-   "depends_on": "eval:doc.consent_given && !doc.consent_withdrawn_on"
+   "fieldname": "section_primary",
+   "fieldtype": "Section Break",
+   "label": "Primary Details",
+   "depends_on": "eval:Number(doc.consent_given)===1"
   },
   {
-   "fieldname": "documents",
-   "fieldtype": "Table",
-   "label": "Documents",
-   "options": "Individual Document",
-   "depends_on": "eval:doc.consent_given && !doc.consent_withdrawn_on"
+   "fieldname": "individual_id",
+   "fieldtype": "Data",
+   "label": "1. Individual ID",
+   "description": "Generated when the profile is first saved.",
+   "read_only": 1,
+   "in_list_view": 1,
+   "depends_on": "eval:doc.individual_id",
+   "length": 64
+  },
+  {
+   "fieldname": "household",
+   "fieldtype": "Link",
+   "label": "Household",
+   "options": "Household Profile",
+   "description": "The household this person lives in.",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "household_has_pregnant",
+   "fieldtype": "Check",
+   "label": "Household has a pregnant woman",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "household_has_disability",
+   "fieldtype": "Check",
+   "label": "Household has a person with disability",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "implementing_org",
+   "fieldtype": "Link",
+   "label": "2. Implementing Org",
+   "options": "Partner Details",
+   "read_only": 1,
+   "fetch_from": "household.partner_organization",
+   "in_standard_filter": 1,
+   "description": "Filled in from the Household Profile.",
+   "search_index": 1
+  },
+  {
+   "fieldname": "hhid",
+   "fieldtype": "Data",
+   "label": "3. HHID",
+   "read_only": 1,
+   "fetch_from": "household.hhid",
+   "description": "Filled in from the Household Profile.",
+   "length": 64,
+   "search_index": 1
+  },
+  {
+   "fieldname": "settlement_intervention_unit",
+   "fieldtype": "Link",
+   "label": "4. Settlement Intervention Unit",
+   "options": "Settlement",
+   "read_only": 1,
+   "fetch_from": "household.settlement",
+   "in_standard_filter": 1,
+   "description": "Filled in from the Household Profile."
+  },
+  {
+   "fieldname": "respondent_name",
+   "fieldtype": "Data",
+   "label": "5. Respondent Name",
+   "read_only": 0,
+   "fetch_from": "household.respondent_name",
+   "description": "Filled in from the Household Profile. Change it if someone else answered for this person.",
+   "length": 64
+  },
+  {
+   "fieldname": "column_break_primary",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "member_name",
+   "fieldtype": "Data",
+   "label": "6. Name of the Household member",
+   "description": "Please verify the name with the family member's name given in the HH listing form.",
+   "reqd": 1,
+   "in_list_view": 1,
+   "length": 64
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "7. Gender",
+   "options": "\nMale\nFemale\nOther",
+   "in_standard_filter": 1,
+   "in_list_view": 1,
+   "length": 6
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "8. DOB",
+   "description": "If the exact DOB is not available, capture the first date, month or year mentioned."
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Int",
+   "label": "9. Age",
+   "description": "Auto-calculated from DOB. Based on the age, the questions for that age group are displayed.",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "gender_repeat",
+   "fieldtype": "Select",
+   "label": "10. Gender",
+   "options": "\nMale\nFemale\nOther",
+   "length": 64,
+   "description": "If 'Other' is chosen, question 55 is shown."
+  },
+  {
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "11. Contact number",
+   "options": "Phone",
+   "depends_on": "eval:doc.age>18",
+   "description": "Age above 18 years. If they do not agree to provide it, please skip.",
+   "length": 64
+  },
+  {
+   "fieldname": "marital_status",
+   "fieldtype": "Select",
+   "label": "12. Marital Status",
+   "options": "\nNever Married\nMarried\nSeparated\nDivorced\nWidowed",
+   "description": "Asked for every age group - it helps identify child marriage cases. For small children choose Never Married.",
+   "length": 13
+  },
+  {
+   "fieldname": "tab_education",
+   "fieldtype": "Tab Break",
+   "label": "Education & Occupation",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "section_education",
+   "fieldtype": "Section Break",
+   "label": "Education",
+   "description": "Applicable for all age groups. Fill what applies and skip the rest.",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "highest_education",
+   "fieldtype": "Select",
+   "label": "13. Highest level of education attained",
+   "options": "\nBelow primary\nPrimary\nMiddle\nSecondary\nHigher secondary\nNon-technical diploma\nTechnical diploma\nGraduate or above\nIlliterate\nLiterate without schooling",
+   "length": 26
+  },
+  {
+   "fieldname": "currently_studying",
+   "fieldtype": "Select",
+   "label": "14. Is the person currently studying?",
+   "options": "\nYes\nNo",
+   "length": 3
+  },
+  {
+   "fieldname": "study_level",
+   "fieldtype": "Select",
+   "label": "15. If yes, what level are you studying?",
+   "options": "\n1-5 (Primary)\n6-8 (Middle)\n9-10 (Secondary)\n11-12 (Higher Secondary)\nNon-technical diploma\nTechnical diploma\nGraduate\nPost Graduate\nReligious Education",
+   "depends_on": "eval:doc.currently_studying==\"Yes\"",
+   "length": 24
+  },
+  {
+   "fieldname": "institution_type",
+   "fieldtype": "Select",
+   "label": "16. What type of institution?",
+   "options": "\nGovt\nGovt Aided\nPvt",
+   "depends_on": "eval:doc.currently_studying==\"Yes\"",
+   "length": 10
+  },
+  {
+   "fieldname": "school_attendance",
+   "fieldtype": "Select",
+   "label": "17. In case of school going children, is the child",
+   "options": "\nRegular to school\nIrregular to school",
+   "depends_on": "eval:doc.currently_studying==\"Yes\"",
+   "description": "Irregular means the child attends very rarely, e.g. once a month or less.",
+   "length": 19
+  },
+  {
+   "fieldname": "irregular_reason",
+   "fieldtype": "Select",
+   "label": "17.1. What is the reason of irregularity?",
+   "options": "\nEconomic hardship\nAcademic struggles\nPoor living conditions\nOvercrowded classrooms\nParental illiteracy and lack of awareness\nMigration and instability\nOthers",
+   "depends_on": "eval:doc.school_attendance==\"Irregular to school\"",
+   "length": 41
+  },
+  {
+   "fieldname": "column_break_education",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "irregular_reason_other",
+   "fieldtype": "Data",
+   "label": "17.2. If Others, specify",
+   "depends_on": "eval:doc.irregular_reason==\"Others\"",
+   "length": 64,
+   "mandatory_depends_on": "eval:doc.irregular_reason==\"Others\""
+  },
+  {
+   "fieldname": "out_of_school_status",
+   "fieldtype": "Select",
+   "label": "17.3. In case of school going aged children, is the child",
+   "options": "\nNever enrolled\nDropout/Out-of-School",
+   "depends_on": "eval:doc.currently_studying==\"No\" && doc.age>=6 && doc.age<=18",
+   "length": 21
+  },
+  {
+   "fieldname": "never_enrolled_reason",
+   "fieldtype": "Select",
+   "label": "17.4. Reasons for never enrolling",
+   "options": "\nPoverty\nParental illiteracy\nMigration\nPoor infrastructure\nLack of support and motivation\nDomestic responsibilities\nSocial exclusion\nGender bias\nOthers",
+   "depends_on": "eval:doc.out_of_school_status==\"Never enrolled\"",
+   "length": 30
+  },
+  {
+   "fieldname": "never_enrolled_other",
+   "fieldtype": "Data",
+   "label": "17.5. Others, Specify",
+   "depends_on": "eval:doc.never_enrolled_reason==\"Others\"",
+   "length": 64,
+   "mandatory_depends_on": "eval:doc.never_enrolled_reason==\"Others\""
+  },
+  {
+   "fieldname": "dropout_reason",
+   "fieldtype": "Select",
+   "label": "17.6. Reason for dropping out",
+   "options": "\nEconomic hardship\nAcademic struggles and exam failure\nLack of parental supervision\nLimited access to books\nMigration and instability\nPeer pressure and lifestyle changes\nDistance from home\nRisk due to busy Roads\nPoor Public Infrastructure\nRisk due to Traffic Accidents\nHarassment Risks\nCrime Exposure\nChild engaged in work\nSibling Care\nParental Illiteracy\nOvercrowded schools\nLack of Documents\nOthers",
+   "depends_on": "eval:doc.out_of_school_status==\"Dropout/Out-of-School\"",
+   "length": 35
+  },
+  {
+   "fieldname": "dropout_reason_other",
+   "fieldtype": "Data",
+   "label": "17.7. Others, Specify",
+   "depends_on": "eval:doc.dropout_reason==\"Others\"",
+   "length": 64,
+   "mandatory_depends_on": "eval:doc.dropout_reason==\"Others\""
+  },
+  {
+   "fieldname": "section_occupation",
+   "fieldtype": "Section Break",
+   "label": "Occupation (Major source of income)",
+   "description": "Applicable to all age groups - it helps show child labour. If a child is not engaged in any labour or occupation, choose Not working/Not applicable.",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "occupation_1",
+   "fieldtype": "Small Text",
+   "label": "18. Occupation (Major source of income)",
+   "options": "\nStreet Vending\nHawking\nHousehold Responsibility/family care work\nHouse Help-Domestic work/Cook\nHome-based micro-enterprises\nHome based manufacturing and piece-rate work\nCasual wage labour\nBuilding and Other Construction Worker (BOCW)\nLaundary Worker\nBarber\nCobbler\nCook/Catering services\nTaxi Driver\nBus Driver\nBus Conductor\nBus Ticket Collector\nTruck Driver\nAuto Driver\nRickshaw Puller\nE-Rickshaw\nPorter\nSanitation Worker\nWaste Picker\nWaste Segregator\nManual Scavenger\nHousekeeping (Hospital/Hotel, etc.)\nSecurity Guard\nShop assistant/salesperson\nBeautician Services\nTailor\nWarehouse Worker\nSlaughterhouse Worker\nPlatform Worker - Swiggy/Zomato/Urban Company/Big basket/Amazon\nOwn Shop/Business\nClerical Work/Office Support Staff\nSocial sector - NGO\nIT/BPO\nGovernment Job\nNot working/Not applicable\nOthers",
+   "description": "Select maximum 3 options. If the person is not involved in any job, select Not working/Not applicable (then the women and remarks questions are not shown)."
+  },
+  {
+   "fieldname": "occupation_other",
+   "fieldtype": "Data",
+   "label": "18.1. Others, Specify",
+   "depends_on": "eval:(doc.occupation_1||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others\")",
+   "length": 64,
+   "mandatory_depends_on": "eval:(doc.occupation_1||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others\")"
+  },
+  {
+   "fieldname": "women_full_time_work",
+   "fieldtype": "Select",
+   "label": "19. Are the women members engaged in any full-time occupation/work?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.gender==\"Female\" && (doc.occupation_1||\"\").trim() && !(doc.occupation_1||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Not working/Not applicable\")",
+   "length": 3
+  },
+  {
+   "fieldname": "column_break_occupation",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "women_not_working_reason",
+   "fieldtype": "Select",
+   "label": "19.1. If No, then why is the woman not engaged in full time work?",
+   "options": "\nNot willing to work full time\nLacks required skills\nChildcare responsibilities\nHousehold responsibilities\nJobs not available nearby\nHealth-related issues\nPregnancy or recent childbirth\nElderly care responsibilities\nIrregular or unsafe work hours\nSafety concerns while commuting or at the workplace\nLack of suitable transport\nLow wages / work not financially viable\nSeasonal or irregular availability of work\nOthers",
+   "depends_on": "eval:doc.women_full_time_work==\"No\"",
+   "length": 51
+  },
+  {
+   "fieldname": "women_not_working_other",
+   "fieldtype": "Data",
+   "label": "19.2. In case of Others, Specify",
+   "depends_on": "eval:doc.women_not_working_reason==\"Others\"",
+   "length": 64,
+   "mandatory_depends_on": "eval:doc.women_not_working_reason==\"Others\""
+  },
+  {
+   "fieldname": "occupation_remarks",
+   "fieldtype": "Small Text",
+   "label": "20. Remarks related to Occupation",
+   "depends_on": "eval:(doc.occupation_1||\"\").trim() && !(doc.occupation_1||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Not working/Not applicable\")"
+  },
+  {
+   "fieldname": "tab_children",
+   "fieldtype": "Tab Break",
+   "label": "Children Details",
+   "depends_on": "eval:Number(doc.consent_given)===1 && ((doc.age||doc.age===0)&&doc.age<=6)"
+  },
+  {
+   "fieldname": "section_children",
+   "fieldtype": "Section Break",
+   "label": "Children Details",
+   "description": "Applicable for children up to 6 years of age.",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "place_of_delivery",
+   "fieldtype": "Select",
+   "label": "21. Place of Delivery",
+   "options": "\nHome\nHospital",
+   "description": "If Hospital, the questions on institutional/hospital delivery apply.",
+   "length": 8
+  },
+  {
+   "fieldname": "immunization_completed",
+   "fieldtype": "Select",
+   "label": "22. Age appropriate immunization completed or not?",
+   "options": "\nYes\nNo",
+   "length": 3
+  },
+  {
+   "fieldname": "immunization_location",
+   "fieldtype": "Select",
+   "label": "22.1. In which locations are immunization programs for children usually conducted in your community?",
+   "options": "\nAnganwadi or School-based sessions\nUPHCs\nDoor-to-Door Camps\nCommunity Immunization Camps\nMobile Immunization Clinics\nSpecial immunization drives\nOthers",
+   "depends_on": "eval:doc.immunization_completed==\"Yes\"",
+   "length": 34
+  },
+  {
+   "fieldname": "column_break_children",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "immunization_location_other",
+   "fieldtype": "Data",
+   "label": "22.2. Others, Specify",
+   "depends_on": "eval:doc.immunization_location==\"Others\"",
+   "length": 64,
+   "mandatory_depends_on": "eval:doc.immunization_location==\"Others\""
+  },
+  {
+   "fieldname": "enrolled_in_awc",
+   "fieldtype": "Select",
+   "label": "23. Is the child enrolled in AWC?",
+   "options": "\nYes\nNo",
+   "length": 3
+  },
+  {
+   "fieldname": "section_child_under3",
+   "fieldtype": "Section Break",
+   "label": "Children - 6 months to 3 years",
+   "depends_on": "eval:Number(doc.consent_given)===1 && ((doc.age||doc.age===0)&&doc.age<3)",
+   "description": "Applicable only for children 6 months to 3 years."
+  },
+  {
+   "fieldname": "caregiver_working",
+   "fieldtype": "Select",
+   "label": "24. Is the primary caregiver also engaged in paid, agricultural, or informal work?",
+   "options": "\nYes\nNo",
+   "length": 3
+  },
+  {
+   "fieldname": "caregiver_working_hours",
+   "fieldtype": "Data",
+   "label": "25. What are the working hours of the primary caregiver?",
+   "depends_on": "eval:doc.caregiver_working==\"Yes\"",
+   "length": 64
+  },
+  {
+   "fieldname": "daytime_caregiver",
+   "fieldtype": "Select",
+   "label": "26. Who takes care of young children during daytime working hours?",
+   "options": "\nChild goes to the AWC\nOther elder family members at home\nOther child less than 15yrs of age\nOthers",
+   "length": 34
+  },
+  {
+   "fieldname": "daytime_caregiver_other",
+   "fieldtype": "Data",
+   "label": "27. If Others, specify",
+   "depends_on": "eval:doc.daytime_caregiver==\"Others\"",
+   "length": 64,
+   "mandatory_depends_on": "eval:doc.daytime_caregiver==\"Others\""
+  },
+  {
+   "fieldname": "column_break_child_under3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "child_unsupervised",
+   "fieldtype": "Select",
+   "label": "28. Are there times during the day when the child is cared by another minor (below 18 years), neighbours, or left unsupervised?",
+   "options": "\nYes\nNo",
+   "length": 3
+  },
+  {
+   "fieldname": "safe_sitting_area",
+   "fieldtype": "Select",
+   "label": "29. Is there a clean, debris-free, shaded area within 100 meters from the dwelling where a caregiver can safely sit with a child?",
+   "options": "\nYes\nNo",
+   "length": 3
+  },
+  {
+   "fieldname": "creche_available",
+   "fieldtype": "Select",
+   "label": "30. Is there an urban Creche or Mobile Daycare facility available within the settlement?",
+   "options": "\nYes\nNo",
+   "length": 3
+  },
+  {
+   "fieldname": "thr_received",
+   "fieldtype": "Select",
+   "label": "31. Are you getting Take Home Ration (THR) from the AWC?",
+   "options": "\nYes, regularly and full quantity\nYes, but irregularly\nWas receiving earlier, discontinued for more than 3 months\nNever received",
+   "description": "Irregular in terms of both frequency and quantity.",
+   "length": 58
+  },
+  {
+   "fieldname": "section_child_3to6",
+   "fieldtype": "Section Break",
+   "label": "Children - 3 years to 6 years",
+   "depends_on": "eval:Number(doc.consent_given)===1 && (doc.age>=3&&doc.age<=6)",
+   "description": "Applicable for children 3 to 6 years."
+  },
+  {
+   "fieldname": "awc_attendance",
+   "fieldtype": "Select",
+   "label": "32. Is the child going to AWC?",
+   "options": "\nRegularly going to AWC\nIrregular to AWC\nNot going, only name is registered",
+   "length": 34
+  },
+  {
+   "fieldname": "awc_hot_meals",
+   "fieldtype": "Select",
+   "label": "33. Does the child avail hot cooked meals at Anganwadi centre?",
+   "options": "\nYes, Regular\nYes, Irregular\nNo",
+   "description": "POSHAN Abhiyaan (Mission POSHAN 2.0)",
+   "length": 14
+  },
+  {
+   "fieldname": "growth_monitoring_aware",
+   "fieldtype": "Select",
+   "label": "34. Are you aware of your child's regular growth monitoring (weight/height/BMI) in the AWC for malnutrition tracking?",
+   "options": "\nYes\nNo",
+   "description": "POSHAN Abhiyaan (Mission POSHAN 2.0)",
+   "length": 3
+  },
+  {
+   "fieldname": "column_break_child_3to6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ppf_applied",
+   "fieldtype": "Select",
+   "label": "35. Have you applied for Public Provident Fund (PPF) for the child?",
+   "options": "\nYes\nNo",
+   "description": "Public Provident Fund (PPF) scheme for minors",
+   "length": 3
+  },
+  {
+   "fieldname": "post_office_savings",
+   "fieldtype": "Select",
+   "label": "36. Do you have a savings account for your child in the Post Office?",
+   "options": "\nYes\nNo",
+   "description": "Post Office Small Savings Schemes",
+   "length": 3
+  },
+  {
+   "fieldname": "tab_documents",
+   "fieldtype": "Tab Break",
+   "label": "Documents & Entitlements",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "section_basic_docs",
+   "fieldtype": "Section Break",
+   "label": "Basic Documents",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "doc_ration_card",
+   "fieldtype": "Select",
+   "label": "37. Is your name added in the Ration card of this Household?",
+   "options": "\nYes\nNo\nYes, but correction needed",
+   "length": 26
+  },
+  {
+   "fieldname": "doc_aadhaar",
+   "fieldtype": "Select",
+   "label": "38. Do you have an Aadhar card?",
+   "options": "\nYes\nNo\nYes, but correction needed",
+   "length": 26
+  },
+  {
+   "fieldname": "doc_pan",
+   "fieldtype": "Select",
+   "label": "39. Do you have a PAN Card?",
+   "options": "\nYes\nNo\nYes, but correction needed\nUnable to capture/Unsure",
+   "length": 26
+  },
+  {
+   "fieldname": "doc_voter_id",
+   "fieldtype": "Select",
+   "label": "40. Do you have a Voter ID?",
+   "options": "\nYes\nNo\nYes, but correction needed",
+   "length": 26
+  },
+  {
+   "fieldname": "doc_bank_account",
+   "fieldtype": "Select",
+   "label": "41. Do you have a Bank Account?",
+   "options": "\nYes\nNo\nYes, but correction/reactivation needed",
+   "length": 39
+  },
+  {
+   "fieldname": "doc_birth_certificate",
+   "fieldtype": "Select",
+   "label": "42. Do you have a Birth Certificate?",
+   "options": "\nYes\nNo\nYes, but correction needed",
+   "length": 26
+  },
+  {
+   "fieldname": "doc_caste_certificate",
+   "fieldtype": "Select",
+   "label": "43. Do you have a Caste Certificate?",
+   "options": "\nYes\nNo\nYes, but correction needed\nNot Applicable",
+   "description": "Explain clearly to the ORWs when Not Applicable applies.",
+   "length": 26
+  },
+  {
+   "fieldname": "doc_marriage_certificate",
+   "fieldtype": "Select",
+   "label": "44. Do you have Marriage Certificate?",
+   "options": "\nYes\nNo\nYes, but correction needed\nNot Applicable",
+   "depends_on": "eval:doc.age>=18 && doc.marital_status && doc.marital_status != \"Never Married\"",
+   "description": "Shown only for age 18+ and a marital status other than Never Married.",
+   "length": 26
+  },
+  {
+   "fieldname": "doc_income_certificate",
+   "fieldtype": "Select",
+   "label": "45. Do you have an Income Certificate?",
+   "options": "\nYes\nNo\nYes, but renewal needed\nUnable to capture/Unsure\nNot Applicable",
+   "length": 24
+  },
+  {
+   "fieldname": "welfare_board_registered",
+   "fieldtype": "Select",
+   "label": "46. Are you registered with any Welfare Boards?",
+   "options": "\nYes\nNo\nYes, but renewal needed\nUnable to capture/Unsure\nNot Applicable",
+   "length": 24,
+   "description": "List of relevant Welfare Boards in Assam: Assam Board of WAKF, Assam Minorities Development Board, Assam Minorities Development Board (AMDB), Assam Building and Other Construction Workers Welfare Board (ABOCWWB), Assam State Disability Welfare Board, Assam State Housing Board, Transgender Welfare Board Assam, Urban Water Supply & Sewerage Board Assam, State Haj Committee, Christian Welfare Board, Buddhist Welfare Board, Sikh Welfare Board, Others"
+  },
+  {
+   "fieldname": "column_break_basic_docs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "welfare_board_other",
+   "fieldtype": "Data",
+   "label": "47. If Others, specify",
+   "depends_on": "eval:doc.welfare_board_registered==\"Yes\"",
+   "length": 64,
+   "mandatory_depends_on": "eval:doc.welfare_board_registered==\"Yes\""
+  },
+  {
+   "fieldname": "doc_living_certificate",
+   "fieldtype": "Select",
+   "label": "48. Do you have a Living Certificate?",
+   "options": "\nYes\nNo\nYes, but renewal needed\nUnable to capture/Unsure\nNot Applicable",
+   "depends_on": "eval:doc.age>=60",
+   "description": "Applicable only for 60+.",
+   "length": 24
+  },
+  {
+   "fieldname": "doc_eshram",
+   "fieldtype": "Select",
+   "label": "49. Do you have E-Shram card?",
+   "options": "\nYes\nNo\nYes, but correction needed\nUnable to capture/Unsure",
+   "length": 26
+  },
+  {
+   "fieldname": "doc_bocw_card",
+   "fieldtype": "Select",
+   "label": "50. Do you have BOCW Card?",
+   "options": "\nYes\nNo\nYes, but correction needed\nUnable to capture/Unsure",
+   "description": "If Yes, questions 94 to 104 are shown (Labour Welfare Assistance Schemes).",
+   "length": 26
+  },
+  {
+   "fieldname": "doc_ews",
+   "fieldtype": "Select",
+   "label": "51. Do you have an EWS Certificate?",
+   "options": "\nYes\nNo",
+   "length": 3
+  },
+  {
+   "fieldname": "disability_in_family",
+   "fieldtype": "Select",
+   "label": "52. Is there a person with disability in the family?",
+   "options": "\nYes\nNo",
+   "length": 3
+  },
+  {
+   "fieldname": "disability_type",
+   "fieldtype": "Data",
+   "label": "53. State the disability",
+   "depends_on": "eval:doc.disability_in_family==\"Yes\"",
+   "length": 64
+  },
+  {
+   "fieldname": "udid_applied",
+   "fieldtype": "Select",
+   "label": "53.1. Have you applied for the Unique Disability ID (UDID)?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.disability_in_family==\"Yes\"",
+   "length": 3
+  },
+  {
+   "fieldname": "udid_number",
+   "fieldtype": "Data",
+   "label": "53.2. What is the UDID Number?",
+   "depends_on": "eval:doc.udid_applied==\"Yes\"",
+   "length": 64
+  },
+  {
+   "fieldname": "doc_pwd_certificate",
+   "fieldtype": "Select",
+   "label": "54. Do you have PWD certificate?",
+   "options": "\nYes\nNo\nYes, but correction/ renewal needed",
+   "length": 35
+  },
+  {
+   "fieldname": "doc_transgender_certificate",
+   "fieldtype": "Select",
+   "label": "55. Do you have Transgender Certificate?",
+   "options": "\nYes\nNo\nYes, but correction/renewal needed",
+   "depends_on": "eval:doc.gender==\"Other\"||doc.gender_repeat==\"Other\"",
+   "description": "Shown when Gender is Other.",
+   "length": 34
+  },
+  {
+   "fieldname": "tab_schemes",
+   "fieldtype": "Tab Break",
+   "label": "Govt Schemes & Entitlements",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "section_women",
+   "fieldtype": "Section Break",
+   "label": "Schemes for Women",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "sch_orunodoi",
+   "fieldtype": "Select",
+   "label": "56. Are you linked with the Assam Orunodoi Scheme?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Direct financial assistance to economically vulnerable families for essential expenses.",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_widow_pension",
+   "fieldtype": "Select",
+   "label": "57. Do you currently receive a Widow Pension?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Indira Gandhi National Widow Pension Scheme (Central); Indira Miri Universal Widow Pension Scheme (State)",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_mahila_udyamita",
+   "fieldtype": "Select",
+   "label": "58. Have you received any supports for self-employment and entrepreneurship through financial and skill-based assistance?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Mahila Udyamita Abhiyaan",
+   "length": 14
+  },
+  {
+   "fieldname": "column_break_women",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sch_mahila_awas",
+   "fieldtype": "Select",
+   "label": "59. Have you availed housing support to promote secure living conditions?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Mahila Awas Yojana",
+   "length": 14
+  },
+  {
+   "fieldname": "registered_with_shg",
+   "fieldtype": "Select",
+   "label": "60. Are you registered with a SHG?",
+   "options": "\nYes\nNo",
+   "length": 3
+  },
+  {
+   "fieldname": "sch_swanirbhar_naari",
+   "fieldtype": "Select",
+   "label": "60.1. Did you receive any benefits to promote women empowerment by supporting self-help groups with livelihood opportunities?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "depends_on": "eval:doc.registered_with_shg==\"Yes\"",
+   "description": "Swanirbhar Naari Scheme",
+   "length": 14
+  },
+  {
+   "fieldname": "section_pregnant",
+   "fieldtype": "Section Break",
+   "label": "Schemes for Pregnant and Lactating Mothers",
+   "depends_on": "eval:Number(doc.consent_given)===1 && doc.household_has_pregnant",
+   "description": "Shown when the Household Profile says \"Yes\" to the matching health question."
+  },
+  {
+   "fieldname": "sch_pmjay_maternity",
+   "fieldtype": "Select",
+   "label": "61. Did you receive maternity services and care for your newborn during pregnancy and after childbirth?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Ayushman Bharat PM-JAY",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_jsy",
+   "fieldtype": "Select",
+   "label": "62. For child birth at a hospital, did you receive full cash benefits?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Janani Suraksha Yojana (JSY - Assam implementation)",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_mamoni",
+   "fieldtype": "Select",
+   "label": "63. For ensuring safer pregnancy, did you avail cash assistance for nutritional support, and antenatal check-ups?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Mamoni Scheme",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_adarani",
+   "fieldtype": "Select",
+   "label": "64. Did you avail free transport to safely drop mother, and newborn, along with one attendant, home from government hospitals after delivery?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Adarani Dropback Service (NHM)",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_free_diagnostics",
+   "fieldtype": "Select",
+   "label": "65. Have you availed services like free CT scans, X-rays, and laboratory tests at government hospitals to reduce medical expenses?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Chief Minister's Free Diagnostic Services (Assam State)",
+   "length": 14
+  },
+  {
+   "fieldname": "column_break_pregnant",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sch_poshan_pregnant",
+   "fieldtype": "Select",
+   "label": "66. Have you received free supplementary nutrition, take-home rations, growth monitoring, and counseling through Anganwadi Centres to pregnant mothers for reducing anaemia, stunting, and maternal malnutrition?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "POSHAN Abhiyaan",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_pmsma",
+   "fieldtype": "Select",
+   "label": "67. During the 2nd and 3rd trimesters of pregnancy, did you receive free antenatal care check-ups and services at a government health facility?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Pradhan Mantri Surakshit Matritva Abhiyan - PMSMA",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_nipi_pregnant",
+   "fieldtype": "Select",
+   "label": "68. Have you received free Iron and Folic Acid (IFA) supplementation, haemoglobin testing, deworming, and nutrition counseling during pregnancy?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "National Iron Plus Initiative - NIPI",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_matri_suraksha",
+   "fieldtype": "Select",
+   "label": "69. Did you avail free maternal healthcare services to reduce risks during pregnancy and childbirth?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Matri Suraksha Yojana",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_pmmvy",
+   "fieldtype": "Select",
+   "label": "70. Did the pregnant and lactating women receive cash incentives for nutrition and wage loss compensation?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Pradhan Mantri Matru Vandana Yojana",
+   "length": 14
+  },
+  {
+   "fieldname": "section_girls",
+   "fieldtype": "Section Break",
+   "label": "Schemes for Girls",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "sch_ssy",
+   "fieldtype": "Select",
+   "label": "71. Have you applied for any savings scheme for the girl child under 10 years that will help in her education and career growth?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Sukanya Samriddhi Yojana (SSY)",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_nijut_moina",
+   "fieldtype": "Select",
+   "label": "72. Have you availed any financial aid for school-going girl child to encourage continued education and reduce dropouts?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Nijut Moina Scheme",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_pragyan_bharati_girls",
+   "fieldtype": "Select",
+   "label": "73. For meritorious girl students, have you received free textbooks, uniform, and scooter for merit in academics?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Pragyan Bharati Scheme",
+   "length": 14
+  },
+  {
+   "fieldname": "column_break_girls",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sch_rksk_girls",
+   "fieldtype": "Select",
+   "label": "74. Have you availed adolescent-friendly health services, counseling, nutrition, mental health and reproductive health education?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Rashtriya Kishor Swasthya Karyakram (RKSK)",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_majoni",
+   "fieldtype": "Select",
+   "label": "75. Are you receiving monthly financial assistance for your higher education as part of the government's support program for girl students in Assam?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Majoni Scheme",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_nipi_girls",
+   "fieldtype": "Select",
+   "label": "76. Do you receive weekly iron-folic acid tablets, biannual deworming, and nutrition counseling at your school or Anganwadi Centre to help prevent anaemia and improve your health?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "National Iron Plus Initiative - NIPI",
+   "length": 14
+  },
+  {
+   "fieldname": "section_boys",
+   "fieldtype": "Section Break",
+   "label": "Schemes for Boys",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "sch_nijut_babu_asoni",
+   "fieldtype": "Select",
+   "label": "77. Are you receiving annual financial assistance for undergraduate and postgraduate studies under the newly launched government scheme to encourage boys' higher education enrolment?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Nijut Babu Asoni",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_cm_jibon_prerana",
+   "fieldtype": "Select",
+   "label": "78. For fresh graduates, have you availed any financial support for skill upgrading and entrepreneurship?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "CM Jibon Prerana Scheme",
+   "length": 14
+  },
+  {
+   "fieldname": "column_break_boys",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sch_rksk_boys",
+   "fieldtype": "Select",
+   "label": "79. Have you availed adolescent-friendly health services, counseling, nutrition, mental health and reproductive health education?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Rashtriya Kishor Swasthya Karyakram (RKSK)",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_pragyan_bharati_boys",
+   "fieldtype": "Select",
+   "label": "80. For meritorious boy students, have you received free textbooks, uniform, and scooter for merit in academics?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Pragyan Bharati Scheme",
+   "length": 14
+  },
+  {
+   "fieldname": "section_skills",
+   "fieldtype": "Section Break",
+   "label": "Skill Development Schemes",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "sch_estp",
+   "fieldtype": "Select",
+   "label": "81. Are you enrolled in any skill training and job placement opportunities for urban population aged 18-35 years under DAY-NULM?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Employment Through Skills Training & Placement (ESTP)",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_sep",
+   "fieldtype": "Select",
+   "label": "82. Have you received any financial assistance, credit support, or skill training to start your own business?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Self-Employment Programme (SEP)",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_skill_mission_assam",
+   "fieldtype": "Select",
+   "label": "83. Are you part of any State initiative which trains youth in employable skills and enhance livelihood opportunities?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Skill Development Mission Assam",
+   "length": 14
+  },
+  {
+   "fieldname": "column_break_skills",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sch_pmkvy_training",
+   "fieldtype": "Select",
+   "label": "84. Are you enrolled to any flagship skill development scheme offering free short-term training and certification?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "PMKVY - Pradhan Mantri Kaushal Vikas Yojana",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_pmkvy_placement",
+   "fieldtype": "Select",
+   "label": "85. Are you enrolled to any Placement-linked training program?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "PMKVY - Pradhan Mantri Kaushal Vikas Yojana",
+   "length": 14
+  },
+  {
+   "fieldname": "section_selfemp",
+   "fieldtype": "Section Break",
+   "label": "Self-Employment and Entrepreneurship Schemes",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "sch_pm_svanidhi",
+   "fieldtype": "Select",
+   "label": "86. Have you received any collateral-free working capital loan under the government program for street vending to support self-reliance and livelihood recovery?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "PM SVANidhi Scheme (Prime Minister's Street Vendors' Self-Reliance Fund)",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_mudra",
+   "fieldtype": "Select",
+   "label": "87. Have you received micro-credit loans under a government program to support small or micro enterprises and promote entrepreneurship?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Pradhan Mantri Mudra Yojana",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_vishwakarma",
+   "fieldtype": "Select",
+   "label": "88. Have you received skill training, certification, or financial support as a traditional artisan or craftsperson under a government program?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Pradhan Mantri Vishwakarma Skill Scheme",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_pmegp",
+   "fieldtype": "Select",
+   "label": "89. Have you benefited from a credit-linked subsidy scheme to set up a micro-enterprise?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Prime Minister's Employment Generation Programme (PMEGP)",
+   "length": 14
+  },
+  {
+   "fieldname": "column_break_selfemp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sch_cm_atmanirbhar",
+   "fieldtype": "Select",
+   "label": "90. Are you participating in Assam's initiative that supports youth with training, loans, and entrepreneurship opportunities to promote self-reliance?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "CM Atmanirbhar Asom Abhijaan",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_jan_dhan",
+   "fieldtype": "Select",
+   "label": "91. Do you have a government-provided zero-balance bank account with insurance and overdraft facilities?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "PM Jan Dhan Yojana",
+   "length": 14
+  },
+  {
+   "fieldname": "sch_startup_india",
+   "fieldtype": "Select",
+   "label": "92. Are you part of a government initiative that offers incubation, mentorship, and funding opportunities for innovative youth-led ventures?",
+   "options": "\nYes\nNo\nNot Applicable",
+   "description": "Startup India Scheme",
+   "length": 14
+  },
+  {
+   "fieldname": "section_labour",
+   "fieldtype": "Section Break",
+   "label": "Labour Welfare Assistance Schemes",
+   "description": "Only about 10 schemes that are critical and carry the highest benefits need to be taken up and prioritised in the coming visits. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "sch_pm_shram_yogi",
+   "fieldtype": "Select",
+   "label": "93. Do you get the old-age pension of Rs 3,000 per month for unorganised workers after turning 60?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "description": "Pradhan Mantri Shram Yogi Maandhan Yojana. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_bocw_94",
+   "fieldtype": "Select",
+   "label": "94. Have you availed welfare benefits like health care, education, housing, pension, or financial aid as a registered construction worker?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "depends_on": "eval:doc.doc_bocw_card==\"Yes\"",
+   "description": "Assam Building & Other Construction Workers' Welfare Board Schemes. Linked to question 50 (BOCW Card). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_bocw_95",
+   "fieldtype": "Select",
+   "label": "95. Have you availed the education scholarship under ABOCWWB that provides Rs 5,000-Rs 12,000 per year for up to two children?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "depends_on": "eval:doc.doc_bocw_card==\"Yes\"",
+   "description": "ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_bocw_96",
+   "fieldtype": "Select",
+   "label": "96. Do you know about the death benefit under ABOCWWB, which provides Rs 50,000 for natural death and Rs 3,00,000 for accidental death?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "depends_on": "eval:doc.doc_bocw_card==\"Yes\"",
+   "description": "ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_bocw_97",
+   "fieldtype": "Select",
+   "label": "97. Do you know about the funeral assistance under ABOCWWB that provides Rs 5,000 for funeral expenses?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "depends_on": "eval:doc.doc_bocw_card==\"Yes\"",
+   "description": "ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_bocw_98",
+   "fieldtype": "Select",
+   "label": "98. Have you applied for the general pension under ABOCWWB that gives Rs 2,000 per month plus Rs 100 for each year of membership after age 60?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "depends_on": "eval:doc.doc_bocw_card==\"Yes\"",
+   "description": "ABOCWWB Pension Scheme. Linked to question 50 (BOCW Card). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "column_break_labour",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sch_bocw_99",
+   "fieldtype": "Select",
+   "label": "99. Have you applied for the family pension under ABOCWWB, where the surviving spouse gets 50% of the pension?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "depends_on": "eval:doc.doc_bocw_card==\"Yes\"",
+   "description": "ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_bocw_100",
+   "fieldtype": "Select",
+   "label": "100. Do you know about the disability pension under ABOCWWB that provides Rs 2,000 per month plus Rs 100 for each year of membership, along with ex-gratia support up to Rs 3 lakh?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "depends_on": "eval:doc.doc_bocw_card==\"Yes\"",
+   "description": "ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_bocw_101",
+   "fieldtype": "Select",
+   "label": "101. Have you availed benefits for maternity assistance under ABOCWWB that provides Rs 10,000 for each case?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "depends_on": "eval:doc.doc_bocw_card==\"Yes\"",
+   "description": "ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_bocw_102",
+   "fieldtype": "Select",
+   "label": "102. Do you know about the marriage assistance under ABOCWWB that provides Rs 30,000 to each registered worker?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "depends_on": "eval:doc.doc_bocw_card==\"Yes\"",
+   "description": "ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_bocw_103",
+   "fieldtype": "Select",
+   "label": "103. Have you availed medical assistance under ABOCWWB that provides up to Rs 40,000 per year?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "depends_on": "eval:doc.doc_bocw_card==\"Yes\"",
+   "description": "ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_bocw_104",
+   "fieldtype": "Select",
+   "label": "104. Do you know about the skill development and tool grant under ABOCWWB that offers training plus Rs 5,000 for tool purchase?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "depends_on": "eval:doc.doc_bocw_card==\"Yes\"",
+   "description": "ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "section_disability_support",
+   "fieldtype": "Section Break",
+   "label": "Disability Pensions and Assistive Support",
+   "depends_on": "eval:Number(doc.consent_given)===1 && doc.household_has_disability",
+   "description": "Shown when the Household Profile says \"Yes\" to the matching health question."
+  },
+  {
+   "fieldname": "sch_orunodoi_disability",
+   "fieldtype": "Select",
+   "label": "105. Are you receiving disability pension or assistive support under the Orunodoi Scheme in Assam?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "description": "Orunodoi Scheme. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "column_break_disability_support",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sch_adip",
+   "fieldtype": "Select",
+   "label": "106. Have you received any support with regards to aids such as prosthetics, hearing aids, wheelchairs, tricycles, crutches, or smart canes?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "description": "Assistance to Disabled Persons for Purchase/Fitting of Aids and Appliances (ADIP) scheme. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "section_elderly",
+   "fieldtype": "Section Break",
+   "label": "Schemes for Elderly",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "sch_orunodoi_3",
+   "fieldtype": "Select",
+   "label": "107. Do you receive Rs 1,500 per month (including the LPG subsidy) through Direct Benefit Transfer under Assam's support program for elderly and vulnerable groups?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "description": "Orunodoi 3.0. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_pm_sym",
+   "fieldtype": "Select",
+   "label": "108. Are you enrolled in the voluntary pension scheme for unorganised workers that assures a minimum Rs 3,000 monthly pension after age 60, with government-matched contributions and family pension benefits?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "description": "PM-SYM Pension (for unorganised elderly workers). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "column_break_elderly",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sch_kushal_konwar",
+   "fieldtype": "Select",
+   "label": "109. Are you enrolled in Assam's universal old-age pension scheme named after Kushal Konwar, which provides social security to all elderly citizens regardless of income or occupation?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "description": "Swahid Kushal Konwar Sarbajanin Briddha Pension Achoni. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_abocwwb_pension",
+   "fieldtype": "Select",
+   "label": "110. Are you receiving financial support under Assam's social security program for registered construction workers in the unorganised sector?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "description": "ABOCWWB Pension scheme. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "section_health_finance",
+   "fieldtype": "Section Break",
+   "label": "Health and Financial Inclusion Schemes",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "sch_pmjjby",
+   "fieldtype": "Select",
+   "label": "111. Do you have the government life insurance scheme with Rs 2 lakh coverage at an annual premium of Rs 436?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "description": "Pradhan Mantri Jeevan Jyoti Bima Yojana. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_pmsby",
+   "fieldtype": "Select",
+   "label": "112. Do you have the accident insurance scheme with Rs 2 lakh coverage for death or total disability and Rs 1 lakh for partial disability at an annual premium of Rs 20?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "description": "Pradhan Mantri Suraksha Bima Yojana. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "column_break_health_finance",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sch_pmjay",
+   "fieldtype": "Select",
+   "label": "113. Do you receive cashless health insurance coverage of up to Rs 5 lakh per family per year under a government program?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "description": "Ayushman Bharat - PMJAY. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "sch_apy",
+   "fieldtype": "Select",
+   "label": "114. Do you have the contributory pension scheme for unorganised workers that gives a monthly pension between Rs 1,000 and Rs 5,000 after age 60, with family pension for the spouse?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "description": "Atal Pension Yojana (APY). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "section_housing",
+   "fieldtype": "Section Break",
+   "label": "Housing & Shelter Schemes",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "sch_pmay_u",
+   "fieldtype": "Select",
+   "label": "115. Are you a beneficiary of the Pradhan Mantri Awas Yojana - Urban (PMAY-U) housing scheme, which provides affordable housing through ISSR, BLC, AHP, or CLSS?",
+   "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
+   "description": "PMAY-Urban (ISSR/BLC/AHP/CLSS) scheme. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
+   "length": 17
+  },
+  {
+   "fieldname": "tab_status",
+   "fieldtype": "Tab Break",
+   "label": "Status",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "section_status",
+   "fieldtype": "Section Break",
+   "label": "Status",
+   "depends_on": "eval:Number(doc.consent_given)===1"
+  },
+  {
+   "fieldname": "documentation_status",
+   "fieldtype": "Select",
+   "label": "116. Documentation Status",
+   "options": "Completed\nPartially Completed",
+   "description": "Community Organisers to state.",
+   "default": "Partially Completed",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "length": 19
+  },
+  {
+   "fieldname": "column_break_status",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "validation_status",
+   "fieldtype": "Link",
+   "label": "117. Validation Status",
+   "options": "Validation Status",
+   "description": "Area Coordinator to validate. Choose Revision Needed and refer to the comments when something must be corrected.",
+   "in_standard_filter": 1,
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-01 10:00:00.000000",
+ "modified": "2026-10-06 15:00:00.000000",
  "modified_by": "Administrator",
  "module": "Baseline",
  "name": "Individual Profile",
  "owner": "Administrator",
  "row_format": "Dynamic",
  "states": [],
- "autoname": "format:IND-{#####}",
- "naming_rule": "Expression",
+ "autoname": "IND.####",
+ "naming_rule": "Expression (old style)",
  "title_field": "member_name",
  "show_title_field_in_link": 1,
  "permissions": [
@@ -334,5 +1626,6 @@
  "allow_rename": 1,
  "track_changes": 1,
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "search_fields": "member_name,hhid,mobile_number,household,respondent_name"
 }

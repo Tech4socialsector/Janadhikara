@@ -41,7 +41,3 @@ watchEffect(() => {
   }
   firstRun = false
 })
-
-export function toggleTheme() {
-  currentTheme.value = currentTheme.value === 'dark' ? 'light' : 'dark'
-}

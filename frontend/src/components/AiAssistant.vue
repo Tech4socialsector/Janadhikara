@@ -141,6 +141,7 @@ import {
   assistantState,
   assistantConfigResource,
   conversation,
+  clearAssistantConversation,
   sendAssistantMessage,
   sending,
 } from '@/data/aiAssistant'
@@ -173,7 +174,7 @@ watch(
 )
 
 function clearConversation() {
-  conversation.value = []
+  clearAssistantConversation()
   sendError.value = null
 }
 

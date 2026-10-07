@@ -1,3 +1,5 @@
+import { HOUSEHOLD_NOTICE, todayString } from '@/utils/dpdpNotice'
+
 // Household Profile: capture what the logged-in worker already implies.
 //
 // On a new household, the server (janadhikara.api.get_household_field_defaults)
@@ -18,7 +20,6 @@ function fillIfEmpty(values, fieldname, value) {
 function applyPlace(values, place, { overwrite = false } = {}) {
   const set = overwrite ? (f, v) => v && (values[f] = v) : (f, v) => fillIfEmpty(values, f, v)
   set('settlement', place.settlement)
-  set('settlement_intervention_unit', place.settlement_intervention_unit)
 }
 
 export function onLoad(values, ctx) {
@@ -38,3 +39,40 @@ export function onLoad(values, ctx) {
     })
 }
 
+
+// The respondent is the head of the family unless a head is named: the head's name follows the respondent
+// while it is empty or still the respondent's previous name.
+let lastRespondent = ''
+export function onFieldChange(fieldname, values, ctx) {
+  // Choosing "Going Ahead" first shows the DPDP notice. Consent is recorded when it is confirmed; if it is
+  // closed without confirming, the choice is undone and the personal questions stay hidden.
+  if (fieldname === 'availability_for_survey' && values.availability_for_survey === 'Going Ahead' && !Number(values.consent_given) && ctx?.confirmNotice) {
+    setTimeout(() => {
+      ctx.confirmNotice({
+        ...HOUSEHOLD_NOTICE,
+        onConfirm: () => {
+          values.consent_given = 1
+          values.consent_mode = values.consent_mode || 'Verbal (recorded)'
+          values.consent_date = todayString()
+        },
+        onCancel: () => {
+          values.availability_for_survey = null
+        },
+      })
+    }, 0)
+  }
+  // The partner follows the chosen settlement.
+  if (fieldname === 'settlement' && values.settlement) {
+    ctx.call('frappe.client.get_value', { doctype: 'Settlement', filters: { name: values.settlement }, fieldname: 'partner_organization' })
+      .then((res) => {
+        const partner = (res?.message ?? res)?.partner_organization
+        if (partner) values.partner_organization = partner
+      })
+      .catch(() => {})
+  }
+  if (fieldname !== 'respondent_name') return
+  if (!values.household_head_name || values.household_head_name === lastRespondent) {
+    values.household_head_name = values.respondent_name
+  }
+  lastRespondent = values.respondent_name || ''
+}

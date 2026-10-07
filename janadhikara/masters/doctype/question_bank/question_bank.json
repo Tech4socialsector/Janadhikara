@@ -12,28 +12,32 @@
  "owner": "Administrator",
  "row_format": "Dynamic",
  "states": [],
- "autoname": "format:QB-{#####}",
- "naming_rule": "Expression",
+ "autoname": "QB.####",
+ "naming_rule": "Expression (old style)",
  "title_field": "question",
  "show_title_field_in_link": 1,
  "field_order": [
   "for_doctype",
   "question_no",
   "enabled",
-  "column_break_main",
   "group_type",
+  "column_break_main",
   "section_group",
   "tab_group",
   "is_mandatory",
   "section_break_question",
   "question",
-  "answer_type",
+  "description",
   "column_break_options",
+  "answer_type",
   "options",
   "section_break_condition",
   "depends_on_question",
-  "column_break_condition",
+  "depends_on_operator",
   "depends_on_answer",
+  "column_break_condition",
+  "section_depends_on_question",
+  "section_depends_on_answer",
   "section_break_show_if",
   "show_if_doctype",
   "show_if_field",
@@ -56,17 +60,17 @@
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "The form this question is part of. It is shown on that form and its answer is kept with the record - no field is added to the doctype."
+   "description": "The form this question is part of. It is shown on that form and its answer is kept with the record - no field is added to the doctype.",
+   "search_index": 1
   },
   {
    "fieldname": "question_no",
    "fieldtype": "Data",
    "label": "Question No",
    "reqd": 1,
-   "unique": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "The number the question carries on the questionnaire, e.g. 12 or 4.2."
+   "description": "Unique for the form it is asked on, e.g. 12 or 6.1.2."
   },
   {
    "fieldname": "enabled",
@@ -77,10 +81,6 @@
    "description": "Switch off to stop asking it, without deleting."
   },
   {
-   "fieldname": "column_break_main",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "group_type",
    "fieldtype": "Select",
    "label": "Group as",
@@ -88,6 +88,10 @@
    "default": "Individual question",
    "in_standard_filter": 1,
    "description": "Individual question: shown on its own. Section: shown with the other questions of the same section. Tab: shown in its own tab on the form, next to the form's other tabs."
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "section_group",
@@ -126,18 +130,24 @@
    "in_list_view": 1
   },
   {
-   "fieldname": "answer_type",
-   "fieldtype": "Select",
-   "label": "Answer Type",
-   "options": "Text\nNumber\nDate\nYes / No\nSelect\nMulti-select",
-   "default": "Text",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Help text",
+   "description": "Shown under the question to guide whoever answers it."
   },
   {
    "fieldname": "column_break_options",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "answer_type",
+   "fieldtype": "Select",
+   "label": "Answer Type",
+   "options": "Text\nLong Text\nNumber\nDate\nYes / No\nSelect\nMulti-select\nLocation\nPhoto",
+   "default": "Text",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "options",
@@ -162,8 +172,13 @@
    "description": "Show this question only when that question has the answer below. e.g. Do you receive a government scheme?"
   },
   {
-   "fieldname": "column_break_condition",
-   "fieldtype": "Column Break"
+   "fieldname": "depends_on_operator",
+   "fieldtype": "Select",
+   "label": "Condition",
+   "options": "=\n!=\ncontains\nis set\nis not set",
+   "default": "=",
+   "depends_on": "eval:doc.depends_on_question",
+   "description": "'contains' is for a multi-select question: shown when that choice is among the answers."
   },
   {
    "fieldname": "depends_on_answer",
@@ -172,6 +187,23 @@
    "depends_on": "eval:doc.depends_on_question",
    "mandatory_depends_on": "eval:doc.depends_on_question",
    "description": "The exact answer that makes this question appear, e.g. Yes (or Rented, Widowed)."
+  },
+  {
+   "fieldname": "column_break_condition",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_depends_on_question",
+   "fieldtype": "Link",
+   "label": "Section depends on question",
+   "options": "Question Bank",
+   "description": "The whole section (and its tab, if every question in it is hidden) is shown only when that question has the answer below. Saved on every question of the section."
+  },
+  {
+   "fieldname": "section_depends_on_answer",
+   "fieldtype": "Data",
+   "label": "Section depends on answer",
+   "depends_on": "eval:doc.section_depends_on_question"
   },
   {
    "fieldname": "section_break_show_if",
@@ -312,5 +344,6 @@
  "sort_field": "question_no",
  "sort_order": "ASC",
  "track_changes": 1,
- "allow_rename": 1
+ "allow_rename": 1,
+ "search_fields": "question,question_no,for_doctype"
 }

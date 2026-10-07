@@ -97,5 +97,6 @@
  "sort_order": "ASC",
  "states": [],
  "title_field": "section_name",
- "show_title_field_in_link": 1
+ "show_title_field_in_link": 1,
+ "search_fields": "section_name"
 }

@@ -5,7 +5,6 @@ import { reactive } from 'vue'
 import { call } from 'frappe-ui'
 import { localRows } from '@/data/offlinePack'
 
-export const ANSWERS_DOCTYPE = 'Question Answer'
 const cache = reactive({}) // doctype -> [question]
 const loading = {}
 
@@ -39,6 +38,7 @@ function compare(actual, operator, expected) {
   const text = actual == null ? '' : String(actual).trim()
   if (operator === 'is set') return !!text
   if (operator === 'is not set') return !text
+  if (operator === 'contains') return text.split('\n').map((v) => v.trim()).includes(String(expected || '').trim())
   if (operator === '!=') return text !== (expected || '')
   return text === (expected || '')
 }
@@ -53,8 +53,9 @@ function fieldCondition(q, prefix, values, doctype) {
 export function isShown(q, values, answers, doctype) {
   if (!fieldCondition(q, 'show_if', values, doctype)) return false
   if (!fieldCondition(q, 'section_show_if', values, doctype)) return false
+  if (q.section_depends_on_question && !compare(answers[q.section_depends_on_question], '=', q.section_depends_on_answer)) return false
   if (q.depends_on_question) {
-    return String(answers[q.depends_on_question] || '').trim() === String(q.depends_on_answer || '').trim()
+    return compare(answers[q.depends_on_question], q.depends_on_operator || '=', q.depends_on_answer)
   }
   return true
 }

@@ -187,7 +187,10 @@
           <FormControl type="text" label="Task title" placeholder="e.g. Visit the Sunrise settlement" v-model="form.title" :disabled="readOnly" />
           <FormControl type="textarea" label="Description" placeholder="Details (optional)" v-model="form.description" :rows="3" :disabled="readOnly" />
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <FormControl type="date" label="Due date" v-model="form.date" :disabled="readOnly" />
+            <div>
+              <label class="mb-1.5 block text-xs text-ink-gray-5">Due date</label>
+              <DatePicker format="DD MMM YYYY" v-model="form.date" :disabled="readOnly" />
+            </div>
             <div>
               <label class="mb-1.5 block text-xs text-ink-gray-5">Due time</label>
               <TimePicker v-model="form.time" class="w-full" :disabled="readOnly" />
@@ -231,7 +234,7 @@
 import { ref, computed, reactive, watch, onMounted, h, defineComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
-import { useList, useCall, call, toast, ErrorMessage, TabButtons, Button, Dialog, FormControl, TextInput, TimePicker, FeatherIcon } from 'frappe-ui'
+import { useList, useCall, call, toast, ErrorMessage, TabButtons, Button, Dialog, FormControl, TextInput, TimePicker, FeatherIcon, DatePicker } from 'frappe-ui'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import Skeleton from '@/components/Skeleton.vue'

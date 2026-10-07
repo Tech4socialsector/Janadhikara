@@ -2,7 +2,7 @@
 <template v-if="isVisible">
   <IndiaGeoField
     v-if="controlType === 'india-geo'"
-    :field="field"
+    :field="effField"
     :model-value="modelValue"
     :disabled="isReadOnly"
     :filters="linkFilters"
@@ -11,7 +11,7 @@
 
   <div v-else-if="controlType === 'geolocation'">
   <GeoLocationField
-    :field="field"
+    :field="effField"
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
     @address-resolved="(text) => $emit('address-resolved', text)"
@@ -23,7 +23,7 @@
 
   <div v-else-if="controlType === 'table-multiselect'">
     <TableMultiSelectField
-      :field="field"
+      :field="effField"
       :model-value="modelValue"
       @update:model-value="$emit('update:modelValue', $event)"
     />
@@ -32,7 +32,7 @@
 
   <DoctypeFieldPicker
     v-else-if="controlType === 'doctype-field'"
-    :field="field"
+    :field="effField"
     :doctype="pickerDoctype"
     :fieldtypes="pickerFieldtypes"
     :disabled="isReadOnly"
@@ -50,7 +50,7 @@
       />
       <FeatherIcon v-else name="paperclip" class="h-5 w-5 flex-shrink-0 text-gray-400" />
       <a
-        :href="modelValue"
+        :href="safeFileUrl"
         target="_blank"
         rel="noopener"
         class="min-w-0 flex-1 truncate text-sm text-gray-700 hover:underline dark:text-gray-300"
@@ -64,7 +64,7 @@
     <FileUploader
       v-else
       :file-types="isImageField ? 'image/*' : undefined"
-      :upload-args="{ doctype, docname, private: false }"
+      :upload-args="{ doctype, docname, private: uploadsArePrivate }"
       @success="(file) => $emit('update:modelValue', file.file_url)"
     >
       <template #default="{ uploading, progress, openFileSelector }">
@@ -90,7 +90,7 @@
     type="select"
     class="[&_[data-slot=trigger]]:w-full"
     :label="field.label"
-    :required="!!field.reqd"
+    :required="!!isRequired"
     :disabled="isReadOnly"
     :options="conditionValueOptions"
     :description="`Pick one of ${conditionField.label || conditionField.fieldname}'s values.`"
@@ -104,7 +104,7 @@
     class="[&_[data-slot=trigger]]:w-full"
     :class="readOnlyClass"
     :label="field.label"
-    :required="!!field.reqd"
+    :required="!!isRequired"
     :disabled="isReadOnly"
     :options="selectOptions"
     :description="selectDescription"
@@ -120,12 +120,50 @@
     :model-value="!!modelValue"
     @update:model-value="$emit('update:modelValue', $event ? 1 : 0)"
   />
+  <!-- Pick several: a normal field (a dropdown that takes more than one value); kept one per line -->
+  <div v-else-if="controlType === 'multi-choice'">
+    <label class="mb-1.5 block text-sm text-gray-700 dark:text-gray-300">{{ field.label }}<span v-if="isRequired" class="text-red-500">*</span></label>
+    <div class="overflow-hidden rounded-lg border border-outline-gray-2 bg-surface-white" role="group" :aria-label="field.label">
+      <div class="grid gap-0.5 p-1.5 sm:grid-cols-2" :class="choiceOptions.length > 8 ? 'lg:grid-cols-3' : ''">
+        <button
+          v-for="o in choiceOptions"
+          :key="o"
+          type="button"
+          :disabled="isReadOnly"
+          :aria-pressed="chosenChoices.includes(o)"
+          class="flex items-center gap-3 rounded-md px-2.5 py-2 text-left text-sm transition-colors focus:outline-none focus-visible:bg-surface-gray-2 disabled:cursor-not-allowed disabled:opacity-60"
+          :class="chosenChoices.includes(o) ? 'bg-surface-gray-2 text-ink-gray-9' : 'text-ink-gray-7 hover:bg-surface-gray-1'"
+          @click="toggleChoice(o)"
+        >
+          <span
+            class="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[5px] border transition-colors"
+            :class="chosenChoices.includes(o) ? 'border-gray-900 bg-gray-900 text-white dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900' : 'border-outline-gray-3 bg-surface-white'"
+          >
+            <FeatherIcon v-if="chosenChoices.includes(o)" name="check" class="h-3 w-3" />
+          </span>
+          <span class="min-w-0 break-words" :class="chosenChoices.includes(o) ? 'font-medium' : ''">{{ o }}</span>
+        </button>
+      </div>
+      <div class="flex items-center justify-between border-t border-outline-gray-1 bg-surface-gray-1 px-3.5 py-1.5 text-p-xs text-ink-gray-5">
+        <span>{{ chosenChoices.length }} of {{ choiceOptions.length }} selected</span>
+        <button
+          v-if="chosenChoices.length && !isReadOnly"
+          type="button"
+          class="font-medium text-ink-gray-7 hover:text-ink-gray-9"
+          @click="$emit('update:modelValue', '')"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+    <p v-if="field.description" class="mt-1.5 whitespace-pre-line text-p-xs text-ink-gray-5">{{ field.description }}</p>
+  </div>
   <div v-else-if="controlType === 'textarea'">
     <FormControl
       type="textarea"
       :class="readOnlyClass"
       :label="field.label"
-      :required="!!field.reqd"
+      :required="!!isRequired"
       :disabled="isReadOnly"
       :description="field.description"
       :model-value="modelValue"
@@ -137,7 +175,7 @@
 
   <div v-else-if="controlType === 'rich-text'">
     <label class="mb-1.5 block text-sm text-gray-700 dark:text-gray-300">
-      {{ field.label }}<span v-if="field.reqd" class="text-red-500">*</span>
+      {{ field.label }}<span v-if="isRequired" class="text-red-500">*</span>
     </label>
     <TextEditor
       :content="modelValue || ''"
@@ -151,7 +189,7 @@
 
   <div v-else-if="controlType === 'rating'" class="space-y-1.5">
     <label class="block text-sm text-gray-700 dark:text-gray-300">
-      {{ field.label }}<span v-if="field.reqd" class="text-red-500">*</span>
+      {{ field.label }}<span v-if="isRequired" class="text-red-500">*</span>
     </label>
     <Rating
       :model-value="ratingValue"
@@ -163,7 +201,7 @@
 
   <div v-else-if="controlType === 'time'">
     <label class="mb-1.5 block text-sm text-gray-700 dark:text-gray-300">
-      {{ field.label }}<span v-if="field.reqd" class="text-red-500">*</span>
+      {{ field.label }}<span v-if="isRequired" class="text-red-500">*</span>
     </label>
     <TimePicker
       class="w-full"
@@ -177,7 +215,7 @@
 
   <div v-else-if="controlType === 'duration'" class="space-y-1.5">
     <label class="block text-sm text-gray-700 dark:text-gray-300">
-      {{ field.label }}<span v-if="field.reqd" class="text-red-500">*</span>
+      {{ field.label }}<span v-if="isRequired" class="text-red-500">*</span>
     </label>
     <div class="grid grid-cols-4 gap-2">
       <div v-for="seg in durationSegments" :key="seg.key">
@@ -195,7 +233,7 @@
 
   <div v-else-if="controlType === 'color'">
     <label class="mb-1.5 block text-sm text-gray-700 dark:text-gray-300">
-      {{ field.label }}<span v-if="field.reqd" class="text-red-500">*</span>
+      {{ field.label }}<span v-if="isRequired" class="text-red-500">*</span>
     </label>
     <div class="flex items-center gap-2">
       <input
@@ -222,7 +260,7 @@
     type="autocomplete"
     :class="readOnlyClass"
     :label="field.label"
-    :required="!!field.reqd"
+    :required="!!isRequired"
     :disabled="isReadOnly"
     :options="selectOptions"
     :description="field.description"
@@ -235,7 +273,7 @@
       type="textarea"
       :class="[readOnlyClass, 'font-mono text-xs']"
       :label="field.label"
-      :required="!!field.reqd"
+      :required="!!isRequired"
       :disabled="isReadOnly"
       :description="jsonError || field.description"
       :model-value="modelValue"
@@ -256,7 +294,7 @@
 
   <LinkField
     v-else-if="controlType === 'link'"
-    :field="field"
+    :field="effField"
     :filters="linkFilters"
     :disabled="isReadOnly"
     :class="readOnlyClass"
@@ -269,12 +307,29 @@
       </UserLinkHoverCard>
     </template>
   </LinkField>
+  <div v-else-if="controlType === 'date' || controlType === 'datetime-local'">
+    <label class="mb-1.5 block text-xs text-ink-gray-5">
+      {{ field.label }}<span v-if="isRequired" class="text-red-500">*</span>
+    </label>
+    <component
+      :is="controlType === 'date' ? DatePicker : DateTimePicker"
+      :class="readOnlyClass"
+      :format="controlType === 'date' ? 'DD MMM YYYY' : undefined"
+      :disabled="isReadOnly"
+      :model-value="modelValue || ''"
+      placeholder="Select date"
+      @update:model-value="$emit('update:modelValue', $event || null)"
+      @blur="touched = true"
+    />
+    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
+    <p v-if="touched && validationError" class="mt-1.5 text-xs text-red-500">{{ validationError }}</p>
+  </div>
   <div v-else>
     <FormControl
       :type="controlType"
       :class="readOnlyClass"
       :label="field.label"
-      :required="!!field.reqd"
+      :required="!!isRequired"
       :disabled="isReadOnly"
       :description="linkDescription"
       :model-value="modelValue"
@@ -287,11 +342,12 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
-import { FormControl, FileUploader, Button, FeatherIcon, Tooltip, TextEditor, Rating, TimePicker } from 'frappe-ui'
+import { computed, defineAsyncComponent, ref, watch } from 'vue'
+import { FormControl, FileUploader, Button, FeatherIcon, Tooltip, TextEditor, Rating, TimePicker, DatePicker, DateTimePicker } from 'frappe-ui'
 import UserLinkHoverCard from '@/components/UserLinkHoverCard.vue'
-import GeoLocationField from '@/components/GeoLocationField.vue'
-import IndiaGeoField from '@/components/IndiaGeoField.vue'
+// The map and the India states/districts pickers are only needed by a few forms: load them when first shown
+const GeoLocationField = defineAsyncComponent(() => import('@/components/GeoLocationField.vue'))
+const IndiaGeoField = defineAsyncComponent(() => import('@/components/IndiaGeoField.vue'))
 import LinkField from '@/components/LinkField.vue'
 import DoctypeFieldPicker from '@/components/DoctypeFieldPicker.vue'
 import { fieldFunctionRegistryResource } from '@/data/fieldFunctionRegistry'
@@ -299,6 +355,10 @@ import TableMultiSelectField from '@/components/TableMultiSelectField.vue'
 import { getValidatorForField } from '@/utils/validation'
 import { evaluateDependsOn } from '@/utils/dependsOn'
 import { loadDoctypeFields } from '@/data/doctypeMeta'
+
+// Uploaded documents and photos hold personal data: they are private files (served only to a signed-in
+// user). Only logos, which the sign-in page also shows, stay public.
+const PUBLIC_UPLOAD_DOCTYPES = ['App Setting', 'Partner Details', 'User']
 
 const props = defineProps({
   field: { type: Object, required: true },
@@ -314,6 +374,8 @@ const props = defineProps({
   // For a field inside a child-table row: the parent form's values, so a
   // picker can read a parent-level field (e.g. Target Doctype).
   parentValues: { type: Object, default: () => ({}) },
+  // The whole row/form is being viewed, not edited (e.g. a unit that belongs to another worker).
+  readOnly: { type: Boolean, default: false },
 })
 const emit = defineEmits(['update:modelValue', 'address-resolved', 'pincode-resolved', 'location-resolved', 'geo-changed'])
 
@@ -324,7 +386,19 @@ const emit = defineEmits(['update:modelValue', 'address-resolved', 'pincode-reso
 // on Q19's own answer, not just a field elsewhere on the form).
 // `parent` in a child row's depends_on (e.g. "eval:parent.has_intervention_units")
 // is the parent form's values - same as Frappe desk.
+const uploadsArePrivate = computed(() => !PUBLIC_UPLOAD_DOCTYPES.includes(props.doctype))
+// Only a stored file or a web address may become a link (never a javascript: value typed through the API)
+const safeFileUrl = computed(() =>
+  /^(\/files\/|\/private\/files\/|https?:\/\/)/.test(String(props.modelValue || '')) ? props.modelValue : '#',
+)
 const isVisible = computed(() => evaluateDependsOn(props.field.depends_on, props.siblingValues, props.parentValues))
+// Mandatory, or mandatory only while its `mandatory_depends_on` holds - shown with the red * either way
+const isRequired = computed(
+  () =>
+    !!props.field.reqd ||
+    (!!props.field.mandatory_depends_on && !!evaluateDependsOn(props.field.mandatory_depends_on, props.siblingValues, props.parentValues))
+)
+const effField = computed(() => ({ ...props.field, reqd: isRequired.value ? 1 : 0 }))
 
 // A Data field whose `options` names one of these renders as a plain
 // searchable dropdown backed by a free India states/districts dataset
@@ -446,8 +520,11 @@ const controlType = computed(() => {
       return 'select'
     case 'Check':
       return 'checkbox'
-    case 'Text':
     case 'Small Text':
+      // A Small Text with several choices listed in its Options is a "pick all that apply" question.
+      if ((props.field.options || '').includes('\n')) return 'multi-choice'
+      return 'textarea'
+    case 'Text':
     case 'Long Text':
     case 'Code':
     case 'Markdown Editor':
@@ -596,7 +673,15 @@ const dynamicLinkField = computed(() => ({ ...props.field, options: dynamicLinkD
 // covers both Select's own trigger (a <button>) and LinkField.vue's
 // Combobox trigger (a plain element in its "input" trigger mode, not a
 // button), which reads this same class off its own wrapper div.
-const isReadOnly = computed(() => !!props.field.read_only)
+const choiceOptions = computed(() => (props.field.options || '').split('\n').map((o) => o.trim()).filter(Boolean))
+const toggleChoice = (o) => {
+  const cur = chosenChoices.value
+  const next = cur.includes(o) ? cur.filter((v) => v !== o) : choiceOptions.value.filter((v) => v === o || cur.includes(v))
+  emit('update:modelValue', next.join('\n'))
+}
+const chosenChoices = computed(() => String(props.modelValue || '').split('\n').map((v) => v.trim()).filter(Boolean))
+
+const isReadOnly = computed(() => !!props.field.read_only || props.readOnly)
 const readOnlyClass = computed(() =>
   isReadOnly.value
     ? '[&_input]:border [&_input]:border-gray-200 [&_textarea]:border [&_textarea]:border-gray-200 [&_[data-slot=trigger]]:border [&_[data-slot=trigger]]:border-gray-200 dark:[&_input]:border-gray-700 dark:[&_textarea]:border-gray-700 dark:[&_[data-slot=trigger]]:border-gray-700'

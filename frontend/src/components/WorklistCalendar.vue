@@ -1,14 +1,26 @@
 <template>
   <div>
-    <!-- Month header: prev / month / next, plus Today. -->
-    <div class="mb-3 flex items-center gap-1">
-      <Button variant="ghost" size="sm" icon="chevron-left" tooltip="Previous month" aria-label="Previous month" @click="shiftMonth(-1)" />
-      <span class="flex-1 text-center text-sm font-semibold text-ink-gray-9 sm:text-base">{{ monthLabel }}</span>
-      <Button variant="ghost" size="sm" icon="chevron-right" tooltip="Next month" aria-label="Next month" @click="shiftMonth(1)" />
+    <!-- Header: prev / label / next, the Day | Week | Month switch, and Today. -->
+    <div class="mb-3 flex flex-wrap items-center gap-1">
+      <Button variant="ghost" size="sm" icon="chevron-left" :tooltip="`Previous ${mode}`" :aria-label="`Previous ${mode}`" @click="shift(-1)" />
+      <span class="min-w-0 flex-1 truncate text-center text-sm font-semibold text-ink-gray-9 sm:text-base">{{ rangeLabel }}</span>
+      <Button variant="ghost" size="sm" icon="chevron-right" :tooltip="`Next ${mode}`" :aria-label="`Next ${mode}`" @click="shift(1)" />
       <Button size="sm" icon-left="calendar" class="ml-1" @click="goToday">Today</Button>
+      <div class="order-last mt-2 flex w-full rounded-lg bg-surface-gray-3 p-0.5 text-sm sm:order-none sm:mt-0 sm:ml-2 sm:w-auto">
+        <button
+          v-for="m in modes"
+          :key="m.value"
+          type="button"
+          class="flex-1 rounded-md px-3 py-1 sm:flex-none"
+          :class="mode === m.value ? 'bg-surface-white font-medium text-ink-gray-9 shadow-sm' : 'text-ink-gray-6 hover:text-ink-gray-8'"
+          @click="setMode(m.value)"
+        >
+          {{ m.label }}
+        </button>
+      </div>
     </div>
 
-    <div class="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-outline-gray-1 bg-outline-gray-1 text-xs">
+    <div v-if="mode !== 'day'" class="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-outline-gray-1 bg-outline-gray-1 text-xs">
       <div
         v-for="day in weekdayLabels"
         :key="day.full"
@@ -21,9 +33,10 @@
       <div
         v-for="cell in calendarCells"
         :key="cell.key"
-        class="bg-surface-white p-1 sm:min-h-[6.5rem] sm:p-1.5"
+        class="bg-surface-white p-1 sm:p-1.5"
         :class="[
-          !cell.inMonth ? 'bg-surface-gray-1' : '',
+          mode === 'week' ? 'sm:min-h-[20rem]' : 'sm:min-h-[6.5rem]',
+          mode === 'month' && !cell.inMonth ? 'bg-surface-gray-1' : '',
           selectedKey === cell.key ? 'sm:bg-surface-white max-sm:bg-surface-blue-1' : '',
         ]"
       >
@@ -32,7 +45,7 @@
         <button
           type="button"
           class="flex h-11 w-full flex-col items-center justify-start gap-1 sm:hidden"
-          @click="selectedKey = cell.key"
+          @click="selectDay(cell.key)"
         >
           <span
             class="inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium"
@@ -76,9 +89,9 @@
       </div>
     </div>
 
-    <!-- Phone: the selected day's agenda. -->
-    <div class="mt-4 sm:hidden">
-      <div class="mb-2 flex items-center justify-between">
+    <!-- The selected day's agenda: the whole Day view, and under the grid on a phone. -->
+    <div :class="mode === 'day' ? '' : 'mt-4 sm:hidden'">
+      <div v-if="mode !== 'day'" class="mb-2 flex items-center justify-between">
         <h3 class="text-sm font-semibold text-ink-gray-9">{{ selectedLabel }}</h3>
         <span class="text-xs text-ink-gray-5">{{ agenda.length }} {{ agenda.length === 1 ? 'task' : 'tasks' }}</span>
       </div>
@@ -144,22 +157,72 @@ const weekdayLabels = [
   { full: 'Sat', short: 'S' },
 ]
 
+const modes = [
+  { value: 'day', label: 'Day' },
+  { value: 'week', label: 'Week' },
+  { value: 'month', label: 'Month' },
+]
+const MODE_KEY = 'worklist-calendar-mode'
+function savedMode() {
+  try {
+    const m = localStorage.getItem(MODE_KEY)
+    return modes.some((x) => x.value === m) ? m : 'month'
+  } catch {
+    return 'month'
+  }
+}
+const mode = ref(savedMode())
+function setMode(value) {
+  mode.value = value
+  try {
+    localStorage.setItem(MODE_KEY, value)
+  } catch {
+    // Remembering the choice is a convenience only.
+  }
+}
+
 const today = new Date()
 const todayKey = ymd(today)
-const cursor = ref(new Date(today.getFullYear(), today.getMonth(), 1))
-const selectedKey = ref(todayKey)
+// The day everything is centred on: the day shown, the week it is in, or the month it is in.
+const anchor = ref(new Date(today.getFullYear(), today.getMonth(), today.getDate()))
+const selectedKey = computed(() => ymd(anchor.value))
+const dateOf = (key) => new Date(`${key}T00:00:00`)
 
-function shiftMonth(delta) {
-  cursor.value = new Date(cursor.value.getFullYear(), cursor.value.getMonth() + delta, 1)
+function selectDay(key) {
+  anchor.value = dateOf(key)
+}
+function shift(delta) {
+  const a = anchor.value
+  if (mode.value === 'day') anchor.value = new Date(a.getFullYear(), a.getMonth(), a.getDate() + delta)
+  else if (mode.value === 'week') anchor.value = new Date(a.getFullYear(), a.getMonth(), a.getDate() + delta * 7)
+  else {
+    // Same day of the next/previous month, kept inside a shorter month.
+    const last = new Date(a.getFullYear(), a.getMonth() + delta + 1, 0).getDate()
+    anchor.value = new Date(a.getFullYear(), a.getMonth() + delta, Math.min(a.getDate(), last))
+  }
 }
 function goToday() {
-  cursor.value = new Date(today.getFullYear(), today.getMonth(), 1)
-  selectedKey.value = todayKey
+  anchor.value = new Date(today.getFullYear(), today.getMonth(), today.getDate())
 }
 
-const monthLabel = computed(() =>
-  cursor.value.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }),
-)
+const weekStart = computed(() => {
+  const a = anchor.value
+  return new Date(a.getFullYear(), a.getMonth(), a.getDate() - a.getDay())
+})
+
+const rangeLabel = computed(() => {
+  const a = anchor.value
+  if (mode.value === 'day') {
+    return a.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+  }
+  if (mode.value === 'week') {
+    const start = weekStart.value
+    const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6)
+    const short = { day: 'numeric', month: 'short' }
+    return `${start.toLocaleDateString(undefined, short)} – ${end.toLocaleDateString(undefined, { ...short, year: 'numeric' })}`
+  }
+  return a.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
+})
 
 const todosByDate = computed(() => {
   const map = {}
@@ -172,12 +235,14 @@ const todosByDate = computed(() => {
   return map
 })
 
+// Month: six weeks around the month. Week: just the seven days of the week.
 const calendarCells = computed(() => {
-  const year = cursor.value.getFullYear()
-  const month = cursor.value.getMonth()
-  const gridStart = new Date(year, month, 1 - new Date(year, month, 1).getDay())
+  const month = anchor.value.getMonth()
+  const year = anchor.value.getFullYear()
+  const gridStart = mode.value === 'week' ? weekStart.value : new Date(year, month, 1 - new Date(year, month, 1).getDay())
+  const count = mode.value === 'week' ? 7 : 42
   const cells = []
-  for (let i = 0; i < 42; i++) {
+  for (let i = 0; i < count; i++) {
     const d = new Date(gridStart.getFullYear(), gridStart.getMonth(), gridStart.getDate() + i)
     const key = ymd(d)
     cells.push({

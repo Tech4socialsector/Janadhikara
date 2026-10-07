@@ -11,8 +11,8 @@
   "tab_details",
   "organization_name",
   "organization_code",
-  "column_break_org_1",
   "organization_type",
+  "column_break_org_1",
   "status",
   "partner_logo",
   "section_break_contact",
@@ -57,10 +57,6 @@
    "depends_on": "eval:doc.organization_code"
   },
   {
-   "fieldname": "column_break_org_1",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "organization_type",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -68,6 +64,10 @@
    "label": "Organization Type",
    "options": "NGO\nTrust\nCBO\nFoundation\nOther",
    "reqd": 1
+  },
+  {
+   "fieldname": "column_break_org_1",
+   "fieldtype": "Column Break"
   },
   {
    "default": "Active",
@@ -207,5 +207,6 @@
  "states": [],
  "title_field": "organization_name",
  "track_changes": 1,
- "show_title_field_in_link": 1
+ "show_title_field_in_link": 1,
+ "search_fields": "organization_name,organization_code,contact_person,contact_number"
 }

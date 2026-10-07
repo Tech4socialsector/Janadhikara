@@ -43,10 +43,10 @@
           :options="valueOptionsFor(row)"
           v-model="row.value"
         />
-        <FormControl
+        <DatePicker
           v-else-if="fieldFor(row.fieldname)?.fieldtype === 'Date' || fieldFor(row.fieldname)?.fieldtype === 'Datetime'"
-          type="date"
           class="w-0 min-w-0 flex-[1.3]"
+          format="DD MMM YYYY"
           v-model="row.value"
         />
         <FormControl
@@ -75,7 +75,7 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { Button, FeatherIcon, FormControl, MultiSelect, useCall } from 'frappe-ui'
+import { Button, FeatherIcon, FormControl, DatePicker, MultiSelect, useCall } from 'frappe-ui'
 
 // A row-based field/operator/value filter editor - one row per filter,
 // AND'd together, matching Frappe desk's own list-view filter UX (field

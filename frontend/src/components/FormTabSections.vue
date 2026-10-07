@@ -1,6 +1,6 @@
 <template>
-  <div class="space-y-6">
-    <div v-for="(section, sIdx) in sections" :key="sIdx" v-show="isSectionVisible(section)">
+  <div class="space-y-6 [&_input:not([type=checkbox]):not([type=radio])]:h-8 [&_[data-slot=trigger]]:h-8 [&_[data-slot=trigger]]:w-full [&_select]:h-8">
+    <div v-for="(section, sIdx) in laidOut" :key="sIdx" v-show="isSectionVisible(section)">
       <h3 v-if="section.label" class="text-base font-medium text-gray-700 dark:text-gray-300" :class="section.description ? 'mb-1' : 'mb-3'">
         {{ section.label }}
       </h3>
@@ -16,7 +16,7 @@
             @update:model-value="$emit('update:newDocName', $event)"
           />
         </div>
-        <div v-for="(column, cIdx) in section.columns" :key="cIdx" class="flex flex-1 flex-col gap-4">
+        <div v-for="(column, cIdx) in section.visibleColumns" :key="cIdx" class="flex min-w-0 flex-1 basis-0 flex-col gap-4">
           <div v-for="field in column" :key="field.fieldname">
             <DynamicField
               :field="field"
@@ -40,6 +40,7 @@
 <script setup>
 import { FormControl } from 'frappe-ui'
 import DynamicField from '@/components/DynamicField.vue'
+import { computed } from 'vue'
 import { evaluateDependsOn } from '@/utils/dependsOn'
 
 // Factored out of DoctypeForm.vue so the same section/column rendering
@@ -62,6 +63,41 @@ const props = defineProps({
   showNameField: { type: Boolean, default: false },
 })
 defineEmits(['update:newDocName', 'address-resolved', 'pincode-resolved', 'location-resolved', 'geo-changed'])
+
+// Conditional questions (e.g. a "Please specify" box) leave empty gaps when they're hidden. A section
+// where something is hidden is laid out again from what is visible: the questions are put in question-number
+// order (an unnumbered one stays with the numbered question before it) and split evenly into two columns,
+// or one when there is only a little to show. A section with nothing hidden keeps the layout it was designed with.
+const numberOf = (label) => {
+  // the number, then an optional letter right after it (16.1.1a), then the dot and the question text
+  const m = /^\s*(\d+(?:\.\d+)*)([a-z]?)\.?\s/i.exec(label || '')
+  return m ? [...m[1].split('.').map(Number), m[2] ? m[2].toLowerCase().charCodeAt(0) - 96 : 0] : null
+}
+const compareNumbers = (a, b) => {
+  for (let i = 0; i < Math.max(a.length, b.length); i++) {
+    const d = (a[i] ?? -1) - (b[i] ?? -1)
+    if (d) return d
+  }
+  return 0
+}
+
+const laidOut = computed(() =>
+  props.sections.map((section) => {
+    const all = section.columns.flat()
+    const visible = all.filter((f) => evaluateDependsOn(f.depends_on, props.values))
+    if (visible.length === all.length) return { ...section, visibleColumns: section.columns }
+    let lastKey = null
+    const keyed = visible.map((field, order) => {
+      lastKey = numberOf(field.label) || lastKey
+      return { field, order, key: lastKey }
+    })
+    keyed.sort((a, b) => (a.key && b.key ? compareNumbers(a.key, b.key) : 0) || a.order - b.order)
+    const fields = keyed.map((k) => k.field)
+    if (fields.length < 2 || section.columns.length < 2) return { ...section, visibleColumns: [fields] }
+    const half = Math.ceil(fields.length / 2)
+    return { ...section, visibleColumns: [fields.slice(0, half), fields.slice(half)] }
+  })
+)
 
 // Same depends_on convention as DynamicField.vue's own fields, applied at
 // the Section Break level - a section with no condition always shows

@@ -22,6 +22,15 @@ export const assistantConfigResource = useCall({
 // reopening the panel within a session doesn't lose context - mirrors
 // notificationsState living outside NotificationPanel.vue.
 export const conversation = ref([])
+// What is sent back to the server each turn: the same conversation, but with placeholders where the
+// assistant mentioned a person's details. The model never sees those values; the real ones are put into
+// `conversation` (what is shown) by the server.
+const history = ref([])
+
+export function clearAssistantConversation() {
+  conversation.value = []
+  history.value = []
+}
 
 const sendMessageCall = useCall({
   url: '/api/v2/method/janadhikara.ai.assistant.send_message',
@@ -31,10 +40,15 @@ const sendMessageCall = useCall({
 
 export async function sendAssistantMessage(message) {
   const result = await sendMessageCall.submit({
-    messages: conversation.value,
+    messages: history.value,
     message,
   })
-  conversation.value = result.messages
+  history.value = result.messages
+  conversation.value = [
+    ...conversation.value,
+    { role: 'user', content: message },
+    { role: 'assistant', content: result.reply },
+  ]
   return result
 }
 
