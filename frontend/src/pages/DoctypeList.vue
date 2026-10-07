@@ -95,7 +95,13 @@
         <div v-if="!isMobile" class="h-5 flex-shrink-0 border-s border-outline-gray-2" />
 
         <div class="flex flex-shrink-0 items-center gap-2">
-          <Button variant="outline" icon="refresh-cw" tooltip="Refresh" :loading="rows.loading" @click="refreshList" />
+          <Button variant="outline" icon="refresh-cw" tooltip="Refresh" :loading="pageResource.loading" @click="refreshList" />
+
+          <Dropdown v-if="canExport" :options="exportOptions" placement="bottom-end">
+            <Button variant="outline" :icon-left="isMobile ? undefined : 'download'" :icon="isMobile ? 'download' : undefined" :loading="exporting" :tooltip="isMobile ? 'Export' : undefined">
+              <template v-if="!isMobile">Export</template>
+            </Button>
+          </Dropdown>
 
           <template v-if="!isMobile">
             <Popover v-model:show="showFilterPopover" placement="bottom-end" popover-class="doctype-list-popover" :hide-on-blur="false">
@@ -184,10 +190,10 @@
         }"
       />
 
-      <div v-if="rows.loading && !rows.data" class="space-y-2">
+      <div v-if="pageResource.loading && !pageResource.data" class="space-y-2">
         <Skeleton v-for="i in 5" :key="i" height="2.5rem" />
       </div>
-      <ErrorMessage v-else-if="rows.error" :message="rows.error" />
+      <ErrorMessage v-else-if="listError" :message="listError" />
       <!-- No separate hand-built empty state here on desktop - ListView's
       own emptyState option (listViewOptions, in script) covers that,
       rendered internally by its ListEmptyState when rows.length is 0.
@@ -309,10 +315,9 @@
       but the row-rendering chain above it (ListHeader/ListRows/
       ListEmptyState) is reproduced as-is from ListView.vue so nothing
       about that other than the #cell slot passthrough changes. -->
+      <div v-if="!isMobile" class="doctype-list-scroll mt-1" @scroll.passive="onListScroll">
       <ListView
-        v-if="!isMobile"
         :key="gridKey"
-        class="mt-1"
         :columns="listViewColumns"
         :rows="allRows"
         row-key="name"
@@ -351,30 +356,53 @@
           <SelectionBar v-if="selectable" @delete="confirmBulkDelete" />
         </template>
       </ListView>
+      </div>
 
-      <!-- Load More + count + page-size selector, replacing Previous/Next.
-      The first 20 rows come from `rows` (useList); every click past that
-      goes through the separate loadMoreResource/moreRows accumulator (see
-      script - useList's own limit can't change after creation, so a
-      variable page size needs its own fetch path). The size buttons only
-      change what the *next* Load More click fetches, not a reset of what's
-      already showing - a deliberate simplification, not an oversight.
-      totalCount is a separate lightweight get_count call (frappe.get_list's
-      own paged response carries no total, only has_next_page) purely for
-      the "X of Y" label, not used for the fetch/pagination logic itself. -->
+      <!-- Row count, Load More and the page-size choice. The list above scrolls inside its own box, so the
+      page itself does not grow with the number of rows. -->
       <ListFooter
-        v-if="!isMobile && showResults"
-        class="mt-4"
+        v-if="showResults"
+        class="mt-3"
         :model-value="pageSize"
         :options="{ rowCount: allRows.length, totalCount: totalCountResource.data ?? 0, pageLengthOptions: PAGE_SIZE_OPTIONS }"
         @update:model-value="setPageSize"
-        @load-more="loadMore"
-      />
+      >
+        <!-- frappe-ui's own Load More button renders empty here, so the right-hand side is drawn in full -->
+        <template #right>
+          <div class="flex items-center">
+            <Button v-if="canLoadMore" variant="outline" size="sm" :loading="moreResource.loading" @click="loadMore">Load More</Button>
+            <div v-if="canLoadMore" class="mx-3 h-5 border-s border-outline-gray-2" />
+            <div class="flex items-center gap-1 text-base text-ink-gray-5">
+              <div>{{ allRows.length }}</div>
+              <div>of</div>
+              <div>{{ totalCountResource.data ?? 0 }}</div>
+            </div>
+          </div>
+        </template>
+      </ListFooter>
     </template>
   </AppLayout>
 </template>
 
 <style>
+/* The desktop list is about 15 rows tall: more rows scroll inside this box, not the whole page, and the
+column headings stay in view. (Header 2.5rem + 15 rows of 2.57rem.) */
+.doctype-list-scroll {
+  max-height: 41rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+/* The list's own inner wrappers scroll too, which would stop the heading from sticking to this box */
+.doctype-list-scroll > .relative.overflow-x-auto,
+.doctype-list-scroll .flex.w-max.min-w-full {
+  overflow: visible !important;
+}
+.doctype-list-scroll .mb-2.grid.rounded.bg-surface-gray-2 {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
 /* Same data-dialog hook pattern as SettingsDialog.vue/ChildTable.vue's
 row editor. Only used on mobile (the Filter/Sort pills that open these are
 isMobile-gated in the template), so both are bottom sheets outright rather
@@ -462,8 +490,8 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { breakpointsTailwind, useBreakpoints, watchDebounced } from '@vueuse/core'
 import {
-  useList,
   useCall,
+  Dropdown,
   call,
   Button,
   TextInput,
@@ -487,6 +515,7 @@ import UserLinkHoverCard from '@/components/UserLinkHoverCard.vue'
 import FilterEditor from '@/components/FilterEditor.vue'
 import SortEditor from '@/components/SortEditor.vue'
 import SelectionBar from '@/components/SelectionBar.vue'
+import { exportRecords as downloadRecords } from '@/utils/exportRecords'
 import ColumnPicker from '@/components/ColumnPicker.vue'
 import SortControl from '@/components/SortControl.vue'
 import { useColumnPrefs } from '@/composables/useColumnPrefs'
@@ -678,84 +707,78 @@ watch(
 const pageTitle = findModuleByRoute(route.params.doctypeRoute)?.label || props.doctype
 setPageTitle(pageTitle)
 
-// `immediate: false` - metaResource.data (and the `columns`/`orderBy` it
-// drives) isn't ready on mount, so an immediate fetch would run with the
-// wrong fields/orderBy. useList's own useFetch already watches its computed
-// URL and auto-refetches whenever it changes (refetch: true, the default) -
-// since that URL is itself derived from columns.value/metaResource.data,
-// the moment metaResource.data resolves is the moment the URL changes and
-// this fires on its own. An explicit rows.fetch() call here used to race
-// that same auto-refetch (both firing in the same tick, one aborting the
-// other), leaking an AbortError into rows.error as "signal is aborted
-// without reason" - removed rather than raced against.
-//
-// Fixed limit of 20 here regardless of the page-size selector - useList's
-// own `limit` is captured once at creation with no reactive setter (see
-// pageSize below for how "Load More" at a chosen size is actually done),
-// so this instance only ever covers the first page. rows.delete (bulk
-// delete) is the only other useList helper this file relies on, and that
-// stays wired to this same instance regardless of which page a row came
-// from - deleting by name doesn't care which fetch loaded it.
-const rows = useList({
-  doctype: props.doctype,
-  fields: () => fetchFields.value,
-  filters: () => listFilters.value,
-  orderBy: () => `${sortValue.value.field} ${sortValue.value.direction}`,
-  limit: 20,
-  immediate: false,
-})
-
-// "Load More" past the first page, at whatever size is currently selected
-// (see PAGE_SIZE_OPTIONS/pageSize below) - a separate resource because
-// useList's own next()/limit can't be resized after creation. moreRows
-// accumulates across clicks the same way useList's own allData does
-// (append, never replace) for exactly this list's own lifetime; a
-// filter/sort/doctype change resets it via the watch below, same as the
-// selection-clearing watch already does for selectedNames.
-const PAGE_SIZE_OPTIONS = [20, 50, 100]
-const pageSize = ref(20)
+// The list shows `pageSize` rows to start with; Load More adds the next `pageSize`, and the list scrolls
+// inside its own box (see the template). Choosing another page size starts the list again from the top
+// with that many rows. A change of filters, sort or doctype also starts again.
+const PAGE_SIZE_OPTIONS = [15, 30, 50, 100]
+const pageSize = ref(15)
 const moreRows = ref([])
-const loadMoreResource = useCall({
-  url: `/api/v2/document/${props.doctype}`,
-  method: 'GET',
-  params: () => ({
+const noMoreRows = ref(false)
+function listParams(start) {
+  return {
     fields: JSON.stringify(fetchFields.value),
     filters: JSON.stringify(listFilters.value),
     order_by: `${sortValue.value.field} ${sortValue.value.direction}`,
-    start: 20 + moreRows.value.length,
+    start,
     limit: pageSize.value,
-  }),
+  }
+}
+const pageResource = useCall({
+  url: `/api/v2/document/${props.doctype}`,
+  method: 'GET',
+  params: () => listParams(0),
+  immediate: false,
+})
+const moreResource = useCall({
+  url: `/api/v2/document/${props.doctype}`,
+  method: 'GET',
+  params: () => listParams((pageResource.data?.length || 0) + moreRows.value.length),
   immediate: false,
 })
 
+let lastLoadKey = ''
+// `force` (Refresh, after a delete) fetches even when nothing about the request changed
+function loadPage(force = false) {
+  if (!metaResource.data || !fetchFields.value.length) return
+  const key = JSON.stringify([fetchFields.value, listFilters.value, sortValue.value, pageSize.value, props.doctype])
+  if (!force && key === lastLoadKey) return
+  lastLoadKey = key
+  moreRows.value = []
+  noMoreRows.value = false
+  pageResource.fetch()
+}
+watch(
+  () => [JSON.stringify(fetchFields.value), JSON.stringify(listFilters.value), sortValue.value.field, sortValue.value.direction, pageSize.value, props.doctype, !!metaResource.data],
+  () => loadPage(),
+  { immediate: true },
+)
+
+const canLoadMore = computed(() => !noMoreRows.value && allRows.value.length < (totalCountResource.data ?? 0))
+// Reaching the bottom of the list's own scroll box brings in the next rows
+function onListScroll(event) {
+  const box = event.target
+  if (box.scrollTop + box.clientHeight >= box.scrollHeight - 80) loadMore()
+}
+
+async function loadMore() {
+  if (moreResource.loading || pageResource.loading || !canLoadMore.value) return
+  const key = lastLoadKey
+  const next = (await moreResource.fetch()) || []
+  if (key !== lastLoadKey) return // the list was started again (filters, sort, page size) while this was loading
+  const have = new Set(allRows.value.map((r) => r.name))
+  moreRows.value = [...moreRows.value, ...next.filter((r) => !have.has(r.name))]
+  if (next.length < pageSize.value || allRows.value.length >= (totalCountResource.data ?? Infinity)) noMoreRows.value = true
+}
 function setPageSize(size) {
   pageSize.value = size
 }
 
-const hasExhaustedMore = ref(false)
-
-async function loadMore() {
-  // useCall's fetch() already unwraps to the v2 REST response's own
-  // `.data` array (same shape useList's own allData accumulates) - no
-  // separate unwrapping needed here.
-  const newRows = (await loadMoreResource.fetch()) || []
-  moreRows.value = [...moreRows.value, ...newRows]
-  if (newRows.length < pageSize.value) hasExhaustedMore.value = true
-}
-
-watch([listFilters, sortValue, () => props.doctype], () => {
-  moreRows.value = []
-  hasExhaustedMore.value = false
+const allRows = computed(() => [...(pageResource.data || []), ...moreRows.value])
+// An aborted request (a newer one replaced it) is not an error worth showing
+const listError = computed(() => {
+  const error = pageResource.error
+  return error && !/abort/i.test(String(error?.message || error)) ? error : null
 })
-
-const allRows = computed(() => [...(rows.data || []), ...moreRows.value])
-// Once moreRows has ever been fetched, its own last batch is the only
-// real signal of whether another page could exist - rows.hasNextPage
-// reflects just the first 20-row page and goes stale the moment Load
-// More is used even once.
-const canLoadMore = computed(() =>
-  moreRows.value.length > 0 ? !hasExhaustedMore.value : rows.hasNextPage,
-)
 
 // The mobile card view and the desktop table (template, below) each open
 // their own `v-if` rather than chaining `v-else-if` off the loading/error/
@@ -765,7 +788,7 @@ const canLoadMore = computed(() =>
 // message ABOVE the table while the table kept rendering underneath it,
 // instead of the error replacing the table the way the v-if chain above
 // it implies. Both blocks gate on this single flag instead.
-const showResults = computed(() => !rows.loading && !rows.error && allRows.value.length > 0)
+const showResults = computed(() => !pageResource.loading && !listError.value && allRows.value.length > 0)
 
 // ListView's own column shape ({key, label, ...}) doesn't carry Frappe
 // field metadata (fieldtype, options, ...) - docField keeps the original
@@ -779,10 +802,23 @@ const ID_COLUMN = { fieldname: 'name', label: 'ID', fieldtype: 'Data' }
 // ...and "Last Modified" is always the last one: when each record was last
 // updated, shown as a relative time (the exact moment on hover).
 const MODIFIED_COLUMN = { fieldname: 'modified', label: 'Last Modified', fieldtype: 'Datetime' }
+// Column width follows the data: the longest of the heading and the loaded cells (capped), in rem.
+function columnWidth(col) {
+  if (col.fieldname === 'modified') return '6.5rem'
+  let longest = String(col.label || '').length + 2
+  for (const row of allRows.value) {
+    const text = col.fieldname === 'modified' ? '10mo' : String(formatValue(row[col.fieldname], col) ?? '')
+    if (text.length > longest) longest = text.length
+  }
+  // At least this wide, and spare room is shared out in proportion (Last Modified stays fixed).
+  const rem = Math.min(Math.max(longest * 0.5 + 1.5, 5), 15).toFixed(1)
+  return `minmax(${rem}rem, ${rem}fr)`
+}
 const listViewColumns = computed(() =>
   [ID_COLUMN, ...visibleColumns.value.filter((c) => c.fieldname !== 'name' && c.fieldname !== 'modified'), MODIFIED_COLUMN].map((col) => ({
     key: col.fieldname,
     label: col.label,
+    width: columnWidth(col),
     docField: col,
   })),
 )
@@ -857,7 +893,7 @@ const selectedNames = ref([])
 // banner) and can't be reset from outside - so wherever this list clears its
 // selection, bumping gridKey remounts the grid with a clean one too.
 const gridKey = ref(0)
-watch([listFilters, sortValue], () => {
+watch([listFilters, sortValue, pageSize], () => {
   selectedNames.value = []
   gridKey.value++
 })
@@ -870,18 +906,13 @@ function confirmBulkDelete() {
 async function doBulkDelete(close) {
   const names = selectedNames.value
   for (const name of names) {
-    await rows.delete.submit({ name })
+    await call('frappe.client.delete', { doctype: props.doctype, name })
   }
-  // rows.delete already removes a deleted row from useList's own
-  // allData (see useList.ts's onSuccess -> listStore.removeRow), but
-  // that only covers the first-page rows this instance owns - anything
-  // pulled in via Load More lives in moreRows, a plain local array
-  // rows.delete has no way to reach.
-  moreRows.value = moreRows.value.filter((r) => !names.includes(r.name))
   selectedNames.value = []
   gridKey.value++
   close()
-  rows.fetch()
+  loadPage(true)
+  totalCountResource.fetch()
 }
 
 function formatValue(value, field) {
@@ -955,9 +986,7 @@ function cardAccentStyle(row) {
 // Load More - a stale accumulated tail left in place after a refresh
 // could silently mix pre- and post-refresh data together.
 function refreshList() {
-  moreRows.value = []
-  hasExhaustedMore.value = false
-  rows.reload()
+  loadPage(true)
   totalCountResource.fetch()
 }
 
@@ -972,6 +1001,32 @@ const totalCountResource = useCall({
   immediate: false,
 })
 watch(listFilters, () => totalCountResource.fetch(), { immediate: false })
+
+// Export: every record matching the filters and search (not only this page), with every field.
+// Offered only to users who hold Frappe's Export permission for this doctype.
+const canExportResource = useCall({
+  url: '/api/v2/method/janadhikara.dashboard.can_export',
+  method: 'GET',
+  params: () => ({ doctype: props.doctype }),
+})
+const canExport = computed(() => !!canExportResource.data)
+const exporting = ref(false)
+async function runExport(format) {
+  exporting.value = true
+  await downloadRecords({
+    doctype: props.doctype,
+    filters: listFilters.value,
+    fields: 'all',
+    orderBy: `${sortValue.value.field} ${sortValue.value.direction}`,
+    format,
+    total: totalCountResource.data,
+  })
+  exporting.value = false
+}
+const exportOptions = [
+  { label: 'CSV (.csv)', icon: 'file-text', onClick: () => runExport('csv') },
+  { label: 'Excel (.xlsx)', icon: 'grid', onClick: () => runExport('xlsx') },
+]
 
 // Doctypes reached via the generic /:doctypeRoute path use the shared
 // DoctypeNew/DoctypeForm route names with a doctypeRoute param; doctypes

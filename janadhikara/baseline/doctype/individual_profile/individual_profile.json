@@ -6,6 +6,7 @@
  "field_order": [
   "tab_primary",
   "section_consent",
+  "record_date",
   "consent_given",
   "consent_mode",
   "column_break_consent",
@@ -201,6 +202,16 @@
    "fieldtype": "Section Break",
    "label": "Consent (DPDP)",
    "description": "Record consent first. No other question is shown until then."
+  },
+  {
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "reqd": 1,
+   "default": "Today",
+   "search_index": 1,
+   "in_list_view": 1,
+   "description": "Defaults to today; change it to record a different date. The dashboard counts the profile on this date."
   },
   {
    "fieldname": "consent_given",
@@ -1553,7 +1564,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-06 15:00:00.000000",
+ "modified": "2026-10-07 09:28:48.553746",
  "modified_by": "Administrator",
  "module": "Baseline",
  "name": "Individual Profile",

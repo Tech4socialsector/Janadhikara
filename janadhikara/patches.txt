@@ -38,3 +38,4 @@ janadhikara.patches.v1_1.make_attachments_private
 janadhikara.patches.v1_1.ai_policy_household_ownership_readonly
 janadhikara.patches.v1_1.ai_policy_hide_personal_fields
 janadhikara.patches.v1_1.ai_policy_show_names
+janadhikara.patches.v1_1.individual_record_date

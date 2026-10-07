@@ -198,7 +198,8 @@ watch(filters, () => {
   timer = setTimeout(load, 250)
 })
 
-const individualsTotal = computed(() => data.value?.cards?.individuals || 0)
+// `cards` is a list of { key, value, ... }: the individuals card holds the number of profiles
+const individualsTotal = computed(() => data.value?.cards?.find((card) => card.key === 'individuals')?.value || 0)
 const hasDocuments = computed(() => data.value?.documents?.some((d) => d.asked))
 
 // Export of the dashboard itself: the numbers and every chart's values, as the filters currently show them.

@@ -193,7 +193,23 @@ def get_dashboard(
 
 EXPORTABLE = (HOUSEHOLD, INDIVIDUAL)
 EXPORT_LIMIT = 50000
-NOT_A_COLUMN = ("Section Break", "Column Break", "Tab Break", "Table", "Table MultiSelect", "HTML", "Button", "Image", "Attach", "Attach Image", "Geolocation")
+STANDARD_COLUMNS = {"owner": "Created By", "creation": "Created On", "modified": "Last Modified"}
+NOT_A_COLUMN = ("Section Break", "Column Break", "Tab Break", "Table", "Table MultiSelect", "HTML", "Button", "Image", "Password", "Attach", "Attach Image", "Geolocation")
+
+
+def _exportable(doctype):
+	"""The dashboard's two doctypes, and every doctype in the app's own navigation (its lists)."""
+	if doctype in EXPORTABLE:
+		return True
+	from janadhikara.api import get_app_modules
+
+	return any(item.get("doctype_name") == doctype for module in get_app_modules() for item in module.get("doctypes", []))
+
+
+@frappe.whitelist()
+def can_export(doctype):
+	"""Whether the signed-in user may download this doctype's list (the list view shows Export only then)."""
+	return bool(_exportable(doctype) and frappe.has_permission(doctype, "export"))
 
 
 def _safe_cell(value):
@@ -207,14 +223,17 @@ def _safe_cell(value):
 def export_records(doctype, filters=None, fields=None, order_by=None, search=None, file_format="csv"):
 	"""Download the records behind a number or chart (every match, not just a page) with the chosen
 	columns, as CSV or Excel. Needs Frappe's Export permission, and reads only what the user may read."""
-	if doctype not in EXPORTABLE:
-		frappe.throw(_("{0} cannot be exported from the dashboard.").format(doctype), frappe.PermissionError)
+	if not _exportable(doctype):
+		frappe.throw(_("{0} cannot be exported.").format(doctype), frappe.PermissionError)
 	frappe.has_permission(doctype, "export", throw=True)
 	meta = frappe.get_meta(doctype)
 	filters = frappe.parse_json(filters) or {}
+	wanted = frappe.parse_json(fields) or ["name"]
+	if wanted == "all":  # every field of the doctype, in form order
+		wanted = ["name"] + [f.fieldname for f in meta.fields] + list(STANDARD_COLUMNS)
 	columns = [
-		f for f in (frappe.parse_json(fields) or ["name"])
-		if f == "name" or (meta.has_field(f) and meta.get_field(f).fieldtype not in NOT_A_COLUMN)
+		f for f in wanted
+		if f in STANDARD_COLUMNS or f == "name" or (meta.has_field(f) and meta.get_field(f).fieldtype not in NOT_A_COLUMN)
 	] or ["name"]
 	or_filters = None
 	if search:
@@ -224,7 +243,10 @@ def export_records(doctype, filters=None, fields=None, order_by=None, search=Non
 		doctype, filters=filters, or_filters=or_filters, fields=columns, order_by=_safe_order(meta, order_by),
 		limit_page_length=EXPORT_LIMIT,
 	)
-	labels = [_("ID") if f == "name" else _(meta.get_field(f).label or f) for f in columns]
+	labels = [
+		_("ID") if f == "name" else _(STANDARD_COLUMNS[f]) if f in STANDARD_COLUMNS else _(meta.get_field(f).label or f)
+		for f in columns
+	]
 	table = [labels] + [[_safe_cell(r.get(f)) for f in columns] for r in rows]
 	filename = f"{frappe.scrub(doctype)}_{frappe.utils.nowdate()}"
 	if file_format == "xlsx":
