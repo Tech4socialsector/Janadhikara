@@ -303,6 +303,33 @@ def search(doctype, filters=None, fields=None, limit=20):
     return rows
 
 
+MAX_GROUPS = 30
+GROUPABLE_FIELDTYPES = {'Select', 'Link', 'Check', 'Data', 'Int'}
+
+
+def count_by(doctype, group_by, filters=None):
+    """How many records fall under each value of one field (for charts and summaries): [{value, count}].
+    Only a plain, non-personal field can be grouped on."""
+    policy = require_access(doctype)
+    if not frappe.has_permission(doctype, 'read'):
+        raise frappe.PermissionError(_('You do not have permission to view {0}').format(doctype))
+    readable = {df.fieldname: df for df in readable_fields(doctype, policy)}
+    df = readable.get(group_by)
+    if not df or is_personal_field(df) or df.fieldtype not in GROUPABLE_FIELDTYPES:
+        raise frappe.PermissionError(_('The assistant cannot group by {0}').format(group_by))
+    filterable = {n for n, f in readable.items() if not is_personal_field(f)} | {'name'}
+    rows = frappe.get_list(
+        doctype,
+        filters=_clean_filters(filters, filterable),
+        fields=[group_by, {'COUNT': 'name', 'as': 'count'}],
+        group_by=group_by,
+        order_by='count desc',
+        limit_page_length=MAX_GROUPS,
+    )
+    audit('count_by', doctype, {'group_by': group_by, 'filtered_on': sorted((filters or {}).keys())})
+    return [{'value': r.get(group_by) if r.get(group_by) not in (None, '') else '(empty)', 'count': r['count']} for r in rows]
+
+
 def _child_rows(parent_doctype, doc, table_df):
     child_policy = get_policy(table_df.options)
     if not child_policy or not child_policy.can_read:

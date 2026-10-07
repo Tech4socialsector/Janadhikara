@@ -3,7 +3,7 @@
   details, labeled so it's clear what it opens) - it used to float over
   bottom-right of every page, which could sit on top of page content like
   a form's own Save button. -->
-  <Dialog v-model="show" :options="{ size: '5xl', title: 'ai-assistant' }">
+  <Dialog v-model="show" :options="{ size: '7xl', title: 'ai-assistant' }">
     <template #body>
       <div class="ai-assistant-panel flex flex-col">
         <div
@@ -42,12 +42,16 @@
             class="flex"
             :class="m.role === 'user' ? 'justify-end' : 'justify-start'"
           >
-            <div
-              class="max-w-[75%] whitespace-pre-wrap rounded-2xl px-3.5 py-2 text-sm"
-              :class="m.role === 'user'
-                ? 'bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900'
-                : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'"
-            >{{ m.content }}</div>
+            <div :class="m.blocks?.length ? 'w-full max-w-full' : 'max-w-[75%]'">
+              <div
+                v-if="m.content"
+                class="whitespace-pre-wrap rounded-2xl px-3.5 py-2 text-sm"
+                :class="m.role === 'user'
+                  ? 'bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900'
+                  : 'inline-block bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'"
+              >{{ m.content }}</div>
+              <AiBlocks v-if="m.blocks?.length" :blocks="m.blocks" />
+            </div>
           </div>
 
           <div v-if="sending.loading" class="flex justify-start">
@@ -106,8 +110,8 @@ that has a Geo Location map on it. */
 
 .ai-assistant-panel {
   width: 100%;
-  height: 46rem;
-  max-height: 85vh;
+  height: 58rem;
+  max-height: 92vh;
 }
 
 /* Width-only breakpoints miss short/landscape phones (e.g. 844x390) - a
@@ -137,6 +141,7 @@ import { computed, nextTick, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { Button, Dialog, ErrorMessage, FeatherIcon, Tooltip } from 'frappe-ui'
 import SparklesIcon from '@/components/SparklesIcon.vue'
+import AiBlocks from '@/components/AiBlocks.vue'
 import {
   assistantState,
   assistantConfigResource,

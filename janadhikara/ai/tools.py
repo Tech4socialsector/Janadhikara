@@ -12,7 +12,7 @@ through it rather than calling frappe directly.
 import frappe
 from frappe import _
 
-from janadhikara.ai import data_service
+from janadhikara.ai import blocks, data_service
 
 
 def list_doctypes():
@@ -37,6 +37,21 @@ def get_record(doctype, name):
     """One record (and, where allowed, its child-table rows), minus every
     field the assistant or this user may not see."""
     return data_service.read(doctype, name)
+
+
+def count_records(doctype, group_by, filters=None):
+    """How many records have each value of one field - the numbers behind a chart or a summary."""
+    return data_service.count_by(doctype, group_by, filters=filters)
+
+
+def show_table(title, columns, rows):
+    """Put a table into the chat for the user."""
+    return blocks.add_table(title, columns, rows)
+
+
+def show_chart(title, chart_type, labels, series, unit=None):
+    """Put a chart (bar, line, pie or donut) into the chat for the user."""
+    return blocks.add_chart(title, chart_type, labels, series, unit=unit)
 
 
 def create_record(doctype, values):
@@ -66,6 +81,9 @@ TOOL_FUNCTIONS = {
     'list_doctypes': list_doctypes,
     'get_doctype_meta': get_doctype_meta,
     'search_records': search_records,
+    'count_records': count_records,
+    'show_table': show_table,
+    'show_chart': show_chart,
     'get_record': get_record,
     'create_record': create_record,
     'update_record': update_record,
@@ -115,6 +133,64 @@ TOOL_SCHEMAS = [
                     'limit': {'type': 'integer', 'description': 'Max rows, default 20, hard cap 50.'},
                 },
                 'required': ['doctype'],
+            },
+        },
+    },
+    {
+        'type': 'function',
+        'function': {
+            'name': 'count_records',
+            'description': 'Count the records of a doctype grouped by one plain field (for example household status, or settlement). Returns [{value, count}]. Use it for any "how many per ..." question and as the numbers for a chart. Personal fields (names, phone numbers, addresses) cannot be grouped on.',
+            'parameters': {
+                'type': 'object',
+                'properties': {
+                    'doctype': {'type': 'string'},
+                    'group_by': {'type': 'string', 'description': 'Fieldname to group by.'},
+                    'filters': {'type': 'object', 'description': 'Optional Frappe filter dict.'},
+                },
+                'required': ['doctype', 'group_by'],
+            },
+        },
+    },
+    {
+        'type': 'function',
+        'function': {
+            'name': 'show_table',
+            'description': 'Show a table to the user in the chat (max 100 rows, 8 columns). Use it when the user asks for a table, list or comparison, with data you got from the other tools. If a cell would hold a person\'s name, phone number or address, put the placeholder you received from the tool in the cell exactly as it is. Do not repeat the table in your text reply; add one short sentence about it.',
+            'parameters': {
+                'type': 'object',
+                'properties': {
+                    'title': {'type': 'string'},
+                    'columns': {'type': 'array', 'items': {'type': 'string'}},
+                    'rows': {'type': 'array', 'items': {'type': 'array', 'items': {}}, 'description': 'One list of cells per row, in column order.'},
+                },
+                'required': ['title', 'columns', 'rows'],
+            },
+        },
+    },
+    {
+        'type': 'function',
+        'function': {
+            'name': 'show_chart',
+            'description': 'Show a chart to the user in the chat: bar (comparisons), line (change over time), pie or donut (shares of a whole, one series). Use only numbers you got from the other tools - never invent values. Do not describe the chart point by point in your text reply; add one short sentence.',
+            'parameters': {
+                'type': 'object',
+                'properties': {
+                    'title': {'type': 'string'},
+                    'chart_type': {'type': 'string', 'enum': ['bar', 'line', 'pie', 'donut']},
+                    'labels': {'type': 'array', 'items': {'type': 'string'}, 'description': 'Category or x-axis labels (max 30).'},
+                    'series': {
+                        'type': 'array',
+                        'description': 'Up to 4 series, each with a name and one number per label.',
+                        'items': {
+                            'type': 'object',
+                            'properties': {'name': {'type': 'string'}, 'data': {'type': 'array', 'items': {'type': 'number'}}},
+                            'required': ['name', 'data'],
+                        },
+                    },
+                    'unit': {'type': 'string', 'description': 'Optional unit shown with values, e.g. "households".'},
+                },
+                'required': ['title', 'chart_type', 'labels', 'series'],
             },
         },
     },

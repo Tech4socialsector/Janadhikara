@@ -118,7 +118,7 @@
    "non_negative": 1
   },
   {
-   "default": "Custom",
+   "default": "OpenRouter",
    "description": "Choose OpenRouter to fill in its address and the model this app uses (google/gemini-3.1-flash-lite). Then paste your OpenRouter API key below.",
    "fieldname": "ai_provider",
    "fieldtype": "Select",
@@ -134,14 +134,16 @@
    "fieldname": "ai_api_base_url",
    "fieldtype": "Data",
    "label": "API Base URL",
-   "mandatory_depends_on": "eval:doc.ai_assistant_enabled"
+   "mandatory_depends_on": "eval:doc.ai_assistant_enabled",
+   "default": "https://openrouter.ai/api/v1"
   },
   {
    "description": "Model name as the provider lists it, e.g. google/gemini-3.1-flash-lite on OpenRouter.",
    "fieldname": "ai_model",
    "fieldtype": "Data",
    "label": "Model",
-   "mandatory_depends_on": "eval:doc.ai_assistant_enabled"
+   "mandatory_depends_on": "eval:doc.ai_assistant_enabled",
+   "default": "google/gemini-3.1-flash-lite"
   },
   {
    "description": "Stored encrypted, never sent to the browser. Leave blank for providers that don't require a key (e.g. local Ollama).",

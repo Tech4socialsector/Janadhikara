@@ -10,6 +10,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ActivityPanel: typeof import('./src/components/ActivityPanel.vue')['default']
     AiAssistant: typeof import('./src/components/AiAssistant.vue')['default']
+    AiBlocks: typeof import('./src/components/AiBlocks.vue')['default']
     AppSidebar: typeof import('./src/components/AppSidebar.vue')['default']
     AwesomeBar: typeof import('./src/components/AwesomeBar.vue')['default']
     Breadcrumbs: typeof import('./src/components/Breadcrumbs.vue')['default']

@@ -47,7 +47,7 @@ export async function sendAssistantMessage(message) {
   conversation.value = [
     ...conversation.value,
     { role: 'user', content: message },
-    { role: 'assistant', content: result.reply },
+    { role: 'assistant', content: result.reply, blocks: result.blocks || [] },
   ]
   return result
 }
