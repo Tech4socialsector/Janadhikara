@@ -8,12 +8,17 @@
       :placeholder="`Select ${targetDoctype}...`"
       @update:model-value="onUpdate"
     />
+    <div v-if="options.length" class="mt-1 flex items-center gap-1">
+      <Button v-if="selectedValues.length < options.length" variant="ghost" size="sm" @click="onUpdate(options.map((o) => o.value))">{{ t('Select all') }}</Button>
+      <Button v-if="selectedValues.length" variant="ghost" size="sm" @click="onUpdate([])">{{ t('Clear all') }}</Button>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { computed, watch } from 'vue'
-import { MultiSelect, useCall } from 'frappe-ui'
+import { Button, MultiSelect, useCall } from 'frappe-ui'
+import { t } from '@/utils/translate'
 
 const props = defineProps({
   field: { type: Object, required: true },
@@ -69,7 +74,7 @@ watch(
 
 const options = computed(() => {
   const rows = targetRecordsResource.data || []
-  return rows.map((r) => ({ label: r.name, value: r.name }))
+  return rows.map((r) => ({ label: props.field.option_labels?.[r.name] || r.name, value: r.name }))
 })
 
 const selectedValues = computed(() => {

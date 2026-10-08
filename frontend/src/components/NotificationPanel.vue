@@ -6,7 +6,7 @@
     <template #body>
       <div class="notifications-panel flex flex-col">
         <div class="flex items-center justify-between px-4 pb-2 pt-4">
-          <h2 class="text-lg font-semibold text-ink-gray-9">Notifications</h2>
+          <h2 class="text-lg font-semibold text-ink-gray-9">{{ t('Notifications') }}</h2>
           <div class="flex items-center gap-1">
             <Button
               v-if="unreadCount > 0"
@@ -22,16 +22,16 @@
               variant="ghost"
               size="sm"
               icon="bell"
-              tooltip="Turn on push alerts for this device"
+              :tooltip="t('Turn on push alerts for this device')"
               @click="enableAlerts"
             />
-            <Button variant="ghost" size="sm" icon="x" tooltip="Close" @click="show = false" />
+            <Button variant="ghost" size="sm" icon="x" :tooltip="t('Close')" @click="show = false" />
           </div>
         </div>
 
         <!-- Filter chips, like Telegram's folders / WhatsApp's All-Unread. -->
         <div class="flex items-center gap-2 px-4 pb-3">
-          <Button size="sm" :variant="filter === 'all' ? 'subtle' : 'ghost'" @click="filter = 'all'">All</Button>
+          <Button size="sm" :variant="filter === 'all' ? 'subtle' : 'ghost'" @click="filter = 'all'">{{ t('All') }}</Button>
           <Button size="sm" :variant="filter === 'unread' ? 'subtle' : 'ghost'" @click="filter = 'unread'">
             Unread
             <template v-if="unreadCount > 0" #suffix>
@@ -118,7 +118,7 @@
         </div>
 
         <div class="flex flex-shrink-0 justify-end border-t border-outline-gray-1 px-4 py-3">
-          <Button icon-left="x" @click="show = false" size="sm">Close</Button>
+          <Button icon-left="x" @click="show = false" size="sm">{{ t('Close') }}</Button>
         </div>
       </div>
     </template>
@@ -159,6 +159,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { t } from '@/utils/translate'
 import { useRouter } from 'vue-router'
 import { Dialog, FeatherIcon, Button } from 'frappe-ui'
 import Skeleton from '@/components/Skeleton.vue'

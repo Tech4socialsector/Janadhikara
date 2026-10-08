@@ -28,6 +28,7 @@ declare module 'vue' {
     FormTabSections: typeof import('./src/components/FormTabSections.vue')['default']
     GeoLocationField: typeof import('./src/components/GeoLocationField.vue')['default']
     IndiaGeoField: typeof import('./src/components/IndiaGeoField.vue')['default']
+    LanguageSwitcher: typeof import('./src/components/LanguageSwitcher.vue')['default']
     LinkField: typeof import('./src/components/LinkField.vue')['default']
     LucideIcon: typeof import('./src/components/LucideIcon.vue')['default']
     MobileNav: typeof import('./src/components/MobileNav.vue')['default']

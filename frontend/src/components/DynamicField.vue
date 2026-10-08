@@ -27,7 +27,7 @@
       :model-value="modelValue"
       @update:model-value="$emit('update:modelValue', $event)"
     />
-    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 whitespace-pre-line text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <DoctypeFieldPicker
@@ -73,7 +73,7 @@
         </Button>
       </template>
     </FileUploader>
-    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 whitespace-pre-line text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <!-- Question Bank display condition: the value to compare with is picked from the chosen
@@ -107,6 +107,7 @@
     :required="!!isRequired"
     :disabled="isReadOnly"
     :options="selectOptions"
+    :placeholder="t('Select option')"
     :description="selectDescription"
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
@@ -141,19 +142,15 @@
           >
             <FeatherIcon v-if="chosenChoices.includes(o)" name="check" class="h-3 w-3" />
           </span>
-          <span class="min-w-0 break-words" :class="chosenChoices.includes(o) ? 'font-medium' : ''">{{ o }}</span>
+          <span class="min-w-0 break-words" :class="chosenChoices.includes(o) ? 'font-medium' : ''">{{ optionLabel(o) }}</span>
         </button>
       </div>
       <div class="flex items-center justify-between border-t border-outline-gray-1 bg-surface-gray-1 px-3.5 py-1.5 text-p-xs text-ink-gray-5">
-        <span>{{ chosenChoices.length }} of {{ choiceOptions.length }} selected</span>
-        <button
-          v-if="chosenChoices.length && !isReadOnly"
-          type="button"
-          class="font-medium text-ink-gray-7 hover:text-ink-gray-9"
-          @click="$emit('update:modelValue', '')"
-        >
-          Clear
-        </button>
+        <span>{{ chosenChoices.length }} {{ t('of') }} {{ choiceOptions.length }} {{ t('selected') }}</span>
+        <div v-if="!isReadOnly" class="flex items-center gap-1">
+          <Button v-if="chosenChoices.length < choiceOptions.length" variant="ghost" size="sm" @click="selectAllChoices">{{ t('Select all') }}</Button>
+          <Button v-if="chosenChoices.length" variant="ghost" size="sm" @click="$emit('update:modelValue', '')">{{ t('Clear all') }}</Button>
+        </div>
       </div>
     </div>
     <p v-if="field.description" class="mt-1.5 whitespace-pre-line text-p-xs text-ink-gray-5">{{ field.description }}</p>
@@ -184,7 +181,7 @@
       editor-class="prose-sm max-w-none rounded-b-lg border border-t-0 border-gray-200 px-3 py-2 min-h-[8rem] dark:border-gray-700 dark:prose-invert"
       @change="$emit('update:modelValue', $event)"
     />
-    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 whitespace-pre-line text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <div v-else-if="controlType === 'rating'" class="space-y-1.5">
@@ -196,7 +193,7 @@
       :readonly="isReadOnly"
       @update:model-value="$emit('update:modelValue', $event / 5)"
     />
-    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 whitespace-pre-line text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <div v-else-if="controlType === 'time'">
@@ -210,7 +207,7 @@
       :model-value="modelValue"
       @update:model-value="$emit('update:modelValue', $event)"
     />
-    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 whitespace-pre-line text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <div v-else-if="controlType === 'duration'" class="space-y-1.5">
@@ -228,7 +225,7 @@
         />
       </div>
     </div>
-    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 whitespace-pre-line text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <div v-else-if="controlType === 'color'">
@@ -252,7 +249,7 @@
         @update:model-value="$emit('update:modelValue', $event)"
       />
     </div>
-    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 whitespace-pre-line text-p-xs text-ink-gray-5">{{ field.description }}</p>
   </div>
 
   <FormControl
@@ -263,6 +260,7 @@
     :required="!!isRequired"
     :disabled="isReadOnly"
     :options="selectOptions"
+    :placeholder="t('Select option')"
     :description="field.description"
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event?.value ?? $event)"
@@ -321,7 +319,7 @@
       @update:model-value="$emit('update:modelValue', $event || null)"
       @blur="touched = true"
     />
-    <p v-if="field.description" class="mt-1.5 text-p-xs text-ink-gray-5">{{ field.description }}</p>
+    <p v-if="field.description" class="mt-1.5 whitespace-pre-line text-p-xs text-ink-gray-5">{{ field.description }}</p>
     <p v-if="touched && validationError" class="mt-1.5 text-xs text-red-500">{{ validationError }}</p>
   </div>
   <div v-else>
@@ -344,6 +342,7 @@
 <script setup>
 import { computed, defineAsyncComponent, ref, watch } from 'vue'
 import { FormControl, FileUploader, Button, FeatherIcon, Tooltip, TextEditor, Rating, TimePicker, DatePicker, DateTimePicker } from 'frappe-ui'
+import { t } from '@/utils/translate'
 import UserLinkHoverCard from '@/components/UserLinkHoverCard.vue'
 // The map and the India states/districts pickers are only needed by a few forms: load them when first shown
 const GeoLocationField = defineAsyncComponent(() => import('@/components/GeoLocationField.vue'))
@@ -489,10 +488,10 @@ watch(
 const conditionValueOptions = computed(() => {
   const f = conditionField.value
   if (f?.fieldtype === 'Check') {
-    return [{ label: 'Select option', value: '' }, { label: 'Ticked (Yes)', value: '1' }, { label: 'Not ticked (No)', value: '0' }]
+    return [{ label: t('Select option'), value: '' }, { label: t('Yes'), value: '1' }, { label: t('No'), value: '0' }]
   }
   const opts = (f?.options || '').split('\n').map((v) => v.trim()).filter(Boolean).map((v) => ({ label: v, value: v }))
-  return [{ label: 'Select option', value: '' }, ...opts]
+  return [{ label: t('Select option'), value: '' }, ...opts]
 })
 const conditionSummary = computed(() => {
   const part = conditionPart.value
@@ -673,6 +672,8 @@ const dynamicLinkField = computed(() => ({ ...props.field, options: dynamicLinkD
 // covers both Select's own trigger (a <button>) and LinkField.vue's
 // Combobox trigger (a plain element in its "input" trigger mode, not a
 // button), which reads this same class off its own wrapper div.
+const selectAllChoices = () => emit('update:modelValue', choiceOptions.value.join('\n'))
+const optionLabel = (v) => props.field.option_labels?.[v] || v
 const choiceOptions = computed(() => (props.field.options || '').split('\n').map((o) => o.trim()).filter(Boolean))
 const toggleChoice = (o) => {
   const cur = chosenChoices.value
@@ -710,8 +711,8 @@ const fileName = computed(() => {
 const selectOptions = computed(() => {
   const raw = props.field.options || ''
   const lines = raw.split('\n').map((v) => v.trim())
-  const opts = lines.filter(Boolean).map((v) => ({ label: OPERATOR_LABELS[v] && conditionPart.value ? OPERATOR_LABELS[v] : v, value: v }))
-  opts.unshift({ label: 'Select option', value: '' })
+  const opts = lines.filter(Boolean).map((v) => ({ label: OPERATOR_LABELS[v] && conditionPart.value ? OPERATOR_LABELS[v] : optionLabel(v), value: v }))
+  opts.unshift({ label: t('Select option'), value: '' })
   return opts
 })
 

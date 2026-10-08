@@ -7,19 +7,19 @@
   <ListSelectBanner class="selection-bar !min-w-0 max-w-[94vw]">
     <template #default="{ selections, allRowsSelected, selectAll, unselectAll }">
       <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <span class="whitespace-nowrap text-sm font-medium text-ink-gray-9">{{ selections.size }} selected</span>
+        <span class="whitespace-nowrap text-sm font-medium text-ink-gray-9">{{ selections.size }} {{ t('selected') }}</span>
         <Button
           variant="ghost"
           size="sm"
           class="text-ink-gray-7"
           @click="allRowsSelected ? unselectAll() : selectAll()"
         >
-          {{ allRowsSelected ? 'Unselect all' : 'Select all' }}
+          {{ allRowsSelected ? t('Unselect all') : t('Select all') }}
         </Button>
         <div class="flex items-center gap-1.5">
-          <Button v-if="duplicate" size="sm" icon-left="copy" @click="$emit('duplicate')">Duplicate</Button>
-          <Button size="sm" variant="solid" theme="red" icon-left="trash-2" @click="$emit('delete')">Delete</Button>
-          <Button size="sm" variant="ghost" icon="x" tooltip="Clear selection" aria-label="Clear selection" @click="unselectAll()" />
+          <Button v-if="duplicate" size="sm" icon-left="copy" @click="$emit('duplicate')">{{ t('Duplicate') }}</Button>
+          <Button size="sm" variant="solid" theme="red" icon-left="trash-2" @click="$emit('delete')">{{ t('Delete') }}</Button>
+          <Button size="sm" variant="ghost" icon="x" :tooltip="t('Clear selection')" aria-label="Clear selection" @click="unselectAll()" />
         </div>
       </div>
     </template>
@@ -28,6 +28,7 @@
 
 <script setup>
 import { Button, ListSelectBanner } from 'frappe-ui'
+import { t } from '@/utils/translate'
 
 defineProps({ duplicate: { type: Boolean, default: false } })
 defineEmits(['delete', 'duplicate'])

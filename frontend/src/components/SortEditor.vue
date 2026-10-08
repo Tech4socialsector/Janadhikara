@@ -18,6 +18,7 @@
 <script setup>
 import { computed } from 'vue'
 import { FormControl, TabButtons } from 'frappe-ui'
+import { t } from '@/utils/translate'
 
 const SORTABLE_FIELDTYPES = new Set(['Select', 'Link', 'Check', 'Date', 'Datetime', 'Data', 'Int', 'Float', 'Currency'])
 
@@ -42,7 +43,7 @@ const fieldOptions = computed(() => {
 })
 
 const directionButtons = [
-  { label: 'Ascending', value: 'asc', icon: 'arrow-up', hideLabel: true, tooltip: 'Ascending' },
-  { label: 'Descending', value: 'desc', icon: 'arrow-down', hideLabel: true, tooltip: 'Descending' },
+  { label: t('Ascending'), value: 'asc', icon: 'arrow-up', hideLabel: true, tooltip: t('Ascending') },
+  { label: t('Descending'), value: 'desc', icon: 'arrow-down', hideLabel: true, tooltip: t('Descending') },
 ]
 </script>

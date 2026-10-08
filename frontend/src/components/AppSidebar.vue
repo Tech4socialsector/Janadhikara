@@ -27,7 +27,7 @@
           <template #prefix>
             <component :is="item.icon" class="h-4 w-4 flex-shrink-0" />
           </template>
-          {{ item.title }}
+          {{ t(item.title) }}
         </Button>
         <div
           v-else-if="item.groupHeader"
@@ -35,11 +35,11 @@
           class="flex items-center gap-2 px-2 py-1 text-sm text-ink-gray-5"
         >
           <component :is="item.icon" class="h-4 w-4 flex-shrink-0" />
-          {{ item.title }}
+          {{ t(item.title) }}
         </div>
         <div v-else :class="item.indent && !sidebarCollapsed ? 'ml-4 border-l-2 border-outline-gray-2 pl-1' : ''">
           <SidebarItem
-            :label="item.label"
+            :label="t(item.label)"
             :accessKey="item.accessKey"
             :icon="item.icon"
             :suffix="item.suffix"
@@ -283,6 +283,7 @@ import { activeModule } from '@/data/activeModule'
 import { notificationsResource, unreadCount, toggleNotifications } from '@/data/notifications'
 import { pendingCount } from '@/data/offlineQueue'
 import SyncCloudIcon from '@/components/SyncCloudIcon.vue'
+import { t } from '@/utils/translate'
 import { showSettingsDialog, openSettingsDialog } from '@/data/settingsDialog'
 import { assistantConfigResource, toggleAssistant } from '@/data/aiAssistant'
 
@@ -358,7 +359,7 @@ const header = computed(() => ({
       icon: 'log-out',
       onClick: () => logoutResource.submit(),
     },
-  ].filter((item) => !(isStandalone && LEAVES_THE_APP.has(item.label))),
+  ].filter((item) => !(isStandalone && LEAVES_THE_APP.has(item.label))).map((item) => ({ ...item, label: t(item.label) })),
 }))
 
 // Which Section Break groups of the open module are folded up (by key). Groups
@@ -465,7 +466,7 @@ const sections = computed(() => {
   // its indented child items) and Spacers - on desktop and on a phone alike.
   if (activeModule.value) {
     const mod = activeModule.value
-    sectionList.push({ label: mod.label, items: buildModuleRows(mod, 'g') })
+    sectionList.push({ label: t(mod.label), items: buildModuleRows(mod, 'g') })
   }
 
   return sectionList

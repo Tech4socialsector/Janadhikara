@@ -2,7 +2,7 @@
   <AppLayout>
     <PageHeader>
       <template #title>
-        <h1 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ pageTitle }}</h1>
+        <h1 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ t(pageTitle) }}</h1>
       </template>
       <template #actions>
         <Button
@@ -13,7 +13,7 @@
           <template #prefix>
             <FeatherIcon name="plus" class="h-4 w-4" />
           </template>
-          New
+          {{ t('New') }}
         </Button>
       </template>
     </PageHeader>
@@ -65,7 +65,7 @@
       <div class="mb-4 flex items-center justify-between gap-2">
         <div class="quick-filters flex min-w-0 flex-1 items-center gap-2 overflow-x-auto py-1">
           <div class="min-w-0 flex-1 sm:min-w-64 sm:max-w-xs sm:flex-none">
-            <TextInput v-model="searchQuery" type="text" placeholder="Search records and their child table rows">
+            <TextInput v-model="searchQuery" type="text" :placeholder="t('Search records and their child table rows')">
               <template #prefix>
                 <FeatherIcon name="search" class="h-4 w-4 text-ink-gray-5" />
               </template>
@@ -84,7 +84,7 @@
                 v-else-if="field.fieldtype === 'Check'"
                 type="select"
                 class="[&_[data-slot=trigger]]:w-full"
-                :options="[{ label: field.label, value: '' }, { label: 'Yes', value: '1' }, { label: 'No', value: '0' }]"
+                :options="[{ label: field.label, value: '' }, { label: t('Yes'), value: '1' }, { label: t('No'), value: '0' }]"
                 v-model="quickFilters[field.fieldname]"
               />
               <FormControl v-else type="text" :placeholder="field.label" v-model="quickFilters[field.fieldname]" />
@@ -95,18 +95,18 @@
         <div v-if="!isMobile" class="h-5 flex-shrink-0 border-s border-outline-gray-2" />
 
         <div class="flex flex-shrink-0 items-center gap-2">
-          <Button variant="outline" icon="refresh-cw" tooltip="Refresh" :loading="pageResource.loading" @click="refreshList" />
+          <Button variant="outline" icon="refresh-cw" :tooltip="t('Refresh')" :loading="pageResource.loading" @click="refreshList" />
 
           <Dropdown v-if="canExport" :options="exportOptions" placement="bottom-end">
-            <Button variant="outline" :icon-left="isMobile ? undefined : 'download'" :icon="isMobile ? 'download' : undefined" :loading="exporting" :tooltip="isMobile ? 'Export' : undefined">
-              <template v-if="!isMobile">Export</template>
+            <Button variant="outline" :icon-left="isMobile ? undefined : 'download'" :icon="isMobile ? 'download' : undefined" :loading="exporting" :tooltip="isMobile ? t('Export') : undefined">
+              <template v-if="!isMobile">{{ t('Export') }}</template>
             </Button>
           </Dropdown>
 
           <template v-if="!isMobile">
             <Popover v-model:show="showFilterPopover" placement="bottom-end" popover-class="doctype-list-popover" :hide-on-blur="false">
               <template #target="{ togglePopover }">
-                <Button variant="outline" icon-left="filter" label="Filter" data-toolbar-popover-trigger @click="togglePopover">
+                <Button variant="outline" icon-left="filter" :label="t('Filter')" data-toolbar-popover-trigger @click="togglePopover">
                   <template v-if="activeFilterCount" #suffix>
                     <span class="flex h-4 min-w-4 items-center justify-center rounded-full bg-surface-gray-7 px-1 text-2xs text-ink-white">
                       {{ activeFilterCount }}
@@ -126,7 +126,7 @@
 
           <template v-else>
             <span class="relative inline-flex">
-              <Button variant="outline" icon="filter" tooltip="Filter" @click="showFilterSheet = true" />
+              <Button variant="outline" icon="filter" :tooltip="t('Filter')" @click="showFilterSheet = true" />
               <span
                 v-if="activeFilterCount"
                 class="pointer-events-none absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-surface-gray-7 px-1 text-2xs text-ink-white"
@@ -145,7 +145,7 @@
         <template #body>
           <div class="filter-sheet-panel flex flex-col">
             <div class="flex h-12 flex-shrink-0 items-center justify-between border-b px-4 dark:border-gray-800">
-              <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Filter</h3>
+              <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ t('Filter') }}</h3>
               <Button variant="ghost" size="sm" icon="x" tooltip="Close" @click="showFilterSheet = false" />
             </div>
 
@@ -153,7 +153,7 @@
               <FilterEditor :fields="allFields" v-model="advancedFilters" @update:model-value="showFilterSheet = false" />
             </div>
             <div class="flex flex-shrink-0 justify-end border-t px-4 py-3 dark:border-gray-800">
-              <Button icon-left="x" @click="showFilterSheet = false" size="sm">Close</Button>
+              <Button icon-left="x" @click="showFilterSheet = false" size="sm">{{ t('Close') }}</Button>
             </div>
           </div>
         </template>
@@ -163,15 +163,15 @@
         <template #body>
           <div class="filter-sheet-panel flex flex-col">
             <div class="flex h-12 flex-shrink-0 items-center justify-between border-b px-4 dark:border-gray-800">
-              <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Sort</h3>
+              <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ t('Sort') }}</h3>
               <Button variant="ghost" size="sm" icon="x" tooltip="Close" @click="showSortSheet = false" />
             </div>
             <div class="px-4 py-4">
               <SortEditor :fields="allFields" v-model="sortValue" />
             </div>
             <div class="flex justify-end gap-2 border-t px-4 py-3 dark:border-gray-800">
-              <Button icon-left="x" @click="showSortSheet = false" size="sm">Close</Button>
-              <Button variant="solid" icon-left="check" @click="showSortSheet = false" size="sm">Done</Button>
+              <Button icon-left="x" @click="showSortSheet = false" size="sm">{{ t('Close') }}</Button>
+              <Button variant="solid" icon-left="check" @click="showSortSheet = false" size="sm">{{ t('Done') }}</Button>
             </div>
           </div>
         </template>
@@ -370,11 +370,11 @@
         <!-- frappe-ui's own Load More button renders empty here, so the right-hand side is drawn in full -->
         <template #right>
           <div class="flex items-center">
-            <Button v-if="canLoadMore" variant="outline" size="sm" :loading="moreResource.loading" @click="loadMore">Load More</Button>
+            <Button v-if="canLoadMore" variant="outline" size="sm" :loading="moreResource.loading" @click="loadMore">{{ t('Load More') }}</Button>
             <div v-if="canLoadMore" class="mx-3 h-5 border-s border-outline-gray-2" />
             <div class="flex items-center gap-1 text-base text-ink-gray-5">
               <div>{{ allRows.length }}</div>
-              <div>of</div>
+              <div>{{ t('of') }}</div>
               <div>{{ totalCountResource.data ?? 0 }}</div>
             </div>
           </div>
@@ -517,6 +517,7 @@ import SortEditor from '@/components/SortEditor.vue'
 import SelectionBar from '@/components/SelectionBar.vue'
 import { exportRecords as downloadRecords } from '@/utils/exportRecords'
 import ColumnPicker from '@/components/ColumnPicker.vue'
+import { t, localizeField } from '@/utils/translate'
 import SortControl from '@/components/SortControl.vue'
 import { useColumnPrefs } from '@/composables/useColumnPrefs'
 import Skeleton from '@/components/Skeleton.vue'
@@ -817,7 +818,7 @@ function columnWidth(col) {
 const listViewColumns = computed(() =>
   [ID_COLUMN, ...visibleColumns.value.filter((c) => c.fieldname !== 'name' && c.fieldname !== 'modified'), MODIFIED_COLUMN].map((col) => ({
     key: col.fieldname,
-    label: col.label,
+    label: col.fieldname === 'name' ? t('ID') : col.fieldname === 'modified' ? t('Last Modified') : localizeField(props.doctype, col).label,
     width: columnWidth(col),
     docField: col,
   })),
@@ -828,7 +829,7 @@ const listViewOptions = computed(() => ({
   showTooltip: false,
   getRowRoute: (row) => getRowRouteFor(row.name),
   emptyState: {
-    title: hasActiveFilters.value ? 'No records match your filters' : 'No records yet',
+    title: hasActiveFilters.value ? t('No records match your filters') : t('No records yet'),
     description: hasActiveFilters.value
       ? 'Try adjusting or clearing your filters.'
       : undefined,

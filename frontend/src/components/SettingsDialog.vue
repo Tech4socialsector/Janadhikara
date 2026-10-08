@@ -10,14 +10,14 @@
             variant="ghost"
             size="sm"
             icon="arrow-left"
-            tooltip="Back"
+            :tooltip="t('Back')"
             @click="mobileScreen = 'list'"
           />
           <h1 class="min-w-0 flex-1 truncate text-base font-semibold text-gray-900 dark:text-gray-100">
-            <span :class="mobileScreen === 'panel' ? 'hidden sm:inline' : ''">Settings</span>
+            <span :class="mobileScreen === 'panel' ? 'hidden sm:inline' : ''">{{ t('Settings') }}</span>
             <span v-if="mobileScreen === 'panel'" class="sm:hidden">{{ activeLabel }}</span>
           </h1>
-          <Button variant="ghost" size="sm" icon="x" tooltip="Close" @click="show = false" />
+          <Button variant="ghost" size="sm" icon="x" :tooltip="t('Close')" @click="show = false" />
         </div>
 
         <!-- Phone, first screen: a Settings-app style list - grouped rows with an
@@ -71,13 +71,13 @@
               <NotificationSettingsPanel v-else-if="activeTab === 'notifications'" />
 
               <div v-else-if="activeTab === 'appearance'">
-                <div class="mb-1.5 text-sm font-medium text-gray-700 dark:text-gray-300">Appearance</div>
+                <div class="mb-1.5 text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('Appearance') }}</div>
                 <TabButtons v-model="theme" :buttons="themeButtons" />
               </div>
 
               <div v-else-if="activeTab === 'language'">
                 <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">
-                  Choose the language used for emails and other Frappe-side text.
+                  Choose the app language. It is also the language of your emails and other system text.
                 </p>
                 <div v-if="languagesResource.loading && !languagesResource.data" class="space-y-1">
                   <Skeleton v-for="i in 6" :key="i" height="2.25rem" />
@@ -87,11 +87,11 @@
                     v-for="opt in languagesResource.data"
                     :key="opt.value"
                     class="flex items-center justify-between rounded px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
-                    :class="{ 'bg-gray-100 dark:bg-gray-800': session.user_language === opt.value }"
+                    :class="{ 'bg-gray-100 dark:bg-gray-800': appLanguage === opt.value }"
                     @click="selectLanguage(opt.value)"
                   >
                     <span>{{ opt.label }}</span>
-                    <FeatherIcon v-if="session.user_language === opt.value" name="check" class="h-4 w-4" />
+                    <FeatherIcon v-if="appLanguage === opt.value" name="check" class="h-4 w-4" />
                   </button>
                 </div>
               </div>
@@ -119,7 +119,7 @@
         </div>
 
         <div class="flex flex-shrink-0 justify-end border-t px-4 py-3 dark:border-gray-800">
-          <Button icon-left="x" @click="show = false" size="sm">Close</Button>
+          <Button icon-left="x" @click="show = false" size="sm">{{ t('Close') }}</Button>
         </div>
       </div>
     </template>
@@ -165,6 +165,7 @@ that has a Geo Location map on it. */
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { Dialog, FeatherIcon, TabButtons, Button } from 'frappe-ui'
+import { t } from '@/utils/translate'
 import SettingsDoctypePanel from '@/components/SettingsDoctypePanel.vue'
 import ProfilePanel from '@/components/ProfilePanel.vue'
 import NotificationSettingsPanel from '@/components/NotificationSettingsPanel.vue'
@@ -174,7 +175,7 @@ import EmailSettingsPanel from '@/components/EmailSettingsPanel.vue'
 import Skeleton from '@/components/Skeleton.vue'
 import moduleIcon from '@/components/moduleIcon'
 import { session } from '@/data/session'
-import { languagesResource, setUserLanguage } from '@/data/language'
+import { languagesResource, appLanguage, setUserLanguage } from '@/data/language'
 import { currentTheme } from '@/data/theme'
 import { userContextResource } from '@/data/userContext'
 import { settingsEntriesResource } from '@/data/settingsEntries'
@@ -216,12 +217,12 @@ watch(show, (visible) => {
 const groupedTabs = computed(() => {
   const groups = [
     {
-      label: 'Account',
+      label: t('Account'),
       tabs: [
-        { key: 'profile', label: 'Profile', icon: moduleIcon('user') },
-        { key: 'notifications', label: 'Notifications', icon: moduleIcon('bell') },
-        { key: 'appearance', label: 'Appearance', icon: moduleIcon('sun') },
-        { key: 'language', label: 'Language', icon: moduleIcon('globe') },
+        { key: 'profile', label: t('Profile'), icon: moduleIcon('user') },
+        { key: 'notifications', label: t('Notifications'), icon: moduleIcon('bell') },
+        { key: 'appearance', label: t('Appearance'), icon: moduleIcon('sun') },
+        { key: 'language', label: t('Language'), icon: moduleIcon('globe') },
       ],
     },
   ]

@@ -17,18 +17,19 @@
         {{ pageTitle }}
       </h1>
       <AwesomeBar />
+      <LanguageSwitcher />
       <NetworkPill compact />
       <Button
         variant="ghost"
         :icon="theme === 'dark' ? 'moon' : 'sun'"
-        :tooltip="theme === 'dark' ? 'Dark theme - switch to light' : 'Light theme - switch to dark'"
+        :tooltip="theme === 'dark' ? t('Dark theme - switch to light') : t('Light theme - switch to dark')"
         aria-label="Switch theme"
         @click="theme = theme === 'dark' ? 'light' : 'dark'"
       />
 
       <!-- Alerts in the top-right corner (the profile is in the bottom bar). -->
       <span class="relative inline-flex flex-shrink-0">
-        <Button variant="ghost" size="sm" icon="bell" tooltip="Notifications" aria-label="Notifications" @click="toggleNotifications" />
+        <Button variant="ghost" size="sm" icon="bell" :tooltip="t('Notifications')" aria-label="Notifications" @click="toggleNotifications" />
         <span
           v-if="unreadCount > 0"
           class="pointer-events-none absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-2xs font-medium text-white"
@@ -56,6 +57,9 @@ import { useRoute, useRouter } from 'vue-router'
 import { Button, FeatherIcon } from 'frappe-ui'
 import AwesomeBar from '@/components/AwesomeBar.vue'
 import NetworkPill from '@/components/NetworkPill.vue'
+import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
+import { currentTheme } from '@/data/theme'
+import { t } from '@/utils/translate'
 import MobileNav from '@/components/MobileNav.vue'
 import ConnectionBanner from '@/components/ConnectionBanner.vue'
 import NotificationPanel from '@/components/NotificationPanel.vue'
@@ -66,10 +70,13 @@ import { openMobileMenu } from '@/data/mobileMenu'
 import { pageTitle } from '@/data/pageTitle'
 import { showSettingsDialog } from '@/data/settingsDialog'
 import { unreadCount, toggleNotifications } from '@/data/notifications'
-import { currentTheme } from '@/data/theme'
 
 const route = useRoute()
 const router = useRouter()
+const theme = computed({
+  get: () => currentTheme.value,
+  set: (v) => (currentTheme.value = v),
+})
 const canGoBack = computed(() => route.name !== 'Home')
 
 // One step back through the app's own history; if this page was opened directly
@@ -79,10 +86,6 @@ function goBack() {
   else router.push({ name: 'Home' })
 }
 
-const theme = computed({
-  get: () => currentTheme.value,
-  set: (v) => (currentTheme.value = v),
-})
 </script>
 
 <style>

@@ -12,7 +12,6 @@
   "column_break_consent",
   "consent_date",
   "consent_taken_by",
-  "consent_withdrawn_on",
   "section_primary",
   "individual_id",
   "household",
@@ -245,12 +244,6 @@
    "length": 64,
    "read_only": 1,
    "depends_on": "eval:doc.consent_taken_by"
-  },
-  {
-   "fieldname": "consent_withdrawn_on",
-   "fieldtype": "Date",
-   "label": "Consent Withdrawn On",
-   "depends_on": "eval:Number(doc.consent_given)===1"
   },
   {
    "fieldname": "section_primary",

@@ -6,27 +6,27 @@
       </template>
       <template #actions>
         <Dropdown :options="summaryExportOptions" placement="right">
-          <Button variant="outline" icon-left="download" :disabled="!data">Export</Button>
+          <Button variant="outline" icon-left="download" :disabled="!data">{{ t('Export') }}</Button>
         </Dropdown>
-        <Button variant="ghost" icon="refresh-cw" tooltip="Refresh" aria-label="Refresh" :loading="dashboard.loading" @click="load" />
+        <Button variant="ghost" icon="refresh-cw" :tooltip="t('Refresh')" :aria-label="t('Refresh')" :loading="dashboard.loading" @click="load" />
       </template>
     </PageHeader>
 
     <!-- Filters -->
     <section class="dash-filters mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
       <FormControl type="select" class="w-full" label="Settlement" :options="withAll(options?.settlements)" v-model="filters.settlement" />
-      <FormControl type="select" class="w-full" label="Partner organization" :options="withAll(options?.partners)" v-model="filters.partner_organization" />
-      <FormControl type="select" class="w-full" label="Gender" :options="withAll(options?.genders)" v-model="filters.gender" />
-      <FormControl type="select" class="w-full" label="Age group" :options="withAll(options?.age_groups)" v-model="filters.age_group" />
-      <FormControl type="select" class="w-full" label="Household status" :options="withAll(options?.household_statuses)" v-model="filters.household_status" />
-      <FormControl type="select" class="w-full" label="Documentation status" :options="withAll(options?.documentation_statuses)" v-model="filters.documentation_status" />
-      <FormControl type="select" class="w-full" label="Validation status" :options="withAll(options?.validation_statuses)" v-model="filters.validation_status" />
+      <FormControl type="select" class="w-full" :label="t('Partner organization')" :options="withAll(options?.partners)" v-model="filters.partner_organization" />
+      <FormControl type="select" class="w-full" :label="t('Gender')" :options="withAll(options?.genders)" v-model="filters.gender" />
+      <FormControl type="select" class="w-full" :label="t('Age group')" :options="withAll(options?.age_groups)" v-model="filters.age_group" />
+      <FormControl type="select" class="w-full" :label="t('Household status')" :options="withAll(options?.household_statuses)" v-model="filters.household_status" />
+      <FormControl type="select" class="w-full" :label="t('Documentation status')" :options="withAll(options?.documentation_statuses)" v-model="filters.documentation_status" />
+      <FormControl type="select" class="w-full" :label="t('Validation status')" :options="withAll(options?.validation_statuses)" v-model="filters.validation_status" />
       <div>
-        <label class="mb-1.5 block text-xs text-ink-gray-5">From</label>
+        <label class="mb-1.5 block text-xs text-ink-gray-5">{{ t('From') }}</label>
         <DatePicker class="w-full" format="DD MMM YYYY" v-model="filters.from_date" />
       </div>
       <div>
-        <label class="mb-1.5 block text-xs text-ink-gray-5">To</label>
+        <label class="mb-1.5 block text-xs text-ink-gray-5">{{ t('To') }}</label>
         <DatePicker class="w-full" format="DD MMM YYYY" v-model="filters.to_date" />
       </div>
       <div v-if="activeFilters" class="sm:col-span-2 lg:col-span-4 xl:col-span-5">
@@ -40,7 +40,7 @@
     <ErrorMessage v-if="dashboard.error" class="mb-4" :message="dashboard.error?.messages?.[0] || 'The dashboard could not be loaded.'" />
 
     <!-- Number cards: click one to open the records behind it -->
-    <section class="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4" aria-label="Key numbers">
+    <section class="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4" :aria-label="t('Key numbers')">
       <div v-for="i in (data ? 0 : 8)" :key="`s${i}`" class="h-[88px] animate-pulse rounded-xl border bg-gray-50 dark:border-gray-800 dark:bg-gray-900" />
       <button
         v-for="card in cards"
@@ -55,37 +55,37 @@
     </section>
 
     <!-- Charts: click a bar, slice or point to open the records behind it -->
-    <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">Click any bar, slice or point to see the records.</p>
+    <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ t('Click any bar, slice or point to see the records.') }}</p>
     <section class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <ChartCard title="Recorded over time" subtitle="Households and individuals added each month" :empty="!data?.monthly?.length" :table="monthlyTable" class="lg:col-span-2">
+      <ChartCard :title="t('Recorded over time')" :subtitle="t('Households and individuals added each month')" :empty="!data?.monthly?.length" :table="monthlyTable" class="lg:col-span-2">
         <DrillChart v-if="data?.monthly?.length" kind="line" :months="data.monthly.map((m) => m.month)" :series="monthlySeries" @select="onMonthly" />
       </ChartCard>
 
-      <ChartCard title="Household status" :empty="!data?.household_status?.length" :table="tableOf(data?.household_status, 'Households')">
+      <ChartCard :title="t('Household status')" :empty="!data?.household_status?.length" :table="tableOf(data?.household_status, 'Households')">
         <DrillChart v-if="data?.household_status?.length" kind="donut" :rows="data.household_status" @select="onRow(HOUSEHOLD, data.household_status, $event)" />
       </ChartCard>
-      <ChartCard title="Gender" :empty="!data?.gender?.length" :table="tableOf(data?.gender, 'Individuals')">
+      <ChartCard :title="t('Gender')" :empty="!data?.gender?.length" :table="tableOf(data?.gender, 'Individuals')">
         <DrillChart v-if="data?.gender?.length" kind="donut" :rows="data.gender" @select="onRow(INDIVIDUAL, data.gender, $event)" />
       </ChartCard>
 
-      <ChartCard title="Age groups" subtitle="Individuals by age (years)" :empty="!individualsTotal" :table="tableOf(data?.age_groups, 'Individuals')">
+      <ChartCard :title="t('Age groups')" :subtitle="t('Individuals by age (years)')" :empty="!individualsTotal" :table="tableOf(data?.age_groups, 'Individuals')">
         <DrillChart v-if="individualsTotal" :rows="data.age_groups" @select="onRow(INDIVIDUAL, data.age_groups, $event)" />
       </ChartCard>
-      <ChartCard title="Highest education" :empty="!data?.education?.length" :table="tableOf(data?.education, 'Individuals')">
+      <ChartCard :title="t('Highest education')" :empty="!data?.education?.length" :table="tableOf(data?.education, 'Individuals')">
         <DrillChart v-if="data?.education?.length" horizontal :rows="data.education" @select="onRow(INDIVIDUAL, data.education, $event)" />
       </ChartCard>
 
-      <ChartCard title="Documents held" subtitle="Share of people asked who answered Yes" :empty="!hasDocuments" :table="documentsTable">
+      <ChartCard :title="t('Documents held')" :subtitle="t('Share of people asked who answered Yes')" :empty="!hasDocuments" :table="documentsTable">
         <DrillChart v-if="hasDocuments" horizontal suffix="%" :max="100" series-name="Have it" :rows="data.documents" @select="onRow(INDIVIDUAL, data.documents, $event)" />
       </ChartCard>
-      <ChartCard title="Main occupation" subtitle="Top 10" :empty="!data?.occupation?.length" :table="tableOf(data?.occupation, 'Individuals')">
+      <ChartCard :title="t('Main occupation')" :subtitle="t('Top 10')" :empty="!data?.occupation?.length" :table="tableOf(data?.occupation, 'Individuals')">
         <DrillChart v-if="data?.occupation?.length" horizontal :rows="data.occupation" @select="onRow(INDIVIDUAL, data.occupation, $event)" />
       </ChartCard>
 
-      <ChartCard title="Individual documentation" :empty="!individualsTotal" :table="tableOf(data?.documentation, 'Individuals')">
+      <ChartCard :title="t('Individual documentation')" :empty="!individualsTotal" :table="tableOf(data?.documentation, 'Individuals')">
         <DrillChart v-if="individualsTotal" kind="donut" :rows="data.documentation" @select="onRow(INDIVIDUAL, data.documentation, $event)" />
       </ChartCard>
-      <ChartCard title="Household documentation" :empty="!data?.household_documentation?.length" :table="tableOf(data?.household_documentation, 'Households')">
+      <ChartCard :title="t('Household documentation')" :empty="!data?.household_documentation?.length" :table="tableOf(data?.household_documentation, 'Households')">
         <DrillChart v-if="data?.household_documentation?.length" kind="donut" :rows="data.household_documentation" @select="onRow(HOUSEHOLD, data.household_documentation, $event)" />
       </ChartCard>
     </section>
@@ -109,6 +109,7 @@
 <script setup>
 import { computed, defineComponent, h, onMounted, reactive, ref, watch } from 'vue'
 import { NumberChart, Button, FormControl, DatePicker, FeatherIcon, ErrorMessage, Dropdown, toast, useCall } from 'frappe-ui'
+import { t } from '@/utils/translate'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import DrillChart from '@/components/DrillChart.vue'

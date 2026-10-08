@@ -33,7 +33,7 @@
           v-else-if="fieldFor(row.fieldname)?.fieldtype === 'Check'"
           type="select"
           class="w-0 min-w-0 flex-[1.3] [&_[data-slot=trigger]]:w-full [&_[data-slot=trigger]_span]:truncate"
-          :options="[{ label: 'Yes', value: '1' }, { label: 'No', value: '0' }]"
+          :options="[{ label: t('Yes'), value: '1' }, { label: t('No'), value: '0' }]"
           v-model="row.value"
         />
         <FormControl
@@ -53,10 +53,10 @@
           v-else
           type="text"
           class="w-0 min-w-0 flex-[1.3]"
-          placeholder="Value"
+          :placeholder="t('Value')"
           v-model="row.value"
         />
-        <Button variant="ghost" size="sm" icon="x" tooltip="Remove this filter" @click="removeRow(row.id)" />
+        <Button variant="ghost" size="sm" icon="x" :tooltip="t('Remove this filter')" @click="removeRow(row.id)" />
       </div>
 
       <div v-if="rows.length === 0" class="px-1 py-2 text-sm text-gray-400 dark:text-gray-500">
@@ -64,11 +64,11 @@
       </div>
     </div>
 
-    <Button class="mt-3" variant="subtle" icon-left="plus" @click="addRow">Add a Filter</Button>
+    <Button class="mt-3" variant="subtle" icon-left="plus" @click="addRow">{{ t('Add a Filter') }}</Button>
 
     <div class="mt-4 flex flex-shrink-0 justify-end gap-2 border-t pt-3 dark:border-gray-800">
-      <Button icon-left="rotate-ccw" v-if="rows.length" @click="clearAll">Clear Filters</Button>
-      <Button icon-left="check" variant="solid" @click="apply">Apply Filters</Button>
+      <Button icon-left="rotate-ccw" v-if="rows.length" @click="clearAll">{{ t('Clear Filters') }}</Button>
+      <Button icon-left="check" variant="solid" @click="apply">{{ t('Apply Filters') }}</Button>
     </div>
   </div>
 </template>
@@ -76,6 +76,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { Button, FeatherIcon, FormControl, DatePicker, MultiSelect, useCall } from 'frappe-ui'
+import { t } from '@/utils/translate'
 
 // A row-based field/operator/value filter editor - one row per filter,
 // AND'd together, matching Frappe desk's own list-view filter UX (field
@@ -131,7 +132,7 @@ const DEFAULT_OPERATORS = [{ label: 'Equals', value: '=' }]
 
 function operatorOptions(row) {
   const field = fieldFor(row.fieldname)
-  return (field && OPERATORS_BY_TYPE[field.fieldtype]) || DEFAULT_OPERATORS
+  return ((field && OPERATORS_BY_TYPE[field.fieldtype]) || DEFAULT_OPERATORS).map((o) => ({ ...o, label: t(o.label) }))
 }
 
 function isMultiValueRow(row) {

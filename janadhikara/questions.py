@@ -122,7 +122,7 @@ def validate_answers(doc, method=None):
 	# Runs for every doctype (see hooks.py); Household Profile's own controller also calls it.
 	if doc.flags.get("answers_validated") or doc.meta.istable or doc.meta.issingle:
 		return
-	if doc.meta.module not in ("Masters", "Common", "App Config", "Engine", "Baseline"):
+	if doc.meta.module not in ("Masters", "App Config", "Engine", "Baseline"):
 		return  # questions only live on this app's own doctypes
 	fieldname = answers_fieldname(doc.doctype)
 	if not fieldname:

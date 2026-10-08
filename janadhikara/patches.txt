@@ -39,3 +39,7 @@ janadhikara.patches.v1_1.ai_policy_household_ownership_readonly
 janadhikara.patches.v1_1.ai_policy_hide_personal_fields
 janadhikara.patches.v1_1.ai_policy_show_names
 janadhikara.patches.v1_1.individual_record_date
+janadhikara.patches.v1_1.three_languages
+janadhikara.patches.v1_1.import_translations
+janadhikara.patches.v1_1.remove_consent_withdrawn
+janadhikara.patches.v1_1.remove_common_module

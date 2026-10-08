@@ -27,6 +27,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { pageTitle } from '@/data/pageTitle'
+import { t } from '@/utils/translate'
 import { findModuleByRoute } from '@/data/modules'
 import { findSettingsEntryByRoute } from '@/data/settingsEntries'
 
@@ -46,25 +47,25 @@ const crumbs = computed(() => {
 
   if (doctypeRoute === 'todo') {
     return [
-      { label: 'Home', to: { name: 'Home' } },
-      { label: 'Worklist', to: { name: 'Worklist' } },
+      { label: t('Home'), to: { name: 'Home' } },
+      { label: t('Worklist'), to: { name: 'Worklist' } },
       { label: route.name === 'DoctypeNew' ? 'New task' : pageTitle.value || 'Task' },
     ]
   }
 
   const moduleItem = findModuleByRoute(doctypeRoute)
-  const listLabel = moduleItem?.label || findSettingsEntryByRoute(doctypeRoute)?.label || doctypeRoute
-  const list = [{ label: 'Home', to: { name: 'Home' } }]
+  const listLabel = t(moduleItem?.label || findSettingsEntryByRoute(doctypeRoute)?.label || doctypeRoute)
+  const list = [{ label: t('Home'), to: { name: 'Home' } }]
   // There's no dedicated page per module (Home just lists every module's
   // tiles inline), so the module crumb links back to Home too rather than
   // to a route that doesn't exist.
   if (moduleItem?.module?.label) {
-    list.push({ label: moduleItem.module.label, to: { name: 'Home' } })
+    list.push({ label: t(moduleItem.module.label), to: { name: 'Home' } })
   }
   list.push({ label: listLabel, to: { name: 'DoctypeList', params: { doctypeRoute } } })
 
   if (route.name === 'DoctypeNew') {
-    list.push({ label: `New ${listLabel}` })
+    list.push({ label: `${t('New')} ${listLabel}` })
   } else if (route.name === 'DoctypeForm') {
     // pageTitle is kept in sync with the record's own title_field value by
     // DoctypeForm.vue (falling back to its id) - reused here rather than

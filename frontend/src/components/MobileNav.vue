@@ -5,10 +5,10 @@
     <router-link
       :to="{ name: 'Home' }"
       class="flex flex-1 flex-col items-center gap-0.5 py-2 text-xs"
-      :class="route.name === 'Home' ? 'nav-active' : 'text-gray-400 dark:text-gray-500'"
+      :class="route.name === 'Home' ? 'text-[var(--app-accent)] dark:text-gray-100' : 'text-gray-400 dark:text-gray-500'"
     >
       <FeatherIcon name="home" class="h-5 w-5" />
-      Home
+      {{ t('Home') }}
     </router-link>
 
     <button
@@ -19,16 +19,16 @@
       <span class="assistant-nav-badge relative flex h-5 w-5 items-center justify-center">
         <SparklesIcon class="h-5 w-5" />
       </span>
-      Assistant
+      {{ t('Assistant') }}
     </button>
 
     <router-link
       :to="{ name: 'Worklist' }"
       class="flex flex-1 flex-col items-center gap-0.5 py-2 text-xs"
-      :class="route.name === 'Worklist' ? 'nav-active' : 'text-gray-400 dark:text-gray-500'"
+      :class="route.name === 'Worklist' ? 'text-[var(--app-accent)] dark:text-gray-100' : 'text-gray-400 dark:text-gray-500'"
     >
       <FeatherIcon name="check-square" class="h-5 w-5" />
-      Worklist
+      {{ t('Worklist') }}
     </router-link>
 
     <!-- Profile: the same hover card as the desktop sidebar, with Settings and
@@ -40,7 +40,7 @@
           @click="!isOpen && open()"
         >
           <Avatar :image="session.user_image" :label="session.full_name || session.user" size="sm" shape="circle" />
-          Profile
+          {{ t('Profile') }}
         </button>
       </template>
     </UserHoverCard>
@@ -50,18 +50,34 @@
   </nav>
 
   <Transition name="menu-overlay">
-    <div
-      v-if="showMenu"
-      class="fixed inset-0 z-40 bg-black/40"
-      @click.self="showMenu = false"
-    >
-      <Transition name="menu-drawer" appear>
+    <div v-if="showMenu" class="fixed inset-0 z-40 flex items-end bg-black/40" @click.self="showMenu = false">
+      <Transition name="menu-sheet" appear>
         <div
           v-if="showMenu"
-          class="h-full w-72 max-w-[80vw] overflow-y-auto pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]"
-          @click="closeOnSelect"
+          role="dialog" aria-modal="true" class="h-[50vh] w-full overflow-y-auto rounded-t-2xl bg-white px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3 shadow-xl dark:bg-gray-900 dark:ring-1 dark:ring-gray-700"
         >
-          <AppSidebar disable-collapse embedded />
+          <div class="mb-3 flex items-center justify-between">
+            <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ modules.length ? t(modules[0].label) : t('Menu') }}</span>
+            <Button variant="ghost" size="sm" icon="x" :aria-label="t('Close')" :tooltip="t('Close')" @click="showMenu = false" />
+          </div>
+          <div v-if="!modules.length" class="grid grid-cols-4 gap-y-4">
+            <button v-for="item in quickLinks" :key="item.key" class="flex min-w-0 flex-col items-center gap-1.5 active:scale-95" @click="item.go">
+              <span class="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-gray-600 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-700">
+                <component :is="item.icon" v-if="item.icon" class="h-6 w-6" />
+                <LucideIcon v-else :name="item.lucide" class="h-6 w-6" />
+                <span v-if="item.badge" class="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-2xs font-semibold text-white">{{ item.badge }}</span>
+              </span>
+              <span class="line-clamp-2 max-w-full text-center text-xs leading-tight text-gray-900 dark:text-gray-100">{{ item.label }}</span>
+            </button>
+          </div>
+          <template v-for="mod in modules" :key="mod.label">
+            <div class="grid grid-cols-4 gap-y-4">
+              <button v-for="item in itemsOf(mod)" :key="item.route" class="flex min-w-0 flex-col items-center gap-1.5 active:scale-95" @click="openItem(item)">
+                <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-gray-600 shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-700"><LucideIcon :name="item.icon || mod.icon" class="h-6 w-6" /></span>
+                <span class="line-clamp-2 max-w-full text-center text-xs leading-tight text-gray-900 dark:text-gray-100">{{ t(item.label || item.doctype_name) }}</span>
+              </button>
+            </div>
+          </template>
         </div>
       </Transition>
     </div>
@@ -72,31 +88,49 @@
 import { showMobileMenu } from '@/data/mobileMenu'
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { Avatar, FeatherIcon } from 'frappe-ui'
-import AppSidebar from '@/components/AppSidebar.vue'
+import { Avatar, Button, FeatherIcon } from 'frappe-ui'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { activeModule } from '@/data/activeModule'
+import { findModuleByRoute } from '@/data/modules'
+import { pendingCount } from '@/data/offlineQueue'
+import LucideIcon from '@/components/LucideIcon.vue'
+import SyncCloudIcon from '@/components/SyncCloudIcon.vue'
 import SparklesIcon from '@/components/SparklesIcon.vue'
 import UserHoverCard from '@/components/UserHoverCard.vue'
 import { showSettingsDialog } from '@/data/settingsDialog'
 import { session } from '@/data/session'
+import { t } from '@/utils/translate'
 import { assistantState, assistantConfigResource, toggleAssistant } from '@/data/aiAssistant'
 
 const route = useRoute()
 // Shared with the header's menu button (see data/mobileMenu.js).
 const showMenu = showMobileMenu
 
-// Picking anything in the drawer closes it, whatever it does - including a link
-// to the page you're already on (which changes no route, so the route watch
-// below would never fire). Two things inside the drawer are NOT a selection and
-// must leave it open: a group heading (it only folds / unfolds its children,
-// marked data-keep-drawer in AppSidebar) and the header's account menu button.
-function closeOnSelect(event) {
-  const control = event.target instanceof Element ? event.target.closest('a, button') : null
-  if (!control) return
-  if (control.closest('[data-keep-drawer]') || control.matches('.app-sidebar > div > button.h-12')) return
+const router = useRouter()
+// Only the module that is open (the one picked on Home or the one the current page belongs to), like the sidebar.
+const modules = computed(() => {
+  const current = activeModule.value || findModuleByRoute(route.params.doctypeRoute)?.module
+  return current ? [current] : []
+})
+// Links and tiles only: section headings and spacers are a sidebar thing.
+const itemsOf = (mod) => (mod.doctypes || []).filter((it) => it.route && it.type !== 'Section Break' && it.type !== 'Spacer')
+const goto = (location) => () => {
   showMenu.value = false
+  router.push(location)
+}
+const quickLinks = computed(() => [
+  { key: 'home', label: t('Home'), lucide: 'home', go: goto({ name: 'Home' }) },
+  { key: 'dashboard', label: t('Dashboard'), lucide: 'layout-dashboard', go: goto({ name: 'Dashboard' }) },
+  { key: 'worklist', label: t('Worklist'), lucide: 'check-square', go: goto({ name: 'Worklist' }) },
+  { key: 'sync', label: t('Sync Data'), icon: SyncCloudIcon, badge: pendingCount.value > 0 ? (pendingCount.value > 9 ? '9+' : String(pendingCount.value)) : '', go: goto({ name: 'SyncData' }) },
+])
+function openItem(item) {
+  showMenu.value = false
+  router.push({ name: 'DoctypeList', params: { doctypeRoute: item.route } })
 }
 
-// AppSidebar's own items navigate via router.replace - close the drawer
+// Close the launcher
 // whenever that happens, the same way tapping a link in a mobile drawer
 // normally dismisses it.
 watch(() => route.fullPath, () => {
@@ -121,21 +155,6 @@ watch(() => assistantState.visible, (open) => {
 </script>
 
 <style scoped>
-/* The active tab's own "this is the brand color" indicator - was a plain
-text-gray-900 dark:text-gray-100 pair, same as this app's ordinary
-heading/body text everywhere else, so it couldn't be swapped in
-index.css's global accent override without also recoloring every heading
-in the app to the accent color. A dedicated class instead of an inline
-:style binding keeps this file's own light/dark swap declarative (one
-rule, not a computed style object), matching how every other class-based
-color pair on this page already reads. */
-.nav-active {
-  color: var(--app-accent);
-}
-:global(.dark) .nav-active {
-  color: theme('colors.gray.100');
-}
-
 .menu-overlay-enter-active,
 .menu-overlay-leave-active {
   transition: opacity 0.2s ease;
@@ -145,14 +164,15 @@ color pair on this page already reads. */
   opacity: 0;
 }
 
-.menu-drawer-enter-active,
-.menu-drawer-leave-active {
-  transition: transform 0.2s ease;
+.menu-sheet-enter-active,
+.menu-sheet-leave-active {
+  transition: transform 0.22s ease;
 }
-.menu-drawer-enter-from,
-.menu-drawer-leave-to {
-  transform: translateX(-100%);
+.menu-sheet-enter-from,
+.menu-sheet-leave-to {
+  transform: translateY(100%);
 }
+
 
 /* "Blinking" as a soft breathing glow rather than a literal opacity
 on/off toggle - a hard blink reads as an alert/error state on a button

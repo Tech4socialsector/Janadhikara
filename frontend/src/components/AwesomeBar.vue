@@ -1,6 +1,6 @@
 <template>
   <Tooltip :text="`Search (${shortcutLabel})`">
-    <Button variant="ghost" size="sm" icon="search" tooltip="Search" @click="open = true" />
+    <Button variant="ghost" size="sm" icon="search" :tooltip="t('Search')" @click="open = true" />
   </Tooltip>
 
   <!-- No :options.title - the input itself is the dialog's only real
@@ -15,7 +15,7 @@
             ref="inputRef"
             v-model="query"
             type="text"
-            placeholder="Search or type a command"
+            :placeholder="t('Search or type a command')"
             class="h-9 w-full rounded border border-gray-200 bg-gray-50 pl-8 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500"
             @keydown.esc="open = false"
             @keydown.up.prevent="moveHighlight(-1)"
@@ -97,15 +97,15 @@
                 <FeatherIcon name="arrow-down" class="h-3 w-3" />
               </kbd>
             </span>
-            Navigate
+            {{ t('Navigate') }}
           </span>
           <span class="flex items-center gap-1.5">
             <kbd class="flex h-5 items-center rounded border border-gray-300 bg-gray-50 px-1.5 dark:border-gray-700 dark:bg-gray-800">Enter</kbd>
-            Select
+            {{ t('Select') }}
           </span>
           <span class="flex items-center gap-1.5">
             <kbd class="flex h-5 items-center rounded border border-gray-300 bg-gray-50 px-1.5 dark:border-gray-700 dark:bg-gray-800">Esc</kbd>
-            Close
+            {{ t('Close') }}
           </span>
         </div>
       </div>
@@ -115,6 +115,7 @@
 
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue'
+import { t } from '@/utils/translate'
 import { useRouter } from 'vue-router'
 import { useDebounceFn } from '@vueuse/core'
 import { Dialog, FeatherIcon, Tooltip, Button } from 'frappe-ui'

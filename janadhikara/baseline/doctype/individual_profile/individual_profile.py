@@ -32,17 +32,13 @@ class IndividualProfile(Document):
 		update_household_match(self.household, removing=self.name)
 
 	def validate_consent(self):
-		"""DPDP: nothing about a person is recorded without consent, and once it is withdrawn the
-		record is frozen."""
+		"""DPDP: nothing about a person is recorded without consent."""
 		if not self.consent_given:
 			frappe.throw(_("Record the person's consent (DPDP) before saving their details."))
 		if not self.consent_mode:
 			frappe.throw(_("Consent Mode is required when consent is given."))
 		self.consent_date = self.consent_date or today()
 		self.consent_taken_by = self.consent_taken_by or frappe.session.user
-		before = self.get_doc_before_save()
-		if before and before.consent_withdrawn_on and not self.flags.ignore_consent_freeze:
-			frappe.throw(_("Consent was withdrawn on {0}: this record can no longer be changed.").format(before.consent_withdrawn_on))
 
 	def fill_from_household(self):
 		"""Questions 2 to 5 come from the Household Profile, so they are never typed again."""

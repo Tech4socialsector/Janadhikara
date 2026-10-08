@@ -21,7 +21,7 @@
       </template>
       <template #actions>
         <TabButtons v-model="view" :buttons="viewButtons" />
-        <Button class="max-sm:hidden" variant="solid" size="sm" icon-left="plus" @click="openNew">New task</Button>
+        <Button class="max-sm:hidden" variant="solid" size="sm" icon-left="plus" @click="openNew">{{ t('New task') }}</Button>
       </template>
     </PageHeader>
 
@@ -32,13 +32,13 @@
           <template #prefix><FeatherIcon name="users" class="h-4 w-4 text-ink-gray-5" /></template>
         </FormControl>
         <h1 v-else class="min-w-0 flex-1 truncate text-base font-semibold text-ink-gray-9">{{ heading }}</h1>
-        <Button variant="solid" size="md" icon-left="plus" class="flex-shrink-0" @click="openNew">Add</Button>
+        <Button variant="solid" size="md" icon-left="plus" class="flex-shrink-0" @click="openNew">{{ t('Add') }}</Button>
       </div>
       <p v-if="viewingOther" class="flex items-center gap-1 text-xs text-ink-gray-5">
         <FeatherIcon name="eye" class="h-3 w-3" /> View only
       </p>
       <div class="flex items-center gap-2">
-        <TextInput v-model="search" type="text" size="md" placeholder="Search tasks" class="min-w-0 flex-1">
+        <TextInput v-model="search" type="text" size="md" :placeholder="t('Search tasks')" class="min-w-0 flex-1">
           <template #prefix><FeatherIcon name="search" class="h-4 w-4 text-ink-gray-5" /></template>
         </TextInput>
         <TabButtons v-model="view" :buttons="viewButtons" class="worklist-view-toggle flex-shrink-0" />
@@ -49,7 +49,7 @@
       <div class="quick-filters max-w-full sm:overflow-x-auto">
         <TabButtons v-model="filter" :buttons="filterButtons" class="worklist-filter-tabs" />
       </div>
-      <TextInput v-model="search" type="text" placeholder="Search tasks" class="w-full max-sm:hidden sm:w-64">
+      <TextInput v-model="search" type="text" :placeholder="t('Search tasks')" class="w-full max-sm:hidden sm:w-64">
         <template #prefix><FeatherIcon name="search" class="h-4 w-4 text-ink-gray-5" /></template>
       </TextInput>
     </div>
@@ -71,7 +71,7 @@
         </span>
         <p class="text-sm font-medium text-ink-gray-7">{{ emptyTitle }}</p>
         <p class="max-w-xs text-sm text-ink-gray-5">{{ emptyHint }}</p>
-        <Button v-if="!viewingOther" size="sm" icon-left="plus" @click="openNew">New task</Button>
+        <Button v-if="!viewingOther" size="sm" icon-left="plus" @click="openNew">{{ t('New task') }}</Button>
       </div>
 
       <!-- Grouped by priority: High, Medium, Low, then what's finished. -->
@@ -109,7 +109,7 @@
               v-if="!group.rows.length"
               class="rounded-lg border border-dashed border-outline-gray-2 py-6 text-center text-sm text-ink-gray-4"
             >
-              No tasks
+              {{ t('No tasks') }}
             </li>
             <li
               v-for="row in group.rows"
@@ -152,8 +152,8 @@
                   :variant="row.status === 'Open' ? 'subtle' : 'ghost'"
                   :theme="row.status === 'Open' ? 'green' : 'gray'"
                   :icon-left="'lucide-circle-check-big'"
-                  :tooltip="row.status === 'Open' ? 'Mark this task as done' : 'Reopen this task'"
-                  :aria-label="row.status === 'Open' ? 'Mark done' : 'Reopen'"
+                  :tooltip="row.status === 'Open' ? t('Mark this task as done') : t('Reopen this task')"
+                  :aria-label="row.status === 'Open' ? t('Mark done') : t('Reopen')"
                   :class="[
                     'max-sm:!h-10 max-sm:!w-10 max-sm:!rounded-full max-sm:!border-0 max-sm:!bg-transparent max-sm:!px-0 max-sm:[&_svg]:!h-8 max-sm:[&_svg]:!w-8',
                     row.status === 'Open'
@@ -170,7 +170,7 @@
                   variant="ghost"
                   size="sm"
                   icon="arrow-up-right"
-                  tooltip="Open the record"
+                  :tooltip="t('Open the record')"
                   @click.stop="openRecord(row)"
                 />
               </div>
@@ -184,20 +184,20 @@
     <Dialog v-model="showEditor" :options="{ title: editing ? (viewingOther ? 'Task' : 'Edit task') : 'New task', size: 'lg' }">
       <template #body-content>
         <div class="flex flex-col gap-4">
-          <FormControl type="text" label="Task title" placeholder="e.g. Visit the Sunrise settlement" v-model="form.title" :disabled="readOnly" />
-          <FormControl type="textarea" label="Description" placeholder="Details (optional)" v-model="form.description" :rows="3" :disabled="readOnly" />
+          <FormControl type="text" :label="t('Task title')" :placeholder="t('e.g. Visit the Sunrise settlement')" v-model="form.title" :disabled="readOnly" />
+          <FormControl type="textarea" :label="t('Description')" :placeholder="t('Details (optional)')" v-model="form.description" :rows="3" :disabled="readOnly" />
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
-              <label class="mb-1.5 block text-xs text-ink-gray-5">Due date</label>
+              <label class="mb-1.5 block text-xs text-ink-gray-5">{{ t('Due date') }}</label>
               <DatePicker format="DD MMM YYYY" v-model="form.date" :disabled="readOnly" />
             </div>
             <div>
-              <label class="mb-1.5 block text-xs text-ink-gray-5">Due time</label>
+              <label class="mb-1.5 block text-xs text-ink-gray-5">{{ t('Due time') }}</label>
               <TimePicker v-model="form.time" class="w-full" :disabled="readOnly" />
             </div>
-            <FormControl type="select" label="Priority" v-model="form.priority" :options="priorityOptions" :disabled="readOnly" />
+            <FormControl type="select" :label="t('Priority')" v-model="form.priority" :options="priorityOptions" :disabled="readOnly" />
           </div>
-          <FormControl v-if="editing" type="select" label="Status" v-model="form.status" :options="statusOptions" :disabled="readOnly" />
+          <FormControl v-if="editing" type="select" :label="t('Status')" v-model="form.status" :options="statusOptions" :disabled="readOnly" />
           <LinkField
             v-if="!editing"
             :field="{ fieldname: 'allocated_to', label: 'Assign to', options: 'User' }"
@@ -216,10 +216,10 @@
           <ErrorMessage :message="formError" />
         </div>
         <div class="mt-5 flex items-center justify-between gap-2">
-          <Button v-if="editing && !readOnly" size="sm" theme="red" variant="subtle" icon-left="trash-2" @click="removeTask">Delete</Button>
+          <Button v-if="editing && !readOnly" size="sm" theme="red" variant="subtle" icon-left="trash-2" @click="removeTask">{{ t('Delete') }}</Button>
           <span v-else />
           <div class="flex gap-2">
-            <Button size="sm" icon-left="x" @click="showEditor = false">Close</Button>
+            <Button size="sm" icon-left="x" @click="showEditor = false">{{ t('Close') }}</Button>
             <Button v-if="!readOnly" size="sm" variant="solid" icon-left="check" :loading="saving" @click="saveTask">
               {{ editing ? 'Save' : 'Create' }}
             </Button>
@@ -235,6 +235,7 @@ import { ref, computed, reactive, watch, onMounted, h, defineComponent } from 'v
 import { useRoute, useRouter } from 'vue-router'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { useList, useCall, call, toast, ErrorMessage, TabButtons, Button, Dialog, FormControl, TextInput, TimePicker, FeatherIcon, DatePicker } from 'frappe-ui'
+import { t } from '@/utils/translate'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import Skeleton from '@/components/Skeleton.vue'

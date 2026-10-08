@@ -1,0 +1,45 @@
+﻿Form,Field,Help text in the form,Help text in the sheet
+Settlement,q3_ward_no_city_corporation,,"If not in the City Corporation limit, please enter ""0"""
+Settlement,q5_settlement_officially_notified_by_govern,"If ""Yes, Notified"" is chosen, the follow-up sections on land","If ""Yes, Notified” is chosen, all follow-up questions relate"
+Settlement,section_eviction_details,,Settlements that eventually will face eviction threat 1. Set
+Settlement,q19_1_location_details_settlement,,"Capture a landmark such as government buildings, parks, or p"
+Settlement,section_apf_team_selection,,Updated by APF Team
+Settlement,q21_7_no_hhs_considered,Number of houses considered for intervention in both scenari,Number of houses considered for intervention in both scenari
+Household Profile,house_id,Generated automatically when the record is created.,This will be generated auto generated
+Household Profile,availability_for_survey,"If ""Going Ahead"" is selected, the rest of the questions othe","Refused to respond, Unsafe to continue survey & Revisit Late"
+Household Profile,household_head_name,Write the Full name. If the respondent is the same as the He,Write the Full name
+Household Profile,floor_number,"For the ground floor - select ""0"". In case it is a multi-sto","For the ground floor- select ""0"""
+Household Profile,primary_health_service,ORW to describe this to the family what you want to know fro,ORW to describe this to the family what you want to know fro
+Household Profile,person_with_disability,The details about Pension and UDID will come under Individua,The details about Pension and UDID will come under Individua
+Individual Profile,marital_status,Asked for every age group - it helps identify child marriage,Keeping this question open for all age group will help in id
+Individual Profile,section_education,Applicable for all age groups. Fill what applies and skip th,This section will be applicable for all age groups. Required
+Individual Profile,school_attendance,"Irregular means the child attends very rarely, e.g. once a m",Irregular means the frequency to school attending is very le
+Individual Profile,section_occupation,Applicable to all age groups - it helps show child labour. I,Applicable to Age group more than 14 yrs This occupation sec
+Individual Profile,occupation_1,Select maximum 3 options. If the person is not involved in a,"""Select maximum 3 options""  If the person is not involved in"
+Individual Profile,tab_children,,Applicable for children upto 6 years of age
+Individual Profile,registered_with_shg,,"If ""Yes"" is chosen, S.No. 60.1 will be displayed"
+Individual Profile,section_labour,Only about 10 schemes that are critical and carry the highes,1. Can choose only 10 schemes which are critical to be taken
+Individual Profile,sch_pm_shram_yogi,Pradhan Mantri Shram Yogi Maandhan Yojana. Discontinued = th,Pradhan Mantri Shram Yogi Maandhan Yojana
+Individual Profile,sch_bocw_94,Assam Building & Other Construction Workers' Welfare Board S,Assam Building & Other Construction Workers’ Welfare Board S
+Individual Profile,sch_bocw_95,ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontin,ABOCWWB Scheme
+Individual Profile,sch_bocw_96,ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontin,ABOCWWB Scheme
+Individual Profile,sch_bocw_97,ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontin,ABOCWWB Scheme
+Individual Profile,sch_bocw_98,ABOCWWB Pension Scheme. Linked to question 50 (BOCW Card). D,ABOCWWB Pension Scheme
+Individual Profile,sch_bocw_99,ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontin,ABOCWWB Scheme
+Individual Profile,sch_bocw_100,ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontin,ABOCWWB Scheme
+Individual Profile,sch_bocw_101,ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontin,ABOCWWB Scheme
+Individual Profile,sch_bocw_102,ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontin,ABOCWWB Scheme
+Individual Profile,sch_bocw_103,ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontin,ABOCWWB Scheme
+Individual Profile,sch_bocw_104,ABOCWWB Scheme. Linked to question 50 (BOCW Card). Discontin,ABOCWWB Scheme
+Individual Profile,sch_orunodoi_disability,Orunodoi Scheme. Discontinued = the benefit was received ear,Orunodoi Scheme
+Individual Profile,sch_adip,Assistance to Disabled Persons for Purchase/Fitting of Aids ,Assistance to Disabled Persons for Purchase/Fitting of Aids 
+Individual Profile,sch_orunodoi_3,Orunodoi 3.0. Discontinued = the benefit was received earlie,Orunodoi 3.0
+Individual Profile,sch_pm_sym,PM-SYM Pension (for unorganised elderly workers). Discontinu,PM-SYM Pension (for unorganised elderly workers)
+Individual Profile,sch_kushal_konwar,Swahid Kushal Konwar Sarbajanin Briddha Pension Achoni. Disc,Swahid Kushal Konwar Sarbajanin Briddha Pension Achoni
+Individual Profile,sch_abocwwb_pension,ABOCWWB Pension scheme. Discontinued = the benefit was recei,ABOCWWB Pension scheme
+Individual Profile,sch_pmjjby,Pradhan Mantri Jeevan Jyoti Bima Yojana. Discontinued = the ,Pradhan Mantri Jeevan Jyoti Bima Yojana
+Individual Profile,sch_pmsby,Pradhan Mantri Suraksha Bima Yojana. Discontinued = the bene,Pradhan Mantri Suraksha Bima Yojana
+Individual Profile,sch_pmjay,Ayushman Bharat - PMJAY. Discontinued = the benefit was rece,Ayushman Bharat – PMJAY
+Individual Profile,sch_apy,Atal Pension Yojana (APY). Discontinued = the benefit was re,Atal Pension Yojana (APY)
+Individual Profile,sch_pmay_u,PMAY-Urban (ISSR/BLC/AHP/CLSS) scheme. Discontinued = the be,PMAY-Urban (ISSR/BLC/AHP/CLSS) scheme
+Individual Profile,validation_status,Area Coordinator to validate. Choose Revision Needed and ref,Area Coordinator to validate

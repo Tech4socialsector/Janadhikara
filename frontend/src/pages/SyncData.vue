@@ -2,7 +2,7 @@
   <AppLayout>
     <PageHeader>
       <template #title>
-        <h1 class="text-lg font-semibold text-ink-gray-9 sm:text-xl">Sync Data</h1>
+        <h1 class="text-lg font-semibold text-ink-gray-9 sm:text-xl">{{ t('Sync Data') }}</h1>
         <p class="mt-0.5 flex items-center gap-1.5 text-xs text-ink-gray-5">
           <span class="h-2 w-2 rounded-full" :class="online ? 'bg-green-500' : 'bg-red-500'" />
           {{ online ? 'Online' : 'Offline' }} · {{ queue.length }} waiting to upload<template v-if="queue.length"> · {{ formatBytes(queueBytes) }}</template>
@@ -11,7 +11,7 @@
       <template #actions>
         <Dropdown v-if="tab === 'sync' && queue.length" :options="downloadOptions" placement="bottom-end">
           <Button variant="solid" icon-left="download">
-            <span class="max-sm:hidden">Download copy</span>
+            <span class="max-sm:hidden">{{ t('Download copy') }}</span>
           </Button>
         </Dropdown>
         <Button
@@ -37,7 +37,7 @@
           <LucideIcon name="cloud-upload" class="h-7 w-7" />
         </span>
         <div class="min-w-0 flex-1">
-          <p class="text-base font-semibold text-ink-gray-9">Uploading your data…</p>
+          <p class="text-base font-semibold text-ink-gray-9">{{ t('Uploading your data…') }}</p>
           <p class="text-sm text-ink-gray-5">{{ syncState.done }} of {{ syncState.total }} done</p>
           <div class="mt-3 h-2.5 overflow-hidden rounded-full bg-surface-gray-3">
             <div class="sync-bar h-full rounded-full bg-blue-500" :style="{ width: progress + '%' }" />
@@ -53,7 +53,7 @@
     >
       <FeatherIcon name="wifi-off" class="mt-0.5 h-5 w-5 flex-shrink-0 text-ink-amber-3" />
       <div>
-        <p class="font-semibold">You are offline.</p>
+        <p class="font-semibold">{{ t('You are offline.') }}</p>
         <p class="text-ink-gray-6">
           Records you save are kept on this device. You can <b>download a copy</b> to see all of it, and upload it when the connection is back.
         </p>
@@ -68,9 +68,9 @@
       <span class="sync-pop flex h-16 w-16 items-center justify-center rounded-full bg-surface-green-2 text-ink-green-3">
         <LucideIcon name="circle-check-big" class="h-8 w-8" />
       </span>
-      <p class="text-base font-semibold text-ink-gray-8">Everything is synced</p>
+      <p class="text-base font-semibold text-ink-gray-8">{{ t('Everything is synced') }}</p>
       <p class="max-w-sm text-sm text-ink-gray-5">
-        Records saved without a connection are listed here until they are uploaded. Nothing is waiting right now.
+        {{ t('Records saved without a connection are listed here until they are uploaded. Nothing is waiting right now.') }}
       </p>
       <p v-if="lastResult" class="flex max-w-sm items-center gap-1.5 text-sm text-ink-green-3">
         <LucideIcon name="circle-check-big" class="h-4 w-4 flex-shrink-0" />
@@ -81,12 +81,12 @@
     <template v-if="queue.length">
       <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
         <h2 class="text-sm font-semibold text-ink-gray-8">
-          Waiting to upload
+          {{ t('Waiting to upload') }}
           <span v-if="selected.length" class="ml-1 font-normal text-ink-gray-5">· {{ selected.length }} selected</span>
         </h2>
         <div class="flex items-center gap-1">
-          <Button v-if="selected.length" size="sm" variant="ghost" @click="clearSelection">Clear</Button>
-          <Button v-else-if="isMobile" size="sm" variant="ghost" @click="selectAll">Select all</Button>
+          <Button v-if="selected.length" size="sm" variant="ghost" @click="clearSelection">{{ t('Clear') }}</Button>
+          <Button v-else-if="isMobile" size="sm" variant="ghost" @click="selectAll">{{ t('Select all') }}</Button>
         </div>
       </div>
 
@@ -108,9 +108,9 @@
               {{ label }}
             </span>
             <span v-else-if="column.key === 'actions'" class="flex items-center gap-1" @click.stop>
-              <Button variant="ghost" size="sm" icon="edit-2" tooltip="Edit before uploading" aria-label="Edit" :disabled="row.raw.status === 'syncing'" @click="editItem(row.raw)" />
-              <Button variant="ghost" size="sm" icon="eye" tooltip="View what is saved" aria-label="View" @click="viewing = row.raw" />
-              <Button variant="ghost" size="sm" icon="trash-2" tooltip="Remove from this device" aria-label="Discard" :disabled="row.raw.status === 'syncing'" @click="confirmDiscard = row.raw" />
+              <Button variant="ghost" size="sm" icon="edit-2" :tooltip="t('Edit before uploading')" :aria-label="t('Edit')" :disabled="row.raw.status === 'syncing'" @click="editItem(row.raw)" />
+              <Button variant="ghost" size="sm" icon="eye" :tooltip="t('View what is saved')" :aria-label="t('View')" @click="viewing = row.raw" />
+              <Button variant="ghost" size="sm" icon="trash-2" :tooltip="t('Remove from this device')" :aria-label="t('Discard')" :disabled="row.raw.status === 'syncing'" @click="confirmDiscard = row.raw" />
             </span>
             <span v-else-if="column.key === 'title'" class="truncate font-medium text-ink-gray-9">
               {{ label }}
@@ -158,9 +158,9 @@
             <p v-if="item.error" class="mt-1 text-xs text-ink-red-4">{{ item.error }}</p>
           </div>
           <div class="flex flex-shrink-0 items-center gap-1" @click.stop>
-            <Button variant="ghost" size="sm" icon="edit-2" tooltip="Edit before uploading" aria-label="Edit" :disabled="item.status === 'syncing'" @click="editItem(item)" />
-            <Button variant="ghost" size="sm" icon="eye" tooltip="View what is saved" aria-label="View" @click="viewing = item" />
-            <Button variant="ghost" size="sm" icon="trash-2" tooltip="Remove from this device" aria-label="Discard" :disabled="item.status === 'syncing'" @click="confirmDiscard = item" />
+            <Button variant="ghost" size="sm" icon="edit-2" :tooltip="t('Edit before uploading')" :aria-label="t('Edit')" :disabled="item.status === 'syncing'" @click="editItem(item)" />
+            <Button variant="ghost" size="sm" icon="eye" :tooltip="t('View what is saved')" :aria-label="t('View')" @click="viewing = item" />
+            <Button variant="ghost" size="sm" icon="trash-2" :tooltip="t('Remove from this device')" :aria-label="t('Discard')" :disabled="item.status === 'syncing'" @click="confirmDiscard = item" />
           </div>
         </li>
       </ul>
@@ -176,14 +176,14 @@
           <LucideIcon name="database" class="h-7 w-7" />
         </span>
         <div class="min-w-0 flex-1 max-sm:basis-[calc(100%-4.5rem)]">
-          <h2 class="text-base font-semibold text-ink-gray-9">Offline reference data</h2>
+          <h2 class="text-base font-semibold text-ink-gray-9">{{ t('Offline reference data') }}</h2>
           <p class="text-sm text-ink-gray-5">
             <template v-if="packInfo">Saved on this device {{ savedAt(new Date(packInfo.generated.replace(' ', 'T')).getTime()) }}.</template>
-            <template v-else>Not downloaded yet. Without it, dropdowns for masters and linked records stay empty when there is no internet.</template>
+            <template v-else>{{ t('Not downloaded yet. Without it, dropdowns for masters and linked records stay empty when there is no internet.') }}</template>
           </p>
         </div>
         <div class="flex w-full flex-wrap items-center gap-2 sm:w-auto">
-          <Button v-if="packInfo" variant="solid" icon-left="eye" class="max-sm:flex-1" @click="showBrowse = true">Browse</Button>
+          <Button v-if="packInfo" variant="solid" icon-left="eye" class="max-sm:flex-1" @click="showBrowse = true">{{ t('Browse') }}</Button>
           <Button
             variant="solid"
             icon-left="lucide-cloud-download"
@@ -194,23 +194,23 @@
           >
             {{ packInfo ? 'Update' : 'Download' }}
           </Button>
-          <Button v-if="packInfo" variant="ghost" icon="trash-2" tooltip="Remove the downloaded copy from this device" aria-label="Remove" @click="showRemovePack = true" />
+          <Button v-if="packInfo" variant="ghost" icon="trash-2" :tooltip="t('Remove the downloaded copy from this device')" :aria-label="t('Remove')" @click="showRemovePack = true" />
         </div>
       </div>
 
       <!-- Size and contents at a glance. -->
       <dl v-if="packInfo" class="mt-5 grid grid-cols-3 gap-3">
         <div class="rounded-xl bg-surface-gray-1 px-3 py-3 text-center">
-          <dt class="text-xs text-ink-gray-5">File size</dt>
+          <dt class="text-xs text-ink-gray-5">{{ t('File size') }}</dt>
           <dd class="mt-0.5 text-lg font-semibold text-ink-gray-9">{{ formatBytes(packInfo.bytes) }}</dd>
-          <dd class="text-2xs text-ink-gray-5">compressed</dd>
+          <dd class="text-2xs text-ink-gray-5">{{ t('compressed') }}</dd>
         </div>
         <div class="rounded-xl bg-surface-gray-1 px-3 py-3 text-center">
-          <dt class="text-xs text-ink-gray-5">Records</dt>
+          <dt class="text-xs text-ink-gray-5">{{ t('Records') }}</dt>
           <dd class="mt-0.5 text-lg font-semibold text-ink-gray-9">{{ totalRecords }}</dd>
         </div>
         <div class="rounded-xl bg-surface-gray-1 px-3 py-3 text-center">
-          <dt class="text-xs text-ink-gray-5">Lists</dt>
+          <dt class="text-xs text-ink-gray-5">{{ t('Lists') }}</dt>
           <dd class="mt-0.5 text-lg font-semibold text-ink-gray-9">{{ Object.keys(packInfo.counts).length }}</dd>
         </div>
       </dl>
@@ -218,8 +218,8 @@
       <!-- Is this device ready for offline? -->
       <div class="mt-5 rounded-xl border border-outline-gray-1 p-4">
         <div class="mb-3 flex items-center justify-between gap-2">
-          <h3 class="text-sm font-semibold text-ink-gray-9">Ready for offline?</h3>
-          <Button size="sm" variant="ghost" icon-left="refresh-cw" :loading="checking" @click="runReadiness">Check again</Button>
+          <h3 class="text-sm font-semibold text-ink-gray-9">{{ t('Ready for offline?') }}</h3>
+          <Button size="sm" variant="ghost" icon-left="refresh-cw" :loading="checking" @click="runReadiness">{{ t('Check again') }}</Button>
         </div>
         <ul class="space-y-2">
           <li v-for="c in readiness" :key="c.key" class="flex items-start gap-2.5 text-sm">
@@ -244,10 +244,10 @@
         </div>
       </div>
       <p v-if="packState.error" class="mt-3 text-sm text-ink-red-4">{{ packState.error }}</p>
-      <p v-if="!online && !packInfo" class="mt-3 text-sm text-ink-gray-5">You need internet to download. Do it before you go offline next time.</p>
+      <p v-if="!online && !packInfo" class="mt-3 text-sm text-ink-gray-5">{{ t('You need internet to download. Do it before you go offline next time.') }}</p>
       <p class="mt-3 flex items-center gap-1.5 text-xs text-ink-gray-5">
         <FeatherIcon name="lock" class="h-3.5 w-3.5" />
-        Field data only - no images or files. Only what you are allowed to see, kept encrypted on this device and removed when you are back online.
+        {{ t('Field data only - no images or files. Only what you are allowed to see, kept encrypted on this device and removed when you are back online.') }}
       </p>
     </section>
 
@@ -258,7 +258,7 @@
       <template #body-content>
         <div class="mb-3 flex flex-col gap-2 sm:flex-row">
           <FormControl type="select" v-model="browseDoctype" :options="browseOptions" class="sm:w-64" />
-          <TextInput v-model="browseSearch" type="text" placeholder="Search" class="flex-1" />
+          <TextInput v-model="browseSearch" type="text" :placeholder="t('Search')" class="flex-1" />
         </div>
         <div class="max-h-[55vh] overflow-auto rounded-lg border border-outline-gray-1">
           <table class="w-full text-left text-sm">
@@ -269,21 +269,21 @@
               <tr v-for="(row, i) in browseRows" :key="i" class="border-t border-outline-gray-1">
                 <td v-for="(cell, j) in row" :key="j" class="max-w-[16rem] truncate px-3 py-1.5 text-ink-gray-8">{{ cell }}</td>
               </tr>
-              <tr v-if="!browseRows.length"><td :colspan="browseColumns.length || 1" class="px-3 py-6 text-center text-ink-gray-5">Nothing here.</td></tr>
+              <tr v-if="!browseRows.length"><td :colspan="browseColumns.length || 1" class="px-3 py-6 text-center text-ink-gray-5">{{ t('Nothing here.') }}</td></tr>
             </tbody>
           </table>
         </div>
-        <p class="mt-2 text-xs text-ink-gray-5">Showing up to 200 rows.</p>
-        <div class="mt-3 flex justify-end"><Button size="sm" icon-left="x" @click="showBrowse = false">Close</Button></div>
+        <p class="mt-2 text-xs text-ink-gray-5">{{ t('Showing up to 200 rows.') }}</p>
+        <div class="mt-3 flex justify-end"><Button size="sm" icon-left="x" @click="showBrowse = false">{{ t('Close') }}</Button></div>
       </template>
     </Dialog>
 
     <Dialog v-model="showRemovePack" :options="{ title: 'Remove the downloaded copy?', size: 'sm' }">
       <template #body-content>
-        <p class="text-sm text-ink-gray-6">Pickers for masters and linked records will be empty offline until you download it again.</p>
+        <p class="text-sm text-ink-gray-6">{{ t('Pickers for masters and linked records will be empty offline until you download it again.') }}</p>
         <div class="mt-4 flex justify-end gap-2">
-          <Button size="sm" icon-left="x" @click="showRemovePack = false">Keep</Button>
-          <Button size="sm" variant="solid" theme="red" icon-left="trash-2" @click="doRemovePack">Remove</Button>
+          <Button size="sm" icon-left="x" @click="showRemovePack = false">{{ t('Keep') }}</Button>
+          <Button size="sm" variant="solid" theme="red" icon-left="trash-2" @click="doRemovePack">{{ t('Remove') }}</Button>
         </div>
       </template>
     </Dialog>
@@ -298,7 +298,7 @@
           </div>
         </dl>
         <div class="mt-4 flex justify-end">
-          <Button size="sm" icon-left="x" @click="viewing = null">Close</Button>
+          <Button size="sm" icon-left="x" @click="viewing = null">{{ t('Close') }}</Button>
         </div>
       </template>
     </Dialog>
@@ -309,8 +309,8 @@
           "{{ confirmDiscard?.title }}" has not been uploaded. Removing it deletes the only copy.
         </p>
         <div class="mt-4 flex justify-end gap-2">
-          <Button size="sm" icon-left="x" @click="confirmDiscard = null">Keep</Button>
-          <Button size="sm" variant="solid" theme="red" icon-left="trash-2" @click="doDiscard">Remove</Button>
+          <Button size="sm" icon-left="x" @click="confirmDiscard = null">{{ t('Keep') }}</Button>
+          <Button size="sm" variant="solid" theme="red" icon-left="trash-2" @click="doDiscard">{{ t('Remove') }}</Button>
         </div>
       </template>
     </Dialog>
@@ -323,6 +323,7 @@ import { useRouter } from 'vue-router'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { online } from '@/data/connection'
 import { Button, Dialog, Dropdown, FeatherIcon, FormControl, ListHeader, ListRowItem, ListRows, ListView, TabButtons, TextInput, toast } from 'frappe-ui'
+import { t } from '@/utils/translate'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import LucideIcon from '@/components/LucideIcon.vue'

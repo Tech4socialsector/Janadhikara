@@ -13,7 +13,7 @@ import frappe
 from frappe.utils import now_datetime
 
 MAX_ROWS = 5000
-APP_MODULES = ("Masters", "Common", "App Config", "Engine", "Baseline")
+APP_MODULES = ("Masters", "App Config", "Engine", "Baseline")
 
 # Held back from the device whatever the permissions say.
 EXCLUDED = {"Role", "Entitlement", "Individual Document", "Health Condition", "Education Record", "Push Subscription", "ToDo"}

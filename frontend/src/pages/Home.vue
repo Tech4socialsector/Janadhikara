@@ -10,7 +10,7 @@
     there are several) so it stays compact on every screen size. A soft
     type-colored gradient, big icon tile and a Dismiss pill keep it light
     without shouting. -->
-    <section v-if="current" class="mb-6" aria-label="Announcements">
+    <section v-if="current" class="mb-6" :aria-label="t('Announcements')">
       <div
         class="relative overflow-hidden rounded-2xl border p-4 shadow-sm sm:p-5"
         :class="styleFor(current).card"
@@ -45,11 +45,11 @@
               <span v-else />
               <div class="flex items-center gap-2">
                 <template v-if="announcements.length > 1">
-                  <Button variant="ghost" size="sm" icon="chevron-left" :disabled="index === 0" tooltip="Previous announcement" aria-label="Previous" @click="index--" />
-                  <Button variant="ghost" size="sm" icon="chevron-right" :disabled="index >= announcements.length - 1" tooltip="Next announcement" aria-label="Next" @click="index++" />
+                  <Button variant="ghost" size="sm" icon="chevron-left" :disabled="index === 0" :tooltip="t('Previous announcement')" :aria-label="t('Previous')" @click="index--" />
+                  <Button variant="ghost" size="sm" icon="chevron-right" :disabled="index >= announcements.length - 1" :tooltip="t('Next announcement')" :aria-label="t('Next')" @click="index++" />
                 </template>
                 <Button v-if="current.dismissible" variant="subtle" size="sm" @click="dismissAnnouncement(current.name)">
-                  Dismiss
+                  {{ t('Dismiss') }}
                 </Button>
               </div>
             </div>
@@ -72,10 +72,10 @@
       >
         <FeatherIcon name="wifi-off" class="mt-0.5 h-5 w-5 flex-shrink-0 text-ink-amber-3" />
         <div>
-          <p class="font-semibold text-ink-gray-9">Your modules could not be loaded</p>
+          <p class="font-semibold text-ink-gray-9">{{ t('Your modules could not be loaded') }}</p>
           <p class="text-ink-gray-6">
             {{ online ? 'Please try again in a moment.' : 'You are offline. Open the app once with internet and it will remember your modules for next time.' }}
-            You can still open <b>Sync Data</b> below.
+            You can still open <b>{{ t('Sync Data') }}</b> below.
           </p>
         </div>
       </div>
@@ -103,7 +103,7 @@
           <LucideIcon :name="mod.icon" class="h-7 w-7 text-gray-600 transition-colors duration-150 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100 sm:h-8 sm:w-8" />
         </span>
         <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">
-          {{ mod.label }}
+          {{ t(mod.label) }}
         </span>
       </button>
 
@@ -115,7 +115,7 @@
         <span class="module-tile-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-gray-300 group-active:translate-y-0 group-active:scale-95 group-active:shadow-sm dark:bg-gray-800 dark:ring-gray-700 dark:group-hover:ring-gray-600 sm:h-[4.5rem] sm:w-[4.5rem]">
           <LucideIcon name="layout-dashboard" class="h-7 w-7 text-gray-600 transition-colors duration-150 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100 sm:h-8 sm:w-8" />
         </span>
-        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">Dashboard</span>
+        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">{{ t('Dashboard') }}</span>
       </router-link>
 
       <!-- Offline data waiting to be uploaded lives here. -->
@@ -132,7 +132,7 @@
             {{ pendingCount > 99 ? '99+' : pendingCount }}
           </span>
         </span>
-        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">Sync Data</span>
+        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">{{ t('Sync Data') }}</span>
       </router-link>
       </div>
     </div>
@@ -153,6 +153,7 @@
 import { computed, ref, watch } from 'vue'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { FeatherIcon, ErrorMessage, Button } from 'frappe-ui'
+import { t } from '@/utils/translate'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import Skeleton from '@/components/Skeleton.vue'
@@ -211,7 +212,7 @@ const greeting = computed(() => {
   const hour = new Date().getHours()
   const timeGreeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
   const firstName = (session.full_name || '').split(' ')[0] || session.user
-  return firstName ? `${timeGreeting}, ${firstName}` : timeGreeting
+  return firstName ? `${t(timeGreeting)}, ${firstName}` : t(timeGreeting)
 })
 
 function toggleModule(mod) {

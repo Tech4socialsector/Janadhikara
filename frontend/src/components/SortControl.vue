@@ -23,6 +23,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Button, FeatherIcon, Popover } from 'frappe-ui'
 import SortEditor from '@/components/SortEditor.vue'
+import { t } from '@/utils/translate'
 
 const SORTABLE_FIELDTYPES = new Set(['Select', 'Link', 'Check', 'Date', 'Datetime', 'Data', 'Int', 'Float', 'Currency'])
 
@@ -42,7 +43,7 @@ const currentLabel = computed(() => {
   const field = props.modelValue.field
   const found = props.fields.find((f) => f.fieldname === field && SORTABLE_FIELDTYPES.has(f.fieldtype))
   if (found) return found.label || found.fieldname
-  return { modified: 'Last Modified', creation: 'Created', name: 'ID' }[field] || 'Sort'
+  return t({ modified: 'Last Modified', creation: 'Created', name: 'ID' }[field] || 'Sort')
 })
 
 // The field dropdown inside the popover opens in a portal, so frappe-ui's own

@@ -28,10 +28,10 @@
         </div>
         <div v-if="withActions" class="flex flex-col gap-1 border-t border-outline-gray-1 p-2">
           <Button variant="ghost" class="w-full !justify-start" icon-left="settings" @click="close(); openSettingsDialog()">
-            Settings
+            {{ t('Settings') }}
           </Button>
           <Button variant="ghost" class="w-full !justify-start" icon-left="log-out" @click="close(); logoutResource.submit()">
-            Log out
+            {{ t('Log out') }}
           </Button>
         </div>
       </div>
@@ -41,6 +41,7 @@
 
 <script setup>
 import { Popover, Avatar, Button } from 'frappe-ui'
+import { t } from '@/utils/translate'
 import { session, logoutResource } from '@/data/session'
 import { openSettingsDialog } from '@/data/settingsDialog'
 

@@ -16,12 +16,12 @@ import frappe
 
 from janadhikara.ai.data_service import ALWAYS_BLOCKED, POLICY_CACHE_KEY
 
-APP_MODULES = ('Masters', 'Common', 'App Config', 'Engine', 'Baseline')
+APP_MODULES = ('Masters', 'App Config', 'Engine', 'Baseline')
 
 INDIVIDUAL_PROFILE_VISIBLE = {
     'individual_id', 'household', 'implementing_org', 'hhid', 'settlement_intervention_unit',
     'respondent_name', 'member_name', 'documentation_status', 'validation_status',
-    'consent_given', 'consent_mode', 'consent_date', 'consent_taken_by', 'consent_withdrawn_on',
+    'consent_given', 'consent_mode', 'consent_date', 'consent_taken_by'
 }
 
 
@@ -61,7 +61,7 @@ SEED = {
             'partner_organization': 'controls who can see the record', 'settlement': 'controls who can see the record',
             'validation_status': 'set by validators', 'validation_comments': 'set by validators',
             'consent_given': 'recorded with the respondent, not by the assistant', 'consent_mode': 'consent record',
-            'consent_date': 'consent record', 'consent_taken_by': 'consent record', 'consent_withdrawn_on': 'consent record',
+            'consent_date': 'consent record', 'consent_taken_by': 'consent record',
         },
     },
     'Individual Profile': {
@@ -72,7 +72,7 @@ SEED = {
         'read_only': {
             'validation_status': 'set by validators',
             'consent_given': 'recorded with the person, not by the assistant', 'consent_mode': 'consent record',
-            'consent_date': 'consent record', 'consent_taken_by': 'consent record', 'consent_withdrawn_on': 'consent record',
+            'consent_date': 'consent record', 'consent_taken_by': 'consent record',
         },
     },
     'Settlement': {

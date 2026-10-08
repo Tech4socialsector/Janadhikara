@@ -11,13 +11,13 @@
         <FeatherIcon name="wifi-off" class="h-4 w-4" />
       </span>
       <div class="min-w-0 flex-1">
-        <p class="text-sm font-semibold leading-tight">You're offline</p>
+        <p class="text-sm font-semibold leading-tight">{{ t("You're offline") }}</p>
         <p class="text-xs leading-snug text-white/70">
           Everything you save is kept on this device<template v-if="pendingCount"> · {{ pendingCount }} waiting</template>.
         </p>
       </div>
       <router-link :to="{ name: 'SyncData' }" class="flex-shrink-0 rounded-lg bg-white/15 px-2.5 py-1.5 text-xs font-medium hover:bg-white/25">
-        Sync Data
+        {{ t('Sync Data') }}
       </router-link>
       <button type="button" class="flex-shrink-0 rounded-md p-1 text-white/70 hover:bg-white/15 hover:text-white" aria-label="Dismiss" title="Dismiss" @click="dismissed = true">
         <FeatherIcon name="x" class="h-4 w-4" />
@@ -34,10 +34,10 @@
         <FeatherIcon name="wifi" class="h-4 w-4" />
       </span>
       <div class="min-w-0 flex-1">
-        <p class="text-sm font-semibold leading-tight">Back online</p>
+        <p class="text-sm font-semibold leading-tight">{{ t('Back online') }}</p>
         <p class="text-xs leading-snug opacity-80">
           <template v-if="pendingCount">{{ pendingCount }} saved on this device {{ pendingCount === 1 ? 'is' : 'are' }} waiting to upload.</template>
-          <template v-else>Everything is up to date.</template>
+          <template v-else>{{ t('Everything is up to date.') }}</template>
         </p>
       </div>
       <router-link
@@ -60,6 +60,7 @@ import { useRoute } from 'vue-router'
 import { FeatherIcon } from 'frappe-ui'
 import { online, justReconnected } from '@/data/connection'
 import { pendingCount } from '@/data/offlineQueue'
+import { t } from '@/utils/translate'
 
 const route = useRoute()
 

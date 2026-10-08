@@ -17,8 +17,8 @@
         data-toolbar-popover-trigger
         :icon="compact ? 'columns' : undefined"
         :icon-left="compact ? undefined : 'columns'"
-        :label="compact ? undefined : 'Columns'"
-        tooltip="Columns"
+        :label="compact ? undefined : t('Columns')"
+        :tooltip="t('Columns')"
         @click="togglePopover"
       />
     </template>
@@ -55,8 +55,8 @@
               @blur="commitEdit"
             />
             <span v-else class="min-w-0 flex-1 truncate">{{ col.label }}</span>
-            <Button variant="ghost" size="sm" icon="lucide-pencil" tooltip="Rename column" @click="startEdit(col)" />
-            <Button variant="ghost" size="sm" icon="x" tooltip="Remove column" @click="prefs.removeColumn(col.fieldname)" />
+            <Button variant="ghost" size="sm" icon="lucide-pencil" :tooltip="t('Rename column')" @click="startEdit(col)" />
+            <Button variant="ghost" size="sm" icon="x" :tooltip="t('Remove column')" @click="prefs.removeColumn(col.fieldname)" />
           </div>
         </div>
         <div class="mt-1 flex flex-col gap-0.5 border-t border-outline-gray-1 pt-1.5">
@@ -71,7 +71,7 @@
             </Button>
             <!-- Searchable list of the table's other fields, like Helpdesk's. -->
             <div v-if="adding" class="mt-1 rounded-lg border border-outline-gray-2 bg-surface-modal p-1.5">
-              <TextInput v-model="addQuery" type="text" placeholder="Search" autofocus>
+              <TextInput v-model="addQuery" type="text" :placeholder="t('Search')" autofocus>
                 <template #suffix>
                   <FeatherIcon
                     v-if="addQuery"
@@ -91,7 +91,7 @@
                 >
                   {{ option.label }}
                 </button>
-                <p v-if="!filteredAddable.length" class="px-2 py-2 text-sm text-ink-gray-5">No matching fields.</p>
+                <p v-if="!filteredAddable.length" class="px-2 py-2 text-sm text-ink-gray-5">{{ t('No matching fields.') }}</p>
               </div>
             </div>
           </template>
@@ -114,6 +114,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Button, FeatherIcon, Popover, TextInput } from 'frappe-ui'
 import LucideIcon from '@/components/LucideIcon.vue'
+import { t } from '@/utils/translate'
 
 const props = defineProps({
   // The object returned by useColumnPrefs().

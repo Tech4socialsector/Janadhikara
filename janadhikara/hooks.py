@@ -274,7 +274,11 @@ home_page = "janadhikara"
 # Every doctype of this app gets a (disabled) AI Data Policy so the AI assistant
 # can't see it until someone has reviewed it - see janadhikara/ai/policy.py.
 after_request = ["janadhikara.security.add_security_headers"]
-after_migrate = ["janadhikara.ai.policy.ensure_policies", "janadhikara.menu.ensure_master_sidebar"]
+after_migrate = [
+	"janadhikara.ai.policy.ensure_policies",
+	"janadhikara.menu.ensure_master_sidebar",
+	"janadhikara.translations.import_translations",
+]
 doc_events = {
 	"*": {
 		"before_validate": "janadhikara.validation.resolve_default_tokens",

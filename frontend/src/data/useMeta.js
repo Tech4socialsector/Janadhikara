@@ -1,5 +1,6 @@
 import { computed } from 'vue'
 import { useCall } from 'frappe-ui'
+import { localizeField } from '@/utils/translate'
 
 // Live doctype metadata (fields, list settings, etc), fetched once per
 // doctype and cached - this is the single source of truth DoctypeList and
@@ -37,7 +38,7 @@ export function useListFields(metaResource) {
     if (!fields.length) {
       fields = meta.fields.filter(isDisplayField).slice(0, 4)
     }
-    return fields
+    return fields.map((f) => localizeField(meta.name, f))
   })
 }
 
@@ -48,7 +49,7 @@ export function useFormFields(metaResource) {
   return computed(() => {
     const meta = metaResource.data
     if (!meta) return []
-    return meta.fields.filter((f) => isDisplayField(f) && f.fieldtype !== 'Table')
+    return meta.fields.filter((f) => isDisplayField(f) && f.fieldtype !== 'Table').map((f) => localizeField(meta.name, f))
   })
 }
 
@@ -80,7 +81,8 @@ export function useFormTabs(metaResource) {
     }
 
     const tabs = [newTab()]
-    for (const f of meta.fields) {
+    for (const original of meta.fields) {
+      const f = localizeField(meta.name, original)
       if (f.fieldtype === 'Tab Break') {
         if (!f.hidden) tabs.push({ label: f.label || null, dependsOn: f.depends_on || null, sections: [newSection()], tables: [] })
         continue

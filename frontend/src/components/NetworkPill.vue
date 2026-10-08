@@ -11,13 +11,14 @@
       <span v-if="online" class="net-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-60" />
       <span class="relative inline-flex h-2 w-2 rounded-full" :class="online ? 'bg-green-500' : 'bg-red-500'" />
     </span>
-    <span :class="compact ? 'sr-only' : 'max-sm:sr-only'">{{ online ? 'Online' : 'Offline' }}</span>
+    <span :class="compact ? 'sr-only' : 'max-sm:sr-only'">{{ online ? t('Online') : t('Offline') }}</span>
     <span v-if="!online && pendingCount && !compact" class="rounded-full bg-red-600 px-1.5 text-2xs font-semibold text-white">{{ pendingCount }}</span>
   </span>
 </template>
 
 <script setup>
 import { online } from '@/data/connection'
+import { t } from '@/utils/translate'
 import { pendingCount } from '@/data/offlineQueue'
 
 defineProps({ compact: { type: Boolean, default: false } })

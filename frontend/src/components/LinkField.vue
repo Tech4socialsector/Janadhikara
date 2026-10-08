@@ -11,7 +11,7 @@
           :options="options"
           :loading="recordsResource.loading"
           :disabled="disabled"
-          :placeholder="filtersPending ? 'Select a value above first' : `Select ${field.label}`"
+          :placeholder="filtersPending ? t('Select a value above first') : `${t('Select')} ${field.label}`"
           :model-value="modelValue"
           @update:model-value="(value) => $emit('update:modelValue', value || null)"
         />
@@ -130,6 +130,7 @@ import { Combobox, Dialog, Button, ErrorMessage, FeatherIcon, FormControl, Toolt
 import { useOnline } from '@vueuse/core'
 import { findModuleByDoctype } from '@/data/modules'
 import { getPack, localRows } from '@/data/offlinePack'
+import { t } from '@/utils/translate'
 import DynamicField from '@/components/DynamicField.vue'
 
 const online = useOnline()

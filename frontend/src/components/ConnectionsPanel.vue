@@ -1,6 +1,6 @@
 <template>
   <div v-if="connections.length" class="mt-6 border-t pt-4 dark:border-gray-800">
-    <h3 class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">Connections</h3>
+    <h3 class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('Connections') }}</h3>
     <div class="space-y-2">
       <div
         v-for="conn in connections"
@@ -35,12 +35,12 @@
             <template #prefix>
               <FeatherIcon name="plus" class="h-3.5 w-3.5" />
             </template>
-            Add
+            {{ t('Add') }}
           </Button>
         </div>
 
         <div v-if="expanded[conn.key]" class="border-t px-3 py-2 dark:border-gray-800">
-          <div v-if="conn.rowsResource.loading" class="py-2 text-sm text-gray-400">Loading...</div>
+          <div v-if="conn.rowsResource.loading" class="py-2 text-sm text-gray-400">{{ t('Loading...') }}</div>
           <div v-else-if="!conn.rowsResource.data?.length" class="py-2 text-sm text-gray-400">
             No {{ conn.label }} yet.
           </div>
@@ -67,6 +67,7 @@ import { reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { FeatherIcon, Button, useCall } from 'frappe-ui'
 import { findModuleByDoctype } from '@/data/modules'
+import { t } from '@/utils/translate'
 import { ensureTitlesForRows, linkTitle } from '@/data/linkTitles'
 
 // Frappe desk's own "Connections" tab, driven the same way it is in real

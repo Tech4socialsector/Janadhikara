@@ -10,7 +10,7 @@ const COMMON = [
   { icon: 'target', text: 'Why: only to help them get the schemes, documents and services they are entitled to - nothing else.' },
   { icon: 'users', text: 'Who sees it: only authorised staff of the partner organisation and the programme. It is not sold or shared for any other purpose.' },
   { icon: 'toggle-right', text: 'Free choice: giving consent is voluntary. They can say no and still receive other support.' },
-  { icon: 'rotate-ccw', text: 'Withdrawal: they can withdraw consent at any time, as easily as it was given. After that, the record can no longer be changed and the data is erased once the purpose is over.' },
+  { icon: 'rotate-ccw', text: 'Withdrawal: they can withdraw consent at any time, as easily as it was given.' },
   { icon: 'clock', text: 'Retention: the data is kept only as long as it is needed for this purpose.' },
   { icon: 'user-check', text: 'Their rights: to see, correct, update or erase their data, to nominate a person to act for them, and to get their grievance answered. If it is not resolved, they can complain to the Data Protection Board of India.' },
 ]

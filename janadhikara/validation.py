@@ -11,7 +11,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt, getdate, now_datetime, nowtime, today
 
-APP_MODULES = {"Masters", "Common", "App Config", "Engine", "Baseline"}
+APP_MODULES = {"Masters", "App Config", "Engine", "Baseline"}
 
 MOBILE_RE = re.compile(r"^\d{10}$")
 PINCODE_RE = re.compile(r"^[1-9]\d{5}$")
@@ -27,7 +27,7 @@ PERSON_NAME_FIELDS = {
 	"surveyor_name",
 }
 # never in the future: things that already happened when the record is saved
-PAST_DATE_FIELDS = {"record_date", "date_of_birth", "since", "consent_date", "consent_withdrawn_on"}
+PAST_DATE_FIELDS = {"record_date", "date_of_birth", "since", "consent_date"}
 # (earlier field, later field)
 DATE_ORDER = [
 	("start_date", "end_date"),

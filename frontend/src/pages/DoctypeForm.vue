@@ -7,12 +7,12 @@
             <template #prefix>
               <FeatherIcon name="arrow-left" class="h-4 w-4" />
             </template>
-            Back
+            {{ t('Back') }}
           </Button>
           <!-- Record ID next to the doctype name, click to copy - the title
           field is what the page shows as its heading, but the ID is what
           links, exports and support conversations refer to. -->
-          <span class="hidden text-sm text-gray-500 dark:text-gray-400 sm:inline">{{ metaResource.data?.name || doctype }}</span>
+          <span class="hidden text-sm text-gray-500 dark:text-gray-400 sm:inline">{{ t(metaResource.data?.name || doctype) }}</span>
           <Button
             v-if="!isNew && name"
             variant="subtle"
@@ -28,13 +28,13 @@
             v-else-if="isNew"
             class="rounded-md bg-gray-100 px-2 py-0.5 text-xs text-gray-500 dark:bg-gray-800 dark:text-gray-400"
           >
-            New
+            {{ t('New') }}
           </span>
           <span
             v-if="isDirty"
             class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-500/10 dark:text-amber-400"
           >
-            Not Saved
+            {{ t('Not Saved') }}
           </span>
         </div>
       </template>
@@ -65,23 +65,23 @@
           <template #prefix>
             <FeatherIcon name="trash-2" class="h-4 w-4" />
           </template>
-          <span class="max-sm:hidden">Delete</span>
+          <span class="max-sm:hidden">{{ t('Delete') }}</span>
         </Button>
         <Button v-if="!loadError" variant="solid" :loading="saving" aria-label="Save" @click="save">
           <template #prefix>
             <FeatherIcon name="save" class="h-4 w-4" />
           </template>
-          <span class="max-sm:hidden">Save</span>
+          <span class="max-sm:hidden">{{ t('Save') }}</span>
         </Button>
       </template>
     </PageHeader>
 
-    <Dialog v-model="notice.show" :options="{ title: notice.title, size: 'lg' }">
+    <Dialog v-model="notice.show" :options="{ title: tn(notice.title), size: 'lg' }">
       <template #body-content>
         <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-surface-green-2 text-ink-green-3">
           <FeatherIcon name="shield" class="h-6 w-6" />
         </div>
-        <p v-if="notice.intro" class="mb-3 text-sm text-ink-gray-7">{{ notice.intro }}</p>
+        <p v-if="notice.intro" class="mb-3 text-sm text-ink-gray-7">{{ tn(notice.intro) }}</p>
         <ul class="space-y-2 text-sm text-ink-gray-8">
           <li
             v-for="(point, i) in notice.bullets"
@@ -93,12 +93,12 @@
             >
               <FeatherIcon :name="point.icon || 'check'" class="h-3.5 w-3.5" />
             </span>
-            <span class="pt-0.5">{{ point.text || point }}</span>
+            <span class="pt-0.5">{{ tn(point.text || point) }}</span>
           </li>
         </ul>
         <div class="mt-5 flex justify-end gap-2">
-          <Button size="sm" icon-left="x" @click="notice.show = false">Close</Button>
-          <Button size="sm" variant="solid" icon-left="check" @click="acceptNotice">{{ notice.confirmLabel }}</Button>
+          <Button size="sm" icon-left="x" @click="notice.show = false">{{ t('Close') }}</Button>
+          <Button size="sm" variant="solid" icon-left="check" @click="acceptNotice">{{ tn(notice.confirmLabel) }}</Button>
         </div>
       </template>
     </Dialog>
@@ -110,8 +110,8 @@
         </p>
         <ErrorMessage class="mt-3" :message="deleteError" />
         <div class="mt-4 flex justify-end gap-2">
-          <Button icon-left="x" @click="showDeleteConfirm = false" size="sm">Close</Button>
-          <Button icon-left="trash-2" variant="solid" theme="red" :loading="deleting" @click="confirmDelete" size="sm">Delete</Button>
+          <Button icon-left="x" @click="showDeleteConfirm = false" size="sm">{{ t('Close') }}</Button>
+          <Button icon-left="trash-2" variant="solid" theme="red" :loading="deleting" @click="confirmDelete" size="sm">{{ t('Delete') }}</Button>
         </div>
       </template>
     </Dialog>
@@ -155,7 +155,7 @@
             : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'"
           @click="activeTabIdx = idx"
         >
-          {{ tab.label || 'Details' }}
+          {{ tab.label || t('Details') }}
         </button>
       </div>
 
@@ -232,7 +232,7 @@
             class="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-gray-900 dark:text-gray-100"
             @click="expandedMobileTabs[idx] = !expandedMobileTabs[idx]"
           >
-            {{ tab.label || 'Details' }}
+            {{ tab.label || t('Details') }}
             <FeatherIcon
               :name="expandedMobileTabs[idx] ? 'chevron-up' : 'chevron-down'"
               class="h-4 w-4 flex-shrink-0 text-gray-400"
@@ -309,6 +309,7 @@ import { enqueueRecord, isNetworkError, queue, updateRecord } from '@/data/offli
 import Skeleton from '@/components/Skeleton.vue'
 import ChildTable from '@/components/ChildTable.vue'
 import FormTabSections from '@/components/FormTabSections.vue'
+import { t, tn } from '@/utils/translate'
 import ConnectionsPanel from '@/components/ConnectionsPanel.vue'
 import ActivityPanel from '@/components/ActivityPanel.vue'
 import { useMeta, useFormFields, useFormTabs, useTableFields } from '@/data/useMeta'
@@ -1149,7 +1150,7 @@ async function save() {
       // Same reasoning as newDoc.error above - setValue.submit() resolving
       // doesn't mean the save actually succeeded server-side.
       if (existingDoc.setValue.error) throw existingDoc.setValue.error
-      toast.success('Saved')
+      toast.success(t('Saved'))
       markClean()
     }
   } catch (e) {
