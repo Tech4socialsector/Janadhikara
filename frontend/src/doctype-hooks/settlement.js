@@ -1,6 +1,10 @@
+import { session } from '@/data/session'
+
 // Settlement: the partner organisation of the signed-in worker is filled in on a new record.
 
 export function onLoad(values, ctx) {
+  // Name of the ORW: the signed-in user (their name and login id), when empty.
+  if (!values.orw_name && session.user) values.orw_name = session.user
   if (values.partner_organization) return
   ctx
     .call('janadhikara.api.get_household_field_defaults')

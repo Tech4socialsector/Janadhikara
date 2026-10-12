@@ -76,7 +76,8 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "create": 1,
@@ -88,7 +89,8 @@
    "report": 1,
    "role": "Program Coordinator",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "role": "Program Manager",
@@ -110,5 +112,6 @@
  "states": [],
  "title_field": "section_name",
  "show_title_field_in_link": 1,
- "search_fields": "section_name"
+ "search_fields": "section_name",
+ "allow_import": 1
 }

@@ -33,12 +33,12 @@ def get_filter_options():
 	# every partner for the programme team, just their own partner for anyone else.
 	kind, own_partner = user_scope()
 	if kind == "all":
-		partners = frappe.get_all("Partner Details", fields=["name"], limit_page_length=0, order_by="name")
+		partners = frappe.get_all("Partner Details", fields=["name", "organization_name"], limit_page_length=0, order_by="organization_name")
 	else:
-		partners = [frappe._dict(name=own_partner)] if own_partner else []
+		partners = [frappe._dict(name=own_partner, organization_name=frappe.db.get_value("Partner Details", own_partner, "organization_name"))] if own_partner else []
 	return {
 		"settlements": [{"value": s.name, "label": s.settlement_name or s.name} for s in settlements],
-		"partners": [{"value": p.name, "label": p.name} for p in partners],
+		"partners": [{"value": p.name, "label": p.organization_name or p.name} for p in partners],
 		"genders": ["Female", "Male", "Other"],
 		"age_groups": [g[0] for g in AGE_GROUPS],
 		"household_statuses": _select_options(HOUSEHOLD, "household_status"),

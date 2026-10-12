@@ -17,6 +17,7 @@
   "household_has_pregnant",
   "household_has_disability",
   "implementing_org",
+  "organization_name",
   "hhid",
   "settlement_intervention_unit",
   "respondent_name",
@@ -185,7 +186,8 @@
   "tab_status",
   "section_status",
   "column_break_status",
-  "validation_status"
+  "validation_status",
+  "orw_name"
  ],
  "fields": [
   {
@@ -285,6 +287,15 @@
    "in_standard_filter": 1,
    "description": "Filled in from the Household Profile.",
    "search_index": 1
+  },
+  {
+   "fieldtype": "Data",
+   "label": "Organization Name",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Fetched from the Partner Details.",
+   "fieldname": "organization_name",
+   "fetch_from": "implementing_org.organization_name"
   },
   {
    "fieldname": "hhid",
@@ -1526,6 +1537,14 @@
    "options": "Validation Status",
    "reqd": 1,
    "search_index": 1
+  },
+  {
+   "description": "The ORW who recorded this. Filled in with the signed-in user when left empty.",
+   "fieldname": "orw_name",
+   "fieldtype": "Link",
+   "label": "Name of the ORW",
+   "options": "User",
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -1552,7 +1571,8 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "create": 1,
@@ -1564,7 +1584,8 @@
    "report": 1,
    "role": "Program Coordinator",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "create": 1,
@@ -1576,7 +1597,8 @@
    "export": 1,
    "print": 1,
    "email": 1,
-   "share": 1
+   "share": 1,
+   "import": 1
   },
   {
    "create": 1,
@@ -1588,7 +1610,8 @@
    "export": 1,
    "print": 1,
    "email": 1,
-   "share": 1
+   "share": 1,
+   "import": 1
   },
   {
    "role": "ORW",
@@ -1601,5 +1624,6 @@
  "track_changes": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "search_fields": "member_name,hhid,mobile_number,household,respondent_name"
+ "search_fields": "member_name,hhid,mobile_number,household,respondent_name",
+ "allow_import": 1
 }

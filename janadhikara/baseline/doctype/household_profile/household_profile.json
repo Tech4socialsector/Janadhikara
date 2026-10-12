@@ -122,6 +122,7 @@
   "section_assignment",
   "settlement",
   "partner_organization",
+  "organization_name",
   "column_break_assignment",
   "assigned_worker",
   "record_date",
@@ -954,6 +955,15 @@
    "search_index": 1
   },
   {
+   "fieldtype": "Data",
+   "label": "Organization Name",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Fetched from the Partner Details.",
+   "fieldname": "organization_name",
+   "fetch_from": "partner_organization.organization_name"
+  },
+  {
    "fieldname": "column_break_assignment",
    "fieldtype": "Column Break"
   },
@@ -1014,7 +1024,8 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "create": 1,
@@ -1026,7 +1037,8 @@
    "report": 1,
    "role": "Program Coordinator",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "create": 1,
@@ -1038,7 +1050,8 @@
    "export": 1,
    "print": 1,
    "email": 1,
-   "share": 1
+   "share": 1,
+   "import": 1
   },
   {
    "create": 1,
@@ -1050,7 +1063,8 @@
    "export": 1,
    "print": 1,
    "email": 1,
-   "share": 1
+   "share": 1,
+   "import": 1
   },
   {
    "role": "ORW",
@@ -1066,5 +1080,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "household_head_name",
- "track_changes": 1
+ "track_changes": 1,
+ "allow_import": 1
 }

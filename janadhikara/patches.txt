@@ -52,3 +52,5 @@ janadhikara.patches.v1_1.individual_member_name
 janadhikara.patches.v1_1.remove_gender_repeat
 janadhikara.patches.v1_1.merge_status_questions
 janadhikara.patches.v1_1.four_roles
+janadhikara.patches.v1_1.orw_user_everywhere
+janadhikara.patches.v1_1.backfill_organization_name

@@ -57,7 +57,9 @@
    "delete": 1,
    "read": 1,
    "role": "System Manager",
-   "write": 1
+   "write": 1,
+   "import": 1
   }
- ]
+ ],
+ "allow_import": 1
 }

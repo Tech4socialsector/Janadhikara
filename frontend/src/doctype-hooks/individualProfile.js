@@ -1,5 +1,6 @@
 // Individual Profile: the age follows the date of birth, and questions 2 to 5 follow the chosen household.
 import { call } from 'frappe-ui'
+import { session } from '@/data/session'
 import { INDIVIDUAL_NOTICE, confirmConsent } from '@/utils/dpdpNotice'
 
 // Age (completed years) follows the date of birth, as it does on the server.
@@ -12,7 +13,19 @@ function ageFromDob(dob) {
   return Math.max(0, age)
 }
 
-export function onLoad(values) {
+export function onLoad(values, ctx) {
+  // Name of the ORW: the signed-in user (their name and login id), when empty.
+  if (!values.orw_name && session.user) values.orw_name = session.user
+  // The signed-in worker's organisation, until a household is chosen (the household's own organisation then takes over).
+  if (!values.implementing_org && ctx?.call) {
+    ctx
+      .call('janadhikara.api.get_household_field_defaults')
+      .then((res) => {
+        const data = res?.message ?? res
+        if (data?.partner_organization && !values.implementing_org) values.implementing_org = data.partner_organization
+      })
+      .catch(() => {})
+  }
   if (values.date_of_birth) values.age = ageFromDob(values.date_of_birth)
 }
 

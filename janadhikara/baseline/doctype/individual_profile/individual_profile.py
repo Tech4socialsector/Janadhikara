@@ -17,6 +17,7 @@ class IndividualProfile(Document):
 
 	def validate(self):
 		self.validate_consent()
+		self.fill_orw()
 		self.fill_from_household()
 		enforce_own_partner(self)
 		self.age = age_in_years(self.date_of_birth)
@@ -37,6 +38,11 @@ class IndividualProfile(Document):
 			frappe.throw(_("Record the person's consent (DPDP) before saving their details."))
 		self.consent_date = self.consent_date or today()
 		self.consent_taken_by = self.consent_taken_by or frappe.session.user
+
+	def fill_orw(self):
+		"""Name of the ORW (a User): the signed-in user, when left empty."""
+		if not self.orw_name and frappe.session.user != "Guest":
+			self.orw_name = frappe.session.user
 
 	def fill_from_household(self):
 		"""Questions 2 to 5 come from the Household Profile, so they are never typed again."""

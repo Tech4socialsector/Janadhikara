@@ -85,7 +85,8 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "create": 1,
@@ -97,7 +98,8 @@
    "report": 1,
    "role": "Program Coordinator",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "read": 1,
@@ -119,5 +121,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "show_title_field_in_link": 1,
- "search_fields": "survey_name,survey_code"
+ "search_fields": "survey_name,survey_code",
+ "allow_import": 1
 }

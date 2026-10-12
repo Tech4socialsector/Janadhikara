@@ -40,7 +40,8 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "create": 1,
@@ -52,7 +53,8 @@
    "report": 1,
    "role": "Program Coordinator",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "read": 1,
@@ -73,5 +75,6 @@
  "track_changes": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "search_fields": "relationship_name"
+ "search_fields": "relationship_name",
+ "allow_import": 1
 }

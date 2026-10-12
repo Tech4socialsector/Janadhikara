@@ -149,7 +149,8 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "create": 1,
@@ -161,7 +162,8 @@
    "report": 1,
    "role": "Program Coordinator",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "role": "Program Manager",
@@ -177,5 +179,6 @@
   }
  ],
  "show_title_field_in_link": 1,
- "search_fields": "rule_name,target_doctype"
+ "search_fields": "rule_name,target_doctype",
+ "allow_import": 1
 }

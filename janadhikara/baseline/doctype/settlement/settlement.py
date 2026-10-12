@@ -54,13 +54,7 @@ class Settlement(Document):
 			self.partner_organization = employee.parent
 
 	def fill_orw_name(self):
-		"""Name of the ORW: whoever is creating the record, when left empty."""
-		if self.orw_name:
-			return
-		from janadhikara.api import get_user_employee
-
-		employee = get_user_employee()
-		self.orw_name = (employee.worker_name if employee else None) or frappe.db.get_value(
-			"User", frappe.session.user, "full_name"
-		)
+		"""Name of the ORW (a User): the signed-in user, when left empty."""
+		if not self.orw_name and frappe.session.user != "Guest":
+			self.orw_name = frappe.session.user
 

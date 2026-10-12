@@ -120,8 +120,10 @@
    "report": 1,
    "role": "System Manager",
    "share": 0,
-   "write": 1
+   "write": 1,
+   "import": 1
   }
  ],
- "search_fields": "target_doctype"
+ "search_fields": "target_doctype",
+ "allow_import": 1
 }

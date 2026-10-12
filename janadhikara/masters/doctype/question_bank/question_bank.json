@@ -301,7 +301,8 @@
    "email": 1,
    "export": 1,
    "print": 1,
-   "share": 1
+   "share": 1,
+   "import": 1
   },
   {
    "read": 1,
@@ -313,7 +314,8 @@
    "email": 1,
    "export": 1,
    "print": 1,
-   "share": 1
+   "share": 1,
+   "import": 1
   },
   {
    "read": 1,
@@ -334,5 +336,6 @@
  "sort_order": "ASC",
  "track_changes": 1,
  "allow_rename": 1,
- "search_fields": "question,question_no,for_doctype"
+ "search_fields": "question,question_no,for_doctype",
+ "allow_import": 1
 }

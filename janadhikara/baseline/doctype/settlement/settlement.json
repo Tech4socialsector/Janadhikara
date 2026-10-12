@@ -13,6 +13,7 @@
   "settlement_name",
   "column_break_main",
   "partner_organization",
+  "organization_name",
   "orw_name",
   "cluster",
   "section_settlement_details",
@@ -311,10 +312,20 @@
    "search_index": 1
   },
   {
-   "description": "Filled in from your login when empty.",
-   "fieldname": "orw_name",
    "fieldtype": "Data",
-   "label": "Name of the ORW"
+   "label": "Organization Name",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Fetched from the Partner Details.",
+   "fieldname": "organization_name",
+   "fetch_from": "partner_organization.organization_name"
+  },
+  {
+   "description": "The ORW who recorded this. Filled in with the signed-in user when left empty.",
+   "fieldname": "orw_name",
+   "fieldtype": "Link",
+   "label": "Name of the ORW",
+   "options": "User"
   },
   {
    "fieldname": "cluster",
@@ -1804,7 +1815,8 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "create": 1,
@@ -1816,7 +1828,8 @@
    "report": 1,
    "role": "Program Coordinator",
    "share": 1,
-   "write": 1
+   "write": 1,
+   "import": 1
   },
   {
    "read": 1,
@@ -1828,7 +1841,8 @@
    "export": 1,
    "print": 1,
    "email": 1,
-   "share": 1
+   "share": 1,
+   "import": 1
   },
   {
    "read": 1,
@@ -1840,7 +1854,8 @@
    "export": 1,
    "print": 1,
    "email": 1,
-   "share": 1
+   "share": 1,
+   "import": 1
   },
   {
    "role": "ORW",
@@ -1856,5 +1871,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "settlement_name",
- "track_changes": 1
+ "track_changes": 1,
+ "allow_import": 1
 }
