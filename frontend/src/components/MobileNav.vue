@@ -102,10 +102,12 @@ import { showSettingsDialog } from '@/data/settingsDialog'
 import { session } from '@/data/session'
 import { t } from '@/utils/translate'
 import { assistantState, assistantConfigResource, toggleAssistant } from '@/data/aiAssistant'
+import { useBackToClose } from '@/utils/backClose'
 
 const route = useRoute()
 // Shared with the header's menu button (see data/mobileMenu.js).
 const showMenu = showMobileMenu
+useBackToClose(showMenu)
 
 const router = useRouter()
 // Only the module that is open (the one picked on Home or the one the current page belongs to), like the sidebar.

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, START_LOCATION } from 'vue-router'
+import { installOverlayGuard } from '@/utils/backClose'
 import { session, initialUserCheck, userResource } from '@/data/session'
 import { modulesResource, findModuleByRoute } from '@/data/modules'
 import { settingsEntriesResource, findSettingsEntryByRoute } from '@/data/settingsEntries'
@@ -163,6 +164,8 @@ async function ensureSettingsEntriesLoaded() {
   }
   await settingsFetch.catch(() => {})
 }
+
+installOverlayGuard(router)
 
 router.beforeEach(async (to, from, next) => {
   if (from === START_LOCATION) {

@@ -125,7 +125,7 @@ home_page = "janadhikara"
 # ------------
 
 # before_install = "janadhikara.install.before_install"
-# after_install = "janadhikara.install.after_install"
+after_install = "janadhikara.install.after_install"
 
 # Uninstallation
 # ------------

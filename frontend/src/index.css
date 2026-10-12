@@ -283,3 +283,12 @@ an equal share and the selected one (the only one with a label) gets a bigger on
     display: none !important;
   }
 }
+
+/* Dialog headings are text-2xl in frappe-ui: too big on a phone, where a long title (a dashboard
+   drill-down's) takes several lines. */
+@media (max-width: 639px) {
+  [role='dialog'] header h3 {
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+  }
+}

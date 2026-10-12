@@ -3,12 +3,12 @@
     <template #body-content>
       <!-- Toolbar: search, filter, sort, columns, export -->
       <div class="mb-3 flex flex-wrap items-center gap-2">
-        <div class="min-w-40 flex-1">
+        <div class="min-w-40 flex-1 max-sm:basis-full">
           <FormControl type="text" :placeholder="`Search by ${searchLabel.toLowerCase()}`" v-model="search" />
         </div>
         <Popover v-model:show="showFilter" placement="bottom-end" popover-class="doctype-list-popover" :hide-on-blur="false">
           <template #target="{ togglePopover }">
-            <Button variant="outline" icon-left="filter" label="Filter" data-toolbar-popover-trigger @click="togglePopover">
+            <Button variant="outline" :icon-left="isMobile ? undefined : 'filter'" :icon="isMobile ? 'filter' : undefined" :label="isMobile ? undefined : 'Filter'" data-toolbar-popover-trigger @click="togglePopover">
               <template v-if="activeFilterCount" #suffix>
                 <span class="flex h-4 min-w-4 items-center justify-center rounded-full bg-surface-gray-7 px-1 text-2xs text-ink-white">{{ activeFilterCount }}</span>
               </template>
@@ -21,9 +21,9 @@
           </template>
         </Popover>
         <SortControl v-model="sort" v-model:show="showSort" :fields="allFields" />
-        <ColumnPicker v-model:show="showColumns" :prefs="columnPrefs" locked-label="ID" />
+        <ColumnPicker v-model:show="showColumns" :prefs="columnPrefs" locked-label="ID" :compact="isMobile" />
         <Dropdown v-if="canExport" :options="exportOptions" placement="right">
-          <Button variant="solid" icon-left="download" :loading="exporting">Export</Button>
+          <Button variant="solid" :icon-left="isMobile ? undefined : 'download'" :icon="isMobile ? 'download' : undefined" :loading="exporting"><template v-if="!isMobile">Export</template></Button>
         </Dropdown>
       </div>
 
@@ -34,7 +34,32 @@
       </div>
       <ErrorMessage v-if="rowsCall.error" class="mb-3" message="The records could not be loaded." />
 
-      <div v-if="rows.length" class="max-h-[50vh] overflow-auto rounded-lg border dark:border-gray-800">
+      <!-- Phone: one card per record instead of a table -->
+      <div v-if="rows.length && isMobile" class="max-h-[55vh] space-y-2 overflow-y-auto">
+        <button
+          v-for="row in rows"
+          :key="row.name"
+          type="button"
+          class="block w-full overflow-hidden rounded-xl border bg-white p-3.5 text-left shadow-sm active:shadow-none dark:border-gray-800 dark:bg-gray-900"
+          @click="$emit('open-record', row.name)"
+        >
+          <div class="flex items-center justify-between gap-2">
+            <span class="max-w-[60%] truncate rounded-md bg-gray-100 px-1.5 py-0.5 font-mono text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-300">{{ row.name }}</span>
+            <div class="flex items-center gap-1.5">
+              <span v-if="statusColumn && row[statusColumn.fieldname]" class="inline-block rounded-full px-2 py-0.5 text-xs font-medium" :class="statusBadgeClasses(row[statusColumn.fieldname])">{{ row[statusColumn.fieldname] }}</span>
+              <FeatherIcon name="chevron-right" class="h-4 w-4 flex-shrink-0 text-gray-300 dark:text-gray-600" />
+            </div>
+          </div>
+          <div v-if="row[titleField] && row[titleField] !== row.name" class="mt-2 truncate text-base font-semibold text-gray-900 dark:text-gray-100">{{ row[titleField] }}</div>
+          <dl v-if="cardColumns.length" class="mt-2.5 grid grid-cols-2 gap-x-4 gap-y-2.5">
+            <div v-for="col in cardColumns" :key="col.fieldname" class="min-w-0">
+              <dt class="truncate text-xs text-gray-400 dark:text-gray-500">{{ col.label }}</dt>
+              <dd class="truncate text-base text-gray-800 dark:text-gray-200">{{ cell(row, col) }}</dd>
+            </div>
+          </dl>
+        </button>
+      </div>
+      <div v-else-if="rows.length" class="max-h-[50vh] overflow-auto rounded-lg border dark:border-gray-800">
         <table class="w-full text-left text-sm">
           <thead class="sticky top-0 z-10 bg-gray-50 text-xs uppercase text-gray-500 dark:bg-gray-900 dark:text-gray-400">
             <tr>
@@ -82,7 +107,10 @@
 
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { Dialog, Button, FormControl, Popover, Dropdown, ErrorMessage, toast, useCall } from 'frappe-ui'
+import { Dialog, Button, FeatherIcon, FormControl, Popover, Dropdown, ErrorMessage, toast, useCall } from 'frappe-ui'
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import { isStatusLikeField, statusBadgeClasses } from '@/utils/statusColors'
+import { useBackToClose } from '@/utils/backClose'
 import FilterEditor from '@/components/FilterEditor.vue'
 import SortControl from '@/components/SortControl.vue'
 import ColumnPicker from '@/components/ColumnPicker.vue'
@@ -103,6 +131,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue', 'open-record', 'open-list'])
 const open = computed({ get: () => props.modelValue, set: (v) => emit('update:modelValue', v) })
+useBackToClose(open)
 
 const PAGE_SIZES = [10, 25, 50, 100].map((n) => ({ label: String(n), value: n }))
 const metaResource = useMeta(props.doctype)
@@ -116,6 +145,11 @@ const columnPrefs = useColumnPrefs({
   defaultColumns: computed(() => props.defaultColumns.map((n) => allFields.value.find((f) => f.fieldname === n)).filter(Boolean)),
 })
 const visibleColumns = computed(() => columnPrefs.visibleColumns.value.filter((c) => c.fieldname !== 'name'))
+
+// Phone cards: the status field becomes a badge, the title field the heading, the rest a two-column list.
+const isMobile = useBreakpoints(breakpointsTailwind).smaller('sm')
+const statusColumn = computed(() => visibleColumns.value.find((c) => isStatusLikeField(c)) || null)
+const cardColumns = computed(() => visibleColumns.value.filter((c) => c !== statusColumn.value && c.fieldname !== titleField.value))
 
 const advancedFilters = ref({ ...props.filters })
 const baseFilterCount = Object.keys(props.filters).length
@@ -162,7 +196,7 @@ function resetFilters() {
 
 const rows = ref([])
 const total = ref(0)
-const fetchFields = computed(() => ['name', ...visibleColumns.value.map((c) => c.fieldname)])
+const fetchFields = computed(() => [...new Set(['name', titleField.value, ...visibleColumns.value.map((c) => c.fieldname)])])
 const rowsCall = useCall({
   url: `/api/v2/document/${props.doctype}`,
   method: 'GET',

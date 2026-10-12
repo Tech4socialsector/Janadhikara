@@ -173,6 +173,7 @@ import {
 } from '@/data/notifications'
 import { findModuleByDoctype } from '@/data/modules'
 import { needsPushSetup, askForDesktopAlerts } from '@/data/realtime'
+import { useBackToClose } from '@/utils/backClose'
 
 // Kept so existing callers that still pass them (the old side-panel layout
 // needed the sidebar width / an element to ignore) don't break - a popup has
@@ -200,6 +201,7 @@ const show = computed({
   get: () => notificationsState.visible,
   set: (value) => (notificationsState.visible = value),
 })
+useBackToClose(show)
 
 const visibleLogs = computed(() =>
   filter.value === 'unread' ? notificationLogs.value.filter((n) => !n.read) : notificationLogs.value,

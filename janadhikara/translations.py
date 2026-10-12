@@ -16,8 +16,26 @@ PREFIX = "janadhikara:"
 DATA_FILE = os.path.join(os.path.dirname(__file__), "translation_data", "translations.json")
 
 
+LANGUAGES = {"en": "English", "as": "অসমীয়া", "hi": "हिन्दी"}
+
+
+def ensure_languages(restrict=False):
+	"""The app is offered in English, Assamese and Hindi. Make sure they exist and are enabled (a new site
+	may not have Assamese at all); with restrict=True every other language is switched off."""
+	for code, name in LANGUAGES.items():
+		if frappe.db.exists("Language", code):
+			frappe.db.set_value("Language", code, {"enabled": 1, "language_name": name})
+		else:
+			frappe.get_doc({"doctype": "Language", "language_code": code, "language_name": name, "enabled": 1}).insert(
+				ignore_permissions=True
+			)
+	if restrict:
+		frappe.db.set_value("Language", {"name": ["not in", list(LANGUAGES)]}, "enabled", 0)
+
+
 def import_translations():
 	"""Create the Translation records that are not there yet (existing ones are left as they are)."""
+	ensure_languages()
 	with open(DATA_FILE, encoding="utf-8") as f:
 		rows = json.load(f)
 	existing = {
@@ -30,18 +48,32 @@ def import_translations():
 	for row in rows:
 		if (row["language"], row["context"], row["source"]) in existing:
 			continue
-		frappe.get_doc(
-			{
-				"doctype": "Translation",
-				"language": row["language"],
-				"context": row["context"],
-				"source_text": row["source"],
-				"translated_text": row["text"],
-			}
-		).insert(ignore_permissions=True)
-		created += 1
+		try:
+			frappe.get_doc(
+				{
+					"doctype": "Translation",
+					"language": row["language"],
+					"context": row["context"],
+					"source_text": row["source"],
+					"translated_text": row["text"],
+				}
+			).insert(ignore_permissions=True)
+			created += 1
+		except Exception:
+			# one bad row must not stop the rest (or a migrate)
+			frappe.log_error(title="Janadhikara: translation not imported", message=frappe.get_traceback())
 	frappe.db.commit()
 	return created
+
+
+def _import_in_background():
+	"""A site where the one-off import never ran (a fresh install skips patches, and not every deploy migrates):
+	start it now, in the background, at most once every ten minutes."""
+	key = "janadhikara_translation_import_started"
+	if frappe.cache.get_value(key):
+		return
+	frappe.cache.set_value(key, 1, expires_in_sec=600)
+	frappe.enqueue("janadhikara.translations.import_translations", queue="long", timeout=1800)
 
 
 @frappe.whitelist()
@@ -50,6 +82,9 @@ def get_app_translations(language):
 	questionnaire text by DocType and field. Only app text (not sensitive), readable by any signed-in user."""
 	out = {"ui": {}, "heading": {}, "option": {}, "help": {}, "dpdp": {}, "fields": {}}
 	if not language or language == "en":
+		return out
+	if not frappe.db.exists("Translation", {"language": language, "context": ["like", PREFIX + "%"]}):
+		_import_in_background()
 		return out
 	for r in frappe.get_all(
 		"Translation",

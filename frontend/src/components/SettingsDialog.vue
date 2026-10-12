@@ -179,6 +179,7 @@ import { languagesResource, appLanguage, setUserLanguage } from '@/data/language
 import { currentTheme } from '@/data/theme'
 import { userContextResource } from '@/data/userContext'
 import { settingsEntriesResource } from '@/data/settingsEntries'
+import { useBackToClose } from '@/utils/backClose'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -189,6 +190,7 @@ const show = computed({
   get: () => props.modelValue,
   set: (v) => emit('update:modelValue', v),
 })
+useBackToClose(show)
 
 const settingsEntries = computed(() => settingsEntriesResource.data || [])
 const activeEntry = computed(() => settingsEntries.value.find((e) => e.key === activeTab.value))

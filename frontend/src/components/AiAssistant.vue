@@ -151,6 +151,7 @@ import {
   sending,
 } from '@/data/aiAssistant'
 import { findModuleByDoctype } from '@/data/modules'
+import { useBackToClose } from '@/utils/backClose'
 
 const router = useRouter()
 const messagesRef = ref(null)
@@ -163,6 +164,7 @@ const show = computed({
   get: () => assistantState.visible,
   set: (v) => (assistantState.visible = v),
 })
+useBackToClose(show)
 
 watch(
   () => assistantState.visible,

@@ -121,10 +121,12 @@ import { useDebounceFn } from '@vueuse/core'
 import { Dialog, FeatherIcon, Tooltip, Button } from 'frappe-ui'
 import { searchQuery, searchResource } from '@/data/search'
 import { flatModuleItems } from '@/data/modules'
+import { useBackToClose } from '@/utils/backClose'
 
 const router = useRouter()
 const inputRef = ref(null)
 const open = ref(false)
+useBackToClose(open)
 const query = searchQuery
 
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)

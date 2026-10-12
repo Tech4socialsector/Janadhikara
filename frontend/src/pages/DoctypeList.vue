@@ -527,6 +527,7 @@ import { linkTitle, isTitledLink, ensureTitlesForRows } from '@/data/linkTitles'
 import { setPageTitle } from '@/data/pageTitle'
 import { timeAgo, fullDatetime } from '@/utils/time'
 import { isStatusLikeField, statusBadgeClasses, statusBorderColor } from '@/utils/statusColors'
+import { useBackToClose } from '@/utils/backClose'
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('sm')
@@ -875,7 +876,9 @@ onMounted(() => document.addEventListener('pointerdown', closeToolbarPopoversOnO
 onBeforeUnmount(() => document.removeEventListener('pointerdown', closeToolbarPopoversOnOutsideClick, true))
 
 const showFilterSheet = ref(false)
+useBackToClose(showFilterSheet)
 const showSortSheet = ref(false)
+useBackToClose(showSortSheet)
 
 // Row selection (desktop ListView only) - ListView owns the actual
 // selection Set internally and emits update:selections, which this just

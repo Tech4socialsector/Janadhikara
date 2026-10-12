@@ -322,6 +322,7 @@ import { useFetchFromFields } from '@/composables/useFetchFromFields'
 import { usePincodeLookup } from '@/composables/usePincodeLookup'
 import { getValidatorForField } from '@/utils/validation'
 import { evaluateDependsOn } from '@/utils/dependsOn'
+import { useBackToClose } from '@/utils/backClose'
 
 const { doctype, isNew, name, offlineId } = defineProps({
   doctype: { type: String, required: true },
@@ -489,6 +490,7 @@ if (deletePermissionResource) deletePermissionResource.fetch()
 const canDelete = computed(() => !!deletePermissionResource?.data)
 
 const showDeleteConfirm = ref(false)
+useBackToClose(showDeleteConfirm)
 const deleting = ref(false)
 const deleteError = ref(null)
 
@@ -652,6 +654,7 @@ function hookCtx() {
 // A notice a hook can raise (e.g. the DPDP consent explanation): bullet points
 // and a confirm button. Closing it any other way runs the hook's onCancel.
 const notice = reactive({ show: false, title: '', intro: '', bullets: [], confirmLabel: 'OK', onCancel: null, onConfirm: null })
+useBackToClose(computed({ get: () => notice.show, set: (v) => (notice.show = v) }))
 let noticeConfirmed = false
 function confirmNotice(options) {
   Object.assign(notice, { title: '', intro: '', bullets: [], confirmLabel: 'OK', onCancel: null, onConfirm: null }, options)
