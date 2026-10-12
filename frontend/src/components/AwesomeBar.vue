@@ -241,17 +241,17 @@ function reset() {
 }
 
 function goToList(item) {
-  reset()
   router.push({ name: 'DoctypeList', params: { doctypeRoute: item.route } })
+  reset()
 }
 
 function goToNew(item) {
-  reset()
   router.push({ name: 'DoctypeNew', params: { doctypeRoute: item.route } })
+  reset()
 }
 
 function selectRecord(item) {
-  reset()
   router.push({ name: 'DoctypeForm', params: { doctypeRoute: item.route, name: item.name } })
+  reset()
 }
 </script>

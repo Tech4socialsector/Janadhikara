@@ -84,7 +84,7 @@
                 </div>
                 <div v-else class="flex flex-col gap-1">
                   <button
-                    v-for="opt in languagesResource.data"
+                    v-for="opt in languages"
                     :key="opt.value"
                     class="flex items-center justify-between rounded px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
                     :class="{ 'bg-gray-100 dark:bg-gray-800': appLanguage === opt.value }"
@@ -175,7 +175,7 @@ import EmailSettingsPanel from '@/components/EmailSettingsPanel.vue'
 import Skeleton from '@/components/Skeleton.vue'
 import moduleIcon from '@/components/moduleIcon'
 import { session } from '@/data/session'
-import { languagesResource, appLanguage, setUserLanguage } from '@/data/language'
+import { languagesResource, languages, appLanguage, setUserLanguage } from '@/data/language'
 import { currentTheme } from '@/data/theme'
 import { userContextResource } from '@/data/userContext'
 import { settingsEntriesResource } from '@/data/settingsEntries'

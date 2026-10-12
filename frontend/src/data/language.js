@@ -47,12 +47,18 @@ export const languagesResource = createResource({
 })
 
 // Languages to offer, falling back to the last list seen when offline.
-export const languages = computed(() => languagesResource.data || cachedLanguages() || [])
+// For the time being the app is offered in English, Assamese and Hindi only, whatever other languages the site has enabled.
+// To offer another, add its code here and add its translations.
+export const OFFERED_LANGUAGES = ['en', 'as', 'hi']
+export const languages = computed(() => (languagesResource.data || cachedLanguages() || []).filter((l) => OFFERED_LANGUAGES.includes(l.value)))
 
 const chosen = ref(read(CHOICE_KEY))
 let unsynced = false
 
-export const appLanguage = computed(() => chosen.value || session.user_language || 'en')
+export const appLanguage = computed(() => {
+  const language = chosen.value || session.user_language || 'en'
+  return OFFERED_LANGUAGES.includes(language) ? language : 'en'
+})
 
 const setLanguageResource = createResource({
   url: 'frappe.client.set_value',

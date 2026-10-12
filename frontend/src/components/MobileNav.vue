@@ -117,10 +117,14 @@ const modules = computed(() => {
 })
 // Links and tiles only: section headings and spacers are a sidebar thing.
 const itemsOf = (mod) => (mod.items || mod.doctypes || []).filter((it) => it.route && it.type !== 'Section Break' && it.type !== 'Spacer')
-const goto = (location) => () => {
-  showMenu.value = false
-  router.push(location)
+// Navigate with the menu still open: utils/backClose.js closes it and removes its history entry first, so the new page
+// really opens (closing it first raced with the navigation and left the phone on the same page). On the page we
+// are already on there is nothing to navigate to, so the menu just closes.
+function navigate(location) {
+  if (router.resolve(location).fullPath === route.fullPath) showMenu.value = false
+  else router.push(location)
 }
+const goto = (location) => () => navigate(location)
 const quickLinks = computed(() => [
   { key: 'home', label: t('Home'), lucide: 'home', go: goto({ name: 'Home' }) },
   { key: 'dashboard', label: t('Dashboard'), lucide: 'layout-dashboard', go: goto({ name: 'Dashboard' }) },
@@ -128,8 +132,7 @@ const quickLinks = computed(() => [
   ...(hasPage('sync-data') ? [{ key: 'sync', label: t('Sync Data'), icon: SyncCloudIcon, badge: pendingCount.value > 0 ? (pendingCount.value > 9 ? '9+' : String(pendingCount.value)) : '', go: goto({ name: 'SyncData' }) }] : []),
 ])
 function openItem(item) {
-  showMenu.value = false
-  router.push(item.type === 'Page' ? `/${item.route}` : { name: 'DoctypeList', params: { doctypeRoute: item.route } })
+  navigate(item.type === 'Page' ? `/${item.route}` : { name: 'DoctypeList', params: { doctypeRoute: item.route } })
 }
 
 // Close the launcher

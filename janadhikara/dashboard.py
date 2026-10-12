@@ -11,6 +11,8 @@ import frappe
 from frappe import _
 from frappe.utils import cint
 
+from janadhikara.security import user_scope
+
 HOUSEHOLD = "Household Profile"
 INDIVIDUAL = "Individual Profile"
 
@@ -27,7 +29,13 @@ DOCUMENTS = [
 def get_filter_options():
 	"""What the dashboard's filters can offer this user."""
 	settlements = frappe.get_list("Settlement", fields=["name", "settlement_name"], limit_page_length=0, order_by="settlement_name")
-	partners = frappe.get_list("Partner Details", fields=["name"], limit_page_length=0, order_by="name")
+	# Partner Details is an admin-only list (it holds the workers' contacts), so the names come from the user's own scope:
+	# every partner for the programme team, just their own partner for anyone else.
+	kind, own_partner = user_scope()
+	if kind == "all":
+		partners = frappe.get_all("Partner Details", fields=["name"], limit_page_length=0, order_by="name")
+	else:
+		partners = [frappe._dict(name=own_partner)] if own_partner else []
 	return {
 		"settlements": [{"value": s.name, "label": s.settlement_name or s.name} for s in settlements],
 		"partners": [{"value": p.name, "label": p.name} for p in partners],

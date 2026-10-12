@@ -78,6 +78,23 @@ def _has_permission(doc, doctype, user=None, permission_type=None):
 	return owner_partner == partner
 
 
+def partner_conditions(user=None, **kwargs):
+	"""Partner Details: the programme team sees every partner; anyone else only their own."""
+	kind, partner = user_scope(user)
+	if kind == "all":
+		return ""
+	if kind == "none":
+		return "1=0"
+	return f"`tabPartner Details`.`name` = {frappe.db.escape(partner)}"
+
+
+def partner_has_permission(doc, ptype=None, user=None, **kwargs):
+	kind, partner = user_scope(user)
+	if kind == "all":
+		return True
+	return kind == "partner" and doc.name == partner
+
+
 def household_conditions(user=None, **kwargs):
 	return _query_conditions("Household Profile", user)
 

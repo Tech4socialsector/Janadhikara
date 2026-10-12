@@ -38,12 +38,14 @@ fixtures = [
 # Validation Status options are role-restricted (see masters/doctype/validation_status).
 permission_query_conditions = {
 	"Validation Status": "janadhikara.masters.doctype.validation_status.validation_status.get_permission_query_conditions",
+	"Partner Details": "janadhikara.security.partner_conditions",
 	"Household Profile": "janadhikara.security.household_conditions",
 	"Settlement": "janadhikara.security.settlement_conditions",
 	"Individual Profile": "janadhikara.security.individual_conditions",
 }
 has_permission = {
 	"Validation Status": "janadhikara.masters.doctype.validation_status.validation_status.has_permission",
+	"Partner Details": "janadhikara.security.partner_has_permission",
 	"Household Profile": "janadhikara.security.household_has_permission",
 	"Settlement": "janadhikara.security.settlement_has_permission",
 	"Individual Profile": "janadhikara.security.individual_has_permission",

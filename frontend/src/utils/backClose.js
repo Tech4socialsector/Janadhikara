@@ -22,7 +22,11 @@ export function useBackToClose(open) {
         stack.push(entry)
       } else if (!isOpen && index >= 0) {
         stack.splice(index, 1)
-        if (history.state?.overlay === id) history.back()
+        // Removed on the next tick, and only if the overlay's entry is still the current one: when a page change
+        // started at the same moment (a tile that closes the menu and navigates), going back would undo it.
+        setTimeout(() => {
+          if (history.state?.overlay === id) history.back()
+        }, 0)
       }
     },
     { flush: 'sync' },
@@ -43,7 +47,16 @@ export function installOverlayGuard(router) {
     const count = stack.length
     stack.splice(0).forEach((entry) => entry.close())
     history.go(-count)
-    window.addEventListener('popstate', () => router.push(to.fullPath), { once: true })
+    // Go on to the page once the entries are gone. If the browser never reports that (some do not), go on anyway,
+    // so a tap on a menu item can never end with nothing opening.
+    let went = false
+    const proceed = () => {
+      if (went) return
+      went = true
+      router.push(to.fullPath)
+    }
+    window.addEventListener('popstate', proceed, { once: true })
+    setTimeout(proceed, 500)
     return false
   })
 }

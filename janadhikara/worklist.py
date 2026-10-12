@@ -12,7 +12,7 @@ ordinary ToDos (reference = the household) and show up in the Worklist."""
 import frappe
 from frappe import _
 from frappe.desk.form.assign_to import _add, close_all_assignments
-from frappe.utils import add_days, getdate, nowdate
+from frappe.utils import add_days, nowdate
 
 STALE_DAYS = 7
 OPEN_STATUSES = ("Partially Completed",)
