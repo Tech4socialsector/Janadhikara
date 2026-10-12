@@ -83,7 +83,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "Track visits, follow-ups, and growth monitoring in one place \u2014 built for community health workers on the ground.",
+   "default": "Track visits, follow-ups, and growth monitoring in one place — built for community health workers on the ground.",
    "description": "Supporting text shown below the headline on the login page.",
    "fieldname": "login_description",
    "fieldtype": "Small Text",

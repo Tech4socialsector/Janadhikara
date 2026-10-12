@@ -42,3 +42,10 @@ export function findModuleByRoute(routeSlug) {
 export function findModuleByDoctype(doctypeName) {
   return flatModuleItems.value.find((item) => item.doctype_name === doctypeName)
 }
+
+// Pages of the app itself (Sync Data) that an App Module Setting switches on for a role. A module made only of
+// Pages is a "page module": it shows as one tile / one sidebar link that opens the page directly.
+export const isPageModule = (mod) => !!mod?.items?.length && mod.items.every((i) => i.type === 'Page')
+export const pageModules = computed(() => (modulesResource.data || []).filter(isPageModule))
+export const pageEntries = computed(() => pageModules.value.flatMap((m) => m.items.filter((i) => i.type === 'Page').map((i) => ({ ...i, module: m }))))
+export const hasPage = (route) => pageEntries.value.some((p) => p.route === route)

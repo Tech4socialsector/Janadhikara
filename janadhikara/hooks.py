@@ -23,7 +23,17 @@ add_to_apps_screen = [
 # Fixtures
 # ---------
 # The sidebar modules (and their items) travel with the app, so a new site gets them on install.
-fixtures = [{"dt": "App Module Setting"}]
+# Reference data every site needs. A fresh install skips one-off patches, so what they seeded is exported here and
+# loaded on install and on every migrate (so these lists are changed in the app, not on a site).
+fixtures = [
+	# Sync Data is created by code (modules_setup.py) so that the roles set on a site are not overwritten here.
+	{"dt": "App Module Setting", "filters": [["name", "!=", "Sync Data"]]},
+	{"dt": "Assam District"},
+	{"dt": "Welfare Board"},
+	{"dt": "Relationship Type"},
+	{"dt": "Cooking Fuel"},
+	{"dt": "Field Function Mapping"},
+]
 
 # Validation Status options are role-restricted (see masters/doctype/validation_status).
 permission_query_conditions = {
@@ -277,6 +287,8 @@ after_request = ["janadhikara.security.add_security_headers"]
 after_migrate = [
 	"janadhikara.ai.policy.ensure_policies",
 	"janadhikara.menu.ensure_master_sidebar",
+	"janadhikara.statuses.ensure_statuses",
+	"janadhikara.modules_setup.ensure_sync_module",
 	"janadhikara.translations.import_translations",
 ]
 doc_events = {

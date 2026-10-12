@@ -40,7 +40,6 @@ class HouseholdProfile(Document):
 			return
 		if not self.consent_given:
 			frappe.throw(_("Record the respondent's consent (DPDP) before collecting the household's details."))
-		self.consent_mode = self.consent_mode or "Verbal (recorded)"
 		self.consent_date = self.consent_date or today()
 		self.consent_taken_by = self.consent_taken_by or frappe.session.user
 
@@ -67,24 +66,19 @@ class HouseholdProfile(Document):
 		)
 
 	def validate_validation_status(self):
-		"""Only a status the user's role may use can be set (the dropdown already hides the rest;
-		this stops a hand-made request)."""
-		from janadhikara.masters.doctype.validation_status.validation_status import is_usable_by
+		"""The Status question: only an option the user's role may use can be set, and a Validated record is
+		changed only by someone who may use Validated (the dropdown already hides the rest; this stops a
+		hand-made request)."""
+		from janadhikara.masters.doctype.validation_status.validation_status import check_status_change
 
-		if self.validation_status and (self.is_new() or self.has_value_changed("validation_status")):
-			if not is_usable_by(self.validation_status):
-				frappe.throw(
-					_("You can't set the validation status {0}.").format(frappe.bold(self.validation_status)),
-					frappe.PermissionError,
-				)
+		check_status_change(self)
 
 	def capture_from_logged_in_user(self):
 		"""Backstop for records not created through the form (imports, API):
-		the logged-in user's own employee record fills the partner and
-		assigned worker. Only fills what's empty."""
+		the signed-in user fills the ORW name (Name of the ORW) and their employee
+		record the partner. Only fills what's empty."""
+		if not self.assigned_worker and frappe.session.user != "Guest":
+			self.assigned_worker = frappe.session.user
 		employee = get_user_employee()
-		if employee:
-			if not self.assigned_worker:
-				self.assigned_worker = employee.name
-			if not self.partner_organization:
-				self.partner_organization = employee.parent
+		if employee and not self.partner_organization:
+			self.partner_organization = employee.parent

@@ -1,0 +1,98 @@
+[
+ {
+  "board_name": "Assam Board of WAKF",
+  "docstatus": 0,
+  "doctype": "Welfare Board",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.470081",
+  "name": "Assam Board of WAKF"
+ },
+ {
+  "board_name": "Assam Minorities Development Board",
+  "docstatus": 0,
+  "doctype": "Welfare Board",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.471003",
+  "name": "Assam Minorities Development Board"
+ },
+ {
+  "board_name": "Assam Building and Other Construction Workers Welfare Board (ABOCWWB)",
+  "docstatus": 0,
+  "doctype": "Welfare Board",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.471944",
+  "name": "Assam Building and Other Construction Workers Welfare Board (ABOCWWB)"
+ },
+ {
+  "board_name": "Assam State Disability Welfare Board",
+  "docstatus": 0,
+  "doctype": "Welfare Board",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.472891",
+  "name": "Assam State Disability Welfare Board"
+ },
+ {
+  "board_name": "Assam State Housing Board",
+  "docstatus": 0,
+  "doctype": "Welfare Board",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.473785",
+  "name": "Assam State Housing Board"
+ },
+ {
+  "board_name": "Transgender Welfare Board, Assam",
+  "docstatus": 0,
+  "doctype": "Welfare Board",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.474493",
+  "name": "Transgender Welfare Board, Assam"
+ },
+ {
+  "board_name": "Urban Water Supply & Sewerage Board Assam",
+  "docstatus": 0,
+  "doctype": "Welfare Board",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.475213",
+  "name": "Urban Water Supply & Sewerage Board Assam"
+ },
+ {
+  "board_name": "State Haj Committee",
+  "docstatus": 0,
+  "doctype": "Welfare Board",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.475918",
+  "name": "State Haj Committee"
+ },
+ {
+  "board_name": "Christian Welfare Board",
+  "docstatus": 0,
+  "doctype": "Welfare Board",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.476595",
+  "name": "Christian Welfare Board"
+ },
+ {
+  "board_name": "Buddhist Welfare Board",
+  "docstatus": 0,
+  "doctype": "Welfare Board",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.477304",
+  "name": "Buddhist Welfare Board"
+ },
+ {
+  "board_name": "Sikh Welfare Board",
+  "docstatus": 0,
+  "doctype": "Welfare Board",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.478001",
+  "name": "Sikh Welfare Board"
+ },
+ {
+  "board_name": "Others",
+  "docstatus": 0,
+  "doctype": "Welfare Board",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.478780",
+  "name": "Others"
+ }
+]

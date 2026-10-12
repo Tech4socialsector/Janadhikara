@@ -1,74 +1,40 @@
 <template>
-  <div v-if="connections.length" class="mt-6 border-t pt-4 dark:border-gray-800">
+  <!-- Like Frappe desk's Connections: one small card per linked document, up to four in a row. Its name opens the
+  list of those records (filtered to this one), the count shows how many there are, and + starts a new one. -->
+  <div v-if="connections.length" class="mb-5 border-b pb-4 dark:border-gray-800">
     <h3 class="mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('Connections') }}</h3>
-    <div class="space-y-2">
+    <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
       <div
         v-for="conn in connections"
         :key="conn.key"
-        class="rounded-lg border dark:border-gray-800"
+        class="flex items-center justify-between gap-2 rounded-lg border px-3 py-2 dark:border-gray-800"
       >
-        <!-- A <button> can't nest inside another <button> (invalid HTML -
-        browsers handle it inconsistently, which made the "Add" button's
-        clicks land on the outer toggle instead half the time). This row is
-        a plain div; the label portion and "Add" are two separate sibling
-        buttons instead of one button containing another. -->
-        <div class="flex w-full items-center justify-between px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800">
-          <button
-            type="button"
-            class="flex flex-1 items-center gap-2 text-left text-sm text-gray-700 dark:text-gray-300"
-            @click="toggleExpanded(conn)"
+        <button
+          type="button"
+          class="flex min-w-0 flex-1 items-center gap-2 text-left text-sm text-gray-800 hover:text-gray-950 dark:text-gray-200 dark:hover:text-white"
+          :disabled="!conn.route"
+          @click="openList(conn)"
+        >
+          <span class="truncate">{{ t(conn.label) }}</span>
+          <span
+            v-if="conn.countResource.data != null"
+            class="flex h-5 min-w-5 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 px-1.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400"
           >
-            <FeatherIcon
-              name="chevron-right"
-              class="h-3.5 w-3.5 flex-shrink-0 transition-transform"
-              :class="{ 'rotate-90': expanded[conn.key] }"
-            />
-            {{ conn.label }}
-            <span
-              v-if="conn.countResource.data != null"
-              class="flex h-5 min-w-5 items-center justify-center rounded-full bg-gray-100 px-1.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-            >
-              {{ conn.countResource.data }}
-            </span>
-          </button>
-          <Button v-if="conn.canCreate" variant="ghost" size="sm" @click="addNew(conn)">
-            <template #prefix>
-              <FeatherIcon name="plus" class="h-3.5 w-3.5" />
-            </template>
-            {{ t('Add') }}
-          </Button>
-        </div>
-
-        <div v-if="expanded[conn.key]" class="border-t px-3 py-2 dark:border-gray-800">
-          <div v-if="conn.rowsResource.loading" class="py-2 text-sm text-gray-400">{{ t('Loading...') }}</div>
-          <div v-else-if="!conn.rowsResource.data?.length" class="py-2 text-sm text-gray-400">
-            No {{ conn.label }} yet.
-          </div>
-          <div v-else class="space-y-1">
-            <button
-              v-for="row in conn.rowsResource.data"
-              :key="row.name"
-              type="button"
-              class="block w-full truncate rounded px-2 py-1.5 text-left text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
-              @click="openRecord(conn, row.name)"
-            >
-              {{ linkTitle(conn.linkDoctype, row.name) }}
-              <span class="ml-1 text-xs text-gray-400">{{ row.name }}</span>
-            </button>
-          </div>
-        </div>
+            {{ conn.countResource.data }}
+          </span>
+        </button>
+        <Button v-if="conn.canCreate" variant="ghost" size="sm" icon="plus" :tooltip="t('Add')" :aria-label="t('Add')" @click="addNew(conn)" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue'
+import { watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { FeatherIcon, Button, useCall } from 'frappe-ui'
 import { findModuleByDoctype } from '@/data/modules'
 import { t } from '@/utils/translate'
-import { ensureTitlesForRows, linkTitle } from '@/data/linkTitles'
 
 // Frappe desk's own "Connections" tab, driven the same way it is in real
 // Desk: a doctype's own `links` metadata (DocType Link child rows) names
@@ -91,7 +57,6 @@ const props = defineProps({
 })
 
 const router = useRouter()
-const expanded = reactive({})
 
 const connections = props.links
   .filter((l) => !l.hidden)
@@ -103,34 +68,6 @@ const connections = props.links
       method: 'GET',
       params: () => ({ doctype: l.link_doctype, filters: JSON.stringify({ [l.link_fieldname]: props.name }) }),
       immediate: false,
-      // Open a connection that has records the first time its count arrives, so a household's
-      // family members are listed (and one click from their profile) without expanding anything.
-      // A connection the user closed stays closed.
-      onSuccess: (count) => {
-        if (count > 0 && expanded[key] === undefined) {
-          expanded[key] = true
-          rowsResource.fetch()
-        }
-      },
-    })
-    // Plain string, not `() => ...` - useCall's `url` goes through Vue's
-    // unref() internally, which only unwraps a ref/computed; a plain arrow
-    // function is returned as-is and gets template-string-stringified into
-    // the request path instead of being called (see LinkField.vue's and
-    // TableMultiSelectField.vue's url-fix comments for the full story on
-    // this frappe-ui gotcha). l.link_doctype is fixed per connection
-    // anyway, so a plain string is correct here, not just a workaround.
-    const rowsResource = useCall({
-      url: `/api/v2/document/${l.link_doctype}`,
-      method: 'GET',
-      params: () => ({
-        fields: JSON.stringify(['name']),
-        filters: JSON.stringify({ [l.link_fieldname]: props.name }),
-        limit: 100,
-      }),
-      immediate: false,
-      // Show members by their title (name), not just the record ID.
-      onSuccess: (rows) => ensureTitlesForRows(rows, [{ fieldname: 'name', fieldtype: 'Link', options: l.link_doctype }]),
     })
     return {
       key,
@@ -140,14 +77,8 @@ const connections = props.links
       route: moduleItem?.route || null,
       canCreate: !!moduleItem?.route,
       countResource,
-      rowsResource,
     }
   })
-
-function toggleExpanded(conn) {
-  expanded[conn.key] = !expanded[conn.key]
-  if (expanded[conn.key] && !conn.rowsResource.data) conn.rowsResource.fetch()
-}
 
 // Re-fetch every connection's count whenever the record itself changes
 // (e.g. navigating from one Household profile to another without a full
@@ -157,15 +88,18 @@ watch(
   () => {
     for (const conn of connections) {
       conn.countResource.fetch()
-      if (expanded[conn.key]) conn.rowsResource.fetch()
     }
   },
   { immediate: true },
 )
 
-function openRecord(conn, recordName) {
+function openList(conn) {
   if (!conn.route) return
-  router.push({ name: 'DoctypeForm', params: { doctypeRoute: conn.route, name: recordName } })
+  router.push({
+    name: 'DoctypeList',
+    params: { doctypeRoute: conn.route },
+    query: { filters: JSON.stringify({ [conn.linkFieldname]: props.name }) },
+  })
 }
 
 function addNew(conn) {

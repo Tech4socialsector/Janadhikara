@@ -52,7 +52,6 @@ export function onFieldChange(fieldname, values, ctx) {
         ...HOUSEHOLD_NOTICE,
         onConfirm: () => {
           values.consent_given = 1
-          values.consent_mode = values.consent_mode || 'Verbal (recorded)'
           values.consent_date = todayString()
         },
         onCancel: () => {

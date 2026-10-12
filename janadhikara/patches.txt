@@ -43,3 +43,12 @@ janadhikara.patches.v1_1.three_languages
 janadhikara.patches.v1_1.import_translations
 janadhikara.patches.v1_1.remove_consent_withdrawn
 janadhikara.patches.v1_1.remove_common_module
+janadhikara.patches.v1_1.settlement_type_multi
+janadhikara.patches.v1_1.household_cluster_coordinator
+janadhikara.patches.v1_1.household_orw_user
+janadhikara.patches.v1_1.household_q52_label
+janadhikara.patches.v1_1.remove_consent_mode
+janadhikara.patches.v1_1.individual_member_name
+janadhikara.patches.v1_1.remove_gender_repeat
+janadhikara.patches.v1_1.merge_status_questions
+janadhikara.patches.v1_1.four_roles

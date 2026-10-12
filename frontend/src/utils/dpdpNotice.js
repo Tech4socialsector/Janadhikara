@@ -60,7 +60,6 @@ export function confirmConsent(fieldname, values, ctx, notice) {
       onConfirm: () => {
         confirming = true
         values.consent_given = 1
-        values.consent_mode = values.consent_mode || 'Verbal (recorded)'
         values.consent_date = todayString()
       },
     })

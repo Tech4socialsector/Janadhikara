@@ -283,6 +283,7 @@ import { activeModule } from '@/data/activeModule'
 import { notificationsResource, unreadCount, toggleNotifications } from '@/data/notifications'
 import { pendingCount } from '@/data/offlineQueue'
 import SyncCloudIcon from '@/components/SyncCloudIcon.vue'
+import { pageEntries } from '@/data/modules'
 import { t } from '@/utils/translate'
 import { showSettingsDialog, openSettingsDialog } from '@/data/settingsDialog'
 import { assistantConfigResource, toggleAssistant } from '@/data/aiAssistant'
@@ -408,11 +409,12 @@ function buildModuleRows(mod, keyPrefix) {
     } else {
       if (!it.child) folded = false
       if (folded) return
+      const isPage = it.type === 'Page'
       rows.push({
         label: it.label || it.doctype_name,
         icon: moduleIcon(it.icon || mod.icon),
-        to: { name: 'DoctypeList', params: { doctypeRoute: it.route } },
-        isActive: route.params.doctypeRoute === it.route,
+        to: isPage ? `/${it.route}` : { name: 'DoctypeList', params: { doctypeRoute: it.route } },
+        isActive: isPage ? route.path === `/${it.route}` : route.params.doctypeRoute === it.route,
         indent: !!it.child,
       })
     }
@@ -450,13 +452,13 @@ const sections = computed(() => {
           to: { name: 'Worklist' },
           isActive: route.name === 'Worklist',
         },
-        {
-          label: 'Sync Data',
-          icon: SyncCloudIcon,
-          to: { name: 'SyncData' },
-          suffix: pendingCount.value > 0 ? String(pendingCount.value > 9 ? '9+' : pendingCount.value) : undefined,
-          isActive: route.name === 'SyncData',
-        },
+        ...pageEntries.value.map((page) => ({
+          label: page.label,
+          icon: page.route === 'sync-data' ? SyncCloudIcon : moduleIcon(page.icon),
+          to: `/${page.route}`,
+          suffix: page.route === 'sync-data' && pendingCount.value > 0 ? String(pendingCount.value > 9 ? '9+' : pendingCount.value) : undefined,
+          isActive: route.path === `/${page.route}`,
+        })),
       ],
     },
   ]

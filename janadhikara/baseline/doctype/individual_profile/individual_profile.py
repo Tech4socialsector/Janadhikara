@@ -35,8 +35,6 @@ class IndividualProfile(Document):
 		"""DPDP: nothing about a person is recorded without consent."""
 		if not self.consent_given:
 			frappe.throw(_("Record the person's consent (DPDP) before saving their details."))
-		if not self.consent_mode:
-			frappe.throw(_("Consent Mode is required when consent is given."))
 		self.consent_date = self.consent_date or today()
 		self.consent_taken_by = self.consent_taken_by or frappe.session.user
 
@@ -64,16 +62,11 @@ class IndividualProfile(Document):
 			frappe.throw(_("Not working/Not applicable can't be combined with another occupation."))
 
 	def validate_validation_status(self):
-		"""Only a status the user's role may use can be set (the dropdown already hides the rest;
-		this stops a hand-made request)."""
-		from janadhikara.masters.doctype.validation_status.validation_status import is_usable_by
+		"""The Status question: only an option the user's role may use can be set, and a Validated record is
+		changed only by someone who may use Validated."""
+		from janadhikara.masters.doctype.validation_status.validation_status import check_status_change
 
-		if self.validation_status and (self.is_new() or self.has_value_changed("validation_status")):
-			if not is_usable_by(self.validation_status):
-				frappe.throw(
-					_("You can't set the validation status {0}.").format(frappe.bold(self.validation_status)),
-					frappe.PermissionError,
-				)
+		check_status_change(self)
 
 
 def age_in_years(date_of_birth):

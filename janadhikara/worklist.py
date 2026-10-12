@@ -31,9 +31,12 @@ def _has_open_task(doctype, name, user):
 
 
 def _worker_user(employee):
-	"""The login of a worker (Employee row): its User link, or its email."""
+	"""The login of a worker: the User itself (Name of the ORW is a User link), or - for older records -
+	the User link or email of an Employee row."""
 	if not employee:
 		return None
+	if frappe.db.exists("User", employee):
+		return employee
 	user, email = frappe.db.get_value("Employee", employee, ["user", "email"]) or (None, None)
 	return user or (email if email and frappe.db.exists("User", email) else None)
 
@@ -183,9 +186,6 @@ def get_team_members():
 			return []
 		if "Organization Admin" in roles:
 			filters["parent"] = employee.parent
-		elif "Supervisor" in roles:
-			filters["parent"] = employee.parent
-			allowed_roles = ["Data Collector"]
 		else:
 			return []
 

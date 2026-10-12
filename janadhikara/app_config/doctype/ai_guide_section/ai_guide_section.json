@@ -89,6 +89,18 @@
    "role": "Program Coordinator",
    "share": 1,
    "write": 1
+  },
+  {
+   "role": "Program Manager",
+   "read": 1
+  },
+  {
+   "role": "Organization Admin",
+   "read": 1
+  },
+  {
+   "role": "ORW",
+   "read": 1
   }
  ],
  "row_format": "Dynamic",

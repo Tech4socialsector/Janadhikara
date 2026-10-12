@@ -292,3 +292,13 @@ an equal share and the selected one (the only one with a label) gets a bigger on
     line-height: 1.5rem;
   }
 }
+
+/* iOS Safari zooms the page into any field whose text is smaller than 16px and does not zoom back out.
+   Fields are 16px on iPhones (touch devices that report -webkit-touch-callout); other devices keep 14px. */
+@supports (-webkit-touch-callout: none) {
+  input:not([type='checkbox']):not([type='radio']),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

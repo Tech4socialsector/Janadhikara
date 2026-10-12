@@ -162,6 +162,18 @@
    "role": "Program Coordinator",
    "share": 1,
    "write": 1
+  },
+  {
+   "role": "Program Manager",
+   "read": 1
+  },
+  {
+   "role": "Organization Admin",
+   "read": 1
+  },
+  {
+   "role": "ORW",
+   "read": 1
   }
  ],
  "show_title_field_in_link": 1,

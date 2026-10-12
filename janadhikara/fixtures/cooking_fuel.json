@@ -1,0 +1,42 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Cooking Fuel",
+  "enabled": 1,
+  "fuel_name": "Gas",
+  "modified": "2026-10-06 07:20:53.354237",
+  "name": "Gas"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Cooking Fuel",
+  "enabled": 1,
+  "fuel_name": "Firewood",
+  "modified": "2026-10-06 07:20:53.366511",
+  "name": "Firewood"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Cooking Fuel",
+  "enabled": 1,
+  "fuel_name": "Kerosene",
+  "modified": "2026-10-06 07:20:53.367430",
+  "name": "Kerosene"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Cooking Fuel",
+  "enabled": 1,
+  "fuel_name": "Charcoal",
+  "modified": "2026-10-06 07:20:53.371490",
+  "name": "Charcoal"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Cooking Fuel",
+  "enabled": 1,
+  "fuel_name": "Electricity",
+  "modified": "2026-10-06 14:29:07.845767",
+  "name": "Electricity"
+ }
+]

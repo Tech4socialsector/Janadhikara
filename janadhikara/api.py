@@ -283,7 +283,7 @@ def get_current_user_context():
         # For rows that belong to one worker (a unit's assigned worker): who may edit them.
         'employee': employee.name if employee else None,
         'can_manage_assigned_rows': bool(
-            ({'Administrator', 'System Manager', 'Program Coordinator', 'Program Manager', 'Organization Admin', 'Supervisor'}) & user_roles
+            ({'Administrator', 'System Manager', 'Program Coordinator', 'Program Manager', 'Organization Admin'}) & user_roles
         ),
     }
 
@@ -415,11 +415,11 @@ def get_user_employee(user=None):
 def get_household_field_defaults():
     """What a new Household Profile can fill in for the logged-in user: their
     partner and worker record, and the settlements of their partner.
-    Shape: { partner_organization, assigned_worker, assignments: [{ settlement }] } - empty for
-    anyone who isn't a partner worker."""
+    Shape: { partner_organization, assigned_worker, assignments: [{ settlement }] } - the signed-in
+    user as the ORW, and the rest only for a partner worker."""
     employee = get_user_employee()
     if not employee:
-        return {}
+        return {'assigned_worker': frappe.session.user} if frappe.session.user != 'Guest' else {}
 
     # The partner's settlements (only those this user may read).
     assignments = [
@@ -433,7 +433,7 @@ def get_household_field_defaults():
     ]
     return {
         'partner_organization': employee.parent,
-        'assigned_worker': employee.name,
+        'assigned_worker': frappe.session.user,
         'assignments': assignments,
     }
 
@@ -604,6 +604,15 @@ def get_app_modules():
                     'route': item.route or frappe.scrub(item.doctype_name).replace('_', '-'),
                     'child': bool(item.child),
                 })
+            elif kind == 'Page':
+                if not item.route:
+                    continue
+                items.append({
+                    'type': 'Page',
+                    'label': item.label or item.route,
+                    'icon': item.icon or module_doc.icon or 'file-text',
+                    'route': item.route,
+                })
             elif kind == 'Section Break':
                 items.append({
                     'type': 'Section Break',
@@ -616,7 +625,7 @@ def get_app_modules():
             else:
                 items.append({'type': 'Spacer'})
         doctypes = [i for i in items if i['type'] == 'Link']
-        if not doctypes:
+        if not doctypes and not any(i['type'] == 'Page' for i in items):
             continue
         modules.append({
             'label': module_doc.label,

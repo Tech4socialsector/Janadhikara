@@ -11,7 +11,7 @@ class AppModuleSetting(Document):
 		self.validate_sidebar_items()
 
 	def validate_sidebar_items(self):
-		"""Sidebar items are Links, Section Breaks (group headings) and Spacers.
+		"""Sidebar items are Links, Pages (one of the app's own pages), Section Breaks (group headings) and Spacers.
 		A Link can be a child - shown indented - under the Link or the Section
 		Break above it, so it needs something above it to hang from."""
 		has_parent_above = False
@@ -26,6 +26,12 @@ class AppModuleSetting(Document):
 							row.idx
 						)
 					)
+				has_parent_above = True
+			elif kind == "Page":
+				if not (row.route or "").strip() or not (row.label or "").strip():
+					frappe.throw(_("Row {0}: a Page needs a label and the route of the page it opens.").format(row.idx))
+				if row.child:
+					frappe.throw(_("Row {0}: only a Link can be a child item.").format(row.idx))
 				has_parent_above = True
 			elif kind == "Section Break":
 				if not (row.label or "").strip():

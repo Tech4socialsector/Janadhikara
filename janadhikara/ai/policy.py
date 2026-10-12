@@ -20,8 +20,8 @@ APP_MODULES = ('Masters', 'App Config', 'Engine', 'Baseline')
 
 INDIVIDUAL_PROFILE_VISIBLE = {
     'individual_id', 'household', 'implementing_org', 'hhid', 'settlement_intervention_unit',
-    'respondent_name', 'member_name', 'documentation_status', 'validation_status',
-    'consent_given', 'consent_mode', 'consent_date', 'consent_taken_by'
+    'respondent_name', 'member_name', 'validation_status',
+    'consent_given', 'consent_date', 'consent_taken_by'
 }
 
 
@@ -60,7 +60,7 @@ SEED = {
             'assigned_worker': 'set from the signed-in user', 'house_id': 'generated',
             'partner_organization': 'controls who can see the record', 'settlement': 'controls who can see the record',
             'validation_status': 'set by validators', 'validation_comments': 'set by validators',
-            'consent_given': 'recorded with the respondent, not by the assistant', 'consent_mode': 'consent record',
+            'consent_given': 'recorded with the respondent, not by the assistant',
             'consent_date': 'consent record', 'consent_taken_by': 'consent record',
         },
     },
@@ -71,7 +71,7 @@ SEED = {
         'hidden': _individual_profile_hidden(),
         'read_only': {
             'validation_status': 'set by validators',
-            'consent_given': 'recorded with the person, not by the assistant', 'consent_mode': 'consent record',
+            'consent_given': 'recorded with the person, not by the assistant',
             'consent_date': 'consent record', 'consent_taken_by': 'consent record',
         },
     },

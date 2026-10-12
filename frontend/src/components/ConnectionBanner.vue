@@ -16,7 +16,7 @@
           Everything you save is kept on this device<template v-if="pendingCount"> · {{ pendingCount }} waiting</template>.
         </p>
       </div>
-      <router-link :to="{ name: 'SyncData' }" class="flex-shrink-0 rounded-lg bg-white/15 px-2.5 py-1.5 text-xs font-medium hover:bg-white/25">
+      <router-link v-if="hasPage('sync-data')" :to="{ name: 'SyncData' }" class="flex-shrink-0 rounded-lg bg-white/15 px-2.5 py-1.5 text-xs font-medium hover:bg-white/25">
         {{ t('Sync Data') }}
       </router-link>
       <button type="button" class="flex-shrink-0 rounded-md p-1 text-white/70 hover:bg-white/15 hover:text-white" aria-label="Dismiss" title="Dismiss" @click="dismissed = true">
@@ -61,6 +61,7 @@ import { FeatherIcon } from 'frappe-ui'
 import { online, justReconnected } from '@/data/connection'
 import { pendingCount } from '@/data/offlineQueue'
 import { t } from '@/utils/translate'
+import { hasPage } from '@/data/modules'
 
 const route = useRoute()
 

@@ -93,7 +93,7 @@
     configured sidebar items, which is why the old inline items list is gone. -->
       <div class="grid grid-cols-3 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(7rem,max-content))] sm:gap-4">
       <button
-        v-for="mod in modulesResource.data"
+        v-for="mod in shownModules"
         :key="mod.label"
         class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
         :class="{ 'bg-gray-100 dark:bg-gray-800': activeModule?.label === mod.label }"
@@ -118,22 +118,43 @@
         <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">{{ t('Dashboard') }}</span>
       </router-link>
 
-      <!-- Offline data waiting to be uploaded lives here. -->
+      <!-- Pages switched on for this role through a module (Sync Data: offline records waiting to be uploaded). -->
       <router-link
-        :to="{ name: 'SyncData' }"
+        v-for="page in pageTiles"
+        :key="page.route"
+        :to="`/${page.route}`"
         class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
       >
         <span class="module-tile-icon relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md dark:bg-gray-800 dark:ring-gray-700 sm:h-[4.5rem] sm:w-[4.5rem]">
-          <SyncCloudIcon class="h-7 w-7 text-gray-600 dark:text-gray-300 sm:h-8 sm:w-8" />
+          <SyncCloudIcon v-if="page.route === 'sync-data'" class="h-7 w-7 text-gray-600 dark:text-gray-300 sm:h-8 sm:w-8" />
+          <LucideIcon v-else :name="page.icon" class="h-7 w-7 text-gray-600 dark:text-gray-300 sm:h-8 sm:w-8" />
           <span
-            v-if="pendingCount > 0"
+            v-if="page.route === 'sync-data' && pendingCount > 0"
             class="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-xs font-semibold text-white ring-2 ring-white dark:ring-gray-900"
           >
             {{ pendingCount > 99 ? '99+' : pendingCount }}
           </span>
         </span>
-        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">{{ t('Sync Data') }}</span>
+        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">{{ t(page.label) }}</span>
       </router-link>
+      </div>
+
+      <!-- The open module's pages as tiles, so they are one click away without the sidebar. -->
+      <div v-if="activeModule && !isMobile && moduleItems.length" class="mt-8">
+        <h2 class="mb-3 px-2 text-sm font-medium text-gray-500 dark:text-gray-400">{{ t(activeModule.label) }}</h2>
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(7rem,max-content))] gap-4">
+          <button
+            v-for="item in moduleItems"
+            :key="item.route"
+            class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
+            @click="openItem(item)"
+          >
+            <span class="module-tile-icon flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-gray-300 group-active:translate-y-0 group-active:scale-95 dark:bg-gray-800 dark:ring-gray-700 dark:group-hover:ring-gray-600">
+              <LucideIcon :name="item.icon || activeModule.icon" class="h-8 w-8 text-gray-600 transition-colors duration-150 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100" />
+            </span>
+            <span class="line-clamp-2 text-sm font-medium leading-tight text-gray-900 dark:text-gray-100">{{ t(item.label || item.doctype_name) }}</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -152,6 +173,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import { useRouter } from 'vue-router'
 import { FeatherIcon, ErrorMessage, Button } from 'frappe-ui'
 import { t } from '@/utils/translate'
 import AppLayout from '@/layouts/AppLayout.vue'
@@ -159,7 +181,7 @@ import PageHeader from '@/components/PageHeader.vue'
 import Skeleton from '@/components/Skeleton.vue'
 import LucideIcon from '@/components/LucideIcon.vue'
 import SyncCloudIcon from '@/components/SyncCloudIcon.vue'
-import { modulesResource } from '@/data/modules'
+import { modulesResource, isPageModule, pageEntries } from '@/data/modules'
 import { pendingCount } from '@/data/offlineQueue'
 import { online } from '@/data/connection'
 import { announcementsResource, dismissAnnouncement } from '@/data/announcements'
@@ -214,6 +236,21 @@ const greeting = computed(() => {
   const firstName = (session.full_name || '').split(' ')[0] || session.user
   return firstName ? `${t(timeGreeting)}, ${firstName}` : t(timeGreeting)
 })
+
+const router = useRouter()
+const shownModules = computed(() => (modulesResource.data || []).filter((m) => !isPageModule(m)))
+// Sync Data comes from the user's modules. If the modules could not be loaded at all (offline on a first visit) it is
+// still offered, so records saved on the device can always be uploaded.
+const pageTiles = computed(() =>
+  pageEntries.value.length || !(modulesResource.error && !modulesResource.data?.length)
+    ? pageEntries.value
+    : [{ label: 'Sync Data', route: 'sync-data', icon: 'cloud-upload' }],
+)
+// Links only: section headings and spacers belong to the sidebar.
+const moduleItems = computed(() => (activeModule.value?.doctypes || []).filter((it) => it.route && it.type !== 'Section Break' && it.type !== 'Spacer'))
+function openItem(item) {
+  router.push({ name: 'DoctypeList', params: { doctypeRoute: item.route } })
+}
 
 function toggleModule(mod) {
   if (isMobile.value) {

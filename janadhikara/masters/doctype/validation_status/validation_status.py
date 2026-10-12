@@ -59,3 +59,19 @@ def has_permission(doc, ptype=None, user=None, **kwargs):
 	if ptype not in (None, "read", "select"):
 		return None
 	return True if is_usable_by(doc.name, user or frappe.session.user) else False
+
+
+def check_status_change(doc):
+	"""Save-time rule for a record's Status (validation_status): the new status must be one the user may use, and a
+	record that is Validated can only be moved by someone who may use Validated."""
+	import frappe
+	from frappe import _
+
+	status = doc.get("validation_status")
+	if not status or not (doc.is_new() or doc.has_value_changed("validation_status")):
+		return
+	if not is_usable_by(status):
+		frappe.throw(_("You can't set the status {0}.").format(frappe.bold(status)), frappe.PermissionError)
+	before = doc.get_doc_before_save()
+	if before and before.get("validation_status") == "Validated" and not is_usable_by("Validated"):
+		frappe.throw(_("This record is Validated: only a coordinator can change its status."), frappe.PermissionError)

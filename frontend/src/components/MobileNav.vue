@@ -92,7 +92,7 @@ import { Avatar, Button, FeatherIcon } from 'frappe-ui'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { activeModule } from '@/data/activeModule'
-import { findModuleByRoute } from '@/data/modules'
+import { findModuleByRoute, hasPage } from '@/data/modules'
 import { pendingCount } from '@/data/offlineQueue'
 import LucideIcon from '@/components/LucideIcon.vue'
 import SyncCloudIcon from '@/components/SyncCloudIcon.vue'
@@ -116,7 +116,7 @@ const modules = computed(() => {
   return current ? [current] : []
 })
 // Links and tiles only: section headings and spacers are a sidebar thing.
-const itemsOf = (mod) => (mod.doctypes || []).filter((it) => it.route && it.type !== 'Section Break' && it.type !== 'Spacer')
+const itemsOf = (mod) => (mod.items || mod.doctypes || []).filter((it) => it.route && it.type !== 'Section Break' && it.type !== 'Spacer')
 const goto = (location) => () => {
   showMenu.value = false
   router.push(location)
@@ -125,11 +125,11 @@ const quickLinks = computed(() => [
   { key: 'home', label: t('Home'), lucide: 'home', go: goto({ name: 'Home' }) },
   { key: 'dashboard', label: t('Dashboard'), lucide: 'layout-dashboard', go: goto({ name: 'Dashboard' }) },
   { key: 'worklist', label: t('Worklist'), lucide: 'check-square', go: goto({ name: 'Worklist' }) },
-  { key: 'sync', label: t('Sync Data'), icon: SyncCloudIcon, badge: pendingCount.value > 0 ? (pendingCount.value > 9 ? '9+' : String(pendingCount.value)) : '', go: goto({ name: 'SyncData' }) },
+  ...(hasPage('sync-data') ? [{ key: 'sync', label: t('Sync Data'), icon: SyncCloudIcon, badge: pendingCount.value > 0 ? (pendingCount.value > 9 ? '9+' : String(pendingCount.value)) : '', go: goto({ name: 'SyncData' }) }] : []),
 ])
 function openItem(item) {
   showMenu.value = false
-  router.push({ name: 'DoctypeList', params: { doctypeRoute: item.route } })
+  router.push(item.type === 'Page' ? `/${item.route}` : { name: 'DoctypeList', params: { doctypeRoute: item.route } })
 }
 
 // Close the launcher

@@ -326,19 +326,8 @@
    "role": "Organization Admin"
   },
   {
-   "read": 1,
-   "report": 1,
-   "role": "Supervisor"
-  },
-  {
-   "read": 1,
-   "report": 1,
-   "role": "Data Collector"
-  },
-  {
-   "read": 1,
-   "report": 1,
-   "role": "Report Viewer"
+   "role": "ORW",
+   "read": 1
   }
  ],
  "sort_field": "question_no",

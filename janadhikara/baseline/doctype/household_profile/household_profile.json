@@ -112,12 +112,10 @@
   "column_break_general_remarks",
   "profiles_match_members",
   "section_record_status",
-  "status",
   "column_break_record_status",
   "validation_status",
   "section_consent",
   "consent_given",
-  "consent_mode",
   "consent_date",
   "column_break_consent",
   "consent_taken_by",
@@ -729,7 +727,7 @@
    "description": "Need to explain to get the right response",
    "fieldname": "knows_health_post",
    "fieldtype": "Select",
-   "label": "52. Do you know about nearest Urban Health Post/Health & Wellness Centre",
+   "label": "52. Do you know about nearest Public Urban Health Centre (PUHC)/ Ayushman Arogya Mandir (AAM)?",
    "length": 64,
    "options": "\nYes\nNo"
   },
@@ -882,29 +880,19 @@
    "label": "Record Status"
   },
   {
-   "default": "Partially Completed",
-   "description": "Community Organisers to state",
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "67. Documentation Status",
-   "length": 64,
-   "options": "Completed\nPartially Completed",
-   "reqd": 1,
-   "search_index": 1
-  },
-  {
    "fieldname": "column_break_record_status",
    "fieldtype": "Column Break"
   },
   {
-   "description": "Area Coordinator to validate",
+   "default": "Partially Completed",
+   "description": "Community Organisers set Partially Completed or Completed; coordinators set Revision Needed or Validated. Choose Revision Needed and refer to the comments when something must be corrected.",
    "fieldname": "validation_status",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "68. Validation Status",
+   "label": "67. Status",
    "options": "Validation Status",
+   "reqd": 1,
    "search_index": 1
   },
   {
@@ -919,14 +907,6 @@
    "fieldtype": "Check",
    "label": "Consent of the respondent taken",
    "read_only": 1
-  },
-  {
-   "depends_on": "eval:Number(doc.consent_given)===1",
-   "fieldname": "consent_mode",
-   "fieldtype": "Select",
-   "label": "Consent Mode",
-   "length": 64,
-   "options": "\nWritten\nVerbal (recorded)\nDigital"
   },
   {
    "depends_on": "eval:Number(doc.consent_given)===1",
@@ -978,15 +958,13 @@
    "fieldtype": "Column Break"
   },
   {
-   "description": "The worker collecting this household's data. Filled in from your login; choose another from the partner's workers if needed.",
+   "description": "The ORW collecting this household's data. Filled in with the signed-in user when left empty.",
    "fieldname": "assigned_worker",
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Data Collector",
-   "link_filters": "[[\"Employee\", \"parent\", \"=\", \"eval:doc.partner_organization\"]]",
-   "options": "Employee",
-   "reqd": 1,
+   "label": "Name of the ORW",
+   "options": "User",
    "search_index": 1
   },
   {
@@ -1055,33 +1033,30 @@
    "read": 1,
    "report": 1,
    "role": "Program Manager",
-   "write": 1
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
   },
   {
    "create": 1,
    "read": 1,
    "report": 1,
    "role": "Organization Admin",
-   "write": 1
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
   },
   {
-   "create": 1,
+   "role": "ORW",
    "read": 1,
-   "report": 1,
-   "role": "Supervisor",
-   "write": 1
-  },
-  {
-   "create": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Data Collector",
-   "write": 1
-  },
-  {
-   "read": 1,
-   "report": 1,
-   "role": "Report Viewer"
+   "write": 1,
+   "create": 1
   }
  ],
  "row_format": "Dynamic",

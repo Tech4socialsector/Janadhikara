@@ -1,0 +1,177 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.638769",
+  "name": "Self",
+  "relationship_name": "Self"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.653107",
+  "name": "Spouse",
+  "relationship_name": "Spouse"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.653780",
+  "name": "Father",
+  "relationship_name": "Father"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.654955",
+  "name": "Mother",
+  "relationship_name": "Mother"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.655523",
+  "name": "Son",
+  "relationship_name": "Son"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.656045",
+  "name": "Daughter",
+  "relationship_name": "Daughter"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.656585",
+  "name": "Brother",
+  "relationship_name": "Brother"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.657138",
+  "name": "Sister",
+  "relationship_name": "Sister"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.658086",
+  "name": "Grandfather",
+  "relationship_name": "Grandfather"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.659359",
+  "name": "Grandmother",
+  "relationship_name": "Grandmother"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.659984",
+  "name": "Grandson",
+  "relationship_name": "Grandson"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.660539",
+  "name": "Granddaughter",
+  "relationship_name": "Granddaughter"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.661046",
+  "name": "Father-in-law",
+  "relationship_name": "Father-in-law"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.661686",
+  "name": "Mother-in-law",
+  "relationship_name": "Mother-in-law"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.662484",
+  "name": "Son-in-law",
+  "relationship_name": "Son-in-law"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.663065",
+  "name": "Daughter-in-law",
+  "relationship_name": "Daughter-in-law"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.663577",
+  "name": "Brother-in-law",
+  "relationship_name": "Brother-in-law"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.664076",
+  "name": "Sister-in-law",
+  "relationship_name": "Sister-in-law"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.664581",
+  "name": "Uncle",
+  "relationship_name": "Uncle"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.665073",
+  "name": "Aunt",
+  "relationship_name": "Aunt"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.665571",
+  "name": "Nephew",
+  "relationship_name": "Nephew"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.666063",
+  "name": "Niece",
+  "relationship_name": "Niece"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.666549",
+  "name": "Cousin",
+  "relationship_name": "Cousin"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.667015",
+  "name": "Other Relative",
+  "relationship_name": "Other Relative"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Relationship Type",
+  "modified": "2026-10-05 14:36:22.667480",
+  "name": "Not Related",
+  "relationship_name": "Not Related"
+ }
+]

@@ -265,6 +265,8 @@ watch(
   { immediate: true },
 )
 const canCreate = computed(() => !!createPermissionResource.data)
+// Lists that are set up by an administrator, not made on the spot from a form.
+const NO_QUICK_CREATE = new Set(['Validation Status'])
 
 const options = computed(() => {
   if (filtersPending.value) return []
@@ -295,7 +297,7 @@ const options = computed(() => {
   // Not offered on filter bars (allowClear) - "create a record" doesn't
   // belong in a "narrow this list down" control, and filtersPending means
   // there's nothing meaningful to create against yet anyway.
-  if (canCreate.value && !props.allowClear && !filtersPending.value) {
+  if (canCreate.value && !props.allowClear && !filtersPending.value && !NO_QUICK_CREATE.has(props.field.options)) {
     opts.push({
       type: 'custom',
       key: '__create__',

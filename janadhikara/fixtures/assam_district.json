@@ -1,0 +1,282 @@
+[
+ {
+  "district_name": "Baksa",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.423898",
+  "name": "Baksa"
+ },
+ {
+  "district_name": "Bajali",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.431138",
+  "name": "Bajali"
+ },
+ {
+  "district_name": "Barpeta",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.431840",
+  "name": "Barpeta"
+ },
+ {
+  "district_name": "Biswanath",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.432479",
+  "name": "Biswanath"
+ },
+ {
+  "district_name": "Bongaigaon",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.433114",
+  "name": "Bongaigaon"
+ },
+ {
+  "district_name": "Cachar",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.433745",
+  "name": "Cachar"
+ },
+ {
+  "district_name": "Charaideo",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.434438",
+  "name": "Charaideo"
+ },
+ {
+  "district_name": "Chirang",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.435087",
+  "name": "Chirang"
+ },
+ {
+  "district_name": "Darrang",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.435804",
+  "name": "Darrang"
+ },
+ {
+  "district_name": "Dhemaji",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.436609",
+  "name": "Dhemaji"
+ },
+ {
+  "district_name": "Dhubri",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.437454",
+  "name": "Dhubri"
+ },
+ {
+  "district_name": "Dibrugarh",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.438369",
+  "name": "Dibrugarh"
+ },
+ {
+  "district_name": "Goalpara",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.439325",
+  "name": "Goalpara"
+ },
+ {
+  "district_name": "Golaghat",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.440216",
+  "name": "Golaghat"
+ },
+ {
+  "district_name": "Hailakandi",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.441116",
+  "name": "Hailakandi"
+ },
+ {
+  "district_name": "Hojai",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.441950",
+  "name": "Hojai"
+ },
+ {
+  "district_name": "Jorhat",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.442889",
+  "name": "Jorhat"
+ },
+ {
+  "district_name": "Kamrup",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.443683",
+  "name": "Kamrup"
+ },
+ {
+  "district_name": "Karbi Anglong",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.444526",
+  "name": "Karbi Anglong"
+ },
+ {
+  "district_name": "Karimganj",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.445354",
+  "name": "Karimganj"
+ },
+ {
+  "district_name": "Kokrajhar",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.446306",
+  "name": "Kokrajhar"
+ },
+ {
+  "district_name": "Lakhimpur",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.447385",
+  "name": "Lakhimpur"
+ },
+ {
+  "district_name": "Majuli",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.450867",
+  "name": "Majuli"
+ },
+ {
+  "district_name": "Morigaon",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.452083",
+  "name": "Morigaon"
+ },
+ {
+  "district_name": "Nagaon",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.452910",
+  "name": "Nagaon"
+ },
+ {
+  "district_name": "Nalbari",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.453687",
+  "name": "Nalbari"
+ },
+ {
+  "district_name": "Sivasagar",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.454402",
+  "name": "Sivasagar"
+ },
+ {
+  "district_name": "Sonitpur",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.455092",
+  "name": "Sonitpur"
+ },
+ {
+  "district_name": "South Salmara-Mankachar",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.455870",
+  "name": "South Salmara-Mankachar"
+ },
+ {
+  "district_name": "Tamulpur",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.456563",
+  "name": "Tamulpur"
+ },
+ {
+  "district_name": "Tinsukia",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.457300",
+  "name": "Tinsukia"
+ },
+ {
+  "district_name": "Udalguri",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.458067",
+  "name": "Udalguri"
+ },
+ {
+  "district_name": "West Karbi Anglong",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.458780",
+  "name": "West Karbi Anglong"
+ },
+ {
+  "district_name": "Dima Hasao",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.459567",
+  "name": "Dima Hasao"
+ },
+ {
+  "district_name": "Kamrup Metropolitan",
+  "docstatus": 0,
+  "doctype": "Assam District",
+  "enabled": 1,
+  "modified": "2026-10-06 15:22:29.460342",
+  "name": "Kamrup Metropolitan"
+ }
+]

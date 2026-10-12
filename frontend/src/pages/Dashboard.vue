@@ -19,8 +19,7 @@
       <FormControl type="select" class="w-full" :label="t('Gender')" :options="withAll(options?.genders)" v-model="filters.gender" />
       <FormControl type="select" class="w-full" :label="t('Age group')" :options="withAll(options?.age_groups)" v-model="filters.age_group" />
       <FormControl type="select" class="w-full" :label="t('Household status')" :options="withAll(options?.household_statuses)" v-model="filters.household_status" />
-      <FormControl type="select" class="w-full" :label="t('Documentation status')" :options="withAll(options?.documentation_statuses)" v-model="filters.documentation_status" />
-      <FormControl type="select" class="w-full" :label="t('Validation status')" :options="withAll(options?.validation_statuses)" v-model="filters.validation_status" />
+      <FormControl type="select" class="w-full" :label="t('Status')" :options="withAll(options?.validation_statuses)" v-model="filters.validation_status" />
       <div>
         <label class="mb-1.5 block text-xs text-ink-gray-5">{{ t('From') }}</label>
         <DatePicker class="w-full" format="DD MMM YYYY" v-model="filters.from_date" />
@@ -82,10 +81,10 @@
         <DrillChart v-if="data?.occupation?.length" horizontal :rows="data.occupation" @select="onRow(INDIVIDUAL, data.occupation, $event)" />
       </ChartCard>
 
-      <ChartCard :title="t('Individual documentation')" :empty="!individualsTotal" :table="tableOf(data?.documentation, 'Individuals')">
+      <ChartCard :title="t('Individual profile status')" :empty="!individualsTotal" :table="tableOf(data?.documentation, 'Individuals')">
         <DrillChart v-if="individualsTotal" kind="donut" :rows="data.documentation" @select="onRow(INDIVIDUAL, data.documentation, $event)" />
       </ChartCard>
-      <ChartCard :title="t('Household documentation')" :empty="!data?.household_documentation?.length" :table="tableOf(data?.household_documentation, 'Households')">
+      <ChartCard :title="t('Household profile status')" :empty="!data?.household_documentation?.length" :table="tableOf(data?.household_documentation, 'Households')">
         <DrillChart v-if="data?.household_documentation?.length" kind="donut" :rows="data.household_documentation" @select="onRow(HOUSEHOLD, data.household_documentation, $event)" />
       </ChartCard>
     </section>
@@ -165,7 +164,7 @@ const greeting = computed(() => {
 })
 
 const emptyFilters = () => ({
-  settlement: '', partner_organization: '', gender: '', age_group: '', household_status: '', documentation_status: '',
+  settlement: '', partner_organization: '', gender: '', age_group: '', household_status: '',
   validation_status: '', from_date: '', to_date: '',
 })
 const filters = reactive(emptyFilters())
@@ -215,8 +214,8 @@ function exportSummary() {
   rows.push(['Filters', applied || 'None', ''])
   for (const c of d.cards) rows.push(['Numbers', c.title, `${c.value}${c.suffix || ''}`])
   const groups = [
-    ['Household status', d.household_status], ['Household documentation', d.household_documentation], ['Gender', d.gender],
-    ['Age groups', d.age_groups], ['Highest education', d.education], ['Individual documentation', d.documentation], ['Main occupation', d.occupation],
+    ['Household status', d.household_status], ['Household profile status', d.household_documentation], ['Gender', d.gender],
+    ['Age groups', d.age_groups], ['Highest education', d.education], ['Individual profile status', d.documentation], ['Main occupation', d.occupation],
   ]
   for (const [name, list] of groups) for (const r of list || []) rows.push([name, r.label, r.count])
   for (const r of d.documents || []) rows.push(['Documents held (%)', r.label, r.percent])
@@ -239,8 +238,8 @@ const HOUSEHOLD = 'Household Profile'
 const INDIVIDUAL = 'Individual Profile'
 const router = useRouter()
 const DEFAULT_COLUMNS = {
-  [HOUSEHOLD]: ['respondent_name', 'settlement', 'household_status', 'status'],
-  [INDIVIDUAL]: ['member_name', 'gender', 'age', 'household', 'documentation_status'],
+  [HOUSEHOLD]: ['respondent_name', 'settlement', 'household_status', 'validation_status'],
+  [INDIVIDUAL]: ['member_name', 'gender', 'age', 'household', 'validation_status'],
 }
 const show = ref(false)
 const drillOpen = ref(false)

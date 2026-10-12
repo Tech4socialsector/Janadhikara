@@ -1,0 +1,97 @@
+[
+ {
+  "description": "Draw or edit a shape on the map and the boundary details are captured automatically.",
+  "docstatus": 0,
+  "doctype": "Field Function Mapping",
+  "enabled": 1,
+  "expression": "Settlement.geo_location → Geo Shape Capture()\n  latitude → latitude    [Latitude (centre point)]\n  longitude → longitude    [Longitude (centre point)]\n  area → boundary_area    [Area (square metres)]\n  perimeter → boundary_perimeter    [Perimeter (metres)]\n  address → q19_1_location_details_settlement    [Address of the centre point]\n  ward → q3_ward_no_city_corporation    [Ward]",
+  "field_mappings": [
+   {
+    "function_name": "Geo Shape Capture",
+    "input_field": null,
+    "only_if_empty": 0,
+    "output": "latitude",
+    "target_field": "latitude"
+   },
+   {
+    "function_name": "Geo Shape Capture",
+    "input_field": null,
+    "only_if_empty": 0,
+    "output": "longitude",
+    "target_field": "longitude"
+   },
+   {
+    "function_name": "Geo Shape Capture",
+    "input_field": null,
+    "only_if_empty": 0,
+    "output": "area",
+    "target_field": "boundary_area"
+   },
+   {
+    "function_name": "Geo Shape Capture",
+    "input_field": null,
+    "only_if_empty": 0,
+    "output": "perimeter",
+    "target_field": "boundary_perimeter"
+   },
+   {
+    "function_name": "Geo Shape Capture",
+    "input_field": null,
+    "only_if_empty": 0,
+    "output": "address",
+    "target_field": "q19_1_location_details_settlement"
+   },
+   {
+    "function_name": "Geo Shape Capture",
+    "input_field": null,
+    "only_if_empty": 0,
+    "output": "ward",
+    "target_field": "q3_ward_no_city_corporation"
+   }
+  ],
+  "function_description": "Runs when something is drawn, edited or deleted on a Geolocation map (line, polygon, rectangle or circle). Works out the shape's centre point, boundary polygon, area (sq m) and perimeter (m), and looks up the address, pincode, state, district, city and ward of its centre.",
+  "function_name": "Geo Shape Capture",
+  "modified": "2026-10-06 14:05:24.882699",
+  "name": "Settlement map capture",
+  "rule_name": "Settlement map capture",
+  "target_doctype": "Settlement",
+  "trigger_field": "geo_location"
+ },
+ {
+  "description": "Drop a pin on the household map and its coordinates and address are captured.",
+  "docstatus": 0,
+  "doctype": "Field Function Mapping",
+  "enabled": 1,
+  "expression": "Household Profile.geo_location → Geo Shape Capture()\n  latitude → latitude    [Latitude (centre point)]\n  longitude → longitude    [Longitude (centre point)]\n  address → address    [Address of the centre point]",
+  "field_mappings": [
+   {
+    "function_name": "Geo Shape Capture",
+    "input_field": null,
+    "only_if_empty": 0,
+    "output": "latitude",
+    "target_field": "latitude"
+   },
+   {
+    "function_name": "Geo Shape Capture",
+    "input_field": null,
+    "only_if_empty": 0,
+    "output": "longitude",
+    "target_field": "longitude"
+   },
+   {
+    "function_name": "Geo Shape Capture",
+    "input_field": null,
+    "only_if_empty": 0,
+    "output": "address",
+    "target_field": "address"
+   }
+  ],
+  "function_description": "Runs when something is drawn, edited or deleted on a Geolocation map (line, polygon, rectangle or circle). Works out the shape's centre point, boundary polygon, area (sq m) and perimeter (m), and looks up the address, pincode, state, district, city and ward of its centre.",
+  "function_name": "Geo Shape Capture",
+  "modified": "2026-10-01 05:29:20.770939",
+  "name": "Household map capture",
+  "rule_name": "Household map capture",
+  "target_doctype": "Household Profile",
+  "trigger_field": "geo_location"
+ }
+]

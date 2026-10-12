@@ -59,3 +59,7 @@ app.config.errorHandler = (error, instance, info) => {
 }
 app.use(router)
 app.mount('#app')
+
+// Ask the browser to keep this app's data (saved records, drafts) rather than clear it when space is short.
+// iPhones clear a website's storage after a week unless it is installed (see components/IosInstallHint.vue).
+navigator.storage?.persist?.().catch(() => {})

@@ -32,13 +32,20 @@ def get_filter_options():
 		"settlements": [{"value": s.name, "label": s.settlement_name or s.name} for s in settlements],
 		"partners": [{"value": p.name, "label": p.name} for p in partners],
 		"genders": ["Female", "Male", "Other"],
-		"documentation_statuses": ["Partially Completed", "Completed"],
 		"age_groups": [g[0] for g in AGE_GROUPS],
 		"household_statuses": _select_options(HOUSEHOLD, "household_status"),
-		"validation_statuses": frappe.get_all("Validation Status", filters={"enabled": 1}, pluck="name", order_by="name"),
+		"validation_statuses": _status_options(),
 		# who may download the records behind a number (Frappe's own Export permission)
 		"can_export": {d: bool(frappe.has_permission(d, "export")) for d in (HOUSEHOLD, INDIVIDUAL)},
 	}
+
+
+STATUS_ORDER = ["Partially Completed", "Completed", "Revision Needed", "Validated"]
+
+
+def _status_options():
+	names = frappe.get_all("Validation Status", filters={"enabled": 1}, pluck="name")
+	return [n for n in STATUS_ORDER if n in names] + sorted(n for n in names if n not in STATUS_ORDER)
 
 
 def _select_options(doctype, fieldname):
@@ -99,7 +106,7 @@ def _monthly(doctype, filters):
 
 @frappe.whitelist()
 def get_dashboard(
-	settlement=None, partner_organization=None, from_date=None, to_date=None, gender=None, documentation_status=None,
+	settlement=None, partner_organization=None, from_date=None, to_date=None, gender=None,
 	age_group=None, household_status=None, validation_status=None,
 ):
 	hh = {}
@@ -114,8 +121,6 @@ def get_dashboard(
 	_date_filter(INDIVIDUAL, ind, from_date, to_date)
 	if gender:
 		ind["gender"] = gender
-	if documentation_status:
-		ind["documentation_status"] = documentation_status
 	if validation_status:
 		ind["validation_status"] = validation_status
 	if household_status:
@@ -128,10 +133,10 @@ def get_dashboard(
 	members = frappe.get_list(HOUSEHOLD, filters=hh, fields=[{"SUM": "member_count", "as": "members"}])[0]["members"]
 	individuals = _total(INDIVIDUAL, ind)
 
-	doc_status = _counts(INDIVIDUAL, "documentation_status", ind)
-	validation = _counts(INDIVIDUAL, "validation_status", ind)
-	completed = doc_status.get("Completed", 0)
-	validated = validation.get("Validated", 0)
+	# One Status question: Partially Completed -> Completed -> Revision Needed / Validated
+	status = _counts(INDIVIDUAL, "validation_status", ind)
+	validated = status.get("Validated", 0)
+	completed = status.get("Completed", 0) + validated
 
 	ages = Counter()
 	for age, count in _counts(INDIVIDUAL, "age", ind).items():
@@ -164,21 +169,21 @@ def get_dashboard(
 			card("households", "Households", households, HOUSEHOLD, hh),
 			card("members", "Members (as told by households)", cint(members), HOUSEHOLD, hh),
 			card("individuals", "Individual profiles", individuals, INDIVIDUAL, ind),
-			card("completed", "Profiles completed", round(100 * completed / individuals) if individuals else 0, INDIVIDUAL, {**ind, "documentation_status": "Completed"}, "%"),
+			card("completed", "Profiles completed", round(100 * completed / individuals) if individuals else 0, INDIVIDUAL, {**ind, "validation_status": ["in", ["Completed", "Validated"]]}, "%"),
 			card("validated", "Profiles validated", round(100 * validated / individuals) if individuals else 0, INDIVIDUAL, {**ind, "validation_status": "Validated"}, "%"),
 			card("out_of_school", "Children out of school", out_of_school, INDIVIDUAL, {**ind, "out_of_school_status": ["is", "set"]}),
 			card("disability", "Persons with disability", disability, INDIVIDUAL, {**ind, "disability_in_family": "Yes"}),
 			card("women_not_working", "Women not in full-time work", women_not_working, INDIVIDUAL, {**ind, "women_full_time_work": "No"}),
 		],
 		"household_status": _series(_counts(HOUSEHOLD, "household_status", hh), filters=hh, fieldname="household_status"),
-		"household_documentation": _series(_counts(HOUSEHOLD, "status", hh), filters=hh, fieldname="status"),
+		"household_documentation": _series(_counts(HOUSEHOLD, "validation_status", hh), STATUS_ORDER, hh, "validation_status"),
 		"gender": _series(_counts(INDIVIDUAL, "gender", ind), filters=ind, fieldname="gender"),
 		"age_groups": [
 			{"label": label, "count": ages.get(label, 0), "filters": {**ind, "age": ["between", [low, high]]}}
 			for label, low, high in AGE_GROUPS
 		],
 		"education": _series(_counts(INDIVIDUAL, "highest_education", ind), filters=ind, fieldname="highest_education"),
-		"documentation": _series(doc_status, ["Partially Completed", "Completed"], ind, "documentation_status"),
+		"documentation": _series(status, STATUS_ORDER, ind, "validation_status"),
 		"documents": documents,
 		"occupation": _series(_counts(INDIVIDUAL, "occupation_1", ind), filters=ind, fieldname="occupation_1")[:10],
 		"monthly": [

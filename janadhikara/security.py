@@ -23,8 +23,8 @@ def add_security_headers(response=None, request=None):
 
 # --- Per-partner data isolation --------------------------------------------------------------
 # A worker sees and edits only the records of their own partner organisation. The programme team
-# (System Manager, Program Coordinator, Program Manager) sees every partner; a Report Viewer who is
-# not a partner worker (programme-side reviewer) can read every partner.
+# (System Manager, Program Coordinator, Program Manager) sees every partner; anyone else who is not a
+# partner worker sees nothing.
 
 PROGRAMME_ROLES = {"System Manager", "Program Coordinator", "Program Manager"}
 PARTNER_FIELD = {"Household Profile": "partner_organization", "Settlement": "partner_organization", "Individual Profile": "implementing_org"}
@@ -50,8 +50,6 @@ def user_scope(user=None):
 			employee = get_user_employee(user)
 			if employee:
 				scope = ("partner", employee.parent)
-			elif "Report Viewer" in roles:
-				scope = ("all", None)
 			else:
 				scope = ("none", None)
 	cache[user] = scope

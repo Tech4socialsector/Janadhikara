@@ -18,17 +18,17 @@
    "fieldname": "item_type",
    "fieldtype": "Select",
    "label": "Type",
-   "options": "Link\nSection Break\nSpacer",
+   "options": "Link\nPage\nSection Break\nSpacer",
    "default": "Link",
    "in_list_view": 1,
-   "description": "Link: opens a doctype. Section Break: a heading that groups the items below it (and can collapse). Spacer: a small gap."
+   "description": "Link: opens a doctype. Section Break: a heading that groups the items below it (and can collapse). Spacer: a small gap. Page: opens one of the app's own pages (such as Sync Data), by its route."
   },
   {
    "fieldname": "label",
    "fieldtype": "Data",
    "label": "Label",
    "in_list_view": 1,
-   "mandatory_depends_on": "eval:doc.item_type=='Section Break'",
+   "mandatory_depends_on": "eval:doc.item_type=='Section Break'||doc.item_type=='Page'",
    "depends_on": "eval:doc.item_type!='Spacer'",
    "description": "Optional display label override. Defaults to the DocType name. Required for a Section Break."
   },
@@ -56,8 +56,9 @@
    "fieldname": "route",
    "fieldtype": "Data",
    "label": "Route",
-   "depends_on": "eval:doc.item_type=='Link'",
-   "description": "URL-safe route segment. Defaults to a slug of the DocType name if left blank."
+   "depends_on": "eval:doc.item_type=='Link'||doc.item_type=='Page'",
+   "description": "URL-safe route segment. Defaults to a slug of the DocType name if left blank. For a Page: the page's route, for example sync-data.",
+   "mandatory_depends_on": "eval:doc.item_type=='Page'"
   },
   {
    "fieldname": "child",

@@ -45,6 +45,7 @@
     </main>
 
     <MobileNav />
+    <IosInstallHint />
     <NotificationPanel />
     <AiAssistant />
     <SettingsDialog v-model="showSettingsDialog" />
@@ -61,6 +62,7 @@ import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import { currentTheme } from '@/data/theme'
 import { t } from '@/utils/translate'
 import MobileNav from '@/components/MobileNav.vue'
+import IosInstallHint from '@/components/IosInstallHint.vue'
 import ConnectionBanner from '@/components/ConnectionBanner.vue'
 import NotificationPanel from '@/components/NotificationPanel.vue'
 import AiAssistant from '@/components/AiAssistant.vue'

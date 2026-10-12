@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "SET.####",
- "creation": "2026-09-30 17:00:00",
+ "creation": "2026-10-12 19:31:46.037502",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -22,6 +22,7 @@
   "column_break_settlement_details",
   "q4_age_settlement_overall_years",
   "q5_settlement_officially_notified_by_govern",
+  "section_break_dzpe",
   "q6_type_settlement",
   "section_types_of_housing",
   "q6_1_temporary_shacks_made_with_tarpaulin",
@@ -365,12 +366,11 @@
    "options": "\nYes, Notified\nNo, Non-Notified / Unrecognized\nDon't Know / Unsure"
   },
   {
-   "description": "Category A \u2013 Settlements with one room pucca houses or tin/bamboo houses with basic amenities\n\n\n\nCategory B \u2013 Settlements with pucca, semi pucca or tin/bamboo/stilt houses mainly on railway land/army land or other government land with basic amenities\n\n\nCategory C \u2013 Settlements in private land - rented gated compounds with small rooms primarily made of tin/bamboo with pucca houses only in some pockets. Shared toilets and basic amenities provided by the owners\n\n\nCategory D \u2013 Settlements near railway or dumping ground in make-shift houses with no amenities",
+   "description": "Category A (criteria):\nCriteria 1: Notified\nCriteria 2: Government constructed pucca rooms with basic amenities like electricity, water supply in household/settlement\nCriteria 3: Self-constructed houses in the same settlement (pucca, semi-pucca, tin)\n\nCategory B (criteria):\nCriteria 1: Settlement on railway land, army land or other government land\nCriteria 2: Pucca, semi-pucca, tin/bamboo/stilt houses\nCriteria 3: Basic amenities (water, electricity) provided by government or self",
    "fieldname": "q6_type_settlement",
-   "fieldtype": "Select",
+   "fieldtype": "Small Text",
    "label": "6. Type of Settlement",
-   "length": 64,
-   "options": "\nCategory A\nCategory B\nCategory C\nCategory D"
+   "options": "Category A – Settlements with one room pucca houses or tin/bamboo houses with basic amenities\nCategory B – Settlements with pucca, semi pucca or tin/bamboo/stilt houses mainly on railway land/army land or other government land with basic amenities\nCategory C – Settlements in private land - rented gated compounds with small rooms primarily made of tin/bamboo with pucca houses only in some pockets. Shared toilets and basic amenities provided by the owners\nCategory D – Settlements near railway or dumping ground in make-shift houses with no amenities"
   },
   {
    "fieldname": "section_types_of_housing",
@@ -721,6 +721,7 @@
    "label": "Households & Family Count"
   },
   {
+   "description": "Added up from the house counts in 6.1.1 to 6.9.1 as you enter them. You can change it.",
    "fieldname": "q7_1_indicate_total_number_houses_physical",
    "fieldtype": "Int",
    "label": "7.1. Indicate the total number of houses or physical structures present in this settlement"
@@ -730,6 +731,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "description": "Added up from the family counts in 6.1.2 to 6.9.2 as you enter them. You can change it.",
    "fieldname": "q7_2_specify_total_number_families_currently",
    "fieldtype": "Int",
    "label": "7.2. Specify the total number of families currently residing in this settlement"
@@ -902,6 +904,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:doc.q15_1_eviction_threat==\"Yes\"",
    "description": "Pick all that apply.",
    "fieldname": "q15_3_probable_factors_eviction",
    "fieldtype": "Small Text",
@@ -944,8 +947,9 @@
    "mandatory_depends_on": "eval:(doc.q16_1_1a_reasons_low_accessibility_primary_second||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")"
   },
   {
+   "description": "Approximate share of children, in % (0 to 100). The three shares together cannot be more than 100.",
    "fieldname": "q16_1_2_proportion_children_going_private_school",
-   "fieldtype": "Float",
+   "fieldtype": "Percent",
    "label": "16.1.2. Proportion of children going to the Private Schools from the settlement"
   },
   {
@@ -953,13 +957,15 @@
    "fieldtype": "Column Break"
   },
   {
+   "description": "Approximate share of children, in % (0 to 100). The three shares together cannot be more than 100.",
    "fieldname": "q16_1_3_proportion_children_going_government_sch",
-   "fieldtype": "Float",
+   "fieldtype": "Percent",
    "label": "16.1.3. Proportion of children going to the Government Schools from the settlement"
   },
   {
+   "description": "Approximate share of children, in % (0 to 100). The three shares together cannot be more than 100.",
    "fieldname": "q16_1_4_proportion_children_going_government_aid",
-   "fieldtype": "Float",
+   "fieldtype": "Percent",
    "label": "16.1.4. Proportion of children going to the Government Aided Schools from the settlement"
   },
   {
@@ -1767,6 +1773,10 @@
    "fieldname": "q21_8_statement_selection",
    "fieldtype": "Small Text",
    "label": "21.8. Statement of Selection"
+  },
+  {
+   "fieldname": "section_break_dzpe",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -1777,7 +1787,7 @@
    "link_fieldname": "settlement"
   }
  ],
- "modified": "2026-10-08 12:00:00.000000",
+ "modified": "2026-10-12 19:34:09.811325",
  "modified_by": "Administrator",
  "module": "Baseline",
  "name": "Settlement",
@@ -1811,27 +1821,32 @@
   {
    "read": 1,
    "report": 1,
-   "role": "Program Manager"
+   "role": "Program Manager",
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
   },
   {
    "read": 1,
    "report": 1,
-   "role": "Organization Admin"
+   "role": "Organization Admin",
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
   },
   {
+   "role": "ORW",
    "read": 1,
-   "report": 1,
-   "role": "Supervisor"
-  },
-  {
-   "read": 1,
-   "report": 1,
-   "role": "Data Collector"
-  },
-  {
-   "read": 1,
-   "report": 1,
-   "role": "Report Viewer"
+   "write": 1,
+   "create": 1
   }
  ],
  "row_format": "Dynamic",

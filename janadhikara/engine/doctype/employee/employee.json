@@ -48,7 +48,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Role",
-   "options": "Data Collector\nSupervisor\nProgram Manager\nOrganization Admin\nReport Viewer",
+   "options": "ORW\nProgram Manager\nOrganization Admin",
    "reqd": 1
   },
   {

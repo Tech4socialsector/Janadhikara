@@ -6,19 +6,17 @@ from frappe.model.document import Document
 
 from janadhikara.naming import autoname_with_code
 
-# The 5 roles this app hands out via an Employee row's own Role field -
+# The 3 roles this app hands out via an Employee row's own Role field -
 # the only roles ensure_employee_user is ever allowed to grant or revoke.
 # Kept as an explicit list (not "whatever Employee.role's Select options
 # currently are") so this stays correct even if that options string is
 # ever edited later - and, more importantly, so this never touches a role
 # unrelated to this app that a User might separately hold (System
-# Manager, a desk-only role, ...): only these 5 are ever added or removed.
+# Manager, a desk-only role, ...): only these 3 are ever added or removed.
 EMPLOYEE_MANAGED_ROLES = {
-	"Data Collector",
-	"Supervisor",
+	"ORW",
 	"Program Manager",
 	"Organization Admin",
-	"Report Viewer",
 }
 
 

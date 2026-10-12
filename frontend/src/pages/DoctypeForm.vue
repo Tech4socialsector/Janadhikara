@@ -36,6 +36,7 @@
           >
             {{ t('Not Saved') }}
           </span>
+          <span v-if="isDirty && draftSavedAt" class="text-xs text-gray-400">{{ t('Draft saved on this device') }}</span>
         </div>
       </template>
       <template #actions>
@@ -134,6 +135,21 @@
     </div>
 
     <form v-else @submit.prevent="save">
+      <!-- A draft kept on this device from an earlier, unsaved session of this form. -->
+      <div v-if="draftOffer" class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+        <span>{{ t('You have an unsaved draft of this form from') }} {{ draftTime }}.</span>
+        <span class="flex items-center gap-2">
+          <Button size="sm" variant="solid" @click="resumeDraft">{{ t('Resume draft') }}</Button>
+          <Button size="sm" @click="discardDraft">{{ t('Discard') }}</Button>
+        </span>
+      </div>
+      <ConnectionsPanel
+        v-if="!isNew && !offlineId && metaResource.data?.links?.length"
+        :doctype="doctype"
+        :name="name"
+        :links="metaResource.data.links"
+      />
+
       <!-- Doctypes with more than one Tab Break (useFormTabs) get an actual
       tab switcher instead of every field flattening into one long scroll -
       the common case (no tabs, or just the implicit first one) skips this
@@ -278,12 +294,16 @@
 
       <ErrorMessage class="mt-4" :message="saveError" />
 
-      <ConnectionsPanel
-        v-if="!isNew && !offlineId && metaResource.data?.links?.length"
-        :doctype="doctype"
-        :name="name"
-        :links="metaResource.data.links"
-      />
+      <!-- Save again at the bottom, so a long form does not need a scroll back to the top. -->
+      <div v-if="!loadError" class="mt-6 flex justify-end border-t border-outline-gray-1 pt-4">
+        <Button variant="solid" :loading="saving" @click="save">
+          <template #prefix>
+            <FeatherIcon name="save" class="h-4 w-4" />
+          </template>
+          {{ t('Save') }}
+        </Button>
+      </div>
+
 
       <!-- Activity belongs to the record as a whole, so on desktop it only shows on the first tab;
       the phone accordion lists every tab at once, so there it always shows. -->
@@ -310,6 +330,7 @@ import Skeleton from '@/components/Skeleton.vue'
 import ChildTable from '@/components/ChildTable.vue'
 import FormTabSections from '@/components/FormTabSections.vue'
 import { t, tn } from '@/utils/translate'
+import { draftKey, saveDraft, loadDraft, deleteDraft } from '@/data/formDrafts'
 import ConnectionsPanel from '@/components/ConnectionsPanel.vue'
 import ActivityPanel from '@/components/ActivityPanel.vue'
 import { useMeta, useFormFields, useFormTabs, useTableFields } from '@/data/useMeta'
@@ -854,6 +875,60 @@ function confirmLeaveIfDirty(e) {
 onMounted(() => window.addEventListener('beforeunload', confirmLeaveIfDirty))
 onBeforeUnmount(() => window.removeEventListener('beforeunload', confirmLeaveIfDirty))
 
+// ---- Drafts on this device ----------------------------------------------------------------------------------------
+// Every 30 seconds an unsaved form is kept as an encrypted draft (see data/formDrafts.js), so a switch-off, a closed
+// window or a hung phone does not lose it. Reopening the form offers to resume it. A record waiting on the device
+// (offlineId) is already stored there, so it needs no draft.
+const DRAFT_EVERY_MS = 30_000
+const currentDraftKey = () => draftKey(doctype, isNew ? null : name)
+const draftOffer = ref(null)
+const draftSavedAt = ref(null)
+const draftTime = computed(() => (draftOffer.value ? new Date(draftOffer.value.savedAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : ''))
+
+async function writeDraft() {
+  if (offlineId || !isDirty.value || saving.value) return
+  draftSavedAt.value = await saveDraft(currentDraftKey(), values)
+}
+function resumeDraft() {
+  Object.assign(values, draftOffer.value.values)
+  draftOffer.value = null
+}
+async function discardDraft() {
+  draftOffer.value = null
+  await deleteDraft(currentDraftKey())
+}
+function clearDraft() {
+  draftSavedAt.value = null
+  deleteDraft(currentDraftKey())
+}
+
+// Once the form has loaded (and its starting values are known), offer a draft from an earlier session.
+const stopDraftWatch = watch(
+  () => cleanSnapshot.value !== null,
+  async (ready) => {
+    if (!ready || offlineId) return
+    stopDraftWatch()
+    const draft = await loadDraft(currentDraftKey())
+    if (draft && JSON.stringify(draft.values) !== cleanSnapshot.value) draftOffer.value = draft
+  },
+  { immediate: true },
+)
+
+let draftTimer = null
+const onHidden = () => {
+  if (document.visibilityState === 'hidden') writeDraft()
+}
+onMounted(() => {
+  draftTimer = setInterval(writeDraft, DRAFT_EVERY_MS)
+  document.addEventListener('visibilitychange', onHidden)
+  window.addEventListener('pagehide', writeDraft)
+})
+onBeforeUnmount(() => {
+  clearInterval(draftTimer)
+  document.removeEventListener('visibilitychange', onHidden)
+  window.removeEventListener('pagehide', writeDraft)
+})
+
 const { applyCommonFieldDefaults } = useCommonFieldDefaults({
   doctype,
   fields,
@@ -1073,6 +1148,7 @@ async function saveLocalEdit() {
     })
     toast.success('Updated - it is still waiting on this device. Upload it from Sync Data.')
     markClean()
+    clearDraft()
     router.push({ name: 'SyncData' })
   } catch {
     toast.error('Could not update the saved copy.')
@@ -1091,6 +1167,7 @@ async function saveOffline() {
     })
     toast.success('No connection - saved on this device. Upload it from Sync Data.')
     markClean()
+    clearDraft()
     router.push({ name: 'SyncData' })
   } catch {
     toast.error('Could not save on this device.')
@@ -1140,6 +1217,7 @@ async function save() {
       // explicitly is the only reliable way to know the save actually
       // failed.
       toast.success('Created')
+      clearDraft()
       if (isGenericRoute) {
         router.replace({
           name: 'DoctypeForm',
@@ -1155,6 +1233,7 @@ async function save() {
       if (existingDoc.setValue.error) throw existingDoc.setValue.error
       toast.success(t('Saved'))
       markClean()
+      clearDraft()
     }
   } catch (e) {
     // The connection dropped mid-save: nothing reached the server, so keep it locally.

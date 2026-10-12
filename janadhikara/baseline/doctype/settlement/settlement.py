@@ -34,6 +34,8 @@ class Settlement(Document):
 			frappe.throw(_("Number of families can't be negative."))
 
 		shares = [flt(self.get(f"q16_1_{n}_proportion_children_going_{kind}")) for n, kind in ((2, "private_school"), (3, "government_sch"), (4, "government_aid"))]
+		if any(share < 0 or share > 100 for share in shares):
+			frappe.throw(_("Enter the share of children as a percentage between 0 and 100."))
 		if sum(shares) > 100:
 			frappe.throw(_("The shares of children going to private, government and government-aided schools add up to more than 100."))
 

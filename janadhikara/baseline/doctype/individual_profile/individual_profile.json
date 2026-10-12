@@ -8,7 +8,6 @@
   "section_consent",
   "record_date",
   "consent_given",
-  "consent_mode",
   "column_break_consent",
   "consent_date",
   "consent_taken_by",
@@ -26,7 +25,6 @@
   "gender",
   "date_of_birth",
   "age",
-  "gender_repeat",
   "mobile_number",
   "marital_status",
   "tab_education",
@@ -186,7 +184,6 @@
   "sch_pmay_u",
   "tab_status",
   "section_status",
-  "documentation_status",
   "column_break_status",
   "validation_status"
  ],
@@ -216,14 +213,6 @@
    "fieldname": "consent_given",
    "fieldtype": "Check",
    "label": "Consent of the person (or guardian) taken"
-  },
-  {
-   "fieldname": "consent_mode",
-   "fieldtype": "Select",
-   "label": "Consent Mode",
-   "options": "\nWritten\nVerbal (recorded)\nDigital",
-   "length": 64,
-   "depends_on": "eval:Number(doc.consent_given)===1"
   },
   {
    "fieldname": "column_break_consent",
@@ -333,13 +322,14 @@
   {
    "fieldname": "member_name",
    "fieldtype": "Data",
-   "label": "6. Name of the Household member",
-   "description": "Please verify the name with the family member's name given in the HH listing form.",
+   "label": "6. Name of the household member (the person this profile is about)",
+   "description": "One profile per family member. Write the full name of the member whose details you are recording - not the respondent answering, unless it is the same person. Please verify the name with the family member's name given in the HH listing form.",
    "reqd": 1,
    "in_list_view": 1,
    "length": 64
   },
   {
+   "description": "If 'Other' is chosen, question 55 is shown.",
    "fieldname": "gender",
    "fieldtype": "Select",
    "label": "7. Gender",
@@ -361,14 +351,6 @@
    "description": "Auto-calculated from DOB. Based on the age, the questions for that age group are displayed.",
    "read_only": 1,
    "in_list_view": 1
-  },
-  {
-   "fieldname": "gender_repeat",
-   "fieldtype": "Select",
-   "label": "10. Gender",
-   "options": "\nMale\nFemale\nOther",
-   "length": 64,
-   "description": "If 'Other' is chosen, question 55 is shown."
   },
   {
    "fieldname": "mobile_number",
@@ -899,7 +881,7 @@
    "fieldtype": "Select",
    "label": "55. Do you have Transgender Certificate?",
    "options": "\nYes\nNo\nYes, but correction/renewal needed",
-   "depends_on": "eval:doc.gender==\"Other\"||doc.gender_repeat==\"Other\"",
+   "depends_on": "eval:doc.gender==\"Other\"",
    "description": "Shown when Gender is Other.",
    "length": 34
   },
@@ -1530,28 +1512,19 @@
    "depends_on": "eval:Number(doc.consent_given)===1"
   },
   {
-   "fieldname": "documentation_status",
-   "fieldtype": "Select",
-   "label": "116. Documentation Status",
-   "options": "Completed\nPartially Completed",
-   "description": "Community Organisers to state.",
-   "default": "Partially Completed",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "length": 19
-  },
-  {
    "fieldname": "column_break_status",
    "fieldtype": "Column Break"
   },
   {
+   "default": "Partially Completed",
+   "description": "Community Organisers set Partially Completed or Completed; coordinators set Revision Needed or Validated. Choose Revision Needed and refer to the comments when something must be corrected.",
    "fieldname": "validation_status",
    "fieldtype": "Link",
-   "label": "117. Validation Status",
-   "options": "Validation Status",
-   "description": "Area Coordinator to validate. Choose Revision Needed and refer to the comments when something must be corrected.",
+   "in_list_view": 1,
    "in_standard_filter": 1,
+   "label": "116. Status",
+   "options": "Validation Status",
+   "reqd": 1,
    "search_index": 1
   }
  ],
@@ -1598,33 +1571,30 @@
    "read": 1,
    "report": 1,
    "role": "Program Manager",
-   "write": 1
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
   },
   {
    "create": 1,
    "read": 1,
    "report": 1,
    "role": "Organization Admin",
-   "write": 1
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
   },
   {
-   "create": 1,
+   "role": "ORW",
    "read": 1,
-   "report": 1,
-   "role": "Supervisor",
-   "write": 1
-  },
-  {
-   "create": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Data Collector",
-   "write": 1
-  },
-  {
-   "read": 1,
-   "report": 1,
-   "role": "Report Viewer"
+   "write": 1,
+   "create": 1
   }
  ],
  "allow_rename": 1,
