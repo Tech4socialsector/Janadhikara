@@ -76,7 +76,7 @@ def household_updated(doc, method=None):
 		return
 
 	before = doc.get_doc_before_save()
-	if (before and before.get("validation_status") == "Revision Needed") or doc.get("validation_status") == "Validated" or doc.status in DONE_STATUSES:
+	if (before and before.get("validation_status") == "Revision Needed") or doc.get("validation_status") in DONE_STATUSES:
 		# Frappe tells the assignee itself when an assignment is closed - don't say it twice.
 		frappe.flags.janadhikara_system_close = True
 		try:
@@ -90,8 +90,8 @@ def nudge_stale_households():
 	cutoff = add_days(nowdate(), -STALE_DAYS)
 	households = frappe.get_all(
 		"Household Profile",
-		filters={"status": ["in", OPEN_STATUSES], "modified": ["<", cutoff]},
-		fields=["name", "respondent_name", "assigned_worker", "status"],
+		filters={"validation_status": ["in", OPEN_STATUSES], "modified": ["<", cutoff]},
+		fields=["name", "respondent_name", "assigned_worker", "validation_status"],
 		order_by="modified asc",
 		limit=500,
 	)

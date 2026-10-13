@@ -82,3 +82,5 @@ class HouseholdProfile(Document):
 		employee = get_user_employee()
 		if employee and not self.partner_organization:
 			self.partner_organization = employee.parent
+		if self.partner_organization and not self.organization_name:
+			self.organization_name = frappe.db.get_value("Partner Details", self.partner_organization, "organization_name")

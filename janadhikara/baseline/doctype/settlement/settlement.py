@@ -52,14 +52,15 @@ class Settlement(Document):
 			frappe.throw(_("Houses considered for the programme can't be more than the total number of houses in the settlement."))
 
 	def fill_partner(self):
-		"""The partner organisation of the signed-in worker, when none was chosen."""
-		if self.partner_organization:
-			return
-		from janadhikara.api import get_user_employee
+		"""The partner organisation of the signed-in worker, when none was chosen (and its name, for lists and exports)."""
+		if not self.partner_organization:
+			from janadhikara.api import get_user_employee
 
-		employee = get_user_employee()
-		if employee:
-			self.partner_organization = employee.parent
+			employee = get_user_employee()
+			if employee:
+				self.partner_organization = employee.parent
+		if self.partner_organization and not self.organization_name:
+			self.organization_name = frappe.db.get_value("Partner Details", self.partner_organization, "organization_name")
 
 	def fill_orw_name(self):
 		"""Name of the ORW (a User): the signed-in user, when left empty."""

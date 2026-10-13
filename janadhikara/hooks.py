@@ -292,6 +292,7 @@ after_migrate = [
 	"janadhikara.statuses.ensure_statuses",
 	"janadhikara.modules_setup.ensure_sync_module",
 	"janadhikara.required_fields.seed_required_fields",
+	"janadhikara.todo_setup.ensure_todo_setup",
 	"janadhikara.translations.import_translations",
 ]
 doc_events = {
