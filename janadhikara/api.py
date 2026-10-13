@@ -305,8 +305,7 @@ SETTINGS_CATALOG = [
 
 @frappe.whitelist()
 def get_settings_entries():
-    """Return the Settings dialog entries the current user's role permissions
-    allow. Single doctypes are edited inline; list doctypes are managed in
+    """Return the Settings dialog entries the current user may manage (write access). Single doctypes are edited inline; list doctypes are managed in
     Frappe desk (the SPA only has list pages for doctypes registered in an
     App Module Setting)."""
     if frappe.session.user == 'Guest':
@@ -316,7 +315,8 @@ def get_settings_entries():
     for doctype, group, icon, description in SETTINGS_CATALOG:
         if not frappe.db.exists('DocType', doctype):
             continue
-        if not frappe.has_permission(doctype, 'read'):
+        # Settings are for those who manage the app: read access alone (everyone can read the lists) is not enough.
+        if not frappe.has_permission(doctype, 'write'):
             continue
         meta = frappe.get_meta(doctype)
         is_single = bool(meta.issingle)

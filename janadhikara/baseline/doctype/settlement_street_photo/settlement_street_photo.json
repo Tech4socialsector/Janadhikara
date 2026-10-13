@@ -13,8 +13,7 @@
    "fieldname": "photo",
    "fieldtype": "Attach Image",
    "in_list_view": 1,
-   "label": "Photo",
-   "reqd": 1
+   "label": "Photo"
   },
   {
    "fieldname": "caption",

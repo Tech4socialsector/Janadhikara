@@ -2,13 +2,13 @@
 //
 // A draft is written every 30 seconds while a form has unsaved changes (and when the page is hidden), encrypted with the
 // same device key as the offline records, and only for the user who typed it. Nothing is sent to the server: the record is
-// created only when the worker presses Save. A draft is deleted once the record is saved, and after a week.
+// created only when the worker presses Save. A draft is deleted once the record is saved, and after a day.
 import { encryptJson, decryptJson } from '@/data/deviceCrypto'
 import { session } from '@/data/session'
 
 const DB_NAME = 'janadhikara-drafts'
 const STORE = 'drafts'
-const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000
+const MAX_AGE_MS = 24 * 60 * 60 * 1000
 
 export const draftKey = (doctype, name) => `${session.user || ''}|${doctype}|${name || 'new'}`
 

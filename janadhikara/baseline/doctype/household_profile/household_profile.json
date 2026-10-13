@@ -173,8 +173,7 @@
    "fieldtype": "Select",
    "label": "4. Household status",
    "length": 64,
-   "options": "\nOccupied\nVacant House\nDoor closed\nMoved out",
-   "reqd": 1
+   "options": "\nOccupied\nVacant House\nDoor closed\nMoved out"
   },
   {
    "description": "If more than one family lives in the same house, record details separately for each family. Consider families with separate kitchens as separate families.",
@@ -895,7 +894,6 @@
    "in_standard_filter": 1,
    "label": "67. Status",
    "options": "Validation Status",
-   "reqd": 1,
    "search_index": 1
   },
   {
@@ -943,7 +941,6 @@
    "in_standard_filter": 1,
    "label": "Settlement",
    "options": "Settlement",
-   "reqd": 1,
    "search_index": 1
   },
   {
@@ -963,7 +960,6 @@
    "in_standard_filter": 1,
    "label": "Partner Organization",
    "options": "Partner Details",
-   "reqd": 1,
    "search_index": 1
   },
   {
@@ -997,7 +993,6 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Date",
-   "reqd": 1,
    "search_index": 1
   },
   {

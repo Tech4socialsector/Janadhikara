@@ -1,6 +1,7 @@
 import frappe
 
 from janadhikara.modules_setup import ensure_sync_module
+from janadhikara.required_fields import seed_required_fields
 from janadhikara.statuses import ensure_statuses
 from janadhikara.translations import ensure_languages, import_translations
 
@@ -11,5 +12,6 @@ def after_install():
 	ensure_languages(restrict=True)
 	ensure_statuses()
 	ensure_sync_module()
+	seed_required_fields()
 	import_translations()
 	frappe.db.commit()

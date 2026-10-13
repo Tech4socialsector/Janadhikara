@@ -27,7 +27,6 @@
    "fieldtype": "Link",
    "label": "Fuel",
    "options": "Cooking Fuel",
-   "reqd": 1,
    "in_list_view": 1,
    "link_filters": "[[\"Cooking Fuel\", \"enabled\", \"=\", 1]]"
   }

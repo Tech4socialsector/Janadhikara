@@ -206,7 +206,6 @@
    "fieldname": "record_date",
    "fieldtype": "Date",
    "label": "Date",
-   "reqd": 1,
    "default": "Today",
    "search_index": 1,
    "in_list_view": 1,
@@ -259,7 +258,6 @@
    "label": "Household",
    "options": "Household Profile",
    "description": "The household this person lives in.",
-   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "search_index": 1
@@ -346,7 +344,6 @@
    "fieldtype": "Data",
    "label": "6. Name of the household member (the person this profile is about)",
    "description": "One profile per family member. Write the full name of the member whose details you are recording - not the respondent answering, unless it is the same person. Please verify the name with the family member's name given in the HH listing form.",
-   "reqd": 1,
    "in_list_view": 1,
    "length": 64
   },
@@ -1546,7 +1543,6 @@
    "in_standard_filter": 1,
    "label": "116. Status",
    "options": "Validation Status",
-   "reqd": 1,
    "search_index": 1
   },
   {

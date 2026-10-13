@@ -291,6 +291,7 @@ after_migrate = [
 	"janadhikara.menu.ensure_master_sidebar",
 	"janadhikara.statuses.ensure_statuses",
 	"janadhikara.modules_setup.ensure_sync_module",
+	"janadhikara.required_fields.seed_required_fields",
 	"janadhikara.translations.import_translations",
 ]
 doc_events = {

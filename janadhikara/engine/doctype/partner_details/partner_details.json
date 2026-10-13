@@ -42,8 +42,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Organization Name",
-   "reqd": 1
+   "label": "Organization Name"
   },
   {
    "depends_on": "eval:doc.organization_code",
@@ -62,8 +61,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Organization Type",
-   "options": "NGO\nTrust\nCBO\nFoundation\nOther",
-   "reqd": 1
+   "options": "NGO\nTrust\nCBO\nFoundation\nOther"
   },
   {
    "fieldname": "column_break_org_1",
@@ -76,8 +74,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
-   "options": "Active\nInactive",
-   "reqd": 1
+   "options": "Active\nInactive"
   },
   {
    "description": "Shown as the app logo for this partner's staff. Leave empty to use the logo set in App Setting.",
@@ -94,8 +91,7 @@
    "fieldname": "contact_person",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Contact Person",
-   "reqd": 1
+   "label": "Contact Person"
   },
   {
    "fieldname": "contact_number",
@@ -122,8 +118,7 @@
    "fieldtype": "Data",
    "label": "State",
    "options": "india_state",
-   "oldfieldtype": "Select",
-   "reqd": 1
+   "oldfieldtype": "Select"
   },
   {
    "fieldname": "address",
@@ -140,8 +135,7 @@
    "label": "District",
    "link_filters": "[[\"\", \"state\", \"=\", \"eval:doc.state\"]]",
    "options": "india_district",
-   "oldfieldtype": "Select",
-   "reqd": 1
+   "oldfieldtype": "Select"
   },
   {
    "collapsible": 1,

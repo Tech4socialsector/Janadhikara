@@ -135,14 +135,6 @@
     </div>
 
     <form v-else @submit.prevent="save">
-      <!-- A draft kept on this device from an earlier, unsaved session of this form. -->
-      <div v-if="draftOffer" class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
-        <span>{{ t('You have an unsaved draft of this form from') }} {{ draftTime }}.</span>
-        <span class="flex items-center gap-2">
-          <Button size="sm" variant="solid" @click="resumeDraft">{{ t('Resume draft') }}</Button>
-          <Button size="sm" @click="discardDraft">{{ t('Discard') }}</Button>
-        </span>
-      </div>
       <ConnectionsPanel
         v-if="!isNew && !offlineId && metaResource.data?.links?.length"
         :doctype="doctype"
@@ -881,35 +873,27 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', confirmLeaveIfD
 // (offlineId) is already stored there, so it needs no draft.
 const DRAFT_EVERY_MS = 30_000
 const currentDraftKey = () => draftKey(doctype, isNew ? null : name)
-const draftOffer = ref(null)
 const draftSavedAt = ref(null)
-const draftTime = computed(() => (draftOffer.value ? new Date(draftOffer.value.savedAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : ''))
 
 async function writeDraft() {
   if (offlineId || !isDirty.value || saving.value) return
   draftSavedAt.value = await saveDraft(currentDraftKey(), values)
-}
-function resumeDraft() {
-  Object.assign(values, draftOffer.value.values)
-  draftOffer.value = null
-}
-async function discardDraft() {
-  draftOffer.value = null
-  await deleteDraft(currentDraftKey())
 }
 function clearDraft() {
   draftSavedAt.value = null
   deleteDraft(currentDraftKey())
 }
 
-// Once the form has loaded (and its starting values are known), offer a draft from an earlier session.
+// Once the form has loaded (and its starting values are known), put back what was typed before the phone shut down or
+// the window was closed. A draft only survives such an abnormal end: leaving the form in the app (Back, a menu item,
+// saving) deletes it, so a new form never starts with someone else's answers.
 const stopDraftWatch = watch(
   () => cleanSnapshot.value !== null,
   async (ready) => {
     if (!ready || offlineId) return
     stopDraftWatch()
     const draft = await loadDraft(currentDraftKey())
-    if (draft && JSON.stringify(draft.values) !== cleanSnapshot.value) draftOffer.value = draft
+    if (draft && JSON.stringify(draft.values) !== cleanSnapshot.value) Object.assign(values, draft.values)
   },
   { immediate: true },
 )
@@ -924,6 +908,7 @@ onMounted(() => {
   window.addEventListener('pagehide', writeDraft)
 })
 onBeforeUnmount(() => {
+  clearDraft()
   clearInterval(draftTimer)
   document.removeEventListener('visibilitychange', onHidden)
   window.removeEventListener('pagehide', writeDraft)
