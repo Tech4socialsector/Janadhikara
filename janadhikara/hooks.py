@@ -294,6 +294,16 @@ after_migrate = [
 	"janadhikara.translations.import_translations",
 ]
 doc_events = {
+	"Property Setter": {
+		"after_insert": "janadhikara.customization_log.property_setter_created",
+		"on_update": "janadhikara.customization_log.property_setter_changed",
+		"on_trash": "janadhikara.customization_log.property_setter_removed",
+	},
+	"Custom Field": {
+		"after_insert": "janadhikara.customization_log.custom_field_created",
+		"on_update": "janadhikara.customization_log.custom_field_changed",
+		"on_trash": "janadhikara.customization_log.custom_field_deleted",
+	},
 	"*": {
 		"before_validate": "janadhikara.validation.resolve_default_tokens",
 		"validate": ["janadhikara.questions.validate_answers", "janadhikara.validation.validate_doc"],

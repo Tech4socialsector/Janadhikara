@@ -24,6 +24,7 @@ ITEM_ICONS = {
 	"AI Guide Section": "book-open",
 	"Validation Status": "badge-check",
 	"Cooking Fuel": "flame",
+	"Cluster": "network",
 	"Question Bank": "list-checks",
 	"AI Guide Instruction": "book-open",
 }

@@ -18,6 +18,14 @@ class Settlement(Document):
 		clear_hidden_answers(self)
 		require_shown_answers(self)
 		self.validate_questionnaire()
+		self.validate_validation_status()
+
+	def validate_validation_status(self):
+		"""The Status question, with the same rule as on the Household and Individual Profile: only an option the user's
+		role may use can be set, and a Validated record is changed only by someone who may use Validated."""
+		from janadhikara.masters.doctype.validation_status.validation_status import check_status_change
+
+		check_status_change(self)
 
 	def validate_questionnaire(self):
 		# values can arrive as text from the form: compare them as numbers

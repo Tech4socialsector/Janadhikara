@@ -18,6 +18,7 @@
   "household_has_disability",
   "implementing_org",
   "organization_name",
+  "cluster",
   "hhid",
   "settlement_intervention_unit",
   "respondent_name",
@@ -296,6 +297,16 @@
    "description": "Fetched from the Partner Details.",
    "fieldname": "organization_name",
    "fetch_from": "implementing_org.organization_name"
+  },
+  {
+   "fieldtype": "Link",
+   "options": "Cluster",
+   "label": "Cluster",
+   "read_only": 1,
+   "in_standard_filter": 1,
+   "fieldname": "cluster",
+   "description": "Fetched from the settlement.",
+   "fetch_from": "settlement_intervention_unit.cluster"
   },
   {
    "fieldname": "hhid",

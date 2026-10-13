@@ -136,6 +136,14 @@
     "item_type": "Link",
     "label": null,
     "route": null
+   },
+   {
+    "child": 0,
+    "doctype_name": "Cluster",
+    "icon": "network",
+    "item_type": "Link",
+    "label": null,
+    "route": null
    }
   ],
   "enabled": 1,

@@ -100,8 +100,7 @@
   {
    "fieldname": "contact_number",
    "fieldtype": "Data",
-   "label": "Contact Number",
-   "reqd": 1
+   "label": "Contact Number"
   },
   {
    "fieldname": "column_break_contact_1",
@@ -123,6 +122,7 @@
    "fieldtype": "Data",
    "label": "State",
    "options": "india_state",
+   "oldfieldtype": "Select",
    "reqd": 1
   },
   {
@@ -140,6 +140,7 @@
    "label": "District",
    "link_filters": "[[\"\", \"state\", \"=\", \"eval:doc.state\"]]",
    "options": "india_district",
+   "oldfieldtype": "Select",
    "reqd": 1
   },
   {

@@ -54,3 +54,6 @@ janadhikara.patches.v1_1.merge_status_questions
 janadhikara.patches.v1_1.four_roles
 janadhikara.patches.v1_1.orw_user_everywhere
 janadhikara.patches.v1_1.backfill_organization_name
+janadhikara.patches.v1_1.settlement_status
+janadhikara.patches.v1_1.cluster_master
+janadhikara.patches.v1_1.orw_unknown_users

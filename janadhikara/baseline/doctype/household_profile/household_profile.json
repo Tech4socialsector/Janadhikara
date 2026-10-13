@@ -121,6 +121,7 @@
   "consent_taken_by",
   "section_assignment",
   "settlement",
+  "cluster",
   "partner_organization",
   "organization_name",
   "column_break_assignment",
@@ -437,7 +438,8 @@
    "fieldname": "allotted_state",
    "fieldtype": "Data",
    "label": "32. In case the allotted house is outside Assam, please select the state",
-   "options": "india_state"
+   "options": "india_state",
+   "oldfieldtype": "Select"
   },
   {
    "description": "Pradhan Mantri Awas Yojana - Urban (PMAY-U)",
@@ -943,6 +945,16 @@
    "options": "Settlement",
    "reqd": 1,
    "search_index": 1
+  },
+  {
+   "fieldtype": "Link",
+   "options": "Cluster",
+   "label": "Cluster",
+   "read_only": 1,
+   "in_standard_filter": 1,
+   "fieldname": "cluster",
+   "description": "Fetched from the settlement.",
+   "fetch_from": "settlement.cluster"
   },
   {
    "description": "Filled in from the settlement.",

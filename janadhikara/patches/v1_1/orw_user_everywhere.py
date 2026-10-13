@@ -18,6 +18,7 @@ def execute():
 				user = frappe.db.get_value("User", {"full_name": row.orw_name}, "name") or (
 					row.orw_name if frappe.db.exists("User", row.orw_name) else None
 				)
-			frappe.db.set_value(doctype, row.name, "orw_name", user or row.owner, update_modified=False)
+			user = user or (row.owner if frappe.db.exists("User", row.owner) else None)
+			frappe.db.set_value(doctype, row.name, "orw_name", user, update_modified=False)
 	frappe.db.delete("Translation", {"context": ["like", "janadhikara:field:Settlement:orw_name:%"]})
 	frappe.db.commit()

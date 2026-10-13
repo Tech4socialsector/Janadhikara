@@ -78,7 +78,10 @@ SEED = {
     'Settlement': {
         'can_write': 1,
         'hidden': {'latitude': 'location', 'longitude': 'location', 'geo_location': 'location'},
-        'read_only': {'partner_organization': 'controls which records the worker can see'},
+        'read_only': {
+            'partner_organization': 'controls which records the worker can see',
+            'validation_status': 'set by validators', 'validation_comments': 'set by validators',
+        },
     },
     'Partner Details': {
         'hidden': {
