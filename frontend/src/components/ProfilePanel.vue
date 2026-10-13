@@ -144,3 +144,11 @@ async function changePassword() {
   }
 }
 </script>
+
+<style>
+/* The Change Password dialog opens over the Settings dialog (z-index 1050 - see SettingsDialog.vue); without this it is
+   drawn behind it and nothing seems to happen. */
+[data-dialog='Change Password'].dialog-overlay {
+  z-index: 1060;
+}
+</style>
