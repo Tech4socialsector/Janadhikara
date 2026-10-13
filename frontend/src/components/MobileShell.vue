@@ -27,6 +27,9 @@
         @click="theme = theme === 'dark' ? 'light' : 'dark'"
       />
 
+      <!-- Reload the app: an installed app has no browser reload button, so this brings in the latest data (and any update). -->
+      <Button variant="ghost" size="sm" icon="refresh-cw" :tooltip="t('Refresh')" :aria-label="t('Refresh')" class="flex-shrink-0" @click="refreshApp" />
+
       <!-- Alerts in the top-right corner (the profile is in the bottom bar). -->
       <span class="relative inline-flex flex-shrink-0">
         <Button variant="ghost" size="sm" icon="bell" :tooltip="t('Notifications')" aria-label="Notifications" @click="toggleNotifications" />
@@ -79,6 +82,9 @@ const theme = computed({
   get: () => currentTheme.value,
   set: (v) => (currentTheme.value = v),
 })
+function refreshApp() {
+  window.location.reload()
+}
 const canGoBack = computed(() => route.name !== 'Home')
 
 // One step back through the app's own history; if this page was opened directly
