@@ -109,6 +109,20 @@ export default defineConfig({
           // Explicitly scoped to GET - method matching here is what keeps
           // this from ever touching create_record/update_record's
           // POST/PUT calls, which must always hit the network live.
+          // Form layouts: the app asks for ".../meta?" (with a trailing "?") while the download on
+          // Sync Data saves ".../meta" - they are the same layout, so the query part is ignored when
+          // looking one up. (Without this a layout saved by the download was never found offline.)
+          {
+            urlPattern: ({ url, request }) => request.method === 'GET' && /^\/api\/v2\/doctype\/[^/]+\/meta$/.test(url.pathname),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'janadhikara-api-reads',
+              networkTimeoutSeconds: 5,
+              matchOptions: { ignoreSearch: true },
+              expiration: { maxEntries: 300, maxAgeSeconds: 7 * 24 * 60 * 60 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
           {
             urlPattern: ({ url, request }) =>
               request.method === 'GET' &&

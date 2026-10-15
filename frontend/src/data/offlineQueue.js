@@ -240,9 +240,9 @@ async function process(item, force = false) {
     setStatus(item.id, { status: 'done' })
     if (item.action === 'insert' && res.name) await replaceTempName(item.tempName, res.name)
     if (item.action === 'update') {
-      const { putLocalRecord, getLocalRecord } = await import('@/data/offlineRecords')
-      const local = await getLocalRecord(item.doctype, item.name, session.user)
-      if (local) await putLocalRecord(item.doctype, { ...local, ...item.doc, modified: res.modified || local.modified })
+      const { putLocalDoc, getDoc } = await import('@/data/offlineStore')
+      const local = await getDoc(item.doctype, item.name)
+      if (local) await putLocalDoc(item.doctype, { ...local, ...item.doc, modified: res.modified || local.modified })
     }
     await new Promise((r) => setTimeout(r, 450)) // let the tick show
     await discard(item.id, { keepDb: true })

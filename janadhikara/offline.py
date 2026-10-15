@@ -1,4 +1,4 @@
-"""Reference data for working without a connection.
+"""Data for working without a connection - one download (`get_offline_data`) that every screen reads from.
 
 `get_offline_pack` returns the field data a person needs to fill forms with no signal:
 every record of the masters and linked doctypes behind the forms they can open (names and
@@ -16,7 +16,7 @@ MAX_ROWS = 5000
 APP_MODULES = ("Masters", "App Config", "Engine", "Baseline")
 
 # Held back from the device whatever the permissions say.
-EXCLUDED = {"Role", "Entitlement", "Individual Document", "Health Condition", "Education Record", "Push Subscription", "ToDo"}
+EXCLUDED = {"DocType", "Role", "Entitlement", "Individual Document", "Health Condition", "Education Record", "Push Subscription", "ToDo"}
 
 STORABLE = {
 	"Data", "Select", "Link", "Dynamic Link", "Int", "Float", "Currency", "Percent", "Check", "Date", "Datetime",
@@ -71,7 +71,7 @@ def _rows_for(doctype, meta, columns):
 
 	if not frappe.has_permission(doctype, "read"):
 		return None, []
-	fields = ["name", *columns]
+	fields = ["name", "modified", *columns]
 	return fields, frappe.get_list(doctype, fields=fields, order_by="modified desc", limit_page_length=MAX_ROWS)
 
 
@@ -92,8 +92,9 @@ def _user_pack():
 	return {"title_field": "full_name", "istable": 0, "columns": ["name", "full_name"], "rows": [[r.name, r.full_name] for r in rows]}
 
 
-@frappe.whitelist()
-def get_offline_pack():
+def _wanted_doctypes():
+	"""Every doctype the signed-in person works with: those behind their modules and the records
+	they link to (masters, partners, users...), followed out of the app's own doctypes only."""
 	from janadhikara.api import get_app_modules
 
 	seeds = []
@@ -110,30 +111,55 @@ def get_offline_pack():
 		if meta.module in APP_MODULES:  # follow links out of the app's own doctypes only (not through User, Role...)
 			queue += [d for d in _linked_doctypes(meta) if d not in wanted]
 			queue += [df.options for df in meta.fields if df.fieldtype in ("Table", "Table MultiSelect") and df.options]
+	return wanted
 
-	pack = {}
-	for doctype in wanted:
+
+def _plain_value(value):
+	return str(value) if hasattr(value, "isoformat") or hasattr(value, "total_seconds") else value
+
+
+@frappe.whitelist()
+def get_offline_data(since=None):
+	"""One download for working with no connection - everything the signed-in person may read, in one shape
+	({doctype: {docs, names}}), so every screen reads from the same copy on the phone.
+
+	- The person's own questionnaire records (OWN_RECORD_DOCTYPES) come whole: every answer and child table,
+	  because they are theirs (their partner organisation's scope), but never files or photos.
+	- Everything else (masters, partners, users...) comes as field data only, without the fields the AI Data
+	  Policy marks confidential, and never the sensitive child tables.
+	`since` (a timestamp from an earlier download) returns only what changed; `names` lists every record
+	still readable, so the phone can drop the ones that went away."""
+	doctypes = {}
+	for doctype in _wanted_doctypes():
 		if doctype == "User":
-			pack["User"] = _user_pack()
+			table = _user_pack()
+			doctypes["User"] = {
+				"title_field": "full_name", "istable": 0, "names": [r[0] for r in table["rows"]],
+				"docs": [{"name": r[0], "full_name": r[1]} for r in table["rows"]],
+			}
 			continue
 		meta = frappe.get_meta(doctype)
-		if meta.issingle:
+		if meta.issingle or not (meta.istable or frappe.has_permission(doctype, "read")):
 			continue
-		columns = _columns(meta)
-		fields, rows = _rows_for(doctype, meta, columns)
-		if fields is None:
-			continue
-		pack[doctype] = {
-			"title_field": meta.title_field,
-			"istable": 1 if meta.istable else 0,
-			"columns": fields,
-			"rows": [[row.get(f) if not hasattr(row.get(f), "isoformat") else str(row.get(f)) for f in fields] for row in rows],
-		}
+		if doctype in OWN_RECORD_DOCTYPES:
+			names = frappe.get_list(doctype, pluck="name", limit_page_length=MAX_ROWS)
+			filters = {"modified": [">", since]} if since else {}
+			changed = frappe.get_list(doctype, filters=filters, pluck="name", order_by="modified asc", limit_page_length=MAX_ROWS)
+			docs = [_record_dict(frappe.get_doc(doctype, n)) for n in changed]
+		else:
+			columns = _columns(meta)
+			fields, rows = _rows_for(doctype, meta, columns)
+			if fields is None:
+				continue
+			names = [r.name for r in rows]
+			docs = [{f: _plain_value(r.get(f)) for f in fields} for r in rows]
+		doctypes[doctype] = {"title_field": meta.title_field, "istable": 1 if meta.istable else 0, "names": names, "docs": docs}
 	return {
-		"version": 1,
+		"version": 2,
 		"generated": str(now_datetime()),
 		"user": frappe.session.user,
-		"doctypes": pack,
+		"incremental": bool(since),
+		"doctypes": doctypes,
 		# Form layouts to keep for offline use: this app's own doctypes only (never User, Role...).
 		"meta_doctypes": _app_meta_doctypes(),
 	}
@@ -161,7 +187,7 @@ def _app_meta_doctypes():
 # ---- Uploads from the phone (always started by the person, from Sync Data) --------------------------------------
 
 LOG = "Offline Sync Log"
-RECORD_DOCTYPES = ("Settlement", "Household Profile", "Individual Profile")
+OWN_RECORD_DOCTYPES = ("Settlement", "Household Profile", "Individual Profile")
 FILE_FIELDTYPES = {"Attach", "Attach Image", "Signature", "Image"}
 SKIP_TABLES = {"Individual Document"}  # attachments: never put on a device
 IGNORED_KEYS = {"name", "owner", "creation", "modified", "modified_by", "docstatus", "idx", "parent", "parentfield", "parenttype", "doctype", "__islocal", "__unsaved"}
@@ -266,19 +292,3 @@ def _record_dict(doc):
 		elif df.fieldtype == "Table" and df.options in SKIP_TABLES:
 			data.pop(df.fieldname, None)
 	return data
-
-
-@frappe.whitelist()
-def get_offline_records(since=None):
-	"""The signed-in person's own Settlements, Household and Individual Profiles (what their role and
-	partner organisation allow), with child tables, for viewing and editing with no connection. No files or
-	photos. `names` lists every record they can still read, so the phone can drop the ones that went away."""
-	records, names = {}, {}
-	for doctype in RECORD_DOCTYPES:
-		if not frappe.db.exists("DocType", doctype) or not frappe.has_permission(doctype, "read"):
-			continue
-		names[doctype] = frappe.get_list(doctype, pluck="name", limit_page_length=MAX_ROWS)
-		filters = {"modified": [">", since]} if since else {}
-		changed = frappe.get_list(doctype, filters=filters, pluck="name", order_by="modified asc", limit_page_length=MAX_ROWS)
-		records[doctype] = [_record_dict(frappe.get_doc(doctype, n)) for n in changed]
-	return {"version": 1, "generated": str(now_datetime()), "user": frappe.session.user, "incremental": bool(since), "records": records, "names": names}

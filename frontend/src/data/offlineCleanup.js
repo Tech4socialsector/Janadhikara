@@ -1,41 +1,23 @@
-// When the connection comes back, the device is tidied - but nothing is uploaded on its
-// own: records saved offline stay (encrypted) until the user uploads them from Sync Data.
-//   1. the downloaded reference data (and the stored icon) is removed;
-//   2. once no saved record is left either, the encryption key is removed too.
+// When the connection comes back nothing is uploaded on its own: records saved offline stay
+// (encrypted) until the user uploads them from Sync Data. The downloaded copy stays too, so the
+// app keeps working the next time the signal drops; it is removed on sign-out (data/session.js),
+// by "Remove" on Sync Data, or when someone else signs in on this phone.
 import { watch } from 'vue'
 import { toast } from 'frappe-ui'
 import { online } from '@/data/connection'
 import { queue, queueReady } from '@/data/offlineQueue'
-import { removePack, packInfo } from '@/data/offlinePack'
-import { dropKey } from '@/data/deviceCrypto'
-import { hasStoredRecords } from '@/data/offlineRecords'
-
-let running = false
-export async function cleanupDevice() {
-  if (running) return
-  running = true
-  try {
-    const hadPack = !!packInfo.value
-    await removePack()
-    // the key stays while saved records or a downloaded copy of the person's records still need it
-    if (!queue.value.length && !(await hasStoredRecords())) await dropKey()
-    const waiting = queue.value.length
-    if (waiting) {
-      toast.info(`Back online - ${waiting} saved record${waiting === 1 ? ' is' : 's are'} waiting. Open Sync Data to upload.`)
-    } else if (hadPack) {
-      toast.info('Back online - the offline copy was removed from this device.')
-    }
-  } finally {
-    running = false
-  }
-}
 
 let started = false
 export function startAutoCleanup() {
   if (started) return
   started = true
-  watch(online, (isOnline, wasOnline) => {
-    if (isOnline && wasOnline === false) cleanupDevice()
+  watch(online, async (isOnline, wasOnline) => {
+    if (!(isOnline && wasOnline === false)) return
+    // the browser can claim "online" while the server is still out of reach: remind only once it answers
+    const reachable = await fetch('/api/method/ping', { cache: 'no-store' }).then((r) => r.ok, () => false)
+    if (reachable && queue.value.length) {
+      toast.info(`Back online - ${queue.value.length} saved record${queue.value.length === 1 ? ' is' : 's are'} waiting. Open Sync Data to upload.`)
+    }
   })
   // Opened with a connection while saved records from an offline session are still here:
   // just remind - the upload is the user's call.

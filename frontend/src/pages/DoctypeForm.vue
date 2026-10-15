@@ -318,7 +318,7 @@ import QuestionnairePanel from '@/components/QuestionnairePanel.vue'
 import { loadQuestions, missingAnswers, questionsFor, answersMap, isShown } from '@/data/questions'
 import { findModuleByDoctype } from '@/data/modules'
 import { enqueueRecord, isNetworkError, queue, updateRecord } from '@/data/offlineQueue'
-import { getLocalRecord } from '@/data/offlineRecords'
+import { getDoc } from '@/data/offlineStore'
 import { session } from '@/data/session'
 import Skeleton from '@/components/Skeleton.vue'
 import ChildTable from '@/components/ChildTable.vue'
@@ -351,7 +351,9 @@ const { doctype, isNew, name, offlineId, localRecord } = defineProps({
 // With no connection, an existing record that already has an edit waiting here opens as that edit.
 const localItem = offlineId
   ? queue.value.find((i) => i.id === offlineId)
-  : !isNew && (localRecord || !navigator.onLine)
+  : name && name.startsWith('OFFLINE-')
+    ? queue.value.find((i) => i.tempName === name) // a record made on this phone, opened from a list
+    : !isNew && (localRecord || !navigator.onLine)
     ? queue.value.find((i) => i.action === 'update' && i.doctype === doctype && i.name === name)
     : null
 // No connection (or opened from Sync Data): the record comes from the copy downloaded to this phone.
@@ -359,7 +361,7 @@ const useLocalCopy = !isNew && !localItem && (localRecord || !navigator.onLine)
 const localCopy = ref(null)
 const localCopyMissing = ref(false)
 if (useLocalCopy) {
-  getLocalRecord(doctype, name, session.user).then((doc) => {
+  getDoc(doctype, name).then((doc) => {
     if (doc) localCopy.value = doc
     else localCopyMissing.value = true
   })

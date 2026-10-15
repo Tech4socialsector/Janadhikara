@@ -3,7 +3,7 @@
 // The rules here mirror janadhikara/questions.py (which checks them again when the record is saved).
 import { reactive } from 'vue'
 import { call } from 'frappe-ui'
-import { localRows } from '@/data/offlinePack'
+import { localRows } from '@/data/offlineStore'
 
 const cache = reactive({}) // doctype -> [question]
 const loading = {}

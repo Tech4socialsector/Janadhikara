@@ -12,6 +12,11 @@
       </template>
     </PageHeader>
 
+    <p v-if="data?.offline_as_of" class="mb-3 flex items-center gap-1.5 rounded-lg bg-surface-amber-1 px-3 py-2 text-sm text-ink-gray-7">
+      <FeatherIcon name="wifi-off" class="h-4 w-4 flex-shrink-0 text-ink-amber-3" />
+      {{ t('Offline copy - the numbers are as of your last download:') }} {{ data.offline_as_of }}
+    </p>
+
     <!-- Filters -->
     <section class="dash-filters mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
       <FormControl type="select" class="w-full" label="Settlement" :options="withAll(options?.settlements)" v-model="filters.settlement" />

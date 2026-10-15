@@ -177,40 +177,39 @@
     </template>
 
     <template v-else>
-    <!-- Download tab: the offline copy of masters and linked records. -->
+    <!-- Download tab: one offline copy of everything the person may see. -->
     <section class="mb-4 rounded-2xl border border-outline-gray-1 bg-surface-white p-5 shadow-sm">
       <div class="flex flex-wrap items-center gap-4">
         <span class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-surface-gray-2 text-ink-gray-7">
           <LucideIcon name="database" class="h-7 w-7" />
         </span>
         <div class="min-w-0 flex-1 max-sm:basis-[calc(100%-4.5rem)]">
-          <h2 class="text-base font-semibold text-ink-gray-9">{{ t('Offline reference data') }}</h2>
+          <h2 class="text-base font-semibold text-ink-gray-9">{{ t('Offline copy') }}</h2>
           <p class="text-sm text-ink-gray-5">
-            <template v-if="packInfo">Saved on this device {{ savedAt(new Date(packInfo.generated.replace(' ', 'T')).getTime()) }}.</template>
-            <template v-else>{{ t('Not downloaded yet. Without it, dropdowns for masters and linked records stay empty when there is no internet.') }}</template>
+            <template v-if="storeInfo">Saved on this device {{ savedAt(new Date(storeInfo.generated.replace(' ', 'T')).getTime()) }}.</template>
+            <template v-else>{{ t('Not downloaded yet. Download it to open, search and edit your records, and use the dashboard, with no internet.') }}</template>
           </p>
         </div>
         <div class="flex w-full flex-wrap items-center gap-2 sm:w-auto">
-          <Button v-if="packInfo" variant="solid" icon-left="eye" class="max-sm:flex-1" @click="showBrowse = true">{{ t('Browse') }}</Button>
           <Button
             variant="solid"
             icon-left="lucide-cloud-download"
             class="max-sm:flex-1"
-            :disabled="!online || packState.downloading"
-            :loading="packState.downloading"
-            @click="downloadPack"
+            :disabled="!online || storeState.downloading"
+            :loading="storeState.downloading"
+            @click="doDownload"
           >
-            {{ packInfo ? 'Update' : 'Download' }}
+            {{ storeInfo ? 'Update' : 'Download' }}
           </Button>
-          <Button v-if="packInfo" variant="ghost" icon="trash-2" :tooltip="t('Remove the downloaded copy from this device')" :aria-label="t('Remove')" @click="showRemovePack = true" />
+          <Button v-if="storeInfo" variant="ghost" icon="trash-2" :tooltip="t('Remove the offline copy from this device')" :aria-label="t('Remove')" @click="showRemove = true" />
         </div>
       </div>
 
       <!-- Size and contents at a glance. -->
-      <dl v-if="packInfo" class="mt-5 grid grid-cols-3 gap-3">
+      <dl v-if="storeInfo" class="mt-5 grid grid-cols-3 gap-3">
         <div class="rounded-xl bg-surface-gray-1 px-3 py-3 text-center">
-          <dt class="text-xs text-ink-gray-5">{{ t('File size') }}</dt>
-          <dd class="mt-0.5 text-lg font-semibold text-ink-gray-9">{{ formatBytes(packInfo.bytes) }}</dd>
+          <dt class="text-xs text-ink-gray-5">{{ t('Stored size') }}</dt>
+          <dd class="mt-0.5 text-lg font-semibold text-ink-gray-9">{{ formatBytes(storeInfo.bytes) }}</dd>
           <dd class="text-2xs text-ink-gray-5">{{ t('compressed') }}</dd>
         </div>
         <div class="rounded-xl bg-surface-gray-1 px-3 py-3 text-center">
@@ -219,7 +218,7 @@
         </div>
         <div class="rounded-xl bg-surface-gray-1 px-3 py-3 text-center">
           <dt class="text-xs text-ink-gray-5">{{ t('Lists') }}</dt>
-          <dd class="mt-0.5 text-lg font-semibold text-ink-gray-9">{{ Object.keys(packInfo.counts).length }}</dd>
+          <dd class="mt-0.5 text-lg font-semibold text-ink-gray-9">{{ Object.keys(storeInfo.counts).length }}</dd>
         </div>
       </dl>
 
@@ -245,48 +244,17 @@
         </ul>
       </div>
 
-      <div v-if="packState.downloading" class="mt-4">
-        <p class="mb-1.5 text-sm text-ink-gray-6">{{ packState.step }}</p>
+      <div v-if="storeState.downloading" class="mt-4">
+        <p class="mb-1.5 text-sm text-ink-gray-6">{{ storeState.step }}</p>
         <div class="h-2 overflow-hidden rounded-full bg-surface-gray-3">
-          <div class="sync-bar h-full rounded-full bg-blue-500" :style="{ width: packState.percent + '%' }" />
+          <div class="sync-bar h-full rounded-full bg-blue-500" :style="{ width: storeState.percent + '%' }" />
         </div>
       </div>
-      <p v-if="packState.error" class="mt-3 text-sm text-ink-red-4">{{ packState.error }}</p>
-      <p v-if="!online && !packInfo" class="mt-3 text-sm text-ink-gray-5">{{ t('You need internet to download. Do it before you go offline next time.') }}</p>
-      <p class="mt-3 flex items-center gap-1.5 text-xs text-ink-gray-5">
-        <FeatherIcon name="lock" class="h-3.5 w-3.5" />
-        {{ t('Field data only - no images or files. Only what you are allowed to see, kept encrypted on this device and removed when you are back online.') }}
-      </p>
-    </section>
+      <p v-if="storeState.error" class="mt-3 text-sm text-ink-red-4">{{ storeState.error }}</p>
+      <p v-if="!online && !storeInfo" class="mt-3 text-sm text-ink-gray-5">{{ t('You need internet to download. Do it before you go offline next time.') }}</p>
 
-    <!-- Download my records: the person's own records, to open and edit with no connection. -->
-    <section class="mb-4 rounded-2xl border border-outline-gray-1 bg-surface-white p-5 shadow-sm">
-      <div class="flex flex-wrap items-center gap-4">
-        <span class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-surface-gray-2 text-ink-gray-7">
-          <LucideIcon name="folder-down" class="h-7 w-7" />
-        </span>
-        <div class="min-w-0 flex-1 max-sm:basis-[calc(100%-4.5rem)]">
-          <h2 class="text-base font-semibold text-ink-gray-9">{{ t('My records') }}</h2>
-          <p class="text-sm text-ink-gray-5">
-            <template v-if="recordsInfo">{{ recordsTotal }} records saved on this device {{ savedAt(new Date(recordsInfo.generated.replace(' ', 'T')).getTime()) }}.</template>
-            <template v-else>{{ t('Not downloaded. Download your settlements, households and individuals to open and edit them with no internet.') }}</template>
-          </p>
-        </div>
-        <div class="flex w-full flex-wrap items-center gap-2 sm:w-auto">
-          <Button
-            variant="solid"
-            icon-left="lucide-cloud-download"
-            class="max-sm:flex-1"
-            :disabled="!online || recordsState.downloading"
-            :loading="recordsState.downloading"
-            @click="doDownloadRecords"
-          >
-            {{ recordsInfo ? 'Update' : 'Download my records' }}
-          </Button>
-          <Button v-if="recordsInfo" variant="ghost" icon="trash-2" :tooltip="t('Remove my records from this device')" :aria-label="t('Remove')" @click="showRemoveRecords = true" />
-        </div>
-      </div>
-      <div v-if="recordsInfo" class="mt-4">
+      <!-- Look through what is stored; tap a record to open it. -->
+      <div v-if="storeInfo" class="mt-5">
         <div class="mb-3 flex flex-col gap-2 sm:flex-row">
           <FormControl type="select" v-model="myDoctype" :options="myOptions" class="sm:w-64" />
           <TextInput v-model="mySearch" type="text" :placeholder="t('Search')" class="flex-1" />
@@ -304,24 +272,13 @@
           <li v-if="!myRows.length" class="px-3 py-6 text-center text-sm text-ink-gray-5">{{ t('Nothing here.') }}</li>
         </ul>
       </div>
-      <p v-if="recordsState.error" class="mt-3 text-sm text-ink-red-4">{{ recordsState.error }}</p>
       <p class="mt-3 flex items-center gap-1.5 text-xs text-ink-gray-5">
         <FeatherIcon name="lock" class="h-3.5 w-3.5" />
-        {{ t('Only your own records - no files or photos. Kept encrypted on this device, only for you, and removed when you sign out. Nothing is downloaded or uploaded on its own.') }}
+        {{ t('Only what you are allowed to see - no files or photos. Kept encrypted on this device, only for you, and removed when you sign out. Nothing is downloaded or uploaded on its own.') }}
       </p>
     </section>
 
     </template>
-
-    <Dialog v-model="showRemoveRecords" :options="{ title: 'Remove my records from this device?', size: 'sm' }">
-      <template #body-content>
-        <p class="text-sm text-ink-gray-6">{{ t('You will not be able to open them without internet until you download again. Edits not yet uploaded stay in the waiting list.') }}</p>
-        <div class="mt-4 flex justify-end gap-2">
-          <Button size="sm" icon-left="x" @click="showRemoveRecords = false">{{ t('Keep') }}</Button>
-          <Button size="sm" variant="solid" theme="red" icon-left="trash-2" @click="doRemoveRecords">{{ t('Remove') }}</Button>
-        </div>
-      </template>
-    </Dialog>
 
     <!-- Someone changed the same fields on the server: choose. -->
     <Dialog v-model="showResolve" :options="{ title: 'Changed on the server meanwhile', size: '2xl' }">
@@ -346,37 +303,12 @@
       </template>
     </Dialog>
 
-    <!-- Look through the downloaded copy. -->
-    <Dialog v-model="showBrowse" :options="{ title: 'Offline reference data', size: '4xl' }">
+    <Dialog v-model="showRemove" :options="{ title: 'Remove the offline copy?', size: 'sm' }">
       <template #body-content>
-        <div class="mb-3 flex flex-col gap-2 sm:flex-row">
-          <FormControl type="select" v-model="browseDoctype" :options="browseOptions" class="sm:w-64" />
-          <TextInput v-model="browseSearch" type="text" :placeholder="t('Search')" class="flex-1" />
-        </div>
-        <div class="max-h-[55vh] overflow-auto rounded-lg border border-outline-gray-1">
-          <table class="w-full text-left text-sm">
-            <thead class="sticky top-0 bg-surface-gray-1 text-xs text-ink-gray-5">
-              <tr><th v-for="c in browseColumns" :key="c" class="whitespace-nowrap px-3 py-2 font-medium">{{ c.replace(/_/g, ' ') }}</th></tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row, i) in browseRows" :key="i" class="border-t border-outline-gray-1">
-                <td v-for="(cell, j) in row" :key="j" class="max-w-[16rem] truncate px-3 py-1.5 text-ink-gray-8">{{ cell }}</td>
-              </tr>
-              <tr v-if="!browseRows.length"><td :colspan="browseColumns.length || 1" class="px-3 py-6 text-center text-ink-gray-5">{{ t('Nothing here.') }}</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="mt-2 text-xs text-ink-gray-5">{{ t('Showing up to 200 rows.') }}</p>
-        <div class="mt-3 flex justify-end"><Button size="sm" icon-left="x" @click="showBrowse = false">{{ t('Close') }}</Button></div>
-      </template>
-    </Dialog>
-
-    <Dialog v-model="showRemovePack" :options="{ title: 'Remove the downloaded copy?', size: 'sm' }">
-      <template #body-content>
-        <p class="text-sm text-ink-gray-6">{{ t('Pickers for masters and linked records will be empty offline until you download it again.') }}</p>
+        <p class="text-sm text-ink-gray-6">{{ t('You will not be able to open your records or use the dashboard without internet until you download again. Edits not yet uploaded stay in the waiting list.') }}</p>
         <div class="mt-4 flex justify-end gap-2">
-          <Button size="sm" icon-left="x" @click="showRemovePack = false">{{ t('Keep') }}</Button>
-          <Button size="sm" variant="solid" theme="red" icon-left="trash-2" @click="doRemovePack">{{ t('Remove') }}</Button>
+          <Button size="sm" icon-left="x" @click="showRemove = false">{{ t('Keep') }}</Button>
+          <Button size="sm" variant="solid" theme="red" icon-left="trash-2" @click="doRemove">{{ t('Remove') }}</Button>
         </div>
       </template>
     </Dialog>
@@ -421,15 +353,13 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import LucideIcon from '@/components/LucideIcon.vue'
 import { queue, syncState, syncAll, resolveConflict, discard, downloadJson, downloadCsv, loadQueue } from '@/data/offlineQueue'
-import { recordsInfo, recordsState, downloadRecords, removeRecords, loadRecords, localRecordList } from '@/data/offlineRecords'
 import { session } from '@/data/session'
-import { packInfo, packState, downloadPack, removePack, getPack, loadPackInfo, checkOfflineReadiness } from '@/data/offlinePack'
+import { storeInfo, storeState, downloadOffline, removeStore, getTable, loadStoreInfo, checkOfflineReadiness } from '@/data/offlineStore'
 import { setPageTitle } from '@/data/pageTitle'
 
 setPageTitle('Sync Data')
 loadQueue()
-loadPackInfo()
-loadRecords(session.user)
+loadStoreInfo(session.user)
 
 const router = useRouter()
 
@@ -515,10 +445,6 @@ const viewRows = computed(() =>
 const editItem = (item) => router.push({ name: 'OfflineEdit', params: { offlineId: item.id } })
 
 // --- Offline reference data -----------------------------------------------------------
-const packMenu = [
-  { label: 'Browse the data', icon: 'eye', onClick: () => (showBrowse.value = true) },
-  { label: 'Remove from this device', icon: 'trash-2', onClick: () => (showRemovePack.value = true) },
-]
 const steps = [
   { title: 'Save as usual', text: 'No internet? Fill in and save a form. It is kept safely on this device.' },
   { title: 'Come back online', text: 'Your saved records stay here, encrypted. Nothing is sent on its own.' },
@@ -540,40 +466,19 @@ const tabButtons = computed(() => [
   { label: queue.value.length ? `Offline Sync (${queue.value.length})` : 'Offline Sync', value: 'sync', icon: 'upload-cloud' },
   { label: 'Download', value: 'download', icon: 'download-cloud' },
 ])
-const showRemovePack = ref(false)
-const showBrowse = ref(false)
-const browseDoctype = ref('')
-const browseSearch = ref('')
-const pack = ref(null)
-const totalRecords = computed(() => Object.values(packInfo.value?.counts || {}).reduce((a, b) => a + b, 0))
+const showRemove = ref(false)
 const formatBytes = (n) => (n > 1048576 ? `${(n / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`)
-const browseOptions = computed(() =>
-  Object.entries(packInfo.value?.counts || {}).map(([d, n]) => ({ label: `${d} (${n})`, value: d })),
-)
-watch([tab, () => packInfo.value, () => packState.value.downloading], ([t, , busy]) => {
+watch([tab, () => storeInfo.value, () => storeState.value.downloading], ([t, , busy]) => {
   if (t === 'download' && !busy) runReadiness()
 }, { immediate: true })
-
-watch(showBrowse, async (open) => {
-  if (!open) return
-  pack.value = await getPack()
-  if (!browseDoctype.value || !pack.value?.doctypes?.[browseDoctype.value]) browseDoctype.value = browseOptions.value[0]?.value || ''
-})
-const browseTable = computed(() => pack.value?.doctypes?.[browseDoctype.value])
-const browseColumns = computed(() => (browseTable.value?.columns || []).slice(0, 7))
-const browseRows = computed(() => {
-  const table = browseTable.value
-  if (!table) return []
-  const q = browseSearch.value.trim().toLowerCase()
-  const cols = browseColumns.value.length
-  return table.rows
-    .filter((r) => !q || r.some((c) => String(c ?? '').toLowerCase().includes(q)))
-    .slice(0, 200)
-    .map((r) => r.slice(0, cols))
-})
-async function doRemovePack() {
-  showRemovePack.value = false
-  await removePack()
+async function doDownload() {
+  await downloadOffline(session.user)
+  if (!storeState.value.error) toast.success('The offline copy is saved on this device')
+}
+async function doRemove() {
+  showRemove.value = false
+  await removeStore()
+  myList.value = []
   toast.success('Removed from this device')
 }
 
@@ -607,45 +512,31 @@ async function resolve(choice) {
   else if (outcome === 'failed') toast.error('Could not upload - see the red item.')
 }
 
-// --- My records (downloaded to this phone) ----------------------------------------------------------
-const showRemoveRecords = ref(false)
+// --- Look through the offline copy ----------------------------------------------------------------------
 const myDoctype = ref('')
 const mySearch = ref('')
 const myList = ref([])
-const recordsTotal = computed(() => Object.values(recordsInfo.value?.counts || {}).reduce((a, b) => a + b, 0))
-const myOptions = computed(() => Object.entries(recordsInfo.value?.counts || {}).map(([d, n]) => ({ label: `${d} (${n})`, value: d })))
-const LABEL_FIELDS = { Settlement: ['settlement_name', 'name'], 'Household Profile': ['household_head_name', 'name'], 'Individual Profile': ['member_name', 'name'] }
-watch([myDoctype, () => recordsInfo.value], async () => {
+const myTitleField = ref('name')
+const totalRecords = computed(() => Object.values(storeInfo.value?.counts || {}).reduce((a, b) => a + b, 0))
+const myOptions = computed(() => Object.entries(storeInfo.value?.counts || {}).filter(([d]) => !storeInfo.value?.children?.includes(d)).map(([d, n]) => ({ label: `${d} (${n})`, value: d })))
+watch([myDoctype, () => storeInfo.value], async () => {
   if (!myDoctype.value || !myOptions.value.some((o) => o.value === myDoctype.value)) myDoctype.value = myOptions.value[0]?.value || ''
-  myList.value = myDoctype.value ? await localRecordList(myDoctype.value, session.user) : []
+  const table = myDoctype.value ? await getTable(myDoctype.value) : null
+  myTitleField.value = table?.title_field || 'name'
+  myList.value = table?.docs || []
 }, { immediate: true })
 const myRows = computed(() => {
   const q = mySearch.value.trim().toLowerCase()
-  const fields = LABEL_FIELDS[myDoctype.value] || ['name']
   return myList.value
     .map((d) => ({
       name: d.name,
-      label: fields.map((f) => d[f]).find(Boolean) || d.name,
+      label: d[myTitleField.value] || d.name,
       edited: queue.value.some((i) => i.action === 'update' && i.doctype === myDoctype.value && i.name === d.name),
     }))
     .filter((r) => !q || `${r.label} ${r.name}`.toLowerCase().includes(q))
     .slice(0, 200)
 })
 const openRecord = (r) => router.push({ name: 'OfflineRecord', params: { doctype: myDoctype.value, name: r.name } })
-async function doDownloadRecords() {
-  try {
-    await downloadRecords(session.user)
-    toast.success('Your records are saved on this device')
-  } catch {
-    // the message is shown under the button
-  }
-}
-async function doRemoveRecords() {
-  showRemoveRecords.value = false
-  await removeRecords()
-  myList.value = []
-  toast.success('Removed from this device')
-}
 
 async function doDiscard() {
   const item = confirmDiscard.value

@@ -4,7 +4,7 @@ import { withSnapshot } from '@/data/localSnapshot'
 import { currentTheme } from '@/data/theme'
 import defaultLogo from '@/assets/default-logo.png'
 import { online } from '@/data/connection'
-import { appIconDataUrl } from '@/data/offlinePack'
+import { appIconDataUrl } from '@/data/offlineStore'
 
 // The app's configurable name/logo, from App Setting (allow_guest=True
 // so the Login page can also show it before authentication).

@@ -129,7 +129,7 @@ import { useRouter } from 'vue-router'
 import { Combobox, Dialog, Button, ErrorMessage, FeatherIcon, FormControl, Tooltip, call, useCall, toast } from 'frappe-ui'
 import { useOnline } from '@vueuse/core'
 import { findModuleByDoctype } from '@/data/modules'
-import { getPack, localRows } from '@/data/offlinePack'
+import { getTable, localRows } from '@/data/offlineStore'
 import { queue } from '@/data/offlineQueue'
 import { t } from '@/utils/translate'
 import DynamicField from '@/components/DynamicField.vue'
@@ -221,8 +221,7 @@ const recordsResource = useCall({
 // reference data kept on this device (see data/offlinePack.js).
 async function loadFromDevice() {
   if (!props.field.options || filtersPending.value) return
-  const pack = await getPack()
-  const table = pack?.doctypes?.[props.field.options]
+  const table = await getTable(props.field.options)
   if (!table) return
   localTitleField.value = table.title_field || 'name'
   const rows = await localRows(props.field.options, props.filters)

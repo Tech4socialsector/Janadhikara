@@ -9,7 +9,7 @@
 // when a record has no title, or the user can't read it - the ID is shown.
 import { reactive } from 'vue'
 import { call } from 'frappe-ui'
-import { localTitle } from '@/data/offlinePack'
+import { localTitle } from '@/data/offlineStore'
 
 const titles = reactive({})
 const keyOf = (doctype, name) => `${doctype}\u0000${name}`
