@@ -8,6 +8,7 @@ import { online } from '@/data/connection'
 import { queue, queueReady } from '@/data/offlineQueue'
 import { removePack, packInfo } from '@/data/offlinePack'
 import { dropKey } from '@/data/deviceCrypto'
+import { hasStoredRecords } from '@/data/offlineRecords'
 
 let running = false
 export async function cleanupDevice() {
@@ -16,7 +17,8 @@ export async function cleanupDevice() {
   try {
     const hadPack = !!packInfo.value
     await removePack()
-    if (!queue.value.length) await dropKey()
+    // the key stays while saved records or a downloaded copy of the person's records still need it
+    if (!queue.value.length && !(await hasStoredRecords())) await dropKey()
     const waiting = queue.value.length
     if (waiting) {
       toast.info(`Back online - ${waiting} saved record${waiting === 1 ? ' is' : 's are'} waiting. Open Sync Data to upload.`)

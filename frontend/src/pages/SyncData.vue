@@ -108,6 +108,8 @@
               {{ label }}
             </span>
             <span v-else-if="column.key === 'actions'" class="flex items-center gap-1" @click.stop>
+              <Button v-if="row.raw.status === 'conflict'" variant="subtle" size="sm" @click="resolving = row.raw">{{ t('Resolve') }}</Button>
+              <Button v-else-if="row.raw.status === 'failed'" variant="ghost" size="sm" icon="rotate-cw" :tooltip="t('Try again')" :aria-label="t('Try again')" :disabled="!online || syncState.running" @click="retry(row.raw)" />
               <Button variant="ghost" size="sm" icon="edit-2" :tooltip="t('Edit before uploading')" :aria-label="t('Edit')" :disabled="row.raw.status === 'syncing'" @click="editItem(row.raw)" />
               <Button variant="ghost" size="sm" icon="eye" :tooltip="t('View what is saved')" :aria-label="t('View')" @click="viewing = row.raw" />
               <Button variant="ghost" size="sm" icon="trash-2" :tooltip="t('Remove from this device')" :aria-label="t('Discard')" :disabled="row.raw.status === 'syncing'" @click="confirmDiscard = row.raw" />
@@ -115,6 +117,8 @@
             <span v-else-if="column.key === 'title'" class="truncate font-medium text-ink-gray-9">
               {{ label }}
               <span v-if="row.raw.error" class="block truncate text-xs font-normal text-ink-red-4">{{ row.raw.error }}</span>
+              <span v-else-if="row.raw.waitingOn" class="block truncate text-xs font-normal text-ink-amber-3">Waiting for {{ row.raw.waitingOn }} to upload first</span>
+              <span v-else-if="row.raw.status === 'conflict'" class="block truncate text-xs font-normal text-ink-amber-3">{{ t('Changed on the server meanwhile - choose which to keep') }}</span>
             </span>
             <span v-else class="truncate">{{ label }}</span>
           </ListRowItem>
@@ -145,7 +149,7 @@
           <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full" :class="statusTile(item)">
             <span v-if="item.status === 'syncing'" class="sync-spinner h-5 w-5 rounded-full border-2 border-current border-t-transparent" />
             <LucideIcon v-else-if="item.status === 'done'" name="circle-check-big" class="sync-pop h-5 w-5" />
-            <FeatherIcon v-else-if="item.status === 'failed'" name="alert-triangle" class="h-5 w-5" />
+            <FeatherIcon v-else-if="item.status === 'failed' || item.status === 'conflict'" name="alert-triangle" class="h-5 w-5" />
             <FeatherIcon v-else name="clock" class="h-5 w-5" />
           </span>
           <div class="min-w-0 flex-1">
@@ -156,8 +160,12 @@
               <span>saved {{ savedAt(item.createdAt) }}</span>
             </p>
             <p v-if="item.error" class="mt-1 text-xs text-ink-red-4">{{ item.error }}</p>
+            <p v-else-if="item.waitingOn" class="mt-1 text-xs text-ink-amber-3">Waiting for {{ item.waitingOn }} to upload first</p>
+            <p v-else-if="item.status === 'conflict'" class="mt-1 text-xs text-ink-amber-3">{{ t('Changed on the server meanwhile - choose which to keep') }}</p>
           </div>
           <div class="flex flex-shrink-0 items-center gap-1" @click.stop>
+            <Button v-if="item.status === 'conflict'" variant="subtle" size="sm" @click="resolving = item">{{ t('Resolve') }}</Button>
+            <Button v-else-if="item.status === 'failed'" variant="ghost" size="sm" icon="rotate-cw" :aria-label="t('Try again')" :disabled="!online || syncState.running" @click="retry(item)" />
             <Button variant="ghost" size="sm" icon="edit-2" :tooltip="t('Edit before uploading')" :aria-label="t('Edit')" :disabled="item.status === 'syncing'" @click="editItem(item)" />
             <Button variant="ghost" size="sm" icon="eye" :tooltip="t('View what is saved')" :aria-label="t('View')" @click="viewing = item" />
             <Button variant="ghost" size="sm" icon="trash-2" :tooltip="t('Remove from this device')" :aria-label="t('Discard')" :disabled="item.status === 'syncing'" @click="confirmDiscard = item" />
@@ -251,7 +259,92 @@
       </p>
     </section>
 
+    <!-- Download my records: the person's own records, to open and edit with no connection. -->
+    <section class="mb-4 rounded-2xl border border-outline-gray-1 bg-surface-white p-5 shadow-sm">
+      <div class="flex flex-wrap items-center gap-4">
+        <span class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-surface-gray-2 text-ink-gray-7">
+          <LucideIcon name="folder-down" class="h-7 w-7" />
+        </span>
+        <div class="min-w-0 flex-1 max-sm:basis-[calc(100%-4.5rem)]">
+          <h2 class="text-base font-semibold text-ink-gray-9">{{ t('My records') }}</h2>
+          <p class="text-sm text-ink-gray-5">
+            <template v-if="recordsInfo">{{ recordsTotal }} records saved on this device {{ savedAt(new Date(recordsInfo.generated.replace(' ', 'T')).getTime()) }}.</template>
+            <template v-else>{{ t('Not downloaded. Download your settlements, households and individuals to open and edit them with no internet.') }}</template>
+          </p>
+        </div>
+        <div class="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+          <Button
+            variant="solid"
+            icon-left="lucide-cloud-download"
+            class="max-sm:flex-1"
+            :disabled="!online || recordsState.downloading"
+            :loading="recordsState.downloading"
+            @click="doDownloadRecords"
+          >
+            {{ recordsInfo ? 'Update' : 'Download my records' }}
+          </Button>
+          <Button v-if="recordsInfo" variant="ghost" icon="trash-2" :tooltip="t('Remove my records from this device')" :aria-label="t('Remove')" @click="showRemoveRecords = true" />
+        </div>
+      </div>
+      <div v-if="recordsInfo" class="mt-4">
+        <div class="mb-3 flex flex-col gap-2 sm:flex-row">
+          <FormControl type="select" v-model="myDoctype" :options="myOptions" class="sm:w-64" />
+          <TextInput v-model="mySearch" type="text" :placeholder="t('Search')" class="flex-1" />
+        </div>
+        <ul class="max-h-[50vh] divide-y divide-outline-gray-1 overflow-auto rounded-lg border border-outline-gray-1">
+          <li v-for="r in myRows" :key="r.name">
+            <button class="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left hover:bg-surface-gray-1" @click="openRecord(r)">
+              <span class="min-w-0">
+                <span class="block truncate text-sm font-medium text-ink-gray-9">{{ r.label }}</span>
+                <span class="block truncate text-xs text-ink-gray-5">{{ r.name }}<template v-if="r.edited"> · edited here, waiting to upload</template></span>
+              </span>
+              <FeatherIcon name="chevron-right" class="h-4 w-4 flex-shrink-0 text-ink-gray-4" />
+            </button>
+          </li>
+          <li v-if="!myRows.length" class="px-3 py-6 text-center text-sm text-ink-gray-5">{{ t('Nothing here.') }}</li>
+        </ul>
+      </div>
+      <p v-if="recordsState.error" class="mt-3 text-sm text-ink-red-4">{{ recordsState.error }}</p>
+      <p class="mt-3 flex items-center gap-1.5 text-xs text-ink-gray-5">
+        <FeatherIcon name="lock" class="h-3.5 w-3.5" />
+        {{ t('Only your own records - no files or photos. Kept encrypted on this device, only for you, and removed when you sign out. Nothing is downloaded or uploaded on its own.') }}
+      </p>
+    </section>
+
     </template>
+
+    <Dialog v-model="showRemoveRecords" :options="{ title: 'Remove my records from this device?', size: 'sm' }">
+      <template #body-content>
+        <p class="text-sm text-ink-gray-6">{{ t('You will not be able to open them without internet until you download again. Edits not yet uploaded stay in the waiting list.') }}</p>
+        <div class="mt-4 flex justify-end gap-2">
+          <Button size="sm" icon-left="x" @click="showRemoveRecords = false">{{ t('Keep') }}</Button>
+          <Button size="sm" variant="solid" theme="red" icon-left="trash-2" @click="doRemoveRecords">{{ t('Remove') }}</Button>
+        </div>
+      </template>
+    </Dialog>
+
+    <!-- Someone changed the same fields on the server: choose. -->
+    <Dialog v-model="showResolve" :options="{ title: 'Changed on the server meanwhile', size: '2xl' }">
+      <template #body-content>
+        <p class="mb-3 text-sm text-ink-gray-6">
+          "{{ resolving?.title }}" was changed by someone else after you saved your edit. These fields differ:
+        </p>
+        <div class="max-h-[50vh] space-y-3 overflow-y-auto pr-1">
+          <div v-for="f in resolving?.conflict || []" :key="f.fieldname" class="rounded-lg border border-outline-gray-1 p-3 text-sm">
+            <p class="mb-2 font-medium text-ink-gray-9">{{ f.label }}</p>
+            <div class="grid gap-2 sm:grid-cols-2">
+              <div class="rounded bg-surface-blue-1 p-2"><p class="text-xs text-ink-gray-5">{{ t('Your edit') }}</p><p class="whitespace-pre-wrap break-words text-ink-gray-9">{{ show(f.mine) }}</p></div>
+              <div class="rounded bg-surface-gray-1 p-2"><p class="text-xs text-ink-gray-5">{{ t('On the server') }}</p><p class="whitespace-pre-wrap break-words text-ink-gray-9">{{ show(f.server) }}</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 flex justify-end gap-2">
+          <Button size="sm" icon-left="x" @click="resolving = null">{{ t('Decide later') }}</Button>
+          <Button size="sm" icon-left="server" :disabled="!online || syncState.running" @click="resolve('server')">{{ t('Keep server') }}</Button>
+          <Button size="sm" variant="solid" icon-left="check" :disabled="!online || syncState.running" :loading="syncState.running" @click="resolve('mine')">{{ t('Keep mine') }}</Button>
+        </div>
+      </template>
+    </Dialog>
 
     <!-- Look through the downloaded copy. -->
     <Dialog v-model="showBrowse" :options="{ title: 'Offline reference data', size: '4xl' }">
@@ -327,13 +420,16 @@ import { t } from '@/utils/translate'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import LucideIcon from '@/components/LucideIcon.vue'
-import { queue, syncState, syncAll, discard, downloadJson, downloadCsv, loadQueue } from '@/data/offlineQueue'
+import { queue, syncState, syncAll, resolveConflict, discard, downloadJson, downloadCsv, loadQueue } from '@/data/offlineQueue'
+import { recordsInfo, recordsState, downloadRecords, removeRecords, loadRecords, localRecordList } from '@/data/offlineRecords'
+import { session } from '@/data/session'
 import { packInfo, packState, downloadPack, removePack, getPack, loadPackInfo, checkOfflineReadiness } from '@/data/offlinePack'
 import { setPageTitle } from '@/data/pageTitle'
 
 setPageTitle('Sync Data')
 loadQueue()
 loadPackInfo()
+loadRecords(session.user)
 
 const router = useRouter()
 
@@ -353,7 +449,7 @@ const columns = [
   { label: 'Status', key: 'status', width: '14%' },
   { label: '', key: 'actions', width: '11%' },
 ]
-const STATUS_LABEL = { pending: 'Waiting', syncing: 'Uploading', done: 'Uploaded', failed: 'Failed' }
+const STATUS_LABEL = { pending: 'Waiting', syncing: 'Uploading', done: 'Uploaded', failed: 'Failed', conflict: 'Conflict' }
 const rows = computed(() =>
   queue.value.map((item) => ({
     id: item.id,
@@ -406,6 +502,7 @@ function statusTile(item) {
     syncing: 'bg-surface-blue-2 text-ink-blue-3',
     done: 'bg-surface-green-2 text-ink-green-3',
     failed: 'bg-surface-red-2 text-ink-red-4',
+    conflict: 'bg-surface-amber-2 text-ink-amber-3',
   }[item.status]
 }
 
@@ -481,13 +578,73 @@ async function doRemovePack() {
 }
 
 async function startSync() {
-  const { uploaded, failed } = await syncAll(selected.value.length ? [...selected.value] : null)
+  const { uploaded, failed, conflicts } = await syncAll(selected.value.length ? [...selected.value] : null)
   clearSelection()
+  if (conflicts) toast.error(`${conflicts} changed on the server meanwhile - press Resolve on the amber items.`)
   if (failed) toast.error(`${failed} could not be uploaded - see the red items.`)
   if (uploaded) {
     toast.success(`${uploaded} uploaded`)
     lastResult.value = `${uploaded} uploaded - nothing is stored on this device any more`
   }
+}
+
+const retry = async (item) => {
+  const { uploaded } = await syncAll([item.id])
+  if (uploaded) toast.success('Uploaded')
+}
+
+// --- Conflicts -------------------------------------------------------------------------------
+const resolving = ref(null)
+const showResolve = computed({ get: () => !!resolving.value, set: (v) => !v && (resolving.value = null) })
+const show = (v) => (v == null || v === '' ? '(empty)' : typeof v === 'object' ? JSON.stringify(v, null, 1) : String(v))
+async function resolve(choice) {
+  const item = resolving.value
+  if (!item) return
+  const outcome = await resolveConflict(item.id, choice)
+  resolving.value = null
+  if (choice === 'server') toast.success('Kept the server version - your edit was removed from this device.')
+  else if (outcome === 'done') toast.success('Uploaded - your edit replaced the server values.')
+  else if (outcome === 'failed') toast.error('Could not upload - see the red item.')
+}
+
+// --- My records (downloaded to this phone) ----------------------------------------------------------
+const showRemoveRecords = ref(false)
+const myDoctype = ref('')
+const mySearch = ref('')
+const myList = ref([])
+const recordsTotal = computed(() => Object.values(recordsInfo.value?.counts || {}).reduce((a, b) => a + b, 0))
+const myOptions = computed(() => Object.entries(recordsInfo.value?.counts || {}).map(([d, n]) => ({ label: `${d} (${n})`, value: d })))
+const LABEL_FIELDS = { Settlement: ['settlement_name', 'name'], 'Household Profile': ['household_head_name', 'name'], 'Individual Profile': ['member_name', 'name'] }
+watch([myDoctype, () => recordsInfo.value], async () => {
+  if (!myDoctype.value || !myOptions.value.some((o) => o.value === myDoctype.value)) myDoctype.value = myOptions.value[0]?.value || ''
+  myList.value = myDoctype.value ? await localRecordList(myDoctype.value, session.user) : []
+}, { immediate: true })
+const myRows = computed(() => {
+  const q = mySearch.value.trim().toLowerCase()
+  const fields = LABEL_FIELDS[myDoctype.value] || ['name']
+  return myList.value
+    .map((d) => ({
+      name: d.name,
+      label: fields.map((f) => d[f]).find(Boolean) || d.name,
+      edited: queue.value.some((i) => i.action === 'update' && i.doctype === myDoctype.value && i.name === d.name),
+    }))
+    .filter((r) => !q || `${r.label} ${r.name}`.toLowerCase().includes(q))
+    .slice(0, 200)
+})
+const openRecord = (r) => router.push({ name: 'OfflineRecord', params: { doctype: myDoctype.value, name: r.name } })
+async function doDownloadRecords() {
+  try {
+    await downloadRecords(session.user)
+    toast.success('Your records are saved on this device')
+  } catch {
+    // the message is shown under the button
+  }
+}
+async function doRemoveRecords() {
+  showRemoveRecords.value = false
+  await removeRecords()
+  myList.value = []
+  toast.success('Removed from this device')
 }
 
 async function doDiscard() {

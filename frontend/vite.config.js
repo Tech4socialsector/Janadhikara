@@ -68,6 +68,12 @@ export default defineConfig({
         // Drop precache entries from previous builds on activation, so an
         // old shell never keeps serving chunks the new build replaced.
         cleanupOutdatedCaches: true,
+        // The built files are served from /assets/janadhikara/frontend/, not under the /janadhikara/ scope the
+        // worker lives in: without this the saved copies were stored under addresses nothing ever asks for,
+        // so a page opened for the first time with no connection could not load its code.
+        modifyURLPrefix: { '': '/assets/janadhikara/frontend/' },
+        // a first-time install takes control of the open page at once (updates still wait for the prompt)
+        clientsClaim: true,
         // Only the app shell (JS/CSS/HTML/icons Vite actually built) is
         // precached - API GET responses are cached at runtime instead (see
         // the /api/v2/(document|method)/ rule below), on-demand as each
@@ -124,6 +130,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      '@frappe-text-editor': path.resolve(__dirname, 'node_modules/frappe-ui/src/components/TextEditor/TextEditor.vue'),
     },
   },
 })

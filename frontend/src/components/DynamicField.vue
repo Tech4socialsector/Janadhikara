@@ -341,7 +341,9 @@
 
 <script setup>
 import { computed, defineAsyncComponent, ref, watch } from 'vue'
-import { FormControl, FileUploader, Button, FeatherIcon, Tooltip, TextEditor, Rating, TimePicker, DatePicker, DateTimePicker } from 'frappe-ui'
+// The rich-text editor (tiptap / prosemirror, ~370 KB gzipped) loads only when a form has such a field.
+const TextEditor = defineAsyncComponent(() => import('@frappe-text-editor'))
+import { FormControl, FileUploader, Button, FeatherIcon, Tooltip, Rating, TimePicker, DatePicker, DateTimePicker } from 'frappe-ui'
 import { t } from '@/utils/translate'
 import UserLinkHoverCard from '@/components/UserLinkHoverCard.vue'
 // The map and the India states/districts pickers are only needed by a few forms: load them when first shown

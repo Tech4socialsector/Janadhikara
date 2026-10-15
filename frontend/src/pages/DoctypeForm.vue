@@ -318,6 +318,8 @@ import QuestionnairePanel from '@/components/QuestionnairePanel.vue'
 import { loadQuestions, missingAnswers, questionsFor, answersMap, isShown } from '@/data/questions'
 import { findModuleByDoctype } from '@/data/modules'
 import { enqueueRecord, isNetworkError, queue, updateRecord } from '@/data/offlineQueue'
+import { getLocalRecord } from '@/data/offlineRecords'
+import { session } from '@/data/session'
 import Skeleton from '@/components/Skeleton.vue'
 import ChildTable from '@/components/ChildTable.vue'
 import FormTabSections from '@/components/FormTabSections.vue'
@@ -337,14 +339,31 @@ import { getValidatorForField } from '@/utils/validation'
 import { evaluateDependsOn } from '@/utils/dependsOn'
 import { useBackToClose } from '@/utils/backClose'
 
-const { doctype, isNew, name, offlineId } = defineProps({
+const { doctype, isNew, name, offlineId, localRecord } = defineProps({
   doctype: { type: String, required: true },
   isNew: { type: Boolean, default: false },
   name: { type: String, default: null },
   // Set when editing a record saved on this device that has not been uploaded yet.
   offlineId: { type: String, default: null },
+  // Opened from the records downloaded to this phone (Sync Data): read from there, not the server.
+  localRecord: { type: Boolean, default: false },
 })
-const localItem = offlineId ? queue.value.find((i) => i.id === offlineId) : null
+// With no connection, an existing record that already has an edit waiting here opens as that edit.
+const localItem = offlineId
+  ? queue.value.find((i) => i.id === offlineId)
+  : !isNew && (localRecord || !navigator.onLine)
+    ? queue.value.find((i) => i.action === 'update' && i.doctype === doctype && i.name === name)
+    : null
+// No connection (or opened from Sync Data): the record comes from the copy downloaded to this phone.
+const useLocalCopy = !isNew && !localItem && (localRecord || !navigator.onLine)
+const localCopy = ref(null)
+const localCopyMissing = ref(false)
+if (useLocalCopy) {
+  getLocalRecord(doctype, name, session.user).then((doc) => {
+    if (doc) localCopy.value = doc
+    else localCopyMissing.value = true
+  })
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -476,14 +495,16 @@ const isPromptNamed = computed(() => metaResource.data?.autoname === 'prompt')
 const newDocName = ref('')
 
 const newDoc = isNew ? useNewDoc(doctype) : null
-const existingDoc = isNew || localItem ? null : useDoc({ doctype, name })
+const existingDoc = isNew || localItem || useLocalCopy ? null : useDoc({ doctype, name })
 
 // existingDoc.error used to be silently ignored - a failed record fetch
 // (permission denied, the record renamed/deleted since the link that led
 // here was created, etc.) fell through to the `v-else` form branch and
 // rendered a blank, fieldless form with no explanation and a Save button
 // that would only fail again once clicked, instead of a clear error.
-const loadError = computed(() => metaResource.error || existingDoc?.error)
+const loadError = computed(() =>
+  metaResource.error || existingDoc?.error || (localCopyMissing.value ? new Error('This record is not downloaded on this phone. Use Download my records on Sync Data while online.') : null),
+)
 
 // Delete was entirely missing from this app's generic form - useDoc()
 // already exposes a ready DELETE call, it just wasn't wired to anything.
@@ -500,7 +521,7 @@ const deletePermissionResource = isNew
       transform: (data) => data?.has_permission,
     })
 if (deletePermissionResource) deletePermissionResource.fetch()
-const canDelete = computed(() => !!deletePermissionResource?.data)
+const canDelete = computed(() => !!deletePermissionResource?.data && !useLocalCopy)
 
 const showDeleteConfirm = ref(false)
 useBackToClose(showDeleteConfirm)
@@ -1024,7 +1045,7 @@ watch(tableFields, initEmptyTableFields)
 
 // --- Load doc into `values` -------------------------------------------
 watch(
-  () => (localItem ? localItem.doc : isNew ? newDoc?.doc : existingDoc?.doc),
+  () => (localItem ? localItem.doc : useLocalCopy ? localCopy.value : isNew ? newDoc?.doc : existingDoc?.doc),
   (doc) => {
     if (!doc) return
     suppressDirtyTracking.value = true
@@ -1147,7 +1168,9 @@ async function saveOffline() {
       doctype,
       name: isNew ? null : name,
       action: isNew ? 'insert' : 'update',
-      doc: { ...JSON.parse(JSON.stringify(values)), ...(isNew ? {} : { modified: existingDoc.doc?.modified }) },
+      doc: { ...JSON.parse(JSON.stringify(values)), ...(isNew ? {} : { modified: (existingDoc?.doc || localCopy.value)?.modified }) },
+      // the server's copy this edit started from (see changedFields in data/offlineQueue.js)
+      base: isNew ? null : JSON.parse(JSON.stringify(existingDoc?.doc || localCopy.value || {})),
       title: (titleField && values[titleField]) || (isNew ? `New ${doctype}` : name),
     })
     toast.success('No connection - saved on this device. Upload it from Sync Data.')
@@ -1182,7 +1205,7 @@ async function save() {
   // Editing something still waiting on this device: update the saved copy, nothing goes to the server.
   if (localItem) return saveLocalEdit()
   // No connection: keep the record on this device (Sync Data uploads it later).
-  if (!navigator.onLine) return saveOffline()
+  if (!navigator.onLine || useLocalCopy) return saveOffline()
   saving.value = true
   saveError.value = null
   try {

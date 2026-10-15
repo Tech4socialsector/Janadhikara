@@ -96,12 +96,24 @@ async function dropDatabaseIfEmpty() {
 // ---- Queue operations ------------------------------------------------------------
 const clean = (value) => JSON.parse(JSON.stringify(value, (key, v) => (key.startsWith('__') ? undefined : v)))
 
-export async function enqueueRecord({ doctype, name, action, doc, title }) {
+// A record made offline has no real name yet: it carries a temporary one, which other offline
+// records (an individual of an offline household) can point to. When the record uploads, the
+// temporary name is swapped for the real one everywhere it was used.
+export const TEMP_PREFIX = 'OFFLINE-'
+export const isTempName = (v) => typeof v === 'string' && v.startsWith(TEMP_PREFIX)
+
+// `base` is the server's copy the edit started from (existing records only): it lets the upload
+// send just the fields that changed and notice if someone else changed the same ones meanwhile.
+export async function enqueueRecord({ doctype, name, action, doc, title, base = null }) {
+  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
   const item = {
-    id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    id,
     doctype,
     name: name || null,
+    tempName: action === 'insert' ? `${TEMP_PREFIX}${id}` : null,
     action, // 'insert' | 'update'
+    base: action === 'update' ? clean(base || {}) : null,
+    baseModified: action === 'update' ? base?.modified || doc?.modified || null : null,
     doc: clean({ ...doc, doctype }),
     title: title || name || doctype,
     createdAt: Date.now(),
@@ -112,7 +124,12 @@ export async function enqueueRecord({ doctype, name, action, doc, title }) {
   // The same existing record saved twice offline keeps only the latest edit.
   if (action === 'update') {
     const previous = queue.value.find((i) => i.action === 'update' && i.doctype === doctype && i.name === name)
-    if (previous) await discard(previous.id, { keepDb: true })
+    if (previous) {
+      // keep the copy the first edit started from, so the conflict check is against what the server had then
+      item.base = previous.base || item.base
+      item.baseModified = previous.baseModified || item.baseModified
+      await discard(previous.id, { keepDb: true })
+    }
   }
   await put(item)
   queue.value = [...queue.value, item]
@@ -123,7 +140,7 @@ export async function enqueueRecord({ doctype, name, action, doc, title }) {
 export async function updateRecord(id, { doc, title }) {
   const current = queue.value.find((i) => i.id === id)
   if (!current) return null
-  const item = { ...current, doc: clean({ ...doc, doctype: current.doctype }), title: title || current.title, status: 'pending', error: null }
+  const item = { ...current, doc: clean({ ...doc, doctype: current.doctype }), title: title || current.title, status: 'pending', error: null, conflict: null, waitingOn: null }
   await put(item)
   queue.value = queue.value.map((i) => (i.id === id ? item : i))
   return item
@@ -148,46 +165,163 @@ export const isNetworkError = (e) =>
   !navigator.onLine || e instanceof TypeError || /failed to fetch|network|load failed/i.test(String(e?.message || e))
 
 // ---- Upload ---------------------------------------------------------------------------
-async function uploadOne(item) {
-  if (item.action === 'insert') {
-    await call('frappe.client.insert', { doc: item.doc })
-  } else {
-    await call('frappe.client.save', { doc: { ...item.doc, name: item.name } })
+// Every upload carries the item's own id. If the connection drops after the server saved the
+// record but before the reply arrived, sending it again returns the first result - no duplicate.
+const META_KEYS = new Set(['name', 'owner', 'creation', 'modified', 'modified_by', 'docstatus', 'idx', 'parent', 'parentfield', 'parenttype', 'doctype'])
+const norm = (v) => {
+  if (Array.isArray(v)) return v.map(norm)
+  if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).filter(([k]) => !META_KEYS.has(k) && !k.startsWith('__')).map(([k, x]) => [k, norm(x)]))
+  if (v === '' || v === undefined) return null
+  return v
+}
+const same = (a, b) => JSON.stringify(norm(a)) === JSON.stringify(norm(b))
+
+// Only the fields the person changed (child tables are sent whole when any row changed).
+export function changedFields(item) {
+  const out = {}
+  for (const [key, value] of Object.entries(item.doc)) {
+    if (META_KEYS.has(key) || key.startsWith('__')) continue
+    if (!same(value, item.base?.[key])) out[key] = value
+  }
+  return out
+}
+
+const tempRefs = (item) => {
+  const found = new Set(JSON.stringify(item.doc).match(/OFFLINE-[0-9a-z-]+/g) || [])
+  found.delete(item.tempName)
+  return [...found]
+}
+
+// Swap a temporary name for the real one in every record still waiting.
+async function replaceTempName(temp, real) {
+  const swap = (v) => (v === temp ? real : Array.isArray(v) ? v.map(swap) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, swap(x)])) : v)
+  for (const item of queue.value) {
+    if (!JSON.stringify(item.doc).includes(temp)) continue
+    const next = { ...item, doc: swap(item.doc) }
+    setStatus(item.id, { doc: next.doc })
+    await put(next)
   }
 }
 
-// Uploads everything in order. An item that fails (a validation error, a record changed
-// by someone else meanwhile) stays in the list with its message; the rest carry on.
-// Pass `ids` to upload just those records (the ones ticked on the Sync Data page).
+async function uploadOne(item, force = false) {
+  if (item.action === 'insert') {
+    const res = await call('janadhikara.offline.push_insert', { client_id: item.id, doc: item.doc })
+    return { status: 'ok', name: res.name }
+  }
+  if (!item.base) {
+    // saved before the conflict check existed: the plain save, as it was
+    await call('frappe.client.save', { doc: { ...item.doc, name: item.name } })
+    return { status: 'ok' }
+  }
+  const changes = changedFields(item)
+  if (!Object.keys(changes).length) return { status: 'ok', unchanged: true }
+  return call('janadhikara.offline.push_update', {
+    client_id: item.id,
+    doctype: item.doctype,
+    name: item.name,
+    changes,
+    base: Object.fromEntries(Object.keys(changes).map((k) => [k, item.base[k]])),
+    base_modified: item.baseModified,
+    force: force ? 1 : 0,
+  })
+}
+
+// One item: 'done' | 'conflict' | 'failed' | 'offline'
+async function process(item, force = false) {
+  setStatus(item.id, { status: 'syncing', error: null, waitingOn: null })
+  try {
+    const res = await uploadOne(item, force)
+    if (res.status === 'conflict') {
+      const next = { ...item, status: 'conflict', error: null, conflict: res.fields }
+      setStatus(item.id, { status: 'conflict', error: null, conflict: res.fields })
+      await put(next)
+      return 'conflict'
+    }
+    setStatus(item.id, { status: 'done' })
+    if (item.action === 'insert' && res.name) await replaceTempName(item.tempName, res.name)
+    if (item.action === 'update') {
+      const { putLocalRecord, getLocalRecord } = await import('@/data/offlineRecords')
+      const local = await getLocalRecord(item.doctype, item.name, session.user)
+      if (local) await putLocalRecord(item.doctype, { ...local, ...item.doc, modified: res.modified || local.modified })
+    }
+    await new Promise((r) => setTimeout(r, 450)) // let the tick show
+    await discard(item.id, { keepDb: true })
+    return 'done'
+  } catch (e) {
+    if (isNetworkError(e)) {
+      setStatus(item.id, { status: 'pending', error: 'No connection' })
+      return 'offline'
+    }
+    setStatus(item.id, { status: 'failed', error: errorText(e) })
+    await put({ ...item, status: 'failed', error: errorText(e) })
+    return 'failed'
+  }
+}
+
+// Uploads the records in order: one that points at another offline record (an individual of a
+// household made offline) goes after it. An item that fails stays in the list with its message; the
+// rest carry on. Pass `ids` to upload just those (the ones ticked on the Sync Data page).
 export async function syncAll(ids = null) {
-  if (syncState.value.running) return { uploaded: 0, failed: 0 }
-  const items = queue.value.filter((i) => i.status !== 'done' && (!ids || ids.includes(i.id)))
+  if (syncState.value.running) return { uploaded: 0, failed: 0, conflicts: 0 }
+  const items = queue.value.filter((i) => i.status !== 'done' && i.status !== 'conflict' && (!ids || ids.includes(i.id)))
   syncState.value = { running: true, done: 0, total: items.length }
   let uploaded = 0
   let failed = 0
-  for (const item of items) {
-    setStatus(item.id, { status: 'syncing', error: null })
-    try {
-      await uploadOne(item)
-      setStatus(item.id, { status: 'done' })
-      await new Promise((r) => setTimeout(r, 450)) // let the tick show
-      await discard(item.id, { keepDb: true })
-      uploaded++
-    } catch (e) {
-      const offline = isNetworkError(e)
-      setStatus(item.id, { status: offline ? 'pending' : 'failed', error: offline ? 'No connection' : errorText(e) })
-      if (offline) {
-        failed += items.length - uploaded
+  let conflicts = 0
+  let remaining = items.map((i) => i.id)
+  let offline = false
+  let progress = true
+  while (remaining.length && progress && !offline) {
+    progress = false
+    for (const id of [...remaining]) {
+      const item = queue.value.find((i) => i.id === id)
+      if (!item) {
+        remaining = remaining.filter((r) => r !== id)
+        continue
+      }
+      if (tempRefs(item).length) continue // its parent has not uploaded (yet)
+      const outcome = await process(item)
+      remaining = remaining.filter((r) => r !== id)
+      progress = true
+      syncState.value = { ...syncState.value, done: syncState.value.done + 1 }
+      if (outcome === 'done') uploaded++
+      else if (outcome === 'conflict') conflicts++
+      else if (outcome === 'failed') failed++
+      else {
+        offline = true
+        failed += remaining.length + 1
         break
       }
-      await put({ ...item, status: 'failed', error: errorText(e) })
-      failed++
     }
-    syncState.value = { ...syncState.value, done: syncState.value.done + 1 }
+  }
+  // Left over: waiting for a record that failed, had a conflict, or was not ticked.
+  for (const id of remaining) {
+    const item = queue.value.find((i) => i.id === id)
+    if (!item || offline) continue
+    const parent = queue.value.find((p) => p.tempName && tempRefs(item).includes(p.tempName))
+    setStatus(id, { status: 'pending', waitingOn: parent?.title || 'a record it belongs to', error: null })
+    failed++
   }
   await dropDatabaseIfEmpty()
   syncState.value = { ...syncState.value, running: false }
-  return { uploaded, failed }
+  return { uploaded, failed, conflicts }
+}
+
+// The person's choice for a record someone else changed meanwhile.
+//  'mine'   - upload my values over the server's
+//  'server' - drop my edit and keep what the server has
+export async function resolveConflict(id, choice) {
+  const item = queue.value.find((i) => i.id === id)
+  if (!item) return 'done'
+  if (choice === 'server') {
+    await discard(id)
+    return 'done'
+  }
+  syncState.value = { running: true, done: 0, total: 1 }
+  const outcome = await process(item, true)
+  await dropDatabaseIfEmpty()
+  syncState.value = { running: false, done: 1, total: 1 }
+  return outcome
 }
 
 // ---- Download a copy ----------------------------------------------------------------------

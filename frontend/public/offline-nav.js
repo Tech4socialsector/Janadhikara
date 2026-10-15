@@ -48,8 +48,21 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(shell(request))
 })
 
+// "Download" on Sync Data asks for the app page to be kept now, so a first-time visit is ready
+// without having to open a second page.
+async function cacheShellNow() {
+  try {
+    const response = await fetch('/janadhikara/home', { credentials: 'include' })
+    const isHtml = (response.headers.get('content-type') || '').includes('text/html')
+    if (response.ok && isHtml && !response.redirected) await (await caches.open(SHELL_CACHE)).put(SHELL_KEY, response)
+  } catch {
+    // offline: nothing to keep
+  }
+}
+
 // Signed out: forget the saved shell (it carries the signed-in user's name).
 self.addEventListener('message', (event) => {
+  if (event.data === 'janadhikara-cache-shell') event.waitUntil(cacheShellNow())
   if (event.data === 'janadhikara-clear-caches') {
     event.waitUntil(Promise.all([caches.delete(SHELL_CACHE), caches.delete('janadhikara-api-reads')]))
   }

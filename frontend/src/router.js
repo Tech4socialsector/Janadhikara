@@ -52,6 +52,14 @@ const routes = [
     meta: { remountOnParamChange: true },
   },
   {
+    // Open a record from the copy downloaded to this phone (Download my records on Sync Data).
+    path: '/sync-data/record/:doctype/:name',
+    name: 'OfflineRecord',
+    component: () => import('@/pages/DoctypeForm.vue'),
+    props: (route) => ({ doctype: route.params.doctype, name: route.params.name, localRecord: true }),
+    meta: { remountOnParamChange: true },
+  },
+  {
     path: '/email-accounts',
     name: 'EmailAccountList',
     component: () => import('@/pages/EmailAccountList.vue'),
@@ -148,10 +156,16 @@ let modulesFetch = null
 async function ensureModulesLoaded() {
   if (modulesResource.data) return
   if (!modulesFetch) {
+    // a failed fetch (signed out, no connection) must not be remembered: the next call tries again
     modulesFetch = modulesResource.fetch()
+    modulesFetch.catch(() => (modulesFetch = null))
   }
-  await modulesFetch.catch(() => {})
+  await Promise.race([Promise.resolve(modulesFetch).catch(() => {}), new Promise((r) => setTimeout(r, 8000))])
 }
+
+// Opening the app on a page other than Login: ask for the module list at the same moment as the
+// "who is signed in" check instead of after it - one round trip less before the first screen.
+if (typeof window !== 'undefined' && !location.pathname.endsWith('/login')) ensureModulesLoaded()
 
 // Settings-dialog doctypes (Announcement, App Module Setting, ...) aren't in
 // any App Module Setting, but still render through the generic list/form
@@ -174,7 +188,8 @@ router.beforeEach(async (to, from, next) => {
     // resolves. Awaiting that here (a no-op after it's settled) avoids
     // treating "not checked yet" as "logged out" and bouncing a real
     // session to /login.
-    await initialUserCheck.catch(() => {})
+    // never wait forever: a stalled request must not leave the screen blank
+    await Promise.race([initialUserCheck.catch(() => {}), new Promise((r) => setTimeout(r, 8000))])
   } else {
     await recheckAuthIfStale()
   }

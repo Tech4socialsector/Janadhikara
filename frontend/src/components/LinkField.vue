@@ -130,6 +130,7 @@ import { Combobox, Dialog, Button, ErrorMessage, FeatherIcon, FormControl, Toolt
 import { useOnline } from '@vueuse/core'
 import { findModuleByDoctype } from '@/data/modules'
 import { getPack, localRows } from '@/data/offlinePack'
+import { queue } from '@/data/offlineQueue'
 import { t } from '@/utils/translate'
 import DynamicField from '@/components/DynamicField.vue'
 
@@ -282,6 +283,15 @@ const options = computed(() => {
   // option and Combobox would fall back to displaying the raw stored
   // value instead of the record's title_field label.
   const opts = rows.map((r) => ({ label: r[titleField.value] || r.name, value: String(r.name) }))
+  // Records made on this device and not uploaded yet can be picked too (an individual of a household
+  // made offline); they go up after the record they point to.
+  if (!online.value) {
+    for (const item of queue.value) {
+      if (item.action === 'insert' && item.doctype === props.field.options && item.tempName) {
+        opts.push({ label: `${item.title} (saved on this device)`, value: item.tempName })
+      }
+    }
+  }
   if (props.allowClear) {
     opts.unshift({ label: `All ${props.field.label}`, value: '' })
   } else {

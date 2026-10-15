@@ -153,6 +153,8 @@ const WARM_METHODS = [
   'janadhikara.api.get_field_function_registry',
 ]
 async function warmAppCaches(doctypes) {
+  const worker = (await navigator.serviceWorker?.getRegistration('/janadhikara/'))?.active
+  worker?.postMessage('janadhikara-cache-shell')
   const urls = [
     ...WARM_METHODS.map((m) => `/api/v2/method/${m}`),
     ...doctypes.map((d) => `/api/v2/doctype/${encodeURIComponent(d)}/meta`),

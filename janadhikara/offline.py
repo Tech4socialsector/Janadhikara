@@ -156,3 +156,129 @@ def _app_meta_doctypes():
 			if df.fieldtype in ("Table", "Table MultiSelect") and df.options in names:
 				children.add(df.options)
 	return sorted({*readable, *children})
+
+
+# ---- Uploads from the phone (always started by the person, from Sync Data) --------------------------------------
+
+LOG = "Offline Sync Log"
+RECORD_DOCTYPES = ("Settlement", "Household Profile", "Individual Profile")
+FILE_FIELDTYPES = {"Attach", "Attach Image", "Signature", "Image"}
+SKIP_TABLES = {"Individual Document"}  # attachments: never put on a device
+IGNORED_KEYS = {"name", "owner", "creation", "modified", "modified_by", "docstatus", "idx", "parent", "parentfield", "parenttype", "doctype", "__islocal", "__unsaved"}
+
+
+def _check_doctype(doctype):
+	if doctype in EXCLUDED or not frappe.db.exists("DocType", doctype):
+		frappe.throw(f"{doctype} cannot be uploaded from a device.", frappe.PermissionError)
+	meta = frappe.get_meta(doctype)
+	if meta.module not in APP_MODULES or meta.istable or meta.issingle or meta.custom:
+		frappe.throw(f"{doctype} cannot be uploaded from a device.", frappe.PermissionError)
+	return meta
+
+
+def _earlier(client_id):
+	"""The result of an earlier upload with this id (the reply never reached the phone), if any."""
+	if not client_id:
+		frappe.throw("Missing upload id.")
+	row = frappe.db.get_value(LOG, client_id, ["reference_doctype", "reference_name"], as_dict=True)
+	if row:
+		return {"status": "ok", "doctype": row.reference_doctype, "name": row.reference_name, "duplicate": 1}
+
+
+def _log(client_id, action, doctype, name):
+	frappe.get_doc(
+		{"doctype": LOG, "client_id": client_id, "action": action, "reference_doctype": doctype,
+		 "reference_name": name, "synced_by": frappe.session.user}
+	).insert(ignore_permissions=True)
+
+
+@frappe.whitelist(methods=["POST"])
+def push_insert(client_id, doc):
+	"""Create a record saved offline. Sending the same client_id again returns the first result."""
+	doc = frappe.parse_json(doc)
+	earlier = _earlier(client_id)
+	if earlier:
+		return earlier
+	_check_doctype(doc.get("doctype"))
+	doc.pop("name", None)
+	new = frappe.get_doc(doc)
+	new.insert()
+	_log(client_id, "Insert", new.doctype, new.name)
+	return {"status": "ok", "doctype": new.doctype, "name": new.name}
+
+
+def _plain(value):
+	"""A value as it is compared between the phone's copy and the server's: child rows without their ids."""
+	if isinstance(value, (list, tuple)):
+		return [_plain(v) for v in value]
+	if isinstance(value, dict):
+		return {k: _plain(v) for k, v in value.items() if k not in IGNORED_KEYS}
+	if hasattr(value, "as_dict"):
+		return _plain(value.as_dict())
+	if hasattr(value, "isoformat") or hasattr(value, "total_seconds"):
+		return str(value)
+	if value in (None, ""):
+		return None
+	return value
+
+
+@frappe.whitelist(methods=["POST"])
+def push_update(client_id, doctype, name, changes, base=None, base_modified=None, force=0):
+	"""Apply the fields changed offline to an existing record. If someone changed one of those same
+	fields on the server since the phone's copy was taken, nothing is saved and the clashing fields are
+	returned ({"status": "conflict"}) so the person can choose; force=1 keeps the phone's values."""
+	changes, base = frappe.parse_json(changes) or {}, frappe.parse_json(base) or {}
+	earlier = _earlier(client_id)
+	if earlier:
+		return earlier
+	_check_doctype(doctype)
+	doc = frappe.get_doc(doctype, name)
+	doc.check_permission("write")
+	meta = frappe.get_meta(doctype)
+
+	if not int(force or 0) and base_modified and str(doc.modified) != str(base_modified):
+		clashes = []
+		for fieldname in changes:
+			if _plain(doc.get(fieldname)) != _plain(base.get(fieldname)):
+				df = meta.get_field(fieldname)
+				clashes.append(
+					{"fieldname": fieldname, "label": df.label if df else fieldname, "mine": changes[fieldname], "server": _plain(doc.get(fieldname))}
+				)
+		if clashes:
+			return {"status": "conflict", "fields": clashes, "modified": str(doc.modified)}
+
+	for fieldname, value in changes.items():
+		if fieldname in IGNORED_KEYS or not meta.has_field(fieldname):
+			continue
+		doc.set(fieldname, value)
+	doc.save()
+	_log(client_id, "Update", doctype, name)
+	return {"status": "ok", "doctype": doctype, "name": name, "modified": str(doc.modified)}
+
+
+# ---- "Download my records" -----------------------------------------------------------------------------
+
+def _record_dict(doc):
+	data = doc.as_dict(no_nulls=True, convert_dates_to_str=True)
+	for df in doc.meta.fields:
+		if df.fieldtype in FILE_FIELDTYPES:
+			data.pop(df.fieldname, None)
+		elif df.fieldtype == "Table" and df.options in SKIP_TABLES:
+			data.pop(df.fieldname, None)
+	return data
+
+
+@frappe.whitelist()
+def get_offline_records(since=None):
+	"""The signed-in person's own Settlements, Household and Individual Profiles (what their role and
+	partner organisation allow), with child tables, for viewing and editing with no connection. No files or
+	photos. `names` lists every record they can still read, so the phone can drop the ones that went away."""
+	records, names = {}, {}
+	for doctype in RECORD_DOCTYPES:
+		if not frappe.db.exists("DocType", doctype) or not frappe.has_permission(doctype, "read"):
+			continue
+		names[doctype] = frappe.get_list(doctype, pluck="name", limit_page_length=MAX_ROWS)
+		filters = {"modified": [">", since]} if since else {}
+		changed = frappe.get_list(doctype, filters=filters, pluck="name", order_by="modified asc", limit_page_length=MAX_ROWS)
+		records[doctype] = [_record_dict(frappe.get_doc(doctype, n)) for n in changed]
+	return {"version": 1, "generated": str(now_datetime()), "user": frappe.session.user, "incremental": bool(since), "records": records, "names": names}
