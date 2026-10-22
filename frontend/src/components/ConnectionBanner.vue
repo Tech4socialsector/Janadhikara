@@ -11,9 +11,12 @@
         <FeatherIcon name="wifi-off" class="h-4 w-4" />
       </span>
       <div class="min-w-0 flex-1">
-        <p class="text-sm font-semibold leading-tight">{{ t("You're offline") }}</p>
+        <!-- The phone has no network at all: most often mobile data / Wi-Fi was switched off (or airplane
+        mode), so remind them to turn it on. A browser can't tell that apart from a place with no coverage,
+        so offline stays available for that. -->
+        <p class="text-sm font-semibold leading-tight">{{ t('Your internet looks switched off') }}</p>
         <p class="text-xs leading-snug text-white/70">
-          Everything you save is kept on this device<template v-if="pendingCount"> · {{ pendingCount }} waiting</template>.
+          Turn on mobile data or Wi-Fi. No signal here? You can keep working - what you save is kept on this device<template v-if="pendingCount"> · {{ pendingCount }} waiting</template>.
         </p>
       </div>
       <router-link v-if="hasPage('sync-data')" :to="{ name: 'SyncData' }" class="flex-shrink-0 rounded-lg bg-white/15 px-2.5 py-1.5 text-xs font-medium hover:bg-white/25">

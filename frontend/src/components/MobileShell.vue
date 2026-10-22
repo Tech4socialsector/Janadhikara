@@ -3,7 +3,6 @@
     <div class="flex flex-shrink-0 items-center gap-2 border-b bg-white px-3 py-3 dark:border-gray-800 dark:bg-gray-900">
       <!-- Back on every page except Home (where there is nowhere to go back to). -->
       <Button v-if="canGoBack" variant="ghost" size="sm" icon="arrow-left" aria-label="Back" class="-ml-1 flex-shrink-0" @click="goBack" />
-      <Button variant="ghost" size="sm" icon="menu" aria-label="Menu" class="flex-shrink-0" :class="canGoBack ? '' : '-ml-1'" @click="openMobileMenu" />
       <!-- The app icon goes Home. -->
       <router-link v-if="!canGoBack" :to="{ name: 'Home' }" class="flex flex-shrink-0 items-center" aria-label="Home">
         <img
@@ -71,7 +70,6 @@ import NotificationPanel from '@/components/NotificationPanel.vue'
 import AiAssistant from '@/components/AiAssistant.vue'
 import SettingsDialog from '@/components/SettingsDialog.vue'
 import { appLogo } from '@/data/branding'
-import { openMobileMenu } from '@/data/mobileMenu'
 import { pageTitle } from '@/data/pageTitle'
 import { showSettingsDialog } from '@/data/settingsDialog'
 import { unreadCount, toggleNotifications } from '@/data/notifications'

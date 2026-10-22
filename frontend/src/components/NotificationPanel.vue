@@ -1,7 +1,7 @@
 <template>
   <!-- Notifications as a popup, laid out like a WhatsApp / Telegram chat list:
   a round avatar, the title in bold with the time on the right, a one-line
-  preview underneath and a green unread badge. Full screen on phones. -->
+  preview underneath and a green unread badge. -->
   <Dialog v-model="show" :options="{ size: 'md', title: 'notifications-dialog' }">
     <template #body>
       <div class="notifications-panel flex flex-col">
@@ -126,8 +126,9 @@
 </template>
 
 <style>
-/* Popup size and, on phones, full screen - same hook the other dialogs use
-(the data-dialog attribute frappe-ui sets from options.title). */
+/* Popup size - same hook the other dialogs use (the data-dialog attribute
+frappe-ui sets from options.title). A centered card on phones too, like the
+chart drill-down popup. */
 [data-dialog='notifications-dialog'].dialog-overlay {
   z-index: 1050;
 }
@@ -138,22 +139,6 @@
 }
 .notifications-panel .chat-row {
   min-height: 4.5rem;
-}
-@media (max-width: 639px) {
-  [data-dialog='notifications-dialog'].dialog-overlay > div {
-    padding: 0;
-  }
-  [data-dialog='notifications-dialog'] .dialog-content {
-    margin: 0;
-    max-width: none;
-    width: 100vw;
-    height: 100dvh;
-    border-radius: 0;
-  }
-  .notifications-panel {
-    height: 100dvh;
-    max-height: none;
-  }
 }
 </style>
 

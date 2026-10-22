@@ -114,10 +114,9 @@
             <li
               v-for="row in group.rows"
               :key="row.name"
-              class="flex h-[7rem] cursor-pointer items-center gap-3 overflow-hidden rounded-xl border border-outline-gray-1 bg-surface-white py-3 pl-0 pr-3 shadow-sm active:bg-surface-gray-1 sm:hover:bg-surface-gray-1"
+              class="flex h-[7rem] cursor-pointer items-center gap-3 overflow-hidden rounded-xl border border-outline-gray-1 bg-surface-white px-3 py-3 shadow-sm active:bg-surface-gray-1 sm:hover:bg-surface-gray-1"
               @click="openTask(row)"
             >
-              <span class="my-[-0.75rem] w-1 flex-shrink-0 self-stretch" :class="group.bar" />
               <TaskHoverCard :todo="row" class="min-w-0 flex-1">
                 <div class="min-w-0">
                   <p
@@ -389,11 +388,11 @@ const rows = computed(() => {
 })
 
 const GROUPS = [
-  { key: 'High', label: 'High priority', icon: 'flag', titleCls: 'text-ink-red-4', bar: 'bg-red-500' },
-  { key: 'Medium', label: 'Medium priority', icon: 'flag', titleCls: 'text-ink-amber-3', bar: 'bg-amber-400' },
-  { key: 'Low', label: 'Low priority', icon: 'flag', titleCls: 'text-ink-blue-3', bar: 'bg-blue-400' },
+  { key: 'High', label: 'High priority', icon: 'flag', titleCls: 'text-ink-red-4' },
+  { key: 'Medium', label: 'Medium priority', icon: 'flag', titleCls: 'text-ink-amber-3' },
+  { key: 'Low', label: 'Low priority', icon: 'flag', titleCls: 'text-ink-blue-3' },
 ]
-const DONE_GROUP = { key: 'done', label: 'Completed', icon: DoneIcon, titleCls: 'text-ink-green-3', bar: 'bg-green-500' }
+const DONE_GROUP = { key: 'done', label: 'Completed', icon: DoneIcon, titleCls: 'text-ink-green-3' }
 
 const groups = computed(() => {
   const list = GROUPS.map((g) => ({

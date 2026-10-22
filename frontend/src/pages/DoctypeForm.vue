@@ -104,6 +104,20 @@
       </template>
     </Dialog>
 
+    <!-- Save with no network at all: usually data / Wi-Fi was switched off, so ask to turn it on first. -->
+    <Dialog v-model="showOfflineReminder" :options="{ title: t('Your internet looks switched off'), size: 'sm' }">
+      <template #body-content>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          Turn on mobile data or Wi-Fi and tap Try again to save it directly. If there really is no signal here,
+          save it on this device and upload it later from Sync Data.
+        </p>
+        <div class="mt-4 flex flex-wrap justify-end gap-2">
+          <Button icon-left="wifi-off" size="sm" @click="saveOfflineAnyway">{{ t('No signal here, save offline') }}</Button>
+          <Button icon-left="refresh-cw" variant="solid" size="sm" :loading="checkingConnection" @click="retryOnline">{{ t('Try again') }}</Button>
+        </div>
+      </template>
+    </Dialog>
+
     <Dialog v-model="showDeleteConfirm" :options="{ title: 'Delete this record?', size: 'sm' }">
       <template #body-content>
         <p class="text-sm text-gray-600 dark:text-gray-400">
@@ -286,8 +300,9 @@
 
       <ErrorMessage class="mt-4" :message="saveError" />
 
-      <!-- Save again at the bottom, so a long form does not need a scroll back to the top. -->
-      <div v-if="!loadError" class="mt-6 flex justify-end border-t border-outline-gray-1 pt-4">
+      <!-- Save again at the bottom, so a long form does not need a scroll back to the top.
+      Only in the installed app on a phone; desktop keeps just the one in the header. -->
+      <div v-if="!loadError && showBottomSave" class="mt-6 flex justify-end border-t border-outline-gray-1 pt-4">
         <Button variant="solid" :loading="saving" @click="save">
           <template #prefix>
             <FeatherIcon name="save" class="h-4 w-4" />
@@ -309,7 +324,7 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { onKeyStroke } from '@vueuse/core'
+import { breakpointsTailwind, onKeyStroke, useBreakpoints } from '@vueuse/core'
 import { useDoc, useNewDoc, useCall, call, Button, Dialog, ErrorMessage, FeatherIcon, toast } from 'frappe-ui'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
@@ -317,7 +332,7 @@ import RecordTasks from '@/components/RecordTasks.vue'
 import QuestionnairePanel from '@/components/QuestionnairePanel.vue'
 import { loadQuestions, missingAnswers, questionsFor, answersMap, isShown } from '@/data/questions'
 import { findModuleByDoctype } from '@/data/modules'
-import { enqueueRecord, isNetworkError, queue, updateRecord } from '@/data/offlineQueue'
+import { enqueueRecord, isNetworkError, queue, syncAll, updateRecord } from '@/data/offlineQueue'
 import { getDoc } from '@/data/offlineStore'
 import { session } from '@/data/session'
 import Skeleton from '@/components/Skeleton.vue'
@@ -338,6 +353,7 @@ import { usePincodeLookup } from '@/composables/usePincodeLookup'
 import { getValidatorForField } from '@/utils/validation'
 import { evaluateDependsOn } from '@/utils/dependsOn'
 import { useBackToClose } from '@/utils/backClose'
+import { serverReachable } from '@/data/connection'
 
 const { doctype, isNew, name, offlineId, localRecord } = defineProps({
   doctype: { type: String, required: true },
@@ -348,6 +364,11 @@ const { doctype, isNew, name, offlineId, localRecord } = defineProps({
   // Opened from the records downloaded to this phone (Sync Data): read from there, not the server.
   localRecord: { type: Boolean, default: false },
 })
+// The second (bottom) Save button is for the installed app on a phone only.
+const isMobile = useBreakpoints(breakpointsTailwind).smaller('sm')
+const isStandalone =
+  window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
+const showBottomSave = computed(() => isStandalone && isMobile.value)
 // With no connection, an existing record that already has an edit waiting here opens as that edit.
 const localItem = offlineId
   ? queue.value.find((i) => i.id === offlineId)
@@ -1163,10 +1184,30 @@ async function saveLocalEdit() {
   }
 }
 
-async function saveOffline() {
+// Save pressed with no network at all (see the reminder dialog).
+const showOfflineReminder = ref(false)
+const checkingConnection = ref(false)
+async function retryOnline() {
+  checkingConnection.value = true
+  const reachable = await serverReachable()
+  checkingConnection.value = false
+  if (!reachable) {
+    toast.error(t('Still no connection. Turn on mobile data or Wi-Fi, or save offline.'))
+    return
+  }
+  showOfflineReminder.value = false
+  save()
+}
+function saveOfflineAnyway() {
+  showOfflineReminder.value = false
+  saveOffline()
+}
+
+async function saveOffline({ uploadIfReachable = false } = {}) {
+  let item
   try {
     const titleField = metaResource.data?.title_field
-    await enqueueRecord({
+    item = await enqueueRecord({
       doctype,
       name: isNew ? null : name,
       action: isNew ? 'insert' : 'update',
@@ -1175,13 +1216,29 @@ async function saveOffline() {
       base: isNew ? null : JSON.parse(JSON.stringify(existingDoc?.doc || localCopy.value || {})),
       title: (titleField && values[titleField]) || (isNew ? `New ${doctype}` : name),
     })
-    toast.success('No connection - saved on this device. Upload it from Sync Data.')
-    markClean()
-    clearDraft()
-    router.push({ name: 'SyncData' })
   } catch {
     toast.error('Could not save on this device.')
+    return
   }
+  markClean()
+  clearDraft()
+  // Opened from the copy on this phone while the internet works: upload it straight away (through the
+  // queue, so a change someone else made meanwhile is still caught) instead of leaving it waiting.
+  if (uploadIfReachable && (await serverReachable())) {
+    const result = await syncAll([item.id])
+    if (result.uploaded && !queue.value.some((i) => i.id === item.id)) {
+      toast.success(t('Saved'))
+      // open the record from the server now, not from the phone's copy
+      const module = findModuleByDoctype(doctype)
+      router.push(module ? { name: 'DoctypeForm', params: { doctypeRoute: module.route, name } } : { name: 'SyncData' })
+      return
+    }
+    toast.warning('Saved on this device, but the upload did not go through. See Sync Data.')
+    router.push({ name: 'SyncData' })
+    return
+  }
+  toast.success('No connection - saved on this device. Upload it from Sync Data.')
+  router.push({ name: 'SyncData' })
 }
 
 async function save() {
@@ -1206,8 +1263,13 @@ async function save() {
   }
   // Editing something still waiting on this device: update the saved copy, nothing goes to the server.
   if (localItem) return saveLocalEdit()
-  // No connection: keep the record on this device (Sync Data uploads it later).
-  if (!navigator.onLine || useLocalCopy) return saveOffline()
+  // No network at all: usually data / Wi-Fi was switched off - remind them first (they can still save offline).
+  if (!navigator.onLine) {
+    showOfflineReminder.value = true
+    return
+  }
+  // Opened from the copy on this phone: kept here, and uploaded right away when the server answers.
+  if (useLocalCopy) return saveOffline({ uploadIfReachable: true })
   saving.value = true
   saveError.value = null
   try {

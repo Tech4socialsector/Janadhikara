@@ -30,8 +30,29 @@
               @update:model-value="(value) => setAnswer(q, (value || []).join('\n'))"
             />
 
+            <!-- Yes / No: tick boxes like the form's own Yes / No questions, one answer only -->
+            <div v-else-if="isYesNo(q)" role="radiogroup" :aria-label="q.question" class="grid gap-0.5 rounded-lg border border-outline-gray-2 bg-surface-white p-1.5" :class="yesNoOptions(q).length === 2 ? 'grid-cols-2' : 'sm:grid-cols-2'">
+              <button
+                v-for="o in yesNoOptions(q)"
+                :key="o"
+                type="button"
+                role="radio"
+                :aria-checked="answers[q.name] === o"
+                class="flex items-center gap-3 rounded-md px-2.5 py-2 text-left text-sm transition-colors focus:outline-none focus-visible:bg-surface-gray-2"
+                :class="answers[q.name] === o ? 'bg-surface-gray-2 font-medium text-ink-gray-9' : 'text-ink-gray-7 hover:bg-surface-gray-1'"
+                @click="setAnswer(q, answers[q.name] === o ? '' : o)"
+              >
+                <span
+                  class="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[5px] border transition-colors"
+                  :class="answers[q.name] === o ? 'border-gray-900 bg-gray-900 text-white dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900' : 'border-outline-gray-3 bg-surface-white'"
+                >
+                  <FeatherIcon v-if="answers[q.name] === o" name="check" class="h-3 w-3" />
+                </span>
+                <span class="min-w-0 break-words">{{ o }}</span>
+              </button>
+            </div>
             <FormControl
-              v-else-if="q.answer_type === 'Select' || q.answer_type === 'Yes / No'"
+              v-else-if="q.answer_type === 'Select'"
               type="select"
               class="[&_[data-slot=trigger]]:w-full"
               :options="selectOptions(q)"
@@ -85,7 +106,7 @@
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import { Button, FileUploader, FormControl, DatePicker, MultiSelect, toast } from 'frappe-ui'
+import { Button, FeatherIcon, FileUploader, FormControl, DatePicker, MultiSelect, toast } from 'frappe-ui'
 import { loadQuestions, questionsFor, answersMap, isShown } from '@/data/questions'
 
 const props = defineProps({
@@ -129,6 +150,8 @@ const selectOptions = (q) => [
   { label: '', value: '' },
   ...(q.answer_type === 'Yes / No' ? ['Yes', 'No'] : optionsOf(q)).map((o) => ({ label: o, value: o })),
 ]
+const yesNoOptions = (q) => (q.answer_type === 'Yes / No' ? ['Yes', 'No'] : optionsOf(q))
+const isYesNo = (q) => q.answer_type === 'Yes / No' || (q.answer_type === 'Select' && optionsOf(q).includes('Yes') && optionsOf(q).includes('No'))
 const chosen = (q) => (answers.value[q.name] || '').split('\n').map((v) => v.trim()).filter(Boolean)
 
 const locating = ref(null)

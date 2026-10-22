@@ -16,3 +16,20 @@ watch(online, (isOnline, wasOnline) => {
     justReconnected.value = false
   }
 })
+
+// Can our server really be reached right now? `online` only says the phone has a network: Wi-Fi with no
+// internet or a very weak signal still counts as online. Asks the server and waits a few seconds at most.
+// (`ping` is never answered from the phone's copy - see data/offlineApi.js - nor cached by the service worker.)
+export async function serverReachable(timeoutMs = 5000) {
+  if (!navigator.onLine) return false
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    const response = await fetch(`/api/method/ping?_=${Date.now()}`, { cache: 'no-store', signal: controller.signal })
+    return response.ok
+  } catch {
+    return false
+  } finally {
+    clearTimeout(timer)
+  }
+}

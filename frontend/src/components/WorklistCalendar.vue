@@ -102,7 +102,6 @@
             class="flex w-full items-stretch gap-3 rounded-xl border border-outline-gray-1 bg-surface-white p-3 text-left active:bg-surface-gray-1"
             @click="$emit('open', todo)"
           >
-            <span class="w-1 flex-shrink-0 rounded-full" :class="taskColor(todo, todayKey)" />
             <span class="min-w-0 flex-1">
               <span class="block text-sm font-medium text-ink-gray-9" >
                 {{ taskTitle(todo) }}

@@ -121,20 +121,23 @@
     :model-value="!!modelValue"
     @update:model-value="$emit('update:modelValue', $event ? 1 : 0)"
   />
-  <!-- Pick several: a normal field (a dropdown that takes more than one value); kept one per line -->
-  <div v-else-if="controlType === 'multi-choice'">
+  <!-- Pick several: a normal field (a dropdown that takes more than one value); kept one per line.
+  A Yes / No question (a Select) uses the same tick boxes, but only one can be ticked: it still holds one value. -->
+  <div v-else-if="controlType === 'multi-choice' || controlType === 'single-choice'">
     <label class="mb-1.5 block text-sm text-gray-700 dark:text-gray-300">{{ field.label }}<span v-if="isRequired" class="text-red-500">*</span></label>
-    <div class="overflow-hidden rounded-lg border border-outline-gray-2 bg-surface-white" role="group" :aria-label="field.label">
-      <div class="grid gap-0.5 p-1.5 sm:grid-cols-2" :class="choiceOptions.length > 8 ? 'lg:grid-cols-3' : ''">
+    <div class="overflow-hidden rounded-lg border border-outline-gray-2 bg-surface-white" :role="isSingleChoice ? 'radiogroup' : 'group'" :aria-label="field.label">
+      <div class="grid gap-0.5 p-1.5" :class="[isSingleChoice && choiceOptions.length === 2 ? 'grid-cols-2' : 'sm:grid-cols-2', choiceOptions.length > 8 ? 'lg:grid-cols-3' : '']">
         <button
           v-for="o in choiceOptions"
           :key="o"
           type="button"
           :disabled="isReadOnly"
-          :aria-pressed="chosenChoices.includes(o)"
+          :role="isSingleChoice ? 'radio' : undefined"
+          :aria-checked="isSingleChoice ? chosenChoices.includes(o) : undefined"
+          :aria-pressed="isSingleChoice ? undefined : chosenChoices.includes(o)"
           class="flex items-center gap-3 rounded-md px-2.5 py-2 text-left text-sm transition-colors focus:outline-none focus-visible:bg-surface-gray-2 disabled:cursor-not-allowed disabled:opacity-60"
           :class="chosenChoices.includes(o) ? 'bg-surface-gray-2 text-ink-gray-9' : 'text-ink-gray-7 hover:bg-surface-gray-1'"
-          @click="toggleChoice(o)"
+          @click="isSingleChoice ? pickChoice(o) : toggleChoice(o)"
         >
           <span
             class="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[5px] border transition-colors"
@@ -145,7 +148,7 @@
           <span class="min-w-0 break-words" :class="chosenChoices.includes(o) ? 'font-medium' : ''">{{ optionLabel(o) }}</span>
         </button>
       </div>
-      <div class="flex items-center justify-between border-t border-outline-gray-1 bg-surface-gray-1 px-3.5 py-1.5 text-p-xs text-ink-gray-5">
+      <div v-if="!isSingleChoice" class="flex items-center justify-between border-t border-outline-gray-1 bg-surface-gray-1 px-3.5 py-1.5 text-p-xs text-ink-gray-5">
         <span>{{ chosenChoices.length }} {{ t('of') }} {{ choiceOptions.length }} {{ t('selected') }}</span>
         <div v-if="!isReadOnly" class="flex items-center gap-1">
           <Button v-if="chosenChoices.length < choiceOptions.length" variant="ghost" size="sm" @click="selectAllChoices">{{ t('Select all') }}</Button>
@@ -518,6 +521,8 @@ const controlType = computed(() => {
   }
   switch (props.field.fieldtype) {
     case 'Select':
+      // A Yes / No question (its options include both): tick boxes instead of a dropdown, one answer only.
+      if (choiceOptions.value.includes('Yes') && choiceOptions.value.includes('No')) return 'single-choice'
       return 'select'
     case 'Check':
       return 'checkbox'
@@ -683,6 +688,9 @@ const toggleChoice = (o) => {
   emit('update:modelValue', next.join('\n'))
 }
 const chosenChoices = computed(() => String(props.modelValue || '').split('\n').map((v) => v.trim()).filter(Boolean))
+const isSingleChoice = computed(() => controlType.value === 'single-choice')
+// One answer: ticking another replaces it, ticking the ticked one again clears it.
+const pickChoice = (o) => emit('update:modelValue', props.modelValue === o ? '' : o)
 
 const isReadOnly = computed(() => !!props.field.read_only || props.readOnly)
 const readOnlyClass = computed(() =>

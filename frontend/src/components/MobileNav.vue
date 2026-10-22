@@ -31,6 +31,25 @@
       {{ t('Worklist') }}
     </router-link>
 
+    <!-- Sync Data: records saved on this phone, waiting to be uploaded (moved here from the Home tiles). -->
+    <router-link
+      v-if="showSync"
+      :to="{ name: 'SyncData' }"
+      class="flex flex-1 flex-col items-center gap-0.5 py-2 text-xs"
+      :class="route.name === 'SyncData' ? 'text-[var(--app-accent)] dark:text-gray-100' : 'text-gray-400 dark:text-gray-500'"
+    >
+      <span class="relative flex h-5 w-5 items-center justify-center">
+        <SyncCloudIcon class="h-5 w-5" />
+        <span
+          v-if="pendingCount > 0"
+          class="absolute -right-2.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-amber-500 px-1 text-2xs font-semibold text-white ring-2 ring-white dark:ring-gray-900"
+        >
+          {{ pendingCount > 9 ? '9+' : pendingCount }}
+        </span>
+      </span>
+      {{ t('Sync Data') }}
+    </router-link>
+
     <!-- Profile: the same hover card as the desktop sidebar, with Settings and
     Log out. Hover opens it; a tap opens it too (and a tap elsewhere closes it). -->
     <UserHoverCard placement="top" with-actions class="flex-1">
@@ -92,7 +111,7 @@ import { Avatar, Button, FeatherIcon } from 'frappe-ui'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { activeModule } from '@/data/activeModule'
-import { findModuleByRoute, hasPage } from '@/data/modules'
+import { findModuleByRoute, hasPage, modulesResource } from '@/data/modules'
 import { pendingCount } from '@/data/offlineQueue'
 import LucideIcon from '@/components/LucideIcon.vue'
 import SyncCloudIcon from '@/components/SyncCloudIcon.vue'
@@ -110,6 +129,9 @@ const showMenu = showMobileMenu
 useBackToClose(showMenu)
 
 const router = useRouter()
+// Same rule as the Home tile it replaces: on when a module switches the page on, and always when the modules could
+// not be loaded at all (offline on a first visit), so records saved on the phone can still be uploaded.
+const showSync = computed(() => hasPage('sync-data') || !!(modulesResource.error && !modulesResource.data?.length))
 // Only the module that is open (the one picked on Home or the one the current page belongs to), like the sidebar.
 const modules = computed(() => {
   const current = activeModule.value || findModuleByRoute(route.params.doctypeRoute)?.module
