@@ -16,11 +16,13 @@
   "families_in_house",
   "section_household_details",
   "hhid",
+  "household_label",
   "column_break_household_details",
   "availability_for_survey",
   "section_respondent_details",
   "respondent_name",
-  "contact_number",
+  "total_adults",
+  "total_children",
   "household_head_name",
   "head_sex",
   "head_age",
@@ -32,6 +34,7 @@
   "section_house_details",
   "own_house",
   "nature_of_ownership",
+  "land_size",
   "ownership_other_specify",
   "ownership_duration",
   "has_ownership_document",
@@ -46,9 +49,6 @@
   "own_house_elsewhere",
   "elsewhere_land_type",
   "column_break_house_details",
-  "allotted_govt_housing",
-  "allotted_where",
-  "allotted_state",
   "housing_support",
   "housing_support_details",
   "slum_redevelopment",
@@ -69,12 +69,9 @@
   "free_led_bulbs",
   "cooking_fuels",
   "registered_gas_connection",
-  "cylinder_price_registered",
-  "cylinder_price_unregistered",
   "free_lpg_connection",
   "column_break_basic_amenities",
   "lpg_subsidy",
-  "csc_access",
   "clean_cooking_initiative",
   "clean_cooking_support",
   "q45_1_other_please_specify",
@@ -95,18 +92,12 @@
   "pregnant_woman",
   "column_break_health",
   "person_with_disability",
-  "new_child_birth",
-  "birth_certificate",
   "death_in_family",
   "death_certificate",
   "health_observations",
   "children_observations",
   "section_location_address",
-  "geo_location",
   "address",
-  "column_break_location_address",
-  "latitude",
-  "longitude",
   "section_general_remarks",
   "general_remarks",
   "column_break_general_remarks",
@@ -201,6 +192,15 @@
    "unique": 1
   },
   {
+   "fieldname": "household_label",
+   "fieldtype": "Data",
+   "label": "Household",
+   "read_only": 1,
+   "hidden": 1,
+   "no_copy": 1,
+   "length": 240
+  },
+  {
    "fieldname": "column_break_household_details",
    "fieldtype": "Column Break"
   },
@@ -230,11 +230,16 @@
    "mandatory_depends_on": "eval:doc.household_status==\"Occupied\" && doc.availability_for_survey==\"Going Ahead\" && Number(doc.consent_given)===1"
   },
   {
-   "description": "Numerical; Not more or less than 10 digits",
-   "fieldname": "contact_number",
-   "fieldtype": "Data",
-   "label": "9. Phone Number of the respondent",
-   "options": "Phone"
+   "fieldname": "total_adults",
+   "fieldtype": "Int",
+   "label": "9.1. Total number of adults in the family?",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "total_children",
+   "fieldtype": "Int",
+   "label": "9.2. Total number of children in the family?",
+   "non_negative": 1
   },
   {
    "description": "Write the Full name. If the respondent is the same as the Head of the family, this comes automatically.",
@@ -265,7 +270,7 @@
    "fieldname": "languages_spoken",
    "fieldtype": "Small Text",
    "label": "13. Language spoken in the family",
-   "options": "Assamese\nBodo\nRabha\nKarbi\nGaro\nHindi\nDeswali\nBhojpuri\nSadri\nBengali\nRajbanshi\nGoalparia\nPunjabi\nNepali\nSylheti\nOther, Specify"
+   "options": "Assamese\nBihari\nBodo\nRabha\nKarbi\nGaro\nHindi\nDeswali\nBhojpuri\nSadri\nBengali\nRajbongshi\nGoalparia\nPunjabi\nNepali\nSylheti\nOther, Specify"
   },
   {
    "depends_on": "eval:(doc.languages_spoken||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other, Specify\")",
@@ -314,6 +319,13 @@
    "options": "\nOwned by the HH\nTenant\nOriginally allotted by Govt (Government Housing Schemes)\nAllotted to someone else but bought from them\nAllotted to someone else but rented from them\nEncroached\nInformal tenancy\nLeasehold arrangements\nCommunity Land\nShared occupancy\nOthers, specify"
   },
   {
+   "fieldname": "land_size",
+   "fieldtype": "Data",
+   "label": "16.1. Land size",
+   "depends_on": "eval:doc.own_house==\"Yes\"",
+   "description": "Mention the unit, e.g. 1 Katha, 2 Lessa or 600 sq ft."
+  },
+  {
    "depends_on": "eval:doc.nature_of_ownership==\"Others, specify\"",
    "fieldname": "ownership_other_specify",
    "fieldtype": "Data",
@@ -335,7 +347,7 @@
    "fieldtype": "Select",
    "label": "19. Do you have any house ownership document?",
    "length": 64,
-   "options": "\nYes\nNo\nUnable to capture/Unsure"
+   "options": "\nYes\nNo\nUnable to capture/Unsure\nNot willing to respond"
   },
   {
    "depends_on": "eval:doc.own_house==\"Yes\" && doc.has_ownership_document==\"Yes\"",
@@ -343,7 +355,7 @@
    "fieldtype": "Select",
    "label": "20. Do you have any physical copy of the land document you hold?",
    "length": 64,
-   "options": "\nYes\nNo\nUnable to capture/Unsure"
+   "options": "\nYes\nNo\nUnable to capture/Unsure\nNot willing to respond"
   },
   {
    "depends_on": "eval:doc.own_house==\"Yes\" && doc.has_physical_copy==\"Yes\"",
@@ -351,7 +363,7 @@
    "fieldname": "ownership_documents",
    "fieldtype": "Small Text",
    "label": "21. Which house ownership documents do you have?",
-   "options": "Patta\nSale Deed\nToken"
+   "options": "Patta\nSale Deed\nToken\nNot willing to respond"
   },
   {
    "depends_on": "eval:doc.own_house==\"Yes\"",
@@ -377,10 +389,12 @@
    "options": "\n0\n1\n2\n3\n4\n5\nNot Applicable"
   },
   {
-   "description": "This includes children also.\nDon't include those who stay here for less than 6 months in the Individual survey.",
+   "description": "Adults + children (9.1 + 9.2), counted automatically.",
    "fieldname": "member_count",
    "fieldtype": "Int",
-   "label": "25. No. of members staying in the family"
+   "label": "No. of members staying in the family",
+   "hidden": 1,
+   "read_only": 1
   },
   {
    "description": "Observation",
@@ -415,30 +429,6 @@
   {
    "fieldname": "column_break_house_details",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "allotted_govt_housing",
-   "fieldtype": "Select",
-   "label": "30. Have you ever been allotted any govt housing?",
-   "length": 64,
-   "options": "\nYes\nNo\nUnsure"
-  },
-  {
-   "depends_on": "eval:doc.allotted_govt_housing==\"Yes\"",
-   "description": "Instruction - Write District & State Name",
-   "fieldname": "allotted_where",
-   "fieldtype": "Link",
-   "label": "31. Where?",
-   "options": "Assam District"
-  },
-  {
-   "depends_on": "eval:doc.allotted_govt_housing==\"Yes\"",
-   "description": "Choose the state",
-   "fieldname": "allotted_state",
-   "fieldtype": "Data",
-   "label": "32. In case the allotted house is outside Assam, please select the state",
-   "options": "india_state",
-   "oldfieldtype": "Select"
   },
   {
    "description": "Pradhan Mantri Awas Yojana - Urban (PMAY-U)",
@@ -579,29 +569,18 @@
   },
   {
    "fieldname": "cooking_fuels",
-   "fieldtype": "Table MultiSelect",
+   "fieldtype": "Small Text",
    "label": "39. Fuels used for cooking",
-   "options": "Household Cooking Fuel"
+   "options": "Firewood\nCharcoal\nKerosene\nElectricity\nGas",
+   "description": "Pick all that apply."
   },
   {
-   "depends_on": "eval:(doc.cooking_fuels||[]).some(r=>r.fuel==\"Gas\")",
+   "depends_on": "eval:(doc.cooking_fuels||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Gas\")",
    "fieldname": "registered_gas_connection",
    "fieldtype": "Select",
    "label": "39.1. Do you have a registered gas connection?",
    "length": 64,
    "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.registered_gas_connection==\"Yes\"",
-   "fieldname": "cylinder_price_registered",
-   "fieldtype": "Currency",
-   "label": "39.1.1. What is the price of a cylinder (registered connection)?"
-  },
-  {
-   "depends_on": "eval:doc.registered_gas_connection==\"No\"",
-   "fieldname": "cylinder_price_unregistered",
-   "fieldtype": "Currency",
-   "label": "39.1.2. What is the price of a cylinder (unregistered connection/black)?"
   },
   {
    "description": "Pradhan Mantri Ujjwala Yojana (PMUY)",
@@ -620,13 +599,6 @@
    "fieldname": "lpg_subsidy",
    "fieldtype": "Select",
    "label": "41. Do you receive subsidy (money) directly transferred to your Aadhaar-linked bank account after purchase of LPG cylinders?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "csc_access",
-   "fieldtype": "Select",
-   "label": "42. Do you have access to the Common Service Centres (CSCs) for application support, document upload and grievance filing?",
    "length": 64,
    "options": "\nYes\nNo"
   },
@@ -663,10 +635,10 @@
   {
    "depends_on": "eval:doc.running_water==\"No\"",
    "fieldname": "drinking_water_source",
-   "fieldtype": "Select",
+   "fieldtype": "Small Text",
    "label": "45. If No, what is the source for drinking water?",
-   "length": 64,
-   "options": "\nShared handpump within 100mt distance\nShared handpump between 100mt to 500mt distance\nShared handpump between 500mt to 1000mt distance\nShared handpump beyond 1000mt distance\nShared Tap water supply within 100mt distance\nShared Tap water supply between 100mt to 500mt distance\nShared Tap water supply between 500mt to 1000mt distance\nShared Tap water supply beyond 1000mt distance\nCommunity Well\nRiver or Stream"
+   "options": "Shared handpump within 100mt distance\nShared handpump between 100mt to 500mt distance\nShared handpump between 500mt to 1000mt distance\nShared handpump beyond 1000mt distance\nShared Tap water supply within 100mt distance\nShared Tap water supply between 100mt to 500mt distance\nShared Tap water supply between 500mt to 1000mt distance\nShared Tap water supply beyond 1000mt distance\nCommunity Well\nRiver or Stream",
+   "description": "Pick all that apply."
   },
   {
    "fieldname": "drainage_facility",
@@ -738,7 +710,8 @@
    "fieldtype": "Select",
    "label": "53. Do you know about UHND sessions for your settlement",
    "length": 64,
-   "options": "\nYes\nNo"
+   "options": "\nYes\nNo",
+   "description": "Urban Health and Nutrition Days (UHNDs) are monthly outreach sessions organized under India's National Urban Health Mission (NUHM) to deliver primary healthcare, nutrition, and family planning services directly to urban poor, slum, and vulnerable populations"
   },
   {
    "fieldname": "terminally_ill_member",
@@ -767,26 +740,12 @@
    "fieldtype": "Column Break"
   },
   {
-   "description": "The details about Pension and UDID will come under Individual Profile & Entitlements section.\nIf Yes, questions 105 to 106 are shown in the Individual Profile.",
+   "description": "The details about Disability Pension and UDID will come under Individual Profile & Entitlements section.\nIf Yes, questions 105 to 106 are shown in the Individual Profile.",
    "fieldname": "person_with_disability",
    "fieldtype": "Select",
    "label": "57. Is there any person with disability in the HH ?",
    "length": 64,
    "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "new_child_birth",
-   "fieldtype": "Select",
-   "label": "58. Has there been a new child-birth within the family within the last 45 days?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "birth_certificate",
-   "fieldtype": "Select",
-   "label": "59. Have you received the Birth Certificate",
-   "length": 64,
-   "options": "\nYes\nNo\nIn process"
   },
   {
    "fieldname": "death_in_family",
@@ -819,39 +778,13 @@
    "description": "Please save the record before you start capturing the location and address.",
    "fieldname": "section_location_address",
    "fieldtype": "Section Break",
-   "label": "Location & Address"
-  },
-  {
-   "description": "Pick the household's point on the map.",
-   "fieldname": "geo_location",
-   "fieldtype": "Geolocation",
-   "label": "63. Capture the Location"
+   "label": "Address"
   },
   {
    "description": "To capture a simple address with a landmark for revisiting the same Household.\nORW need to write about the landmark.",
    "fieldname": "address",
    "fieldtype": "Small Text",
    "label": "64. Address & Landmark"
-  },
-  {
-   "fieldname": "column_break_location_address",
-   "fieldtype": "Column Break"
-  },
-  {
-   "description": "Filled in from the location captured on the map; can also be typed.",
-   "fieldname": "latitude",
-   "fieldtype": "Float",
-   "label": "64.1. Latitude",
-   "precision": "9",
-   "read_only": 1
-  },
-  {
-   "description": "Filled in from the location captured on the map; can also be typed.",
-   "fieldname": "longitude",
-   "fieldtype": "Float",
-   "label": "64.2. Longitude",
-   "precision": "9",
-   "read_only": 1
   },
   {
    "fieldname": "section_general_remarks",
@@ -1014,7 +947,7 @@
    "link_fieldname": "household"
   }
  ],
- "modified": "2026-10-06 17:14:25.705933",
+ "modified": "2026-10-26 10:48:25.914031",
  "modified_by": "Administrator",
  "module": "Baseline",
  "name": "Household Profile",
@@ -1081,12 +1014,12 @@
   }
  ],
  "row_format": "Dynamic",
- "search_fields": "household_head_name,respondent_name,house_no,street_name,contact_number,settlement",
+ "search_fields": "household_head_name,respondent_name,house_no,street_name,settlement,hhid",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "household_head_name",
+ "title_field": "household_label",
  "track_changes": 1,
  "allow_import": 1
 }

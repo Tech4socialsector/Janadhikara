@@ -45,17 +45,16 @@ class IndividualProfile(Document):
 			self.orw_name = frappe.session.user
 
 	def fill_from_household(self):
-		"""Questions 2 to 5 come from the Household Profile, so they are never typed again."""
+		"""Questions 2 to 4 come from the Household Profile, so they are never typed again."""
 		if not self.household:
 			return
 		household = frappe.db.get_value(
-			"Household Profile", self.household, ["hhid", "partner_organization", "settlement", "respondent_name", "pregnant_woman", "person_with_disability"], as_dict=True
+			"Household Profile", self.household, ["hhid", "partner_organization", "settlement", "pregnant_woman", "person_with_disability"], as_dict=True
 		)
 		if household:
 			self.hhid = household.hhid
 			self.implementing_org = household.partner_organization
 			self.settlement_intervention_unit = household.settlement
-			self.respondent_name = self.respondent_name or household.respondent_name
 			self.household_has_pregnant = int(household.pregnant_woman == "Yes")
 			self.household_has_disability = int(household.person_with_disability == "Yes")
 

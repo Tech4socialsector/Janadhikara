@@ -4,8 +4,8 @@
       <template #title>
         <h1 class="text-lg font-semibold text-ink-gray-9 sm:text-xl">{{ t('Sync Data') }}</h1>
         <p class="mt-0.5 flex items-center gap-1.5 text-xs text-ink-gray-5">
-          <span class="h-2 w-2 rounded-full" :class="online ? 'bg-green-500' : 'bg-red-500'" />
-          {{ online ? 'Online' : 'Offline' }} · {{ queue.length }} waiting to upload<template v-if="queue.length"> · {{ formatBytes(queueBytes) }}</template>
+          <span class="h-2 w-2 rounded-full" :class="online ? 'bg-green-500' : slowNetwork ? 'bg-amber-500' : 'bg-red-500'" />
+          {{ online ? 'Online' : slowNetwork ? t('Slow network') : 'Offline' }} · {{ queue.length }} waiting to upload<template v-if="queue.length"> · {{ formatBytes(queueBytes) }}</template>
         </p>
       </template>
       <template #actions>
@@ -53,8 +53,11 @@
     >
       <FeatherIcon name="wifi-off" class="mt-0.5 h-5 w-5 flex-shrink-0 text-ink-amber-3" />
       <div>
-        <p class="font-semibold">{{ t('You are offline.') }}</p>
-        <p class="text-ink-gray-6">
+        <p class="font-semibold">{{ slowNetwork ? t('Slow network (2G / 3G).') : t('You are offline.') }}</p>
+        <p v-if="slowNetwork" class="text-ink-gray-6">
+          The app is working from this device so it does not hang. Records you save are kept here; you can still upload them now, it may just take a while.
+        </p>
+        <p v-else class="text-ink-gray-6">
           Records you save are kept on this device. You can <b>download a copy</b> to see all of it, and upload it when the connection is back.
         </p>
       </div>
@@ -109,7 +112,7 @@
             </span>
             <span v-else-if="column.key === 'actions'" class="flex items-center gap-1" @click.stop>
               <Button v-if="row.raw.status === 'conflict'" variant="subtle" size="sm" @click="resolving = row.raw">{{ t('Resolve') }}</Button>
-              <Button v-else-if="row.raw.status === 'failed'" variant="ghost" size="sm" icon="rotate-cw" :tooltip="t('Try again')" :aria-label="t('Try again')" :disabled="!online || syncState.running" @click="retry(row.raw)" />
+              <Button v-else-if="row.raw.status === 'failed'" variant="ghost" size="sm" icon="rotate-cw" :tooltip="t('Try again')" :aria-label="t('Try again')" :disabled="!hasNetwork || syncState.running" @click="retry(row.raw)" />
               <Button variant="ghost" size="sm" icon="edit-2" :tooltip="t('Edit before uploading')" :aria-label="t('Edit')" :disabled="row.raw.status === 'syncing'" @click="editItem(row.raw)" />
               <Button variant="ghost" size="sm" icon="eye" :tooltip="t('View what is saved')" :aria-label="t('View')" @click="viewing = row.raw" />
               <Button variant="ghost" size="sm" icon="trash-2" :tooltip="t('Remove from this device')" :aria-label="t('Discard')" :disabled="row.raw.status === 'syncing'" @click="confirmDiscard = row.raw" />
@@ -165,7 +168,7 @@
           </div>
           <div class="flex flex-shrink-0 items-center gap-1" @click.stop>
             <Button v-if="item.status === 'conflict'" variant="subtle" size="sm" @click="resolving = item">{{ t('Resolve') }}</Button>
-            <Button v-else-if="item.status === 'failed'" variant="ghost" size="sm" icon="rotate-cw" :aria-label="t('Try again')" :disabled="!online || syncState.running" @click="retry(item)" />
+            <Button v-else-if="item.status === 'failed'" variant="ghost" size="sm" icon="rotate-cw" :aria-label="t('Try again')" :disabled="!hasNetwork || syncState.running" @click="retry(item)" />
             <Button variant="ghost" size="sm" icon="edit-2" :tooltip="t('Edit before uploading')" :aria-label="t('Edit')" :disabled="item.status === 'syncing'" @click="editItem(item)" />
             <Button variant="ghost" size="sm" icon="eye" :tooltip="t('View what is saved')" :aria-label="t('View')" @click="viewing = item" />
             <Button variant="ghost" size="sm" icon="trash-2" :tooltip="t('Remove from this device')" :aria-label="t('Discard')" :disabled="item.status === 'syncing'" @click="confirmDiscard = item" />
@@ -195,7 +198,7 @@
             variant="solid"
             icon-left="lucide-cloud-download"
             class="max-sm:flex-1"
-            :disabled="!online || storeState.downloading"
+            :disabled="!hasNetwork || storeState.downloading"
             :loading="storeState.downloading"
             @click="doDownload"
           >
@@ -251,7 +254,7 @@
         </div>
       </div>
       <p v-if="storeState.error" class="mt-3 text-sm text-ink-red-4">{{ storeState.error }}</p>
-      <p v-if="!online && !storeInfo" class="mt-3 text-sm text-ink-gray-5">{{ t('You need internet to download. Do it before you go offline next time.') }}</p>
+      <p v-if="!hasNetwork && !storeInfo" class="mt-3 text-sm text-ink-gray-5">{{ t('You need internet to download. Do it before you go offline next time.') }}</p>
 
       <!-- Look through what is stored; tap a record to open it. -->
       <div v-if="storeInfo" class="mt-5">
@@ -297,8 +300,8 @@
         </div>
         <div class="mt-4 flex justify-end gap-2">
           <Button size="sm" icon-left="x" @click="resolving = null">{{ t('Decide later') }}</Button>
-          <Button size="sm" icon-left="server" :disabled="!online || syncState.running" @click="resolve('server')">{{ t('Keep server') }}</Button>
-          <Button size="sm" variant="solid" icon-left="check" :disabled="!online || syncState.running" :loading="syncState.running" @click="resolve('mine')">{{ t('Keep mine') }}</Button>
+          <Button size="sm" icon-left="server" :disabled="!hasNetwork || syncState.running" @click="resolve('server')">{{ t('Keep server') }}</Button>
+          <Button size="sm" variant="solid" icon-left="check" :disabled="!hasNetwork || syncState.running" :loading="syncState.running" @click="resolve('mine')">{{ t('Keep mine') }}</Button>
         </div>
       </template>
     </Dialog>
@@ -346,7 +349,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
-import { online } from '@/data/connection'
+import { hasNetwork, online, slowNetwork } from '@/data/connection'
 import { Button, Dialog, Dropdown, FeatherIcon, FormControl, ListHeader, ListRowItem, ListRows, ListView, TabButtons, TextInput, toast } from 'frappe-ui'
 import { t } from '@/utils/translate'
 import AppLayout from '@/layouts/AppLayout.vue'

@@ -68,11 +68,17 @@
           </template>
           <span class="max-sm:hidden">{{ t('Delete') }}</span>
         </Button>
-        <Button v-if="!loadError" variant="solid" :loading="saving" aria-label="Save" @click="save">
+        <Button v-if="!loadError" variant="subtle" :loading="saving" aria-label="Save" @click="save">
           <template #prefix>
             <FeatherIcon name="save" class="h-4 w-4" />
           </template>
           <span class="max-sm:hidden">{{ t('Save') }}</span>
+        </Button>
+        <Button v-if="!loadError && canSubmit" variant="solid" :loading="saving" aria-label="Submit" @click="submit">
+          <template #prefix>
+            <FeatherIcon name="check-circle" class="h-4 w-4" />
+          </template>
+          <span class="max-sm:hidden">{{ t('Submit') }}</span>
         </Button>
       </template>
     </PageHeader>
@@ -154,6 +160,7 @@
         :doctype="doctype"
         :name="name"
         :links="metaResource.data.links"
+        :values="values"
       />
 
       <!-- Doctypes with more than one Tab Break (useFormTabs) get an actual
@@ -298,16 +305,31 @@
         </template>
       </div>
 
-      <ErrorMessage class="mt-4" :message="saveError" />
+      <ErrorMessage v-if="!missingFields.length" class="mt-4" :message="saveError" />
+      <!-- Each unanswered question is a link: tapping it opens its tab and scrolls to it. -->
+      <div v-else class="mt-4 rounded-md bg-surface-red-1 p-3 text-sm text-ink-red-4">
+        <p class="mb-1.5 font-medium">{{ t('Answer these questions before saving:') }}</p>
+        <ul class="space-y-1">
+          <li v-for="f in missingFields" :key="f.fieldname">
+            <button type="button" class="text-left underline underline-offset-2 hover:text-ink-red-3" @click="goToField(f.fieldname)">{{ f.label || f.fieldname }}</button>
+          </li>
+        </ul>
+      </div>
 
       <!-- Save again at the bottom, so a long form does not need a scroll back to the top.
       Only in the installed app on a phone; desktop keeps just the one in the header. -->
       <div v-if="!loadError && showBottomSave" class="mt-6 flex justify-end border-t border-outline-gray-1 pt-4">
-        <Button variant="solid" :loading="saving" @click="save">
+        <Button variant="subtle" :loading="saving" @click="save">
           <template #prefix>
             <FeatherIcon name="save" class="h-4 w-4" />
           </template>
           {{ t('Save') }}
+        </Button>
+        <Button v-if="canSubmit" class="ml-2" variant="solid" :loading="saving" @click="submit">
+          <template #prefix>
+            <FeatherIcon name="check-circle" class="h-4 w-4" />
+          </template>
+          {{ t('Submit') }}
         </Button>
       </div>
 
@@ -353,7 +375,7 @@ import { usePincodeLookup } from '@/composables/usePincodeLookup'
 import { getValidatorForField } from '@/utils/validation'
 import { evaluateDependsOn } from '@/utils/dependsOn'
 import { useBackToClose } from '@/utils/backClose'
-import { serverReachable } from '@/data/connection'
+import { serverReachable, slowNetwork, workOffline } from '@/data/connection'
 
 const { doctype, isNew, name, offlineId, localRecord } = defineProps({
   doctype: { type: String, required: true },
@@ -374,7 +396,7 @@ const localItem = offlineId
   ? queue.value.find((i) => i.id === offlineId)
   : name && name.startsWith('OFFLINE-')
     ? queue.value.find((i) => i.tempName === name) // a record made on this phone, opened from a list
-    : !isNew && (localRecord || !navigator.onLine)
+    : !isNew && (localRecord || workOffline())
     ? queue.value.find((i) => i.action === 'update' && i.doctype === doctype && i.name === name)
     : null
 // No connection (or opened from Sync Data): the record comes from the copy downloaded to this phone.
@@ -705,7 +727,23 @@ function childRowsSnapshot() {
 }
 
 function hookCtx() {
-  return { isNew, call, confirmNotice }
+  return { isNew, call, confirmNotice, setFieldOptions }
+}
+
+// A hook can narrow a question's choices (e.g. occupations by gender) with keep(option) -> true/false, or put the
+// full list back with null. The full list stays in the doctype, so the server accepts any of them; answers that
+// are no longer offered are dropped.
+// (The metadata is cached and shared between forms, so the full list is kept on the field itself.)
+function setFieldOptions(fieldname, keep) {
+  const field = metaResource.data?.fields?.find((f) => f.fieldname === fieldname)
+  if (!field) return
+  field.allOptions ??= field.options || ''
+  const all = field.allOptions.split('\n')
+  const offered = keep ? all.filter((o) => !o || keep(o)) : all
+  field.options = offered.join('\n')
+  const chosen = String(values[fieldname] || '').split('\n').map((v) => v.trim()).filter(Boolean)
+  const kept = chosen.filter((v) => offered.includes(v))
+  if (kept.length !== chosen.length) values[fieldname] = kept.join('\n')
 }
 
 // A notice a hook can raise (e.g. the DPDP consent explanation): bullet points
@@ -1136,7 +1174,25 @@ function missingRequiredFields() {
   })
 }
 
+// Questions left empty on the last Save, listed under the form as links to each of them.
+const missingFields = ref([])
+
+function goToField(fieldname) {
+  const idx = tabs.value.findIndex((tab) => tab.sections.some((section) => section.columns.some((column) => column.some((f) => f.fieldname === fieldname))))
+  if (idx >= 0) {
+    activeTabIdx.value = idx
+    expandedMobileTabs.value = { ...expandedMobileTabs.value, [idx]: true }
+  }
+  nextTick(() => {
+    const el = [...document.querySelectorAll(`[data-fieldname="${fieldname}"]`)].find((e) => e.offsetParent !== null)
+    if (!el) return
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    el.querySelector('input, textarea, select, button')?.focus({ preventScroll: true })
+  })
+}
+
 function firstValidationError() {
+  missingFields.value = []
   const unanswered = missingAnswers(doctype, values)
   if (unanswered.length) {
     unanswered.slice(0, 5).forEach((q) => toast.error(`Question ${q} is required`))
@@ -1146,6 +1202,7 @@ function firstValidationError() {
   if (missing.length) {
     // One toast per empty mandatory field, so each is called out on its own.
     missing.forEach((f) => toast.error(`${f.label || f.fieldname} is required`))
+    missingFields.value = missing
     return `Required: ${missing.map((f) => f.label || f.fieldname).join(', ')}`
   }
   for (const field of fields.value) {
@@ -1203,7 +1260,7 @@ function saveOfflineAnyway() {
   saveOffline()
 }
 
-async function saveOffline({ uploadIfReachable = false } = {}) {
+async function saveOffline({ uploadIfReachable = false, slow = false } = {}) {
   let item
   try {
     const titleField = metaResource.data?.title_field
@@ -1237,8 +1294,20 @@ async function saveOffline({ uploadIfReachable = false } = {}) {
     router.push({ name: 'SyncData' })
     return
   }
-  toast.success('No connection - saved on this device. Upload it from Sync Data.')
+  toast.success(slow ? t('Slow network - saved on this device. Upload it from Sync Data.') : 'No connection - saved on this device. Upload it from Sync Data.')
   router.push({ name: 'SyncData' })
+}
+
+// Profiles with a Status: Save keeps the record as work in progress (Partially Completed), Submit marks it
+// Completed. A Validated record is left to the coordinators, so it has no Submit.
+const hasStatus = computed(() => metaResource.data?.fields?.some((f) => f.fieldname === 'validation_status' && f.options === 'Validation Status'))
+const canSubmit = computed(() => hasStatus.value && values.validation_status !== 'Validated')
+
+async function submit() {
+  const before = values.validation_status
+  values.validation_status = 'Completed'
+  await save()
+  if (saveError.value) values.validation_status = before
 }
 
 async function save() {
@@ -1246,6 +1315,7 @@ async function save() {
     saveError.value = 'Name is required.'
     return
   }
+  if (hasStatus.value && !values.validation_status) values.validation_status = 'Partially Completed'
   const validationError = firstValidationError()
   if (validationError) {
     saveError.value = validationError
@@ -1270,6 +1340,8 @@ async function save() {
   }
   // Opened from the copy on this phone: kept here, and uploaded right away when the server answers.
   if (useLocalCopy) return saveOffline({ uploadIfReachable: true })
+  // 2G / 3G or a very weak signal: keep it here rather than wait on the server (upload it from Sync Data).
+  if (slowNetwork.value) return saveOffline({ slow: true })
   saving.value = true
   saveError.value = null
   try {

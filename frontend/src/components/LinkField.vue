@@ -127,14 +127,12 @@ controls painted through the dialog instead of being covered by it. */
 import { computed, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { Combobox, Dialog, Button, ErrorMessage, FeatherIcon, FormControl, Tooltip, call, useCall, toast } from 'frappe-ui'
-import { useOnline } from '@vueuse/core'
 import { findModuleByDoctype } from '@/data/modules'
 import { getTable, localRows } from '@/data/offlineStore'
 import { queue } from '@/data/offlineQueue'
+import { hasNetwork, online } from '@/data/connection'
 import { t } from '@/utils/translate'
 import DynamicField from '@/components/DynamicField.vue'
-
-const online = useOnline()
 
 const props = defineProps({
   field: { type: Object, required: true },
@@ -217,22 +215,24 @@ const recordsResource = useCall({
 // back-to-back, the second silently aborting the first (harmless, but
 // noisy: "AbortError: The user aborted a request" in the console on
 // every single Link field, every time its containing form loads).
-// No connection (or the server can't be reached): fill the picker from the copy of the
-// reference data kept on this device (see data/offlinePack.js).
+// No connection, a slow one (2G / 3G), or the server can't be reached: fill the picker from the copy of
+// the reference data kept on this device (see data/offlinePack.js). Says whether that copy was there.
 async function loadFromDevice() {
-  if (!props.field.options || filtersPending.value) return
+  if (!props.field.options || filtersPending.value) return false
   const table = await getTable(props.field.options)
-  if (!table) return
+  if (!table) return false
   localTitleField.value = table.title_field || 'name'
   const rows = await localRows(props.field.options, props.filters)
   localRowsData.value = rows
+  return true
 }
 
 watch(
   () => [props.field.options, JSON.stringify(props.filters), filtersPending.value, !!metaResource.data, online.value],
   () => {
     if (!props.field.options || filtersPending.value) return
-    if (!online.value) return loadFromDevice()
+    // slow network and this list is not on the phone: ask the server after all
+    if (!online.value) return loadFromDevice().then((found) => !found && hasNetwork.value && metaResource.data && recordsResource.fetch()?.catch?.(() => {}))
     if (metaResource.data) recordsResource.fetch()?.catch?.(loadFromDevice)
   },
   { immediate: true },

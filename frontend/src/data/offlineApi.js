@@ -3,11 +3,12 @@
 // here and waiting to upload (data/offlineQueue.js). Nothing new is stored for this: it only reads those.
 //
 // It sits in front of window.fetch, so every screen gets it without knowing: online, requests go
-// to the server untouched; with no network (or when a request fails to reach the server) the same
-// request is answered locally. Only reads are answered; a write is never faked.
+// to the server untouched; with no network, a slow one (2G / 3G), or when a request fails to reach the
+// server or takes too long, the same request is answered locally. Only reads are answered; a write is never faked.
 import { getTable } from '@/data/offlineStore'
 import { localDocs, query, pick, parsed, textOf } from '@/data/offlineQuery'
 import { offlineDashboard, offlineFilterOptions } from '@/data/offlineDashboard'
+import { SLOW_REPLY_MS, markSlowReplies, workOffline } from '@/data/connection'
 
 let realFetch = null
 
@@ -116,19 +117,39 @@ async function answer(req) {
   return null
 }
 
-const offlineNow = () => typeof navigator !== 'undefined' && navigator.onLine === false
+const answerLocally = (req) => answer(req).catch((e) => (console.warn('offline answer failed', req.kind, req.doctype || req.method, e), null))
 
 async function proxied(input, init = {}) {
   const req = describe(input, init)
   if (!req) return realFetch(input, init)
-  if (offlineNow()) return (await answer(req).catch((e) => (console.warn('offline answer failed', req.kind, req.doctype || req.method, e), null))) || realFetch(input, init)
-  try {
-    return await realFetch(input, init)
-  } catch (e) {
+  // No network, or a slow one (2G / 3G): the phone's copy first, the server only for what it does not hold.
+  if (workOffline()) return (await answerLocally(req)) || realFetch(input, init)
+  // A network that turns out slow: stop waiting after a while when the phone can answer instead.
+  const controller = new AbortController()
+  if (init.signal?.aborted) controller.abort(init.signal.reason)
+  init.signal?.addEventListener('abort', () => controller.abort(init.signal.reason))
+  let timer
+  let settled = false
+  const tooSlow = new Promise((resolve) => {
+    timer = setTimeout(async () => {
+      const local = await answerLocally(req)
+      if (!local || settled) return // nothing here to show: keep waiting for the server
+      markSlowReplies()
+      controller.abort()
+      resolve(local)
+    }, SLOW_REPLY_MS)
+  })
+  const live = realFetch(input, { ...init, signal: controller.signal }).catch(async (e) => {
     if (init.signal?.aborted) throw e
-    const local = await answer(req).catch((e) => (console.warn('offline answer failed', req.kind, req.doctype || req.method, e), null))
+    const local = await (controller.signal.aborted ? tooSlow : answerLocally(req))
     if (local) return local
     throw e
+  })
+  try {
+    return await Promise.race([live, tooSlow])
+  } finally {
+    settled = true
+    clearTimeout(timer)
   }
 }
 

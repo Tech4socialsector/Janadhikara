@@ -302,3 +302,13 @@ an equal share and the selected one (the only one with a label) gets a bigger on
     font-size: 16px !important;
   }
 }
+
+/* Phones zoom the whole page in when a text box with text smaller than 16px is tapped, which left the form
+looking shrunk and cut off while typing (worst after scrolling down). 16px text in form boxes stops that. */
+@media (max-width: 639px) {
+  input:not([type='checkbox']):not([type='radio']),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}

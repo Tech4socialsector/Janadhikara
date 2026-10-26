@@ -57,3 +57,8 @@ janadhikara.patches.v1_1.backfill_organization_name
 janadhikara.patches.v1_1.settlement_status
 janadhikara.patches.v1_1.cluster_master
 janadhikara.patches.v1_1.orw_unknown_users
+janadhikara.patches.v1_1.settlement_waste_disposal_select
+janadhikara.patches.v1_1.household_sheet_round2
+janadhikara.patches.v1_1.individual_sheet_round2
+janadhikara.patches.v1_1.feedback_round3
+janadhikara.patches.v1_1.feedback_round4

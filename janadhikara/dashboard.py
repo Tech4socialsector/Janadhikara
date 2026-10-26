@@ -170,7 +170,7 @@ def get_dashboard(
 	def card(key, title, value, doctype, filters, suffix=None):
 		return {"key": key, "title": title, "value": value, "suffix": suffix, "doctype": doctype, "filters": filters}
 
-	disability = _counts(INDIVIDUAL, "disability_in_family", ind).get("Yes", 0)
+	disability = _total(INDIVIDUAL, {**ind, "disability_type": ["is", "set"]})
 	women_not_working = _counts(INDIVIDUAL, "women_full_time_work", ind).get("No", 0)
 	return {
 		"cards": [
@@ -180,7 +180,7 @@ def get_dashboard(
 			card("completed", "Profiles completed", round(100 * completed / individuals) if individuals else 0, INDIVIDUAL, {**ind, "validation_status": ["in", ["Completed", "Validated"]]}, "%"),
 			card("validated", "Profiles validated", round(100 * validated / individuals) if individuals else 0, INDIVIDUAL, {**ind, "validation_status": "Validated"}, "%"),
 			card("out_of_school", "Children out of school", out_of_school, INDIVIDUAL, {**ind, "out_of_school_status": ["is", "set"]}),
-			card("disability", "Persons with disability", disability, INDIVIDUAL, {**ind, "disability_in_family": "Yes"}),
+			card("disability", "Persons with disability", disability, INDIVIDUAL, {**ind, "disability_type": ["is", "set"]}),
 			card("women_not_working", "Women not in full-time work", women_not_working, INDIVIDUAL, {**ind, "women_full_time_work": "No"}),
 		],
 		"household_status": _series(_counts(HOUSEHOLD, "household_status", hh), filters=hh, fieldname="household_status"),

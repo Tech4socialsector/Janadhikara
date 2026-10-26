@@ -97,7 +97,7 @@ export async function offlineDashboard(p) {
       card('completed', 'Profiles completed', pct(completed), INDIVIDUAL, { ...ind, validation_status: ['in', ['Completed', 'Validated']] }, '%'),
       card('validated', 'Profiles validated', pct(validated), INDIVIDUAL, { ...ind, validation_status: 'Validated' }, '%'),
       card('out_of_school', 'Children out of school', outOfSchool, INDIVIDUAL, outOfSchoolFilters),
-      card('disability', 'Persons with disability', countBy(I, 'disability_in_family').Yes || 0, INDIVIDUAL, { ...ind, disability_in_family: 'Yes' }),
+      card('disability', 'Persons with disability', I.filter((d) => matches(d, { disability_type: ['is', 'set'] })).length, INDIVIDUAL, { ...ind, disability_type: ['is', 'set'] }),
       card('women_not_working', 'Women not in full-time work', countBy(I, 'women_full_time_work').No || 0, INDIVIDUAL, { ...ind, women_full_time_work: 'No' }),
     ],
     household_status: series(countBy(H, 'household_status'), null, hh, 'household_status'),

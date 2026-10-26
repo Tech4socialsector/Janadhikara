@@ -88,18 +88,17 @@
   "doc_caste_certificate",
   "doc_marriage_certificate",
   "doc_income_certificate",
+  "doc_ews",
   "welfare_board_registered",
   "column_break_basic_docs",
   "welfare_board_other",
   "doc_living_certificate",
   "doc_eshram",
   "doc_bocw_card",
-  "doc_ews",
-  "disability_in_family",
   "disability_type",
+  "doc_pwd_certificate",
   "udid_applied",
   "udid_number",
-  "doc_pwd_certificate",
   "doc_transgender_certificate",
   "tab_schemes",
   "section_women",
@@ -331,8 +330,7 @@
    "fieldtype": "Data",
    "label": "5. Respondent Name",
    "read_only": 0,
-   "fetch_from": "household.respondent_name",
-   "description": "Filled in from the Household Profile. Change it if someone else answered for this person.",
+   "description": "The person answering for this member; they may be different from the household respondent.",
    "length": 64
   },
   {
@@ -511,7 +509,7 @@
    "fieldname": "occupation_1",
    "fieldtype": "Small Text",
    "label": "18. Occupation (Major source of income)",
-   "options": "\nStreet Vending\nHawking\nHousehold Responsibility/family care work\nHouse Help-Domestic work/Cook\nHome-based micro-enterprises\nHome based manufacturing and piece-rate work\nCasual wage labour\nBuilding and Other Construction Worker (BOCW)\nLaundary Worker\nBarber\nCobbler\nCook/Catering services\nTaxi Driver\nBus Driver\nBus Conductor\nBus Ticket Collector\nTruck Driver\nAuto Driver\nRickshaw Puller\nE-Rickshaw\nPorter\nSanitation Worker\nWaste Picker\nWaste Segregator\nManual Scavenger\nHousekeeping (Hospital/Hotel, etc.)\nSecurity Guard\nShop assistant/salesperson\nBeautician Services\nTailor\nWarehouse Worker\nSlaughterhouse Worker\nPlatform Worker - Swiggy/Zomato/Urban Company/Big basket/Amazon\nOwn Shop/Business\nClerical Work/Office Support Staff\nSocial sector - NGO\nIT/BPO\nGovernment Job\nNot working/Not applicable\nOthers",
+   "options": "\nStreet Vending\nHawking\nHousehold Responsibility/family care work\nHouse Help-Domestic work/Cook\nHome-based micro-enterprises\nHome based manufacturing and piece-rate work\nCasual wage labour\nBuilding and Other Construction Worker (BOCW)\nLaundary Worker\nBarber\nCobbler\nCook/Catering services\nTaxi Driver\nBus Driver\nBus Conductor\nBus Ticket Collector\nTruck Driver\nAuto Driver\nRickshaw Puller\nE-Rickshaw\nPorter\nSanitation Worker\nWaste Picker\nWaste Segregator\nManual Scavenger\nHousekeeping (Hospital/Hotel, etc.)\nSecurity Guard\nShop assistant/salesperson\nBeautician Services\nTailor\nWarehouse Worker\nSlaughterhouse Worker\nPlatform Worker - Swiggy/Zomato/Urban Company/Big basket/Amazon\nOwn Shop/Business\nClerical Work/Office Support Staff\nSocial sector - NGO\nIT/BPO\nGovernment Job\nStudent\nNot working/Not applicable\nOthers",
    "description": "Select maximum 3 options. If the person is not involved in any job, select Not working/Not applicable (then the women and remarks questions are not shown)."
   },
   {
@@ -527,7 +525,7 @@
    "fieldtype": "Select",
    "label": "19. Are the women members engaged in any full-time occupation/work?",
    "options": "\nYes\nNo",
-   "depends_on": "eval:doc.gender==\"Female\" && (doc.occupation_1||\"\").trim() && !(doc.occupation_1||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Not working/Not applicable\")",
+   "depends_on": "eval:doc.gender==\"Female\" && (doc.occupation_1||\"\").trim() && !(doc.occupation_1||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Not working/Not applicable\") && !(doc.occupation_1||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Student\") && doc.age>=18",
    "length": 3
   },
   {
@@ -809,6 +807,13 @@
    "length": 24
   },
   {
+   "fieldname": "doc_ews",
+   "fieldtype": "Select",
+   "label": "45.1. Do you have an EWS Certificate?",
+   "options": "\nYes\nNo",
+   "length": 3
+  },
+  {
    "fieldname": "welfare_board_registered",
    "fieldtype": "Select",
    "label": "46. Are you registered with any Welfare Boards?",
@@ -853,39 +858,10 @@
    "length": 26
   },
   {
-   "fieldname": "doc_ews",
-   "fieldtype": "Select",
-   "label": "51. Do you have an EWS Certificate?",
-   "options": "\nYes\nNo",
-   "length": 3
-  },
-  {
-   "fieldname": "disability_in_family",
-   "fieldtype": "Select",
-   "label": "52. Is there a person with disability in the family?",
-   "options": "\nYes\nNo",
-   "length": 3
-  },
-  {
    "fieldname": "disability_type",
    "fieldtype": "Data",
    "label": "53. State the disability",
-   "depends_on": "eval:doc.disability_in_family==\"Yes\"",
-   "length": 64
-  },
-  {
-   "fieldname": "udid_applied",
-   "fieldtype": "Select",
-   "label": "53.1. Have you applied for the Unique Disability ID (UDID)?",
-   "options": "\nYes\nNo",
-   "depends_on": "eval:doc.disability_in_family==\"Yes\"",
-   "length": 3
-  },
-  {
-   "fieldname": "udid_number",
-   "fieldtype": "Data",
-   "label": "53.2. What is the UDID Number?",
-   "depends_on": "eval:doc.udid_applied==\"Yes\"",
+   "depends_on": "eval:doc.household_has_disability",
    "length": 64
   },
   {
@@ -893,7 +869,24 @@
    "fieldtype": "Select",
    "label": "54. Do you have PWD certificate?",
    "options": "\nYes\nNo\nYes, but correction/ renewal needed",
-   "length": 35
+   "length": 35,
+   "depends_on": "eval:doc.household_has_disability"
+  },
+  {
+   "fieldname": "udid_applied",
+   "fieldtype": "Select",
+   "label": "54.1. Does the person with disability have a UDID?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.household_has_disability",
+   "length": 3,
+   "description": "UDID: Unique Disability ID, a national identification initiative of the Government of India."
+  },
+  {
+   "fieldname": "udid_number",
+   "fieldtype": "Data",
+   "label": "54.2. What is the UDID Number?",
+   "depends_on": "eval:doc.udid_applied==\"Yes\"",
+   "length": 64
   },
   {
    "fieldname": "doc_transgender_certificate",
@@ -914,7 +907,7 @@
    "fieldname": "section_women",
    "fieldtype": "Section Break",
    "label": "Schemes for Women",
-   "depends_on": "eval:Number(doc.consent_given)===1"
+   "depends_on": "eval:Number(doc.consent_given)===1 && doc.gender==\"Female\" && doc.age>=18"
   },
   {
    "fieldname": "sch_orunodoi",
@@ -930,7 +923,8 @@
    "label": "57. Do you currently receive a Widow Pension?",
    "options": "\nYes\nNo\nNot Applicable",
    "description": "Indira Gandhi National Widow Pension Scheme (Central); Indira Miri Universal Widow Pension Scheme (State)",
-   "length": 14
+   "length": 14,
+   "depends_on": "eval:doc.marital_status==\"Widowed\""
   },
   {
    "fieldname": "sch_mahila_udyamita",
@@ -972,7 +966,7 @@
    "fieldname": "section_pregnant",
    "fieldtype": "Section Break",
    "label": "Schemes for Pregnant and Lactating Mothers",
-   "depends_on": "eval:Number(doc.consent_given)===1 && doc.household_has_pregnant",
+   "depends_on": "eval:Number(doc.consent_given)===1 && doc.household_has_pregnant && doc.gender==\"Female\" && doc.age>=15 && doc.age<=49",
    "description": "Shown when the Household Profile says \"Yes\" to the matching health question."
   },
   {
@@ -1063,7 +1057,7 @@
    "fieldname": "section_girls",
    "fieldtype": "Section Break",
    "label": "Schemes for Girls",
-   "depends_on": "eval:Number(doc.consent_given)===1"
+   "depends_on": "eval:Number(doc.consent_given)===1 && doc.gender==\"Female\" && (doc.age||doc.age===0) && doc.age<=30"
   },
   {
    "fieldname": "sch_ssy",
@@ -1071,7 +1065,8 @@
    "label": "71. Have you applied for any savings scheme for the girl child under 10 years that will help in her education and career growth?",
    "options": "\nYes\nNo\nNot Applicable",
    "description": "Sukanya Samriddhi Yojana (SSY)",
-   "length": 14
+   "length": 14,
+   "depends_on": "eval:(doc.age||doc.age===0) && doc.age<10"
   },
   {
    "fieldname": "sch_nijut_moina",
@@ -1079,7 +1074,8 @@
    "label": "72. Have you availed any financial aid for school-going girl child to encourage continued education and reduce dropouts?",
    "options": "\nYes\nNo\nNot Applicable",
    "description": "Nijut Moina Scheme",
-   "length": 14
+   "length": 14,
+   "depends_on": "eval:doc.age>=14"
   },
   {
    "fieldname": "sch_pragyan_bharati_girls",
@@ -1087,7 +1083,8 @@
    "label": "73. For meritorious girl students, have you received free textbooks, uniform, and scooter for merit in academics?",
    "options": "\nYes\nNo\nNot Applicable",
    "description": "Pragyan Bharati Scheme",
-   "length": 14
+   "length": 14,
+   "depends_on": "eval:doc.age>=14"
   },
   {
    "fieldname": "column_break_girls",
@@ -1099,7 +1096,8 @@
    "label": "74. Have you availed adolescent-friendly health services, counseling, nutrition, mental health and reproductive health education?",
    "options": "\nYes\nNo\nNot Applicable",
    "description": "Rashtriya Kishor Swasthya Karyakram (RKSK)",
-   "length": 14
+   "length": 14,
+   "depends_on": "eval:doc.age>=10 && doc.age<=19"
   },
   {
    "fieldname": "sch_majoni",
@@ -1107,7 +1105,8 @@
    "label": "75. Are you receiving monthly financial assistance for your higher education as part of the government's support program for girl students in Assam?",
    "options": "\nYes\nNo\nNot Applicable",
    "description": "Majoni Scheme",
-   "length": 14
+   "length": 14,
+   "depends_on": "eval:doc.age>=16"
   },
   {
    "fieldname": "sch_nipi_girls",
@@ -1115,13 +1114,14 @@
    "label": "76. Do you receive weekly iron-folic acid tablets, biannual deworming, and nutrition counseling at your school or Anganwadi Centre to help prevent anaemia and improve your health?",
    "options": "\nYes\nNo\nNot Applicable",
    "description": "National Iron Plus Initiative - NIPI",
-   "length": 14
+   "length": 14,
+   "depends_on": "eval:doc.age>=5 && doc.age<=19"
   },
   {
    "fieldname": "section_boys",
    "fieldtype": "Section Break",
    "label": "Schemes for Boys",
-   "depends_on": "eval:Number(doc.consent_given)===1"
+   "depends_on": "eval:Number(doc.consent_given)===1 && doc.gender==\"Male\" && doc.age>=10 && doc.age<=30"
   },
   {
    "fieldname": "sch_nijut_babu_asoni",
@@ -1129,7 +1129,8 @@
    "label": "77. Are you receiving annual financial assistance for undergraduate and postgraduate studies under the newly launched government scheme to encourage boys' higher education enrolment?",
    "options": "\nYes\nNo\nNot Applicable",
    "description": "Nijut Babu Asoni",
-   "length": 14
+   "length": 14,
+   "depends_on": "eval:doc.age>=16"
   },
   {
    "fieldname": "sch_cm_jibon_prerana",
@@ -1137,7 +1138,8 @@
    "label": "78. For fresh graduates, have you availed any financial support for skill upgrading and entrepreneurship?",
    "options": "\nYes\nNo\nNot Applicable",
    "description": "CM Jibon Prerana Scheme",
-   "length": 14
+   "length": 14,
+   "depends_on": "eval:doc.age>=18"
   },
   {
    "fieldname": "column_break_boys",
@@ -1149,7 +1151,8 @@
    "label": "79. Have you availed adolescent-friendly health services, counseling, nutrition, mental health and reproductive health education?",
    "options": "\nYes\nNo\nNot Applicable",
    "description": "Rashtriya Kishor Swasthya Karyakram (RKSK)",
-   "length": 14
+   "length": 14,
+   "depends_on": "eval:doc.age>=10 && doc.age<=19"
   },
   {
    "fieldname": "sch_pragyan_bharati_boys",
@@ -1157,13 +1160,14 @@
    "label": "80. For meritorious boy students, have you received free textbooks, uniform, and scooter for merit in academics?",
    "options": "\nYes\nNo\nNot Applicable",
    "description": "Pragyan Bharati Scheme",
-   "length": 14
+   "length": 14,
+   "depends_on": "eval:doc.age>=14"
   },
   {
    "fieldname": "section_skills",
    "fieldtype": "Section Break",
    "label": "Skill Development Schemes",
-   "depends_on": "eval:Number(doc.consent_given)===1"
+   "depends_on": "eval:Number(doc.consent_given)===1 && doc.age>=15 && doc.age<=45"
   },
   {
    "fieldname": "sch_estp",
@@ -1171,7 +1175,8 @@
    "label": "81. Are you enrolled in any skill training and job placement opportunities for urban population aged 18-35 years under DAY-NULM?",
    "options": "\nYes\nNo\nNot Applicable",
    "description": "Employment Through Skills Training & Placement (ESTP)",
-   "length": 14
+   "length": 14,
+   "depends_on": "eval:doc.age>=18 && doc.age<=35"
   },
   {
    "fieldname": "sch_sep",
@@ -1213,7 +1218,7 @@
    "fieldname": "section_selfemp",
    "fieldtype": "Section Break",
    "label": "Self-Employment and Entrepreneurship Schemes",
-   "depends_on": "eval:Number(doc.consent_given)===1"
+   "depends_on": "eval:Number(doc.consent_given)===1 && doc.age>=18"
   },
   {
    "fieldname": "sch_pm_svanidhi",
@@ -1280,7 +1285,7 @@
    "fieldtype": "Section Break",
    "label": "Labour Welfare Assistance Schemes",
    "description": "Only about 10 schemes that are critical and carry the highest benefits need to be taken up and prioritised in the coming visits. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
-   "depends_on": "eval:Number(doc.consent_given)===1"
+   "depends_on": "eval:Number(doc.consent_given)===1 && doc.age>=18"
   },
   {
    "fieldname": "sch_pm_shram_yogi",
@@ -1424,7 +1429,7 @@
    "fieldname": "section_elderly",
    "fieldtype": "Section Break",
    "label": "Schemes for Elderly",
-   "depends_on": "eval:Number(doc.consent_given)===1"
+   "depends_on": "eval:Number(doc.consent_given)===1 && doc.age>=60"
   },
   {
    "fieldname": "sch_orunodoi_3",
@@ -1474,7 +1479,8 @@
    "label": "111. Do you have the government life insurance scheme with Rs 2 lakh coverage at an annual premium of Rs 436?",
    "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
    "description": "Pradhan Mantri Jeevan Jyoti Bima Yojana. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
-   "length": 17
+   "length": 17,
+   "depends_on": "eval:doc.age>=18 && doc.age<=50"
   },
   {
    "fieldname": "sch_pmsby",
@@ -1482,7 +1488,8 @@
    "label": "112. Do you have the accident insurance scheme with Rs 2 lakh coverage for death or total disability and Rs 1 lakh for partial disability at an annual premium of Rs 20?",
    "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
    "description": "Pradhan Mantri Suraksha Bima Yojana. Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
-   "length": 17
+   "length": 17,
+   "depends_on": "eval:doc.age>=18 && doc.age<=70"
   },
   {
    "fieldname": "column_break_health_finance",
@@ -1502,13 +1509,14 @@
    "label": "114. Do you have the contributory pension scheme for unorganised workers that gives a monthly pension between Rs 1,000 and Rs 5,000 after age 60, with family pension for the spouse?",
    "options": "\nYes\nNo\nDiscontinued\nCanceled/Declined",
    "description": "Atal Pension Yojana (APY). Discontinued = the benefit was received earlier but has stopped. Canceled/Declined = the application was cancelled or rejected.",
-   "length": 17
+   "length": 17,
+   "depends_on": "eval:doc.age>=18"
   },
   {
    "fieldname": "section_housing",
    "fieldtype": "Section Break",
    "label": "Housing & Shelter Schemes",
-   "depends_on": "eval:Number(doc.consent_given)===1"
+   "depends_on": "eval:Number(doc.consent_given)===1 && doc.age>=18"
   },
   {
    "fieldname": "sch_pmay_u",
@@ -1556,7 +1564,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-10-07 09:28:48.553746",
+ "modified": "2026-10-26 10:48:25.914031",
  "modified_by": "Administrator",
  "module": "Baseline",
  "name": "Individual Profile",

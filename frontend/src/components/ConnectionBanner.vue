@@ -10,7 +10,14 @@
       <span class="conn-pulse-off relative flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white/10">
         <FeatherIcon name="wifi-off" class="h-4 w-4" />
       </span>
-      <div class="min-w-0 flex-1">
+      <!-- 2G / 3G or a very weak signal: the app works from this device so screens do not hang. -->
+      <div v-if="slowNetwork" class="min-w-0 flex-1">
+        <p class="text-sm font-semibold leading-tight">{{ t('Slow network - working offline') }}</p>
+        <p class="text-xs leading-snug text-white/70">
+          What you save is kept on this device<template v-if="pendingCount"> · {{ pendingCount }} waiting</template>. Upload it from Sync Data, or when the signal is better.
+        </p>
+      </div>
+      <div v-else class="min-w-0 flex-1">
         <!-- The phone has no network at all: most often mobile data / Wi-Fi was switched off (or airplane
         mode), so remind them to turn it on. A browser can't tell that apart from a place with no coverage,
         so offline stays available for that. -->
@@ -61,7 +68,7 @@
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { FeatherIcon } from 'frappe-ui'
-import { online, justReconnected } from '@/data/connection'
+import { online, justReconnected, slowNetwork } from '@/data/connection'
 import { pendingCount } from '@/data/offlineQueue'
 import { t } from '@/utils/translate'
 import { hasPage } from '@/data/modules'

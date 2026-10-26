@@ -17,7 +17,7 @@
           />
         </div>
         <div v-for="(column, cIdx) in section.visibleColumns" :key="cIdx" class="flex min-w-0 flex-1 basis-0 flex-col gap-4">
-          <div v-for="field in column" :key="field.fieldname">
+          <div v-for="field in column" :key="field.fieldname" :data-fieldname="field.fieldname" class="scroll-mt-24">
             <DynamicField
               :field="field"
               :doctype="doctype"

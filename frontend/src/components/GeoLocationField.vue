@@ -46,8 +46,13 @@ L.Icon.Default.mergeOptions({
 // Same map defaults, base layers and overlays as Frappe desk's own
 // Geolocation control (see frappe/utils map_defaults), so a field looks and
 // behaves the same in both places.
-const DEFAULT_CENTER = [19.08, 72.8961]
-const DEFAULT_ZOOM = 5
+// The programme works in Guwahati: the map opens on the city and can't be panned away from it.
+const DEFAULT_CENTER = [26.1445, 91.7362]
+const DEFAULT_ZOOM = 12
+const GUWAHATI_BOUNDS = [
+  [25.95, 91.45],
+  [26.35, 92.05],
+]
 const PIN_ZOOM = 15
 const TILES = {
   street: {
@@ -303,7 +308,7 @@ onMounted(async () => {
   if (!mapEl.value) return
   patchGeoJSON()
 
-  map = L.map(mapEl.value).setView(DEFAULT_CENTER, DEFAULT_ZOOM)
+  map = L.map(mapEl.value, { maxBounds: GUWAHATI_BOUNDS, maxBoundsViscosity: 1, minZoom: 11 }).setView(DEFAULT_CENTER, DEFAULT_ZOOM)
 
   const street = L.tileLayer(TILES.street.url, TILES.street.options)
   const satellite = L.tileLayer(TILES.satellite.url, TILES.satellite.options)
@@ -416,7 +421,15 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
-  if (map) map.remove()
+  // Forgotten first, so the delayed re-measures above (and a Back pressed mid-zoom) find no map to touch.
+  const old = map
+  map = null
+  try {
+    old?.stop()
+    old?.remove()
+  } catch {
+    // a map torn down mid-animation can throw; the page is leaving anyway
+  }
 })
 </script>
 

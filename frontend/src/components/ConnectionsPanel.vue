@@ -26,11 +26,41 @@
         <Button v-if="conn.canCreate" variant="ghost" size="sm" icon="plus" :tooltip="t('Add')" :aria-label="t('Add')" @click="addNew(conn)" />
       </div>
     </div>
+    <!-- A household: one place per family member (adults + children). Members already profiled are listed by name;
+    for the rest, type the name and Add profile opens their Individual Profile with the household and name filled in. -->
+    <div v-if="memberSlots" class="mt-3 rounded-lg border px-3 py-2.5 dark:border-gray-800">
+      <p class="mb-2 text-sm text-gray-700 dark:text-gray-300">
+        {{ t('Family members') }}: {{ memberSlots.profiles.length }} {{ t('of') }} {{ memberSlots.expected }} {{ t('profiles added') }}
+      </p>
+      <div class="space-y-1.5">
+        <button
+          v-for="(p, i) in memberSlots.profiles"
+          :key="p.name"
+          type="button"
+          class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-800 hover:bg-surface-gray-1 dark:text-gray-200"
+          @click="openProfile(p.name)"
+        >
+          <FeatherIcon name="check-circle" class="h-4 w-4 flex-shrink-0 text-green-600" />
+          <span class="truncate">{{ i + 1 }}. {{ p.member_name || p.name }}</span>
+        </button>
+        <div v-for="i in memberSlots.missing" :key="'new' + i" class="flex items-center gap-2">
+          <span class="w-6 flex-shrink-0 text-right text-sm text-gray-500">{{ memberSlots.profiles.length + i }}.</span>
+          <input
+            v-model="newNames[i]"
+            type="text"
+            class="min-w-0 flex-1 rounded border border-outline-gray-2 bg-surface-white px-2 py-1 text-sm"
+            :placeholder="t('Name of the member')"
+            :aria-label="t('Name of the member')"
+          />
+          <Button size="sm" icon-left="plus" @click="addMember(i)">{{ t('Add profile') }}</Button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { watch } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { FeatherIcon, Button, useCall } from 'frappe-ui'
 import { findModuleByDoctype } from '@/data/modules'
@@ -54,6 +84,8 @@ const props = defineProps({
   doctype: { type: String, required: true },
   name: { type: String, required: true },
   links: { type: Array, default: () => [] },
+  // the record's own values: a household's member count decides how many member profiles are expected
+  values: { type: Object, default: () => ({}) },
 })
 
 const router = useRouter()
@@ -80,6 +112,32 @@ const connections = props.links
     }
   })
 
+// Member profiles of a household (see the template): how many are expected, and those already made.
+const memberConn = props.doctype === 'Household Profile' ? connections.find((c) => c.linkDoctype === 'Individual Profile' && c.route) : null
+const memberProfiles = useCall({
+  url: '/api/v2/document/Individual Profile',
+  method: 'GET',
+  params: () => ({ fields: JSON.stringify(['name', 'member_name']), filters: JSON.stringify({ household: props.name }), order_by: 'creation asc', limit: 100 }),
+  immediate: false,
+})
+const newNames = reactive({})
+const memberSlots = computed(() => {
+  const expected = Number(props.values?.member_count) || 0
+  if (!memberConn || !expected) return null
+  const profiles = memberProfiles.data || []
+  return { expected, profiles, missing: Math.max(0, expected - profiles.length) }
+})
+function addMember(i) {
+  router.push({
+    name: 'DoctypeNew',
+    params: { doctypeRoute: memberConn.route },
+    query: { household: props.name, ...(newNames[i]?.trim() ? { member_name: newNames[i].trim() } : {}) },
+  })
+}
+function openProfile(profile) {
+  router.push({ name: 'DoctypeForm', params: { doctypeRoute: memberConn.route, name: profile } })
+}
+
 // Re-fetch every connection's count whenever the record itself changes
 // (e.g. navigating from one Household profile to another without a full
 // page reload) - immediate:true covers the first mount.
@@ -89,6 +147,7 @@ watch(
     for (const conn of connections) {
       conn.countResource.fetch()
     }
+    if (memberConn) memberProfiles.fetch()
   },
   { immediate: true },
 )

@@ -521,8 +521,10 @@ const controlType = computed(() => {
   }
   switch (props.field.fieldtype) {
     case 'Select':
-      // A Yes / No question (its options include both): tick boxes instead of a dropdown, one answer only.
+      // A short list (a Yes / No question, or up to 10 options): tap the answer instead of opening a dropdown,
+      // one answer only. Longer lists stay a dropdown.
       if (choiceOptions.value.includes('Yes') && choiceOptions.value.includes('No')) return 'single-choice'
+      if (choiceOptions.value.length && choiceOptions.value.length <= 10) return 'single-choice'
       return 'select'
     case 'Check':
       return 'checkbox'

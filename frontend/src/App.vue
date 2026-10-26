@@ -11,7 +11,17 @@
       forced a real remount. Keying only these routes (not every route)
       keeps Home/Dashboard/Worklist - which have no such params - from
       remounting their shell on every navigation for no reason. -->
+      <!-- A page that fails while it is being drawn would otherwise leave a white screen
+      (seen after going Back): say so and offer a way out instead. -->
+      <div v-if="pageError" class="flex min-h-screen flex-col items-center justify-center gap-3 p-6 text-center">
+        <p class="text-base font-medium text-ink-gray-8">{{ t("This page didn't load properly.") }}</p>
+        <div class="flex gap-2">
+          <Button variant="subtle" @click="goBack">{{ t('Go back') }}</Button>
+          <Button variant="solid" @click="reloadPage">{{ t('Try again') }}</Button>
+        </div>
+      </div>
       <component
+        v-else
         :is="Component"
         :key="route.meta.remountOnParamChange ? route.fullPath : route.name"
       />
@@ -21,12 +31,29 @@
 </template>
 
 <script setup>
-import { watch } from 'vue'
-import { FrappeUIProvider } from 'frappe-ui'
+import { onErrorCaptured, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { Button, FrappeUIProvider } from 'frappe-ui'
+import { t } from '@/utils/translate'
 import '@/data/session'
 import '@/data/theme'
 import { brandingResource } from '@/data/branding'
 import PwaUpdatePrompt from '@/components/PwaUpdatePrompt.vue'
+
+// Only failures while a page is set up or drawn blank the screen; a failing button click does not.
+// Vue names the step in words while developing and as an error code in the built app.
+const DRAWING = /setup function|render function|mounted hook|runtime-(0|1|bm|m)$/
+const pageError = ref(false)
+const route = useRoute()
+const router = useRouter()
+onErrorCaptured((error, instance, info) => {
+  if (DRAWING.test(String(info))) pageError.value = true
+  return true // still reported by app.config.errorHandler
+})
+// the next page gets a fresh start
+watch(() => route.fullPath, () => (pageError.value = false))
+const goBack = () => (history.length > 1 ? router.back() : router.push({ name: 'Home' }))
+const reloadPage = () => window.location.reload()
 
 // The browser tab icon should match whatever logo is actually configured
 // in App Settings (app_logo, editable by an admin at any time) rather than
