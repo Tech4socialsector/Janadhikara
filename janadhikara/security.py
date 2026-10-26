@@ -11,8 +11,8 @@ def add_security_headers(response=None, request=None):
 	headers.setdefault("X-Content-Type-Options", "nosniff")
 	headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
 	headers.setdefault("X-Frame-Options", "SAMEORIGIN")
-	# The app uses the microphone (voice input) and location (maps) on its own pages only.
-	headers.setdefault("Permissions-Policy", "camera=(), microphone=(self), geolocation=(self), payment=()")
+	# The app uses the camera (photos), microphone (voice input) and location (maps) on its own pages only.
+	headers.setdefault("Permissions-Policy", "camera=(self), microphone=(self), geolocation=(self), payment=()")
 	if request is not None and (request.is_secure or request.headers.get("X-Forwarded-Proto") == "https"):
 		headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
 	path = getattr(request, "path", "") or ""

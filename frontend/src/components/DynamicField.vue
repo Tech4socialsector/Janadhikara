@@ -46,7 +46,7 @@
       <img
         v-if="isImageField"
         :src="modelValue"
-        class="h-12 w-12 flex-shrink-0 rounded object-cover"
+        class="h-28 w-40 flex-shrink-0 rounded object-cover"
       />
       <FeatherIcon v-else name="paperclip" class="h-5 w-5 flex-shrink-0 text-gray-400" />
       <a
@@ -61,15 +61,111 @@
         <Button variant="ghost" size="sm" icon="x" tooltip="Clear" @click="$emit('update:modelValue', null)" />
       </Tooltip>
     </div>
+    <!-- A photo: one Attach Image button; it asks how - take it with the camera, pick one already on the phone,
+    or give a link to an image. Each way is its own FileUploader (camera sets capture so the camera opens at once). -->
+    <div v-else-if="isImageField">
+      <Button v-if="!showAttachDialog" variant="outline" @click="openAttachDialog">
+        <template #prefix>
+          <FeatherIcon name="paperclip" class="h-4 w-4" />
+        </template>
+        {{ t('Attach Image') }}
+      </Button>
+      <!-- Opens in place under the button (not as a popup): a form row is already edited in a dialog, and a dialog
+      opened from inside another one never shows. -->
+      <div v-if="showAttachDialog" class="mt-2 rounded-lg border border-outline-gray-2 bg-surface-white p-2 shadow-sm">
+        <div class="mb-2 flex items-center justify-between">
+          <span class="text-sm font-medium text-ink-gray-8">{{ t('Attach Image') }}</span>
+          <Button variant="ghost" size="sm" icon="x" :aria-label="t('Close')" @click="closeAttachPanel" />
+        </div>
+          <!-- Camera: a live view from the device's camera (laptop or phone) and a Take photo button -->
+          <div v-if="cameraOn" ref="cameraBox" class="relative overflow-hidden rounded-md bg-black">
+            <video ref="cameraVideo" autoplay playsinline muted class="mx-auto block max-h-[40vh] w-full object-contain" />
+            <!-- the controls sit on the picture, so they are always in view however tall the camera's picture is -->
+            <div class="absolute inset-x-0 bottom-0 flex items-center justify-center gap-6 bg-gradient-to-t from-black/60 to-transparent pb-3 pt-8">
+              <button
+                type="button"
+                class="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30"
+                :aria-label="t('Cancel')"
+                :title="t('Cancel')"
+                @click="stopCamera"
+              >
+                <FeatherIcon name="x" class="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                class="flex h-14 w-14 items-center justify-center rounded-full border-4 border-white bg-white/90 text-gray-900 hover:bg-white disabled:opacity-60"
+                :disabled="cameraUploading"
+                :aria-label="t('Take photo')"
+                :title="t('Take photo')"
+                @click="takePhoto"
+              >
+                <FeatherIcon :name="cameraUploading ? 'loader' : 'camera'" class="h-6 w-6" :class="cameraUploading ? 'animate-spin' : ''" />
+              </button>
+              <span class="h-10 w-10" />
+            </div>
+          </div>
+          <div v-else-if="!linkMode" class="grid grid-cols-3 gap-2">
+            <FileUploader
+              file-types="image/*"
+              :upload-args="{ doctype, docname, private: uploadsArePrivate }"
+              @success="onImageUploaded"
+            >
+              <!-- the camera tile; its hidden file input (with capture) is the fallback when the camera can't be used here -->
+              <template #default="{ uploading, progress, openFileSelector }">
+                <button
+                  type="button"
+                  class="flex w-full flex-col items-center gap-2 rounded-lg border border-outline-gray-2 px-2 py-4 text-sm text-ink-gray-8 hover:bg-surface-gray-1"
+                  @click="startCamera($event, openFileSelector)"
+                >
+                  <FeatherIcon name="camera" class="h-6 w-6" />
+                  {{ uploading ? `${progress}%` : t('Camera') }}
+                </button>
+              </template>
+            </FileUploader>
+            <FileUploader
+              file-types="image/*"
+              :upload-args="{ doctype, docname, private: uploadsArePrivate }"
+              @success="onImageUploaded"
+            >
+              <template #default="{ uploading, progress, openFileSelector }">
+                <button
+                  type="button"
+                  class="flex w-full flex-col items-center gap-2 rounded-lg border border-outline-gray-2 px-2 py-4 text-sm text-ink-gray-8 hover:bg-surface-gray-1"
+                  @click="openFileSelector"
+                >
+                  <FeatherIcon name="image" class="h-6 w-6" />
+                  {{ uploading ? `${progress}%` : t('Gallery') }}
+                </button>
+              </template>
+            </FileUploader>
+            <button
+              type="button"
+              class="flex w-full flex-col items-center gap-2 rounded-lg border border-outline-gray-2 px-2 py-4 text-sm text-ink-gray-8 hover:bg-surface-gray-1"
+              @click="linkMode = true"
+            >
+              <FeatherIcon name="link" class="h-6 w-6" />
+              {{ t('Link') }}
+            </button>
+          </div>
+          <ErrorMessage v-if="!linkMode && cameraError" class="mt-2" :message="cameraError" />
+          <div v-if="linkMode" class="space-y-3">
+            <FormControl v-model="imageLink" type="url" :label="t('Link to the image')" placeholder="https://" />
+            <ErrorMessage :message="imageLinkError" />
+            <div class="flex justify-end gap-2">
+              <Button variant="subtle" @click="linkMode = false">{{ t('Back') }}</Button>
+              <Button variant="solid" @click="useImageLink">{{ t('Attach') }}</Button>
+            </div>
+          </div>
+      </div>
+    </div>
     <FileUploader
       v-else
-      :file-types="isImageField ? 'image/*' : undefined"
       :upload-args="{ doctype, docname, private: uploadsArePrivate }"
       @success="(file) => $emit('update:modelValue', file.file_url)"
     >
       <template #default="{ uploading, progress, openFileSelector }">
         <Button variant="outline" :loading="uploading" @click="openFileSelector">
-          {{ uploading ? `Uploading ${progress}%` : `Attach ${isImageField ? 'Image' : 'File'}` }}
+          {{ uploading ? `Uploading ${progress}%` : 'Attach File' }}
         </Button>
       </template>
     </FileUploader>
@@ -343,10 +439,10 @@
 </template>
 
 <script setup>
-import { computed, defineAsyncComponent, ref, watch } from 'vue'
+import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 // The rich-text editor (tiptap / prosemirror, ~370 KB gzipped) loads only when a form has such a field.
 const TextEditor = defineAsyncComponent(() => import('@frappe-text-editor'))
-import { FormControl, FileUploader, Button, FeatherIcon, Tooltip, Rating, TimePicker, DatePicker, DateTimePicker } from 'frappe-ui'
+import { FormControl, FileUploader, FileUploadHandler, Button, ErrorMessage, FeatherIcon, Tooltip, Rating, TimePicker, DatePicker, DateTimePicker } from 'frappe-ui'
 import { t } from '@/utils/translate'
 import UserLinkHoverCard from '@/components/UserLinkHoverCard.vue'
 // The map and the India states/districts pickers are only needed by a few forms: load them when first shown
@@ -583,6 +679,109 @@ const controlType = computed(() => {
 })
 
 const isImageField = computed(() => props.field.fieldtype === 'Attach Image')
+// The Attach Image popup (see the template).
+const showAttachDialog = ref(false)
+const linkMode = ref(false)
+const imageLink = ref('')
+const imageLinkError = ref(null)
+function openAttachDialog() {
+  linkMode.value = false
+  cameraError.value = null
+  imageLink.value = ''
+  imageLinkError.value = null
+  showAttachDialog.value = true
+}
+// Camera: the browser's own camera (getUserMedia) works on laptops and phones alike; the capture attribute on a file
+// input only opens the camera on phones. Where the camera can't be used (no camera, permission refused, or the page
+// is not on https), the camera tile's own file input with capture is used instead.
+const cameraOn = ref(false)
+const cameraVideo = ref(null)
+const cameraBox = ref(null)
+const cameraError = ref(null)
+const cameraUploading = ref(false)
+let cameraStream = null
+async function startCamera(event, openFileSelector) {
+  const tile = event.currentTarget
+  const fallback = () => {
+    let box = tile
+    while (box && !box.querySelector(':scope > input[type="file"]')) box = box.parentElement
+    box?.querySelector(':scope > input[type="file"]')?.setAttribute('capture', 'environment')
+    openFileSelector()
+  }
+  // A phone can always fall back to its own camera app; a laptop has no such app, so say what went wrong instead
+  // of opening the file picker (which looks like Gallery).
+  const isPhone = window.matchMedia?.('(pointer: coarse)').matches
+  const failed = (message) => {
+    if (isPhone) return fallback()
+    cameraError.value = message
+    cameraOn.value = false
+  }
+  if (!navigator.mediaDevices?.getUserMedia) return failed(t('This browser cannot use the camera here. Open the app on https:// or use Gallery.'))
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false })
+  } catch (error) {
+    const name = error?.name
+    return failed(
+      name === 'NotAllowedError'
+        ? t('Camera permission is blocked. Allow the camera for this site in the browser (the icon in the address bar) and try again.')
+        : name === 'NotFoundError' || name === 'OverconstrainedError'
+          ? t('No camera was found on this device. Use Gallery instead.')
+          : name === 'NotReadableError'
+            ? t('The camera is being used by another app. Close it and try again.')
+            : t('The camera could not be started. Use Gallery instead.'),
+    )
+  }
+  cameraError.value = null
+  cameraOn.value = true
+  await nextTick()
+  if (cameraVideo.value) cameraVideo.value.srcObject = cameraStream
+  cameraBox.value?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+}
+function stopCamera() {
+  cameraStream?.getTracks().forEach((track) => track.stop())
+  cameraStream = null
+  cameraOn.value = false
+}
+async function takePhoto() {
+  const video = cameraVideo.value
+  if (!video?.videoWidth) return
+  const canvas = document.createElement('canvas')
+  canvas.width = video.videoWidth
+  canvas.height = video.videoHeight
+  canvas.getContext('2d').drawImage(video, 0, 0)
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.85))
+  if (!blob) return
+  cameraUploading.value = true
+  cameraError.value = null
+  try {
+    const file = new File([blob], `photo-${Date.now()}.jpg`, { type: 'image/jpeg' })
+    const uploaded = await new FileUploadHandler().upload(file, { doctype: props.doctype, docname: props.docname, private: uploadsArePrivate.value })
+    stopCamera()
+    onImageUploaded(uploaded)
+  } catch {
+    cameraError.value = t('The photo could not be uploaded. Try again.')
+  } finally {
+    cameraUploading.value = false
+  }
+}
+function closeAttachPanel() {
+  stopCamera()
+  showAttachDialog.value = false
+}
+onBeforeUnmount(stopCamera)
+function onImageUploaded(file) {
+  emit('update:modelValue', file.file_url)
+  showAttachDialog.value = false
+}
+function useImageLink() {
+  const url = imageLink.value.trim()
+  if (!/^https?:\/\/\S+$/i.test(url)) {
+    imageLinkError.value = t('Enter a link starting with http:// or https://')
+    return
+  }
+  emit('update:modelValue', url)
+  showAttachDialog.value = false
+}
 const isUserLink = computed(() => props.field.fieldtype === 'Link' && props.field.options === 'User')
 
 // Rating stores/reads a 0-1 fraction (e.g. 0.6 for 3/5 stars) - Frappe
