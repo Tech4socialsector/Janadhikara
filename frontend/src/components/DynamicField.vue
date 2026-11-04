@@ -77,7 +77,7 @@
           <span class="text-sm font-medium text-ink-gray-8">{{ t('Attach Image') }}</span>
           <Button variant="ghost" size="sm" icon="x" :aria-label="t('Close')" @click="closeAttachPanel" />
         </div>
-          <!-- Camera: a live view from the device's camera (laptop or phone) and a Take photo button -->
+          <!-- Camera (laptop only; a phone opens its own camera app): a live view and a Take photo button -->
           <div v-if="cameraOn" ref="cameraBox" class="relative overflow-hidden rounded-md bg-black">
             <video ref="cameraVideo" autoplay playsinline muted class="mx-auto block max-h-[40vh] w-full object-contain" />
             <!-- the controls sit on the picture, so they are always in view however tall the camera's picture is -->
@@ -691,9 +691,8 @@ function openAttachDialog() {
   imageLinkError.value = null
   showAttachDialog.value = true
 }
-// Camera: the browser's own camera (getUserMedia) works on laptops and phones alike; the capture attribute on a file
-// input only opens the camera on phones. Where the camera can't be used (no camera, permission refused, or the page
-// is not on https), the camera tile's own file input with capture is used instead.
+// Camera: on a phone, the camera tile's own file input with capture opens the phone's camera app. A laptop has no
+// camera app (capture does nothing there), so it gets a live view from the browser's own camera (getUserMedia).
 const cameraOn = ref(false)
 const cameraVideo = ref(null)
 const cameraBox = ref(null)
@@ -708,11 +707,15 @@ async function startCamera(event, openFileSelector) {
     box?.querySelector(':scope > input[type="file"]')?.setAttribute('capture', 'environment')
     openFileSelector()
   }
-  // A phone can always fall back to its own camera app; a laptop has no such app, so say what went wrong instead
-  // of opening the file picker (which looks like Gallery).
-  const isPhone = window.matchMedia?.('(pointer: coarse)').matches
+  // A phone opens its own full-screen camera app straight away (as WhatsApp does), and must do so while still in the
+  // tap, before any await. Only a laptop, which has no camera app, gets the live view; if that fails, say what went
+  // wrong instead of opening the file picker (which looks like Gallery).
+  const isPhone =
+    window.matchMedia?.('(pointer: coarse)').matches ||
+    navigator.userAgentData?.mobile ||
+    /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
+  if (isPhone) return fallback()
   const failed = (message) => {
-    if (isPhone) return fallback()
     cameraError.value = message
     cameraOn.value = false
   }
