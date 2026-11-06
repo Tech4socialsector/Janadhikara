@@ -73,7 +73,11 @@ def _import_in_background():
 	if frappe.cache.get_value(key):
 		return
 	frappe.cache.set_value(key, 1, expires_in_sec=600)
-	frappe.enqueue("janadhikara.translations.import_translations", queue="long", timeout=1800)
+	# one at a time: a second request while it is queued or running adds nothing (a busy queue also holds up a deploy's migrate)
+	frappe.enqueue(
+		"janadhikara.translations.import_translations", queue="long", timeout=1800,
+		job_id="janadhikara_import_translations", deduplicate=True,
+	)
 
 
 @frappe.whitelist()
