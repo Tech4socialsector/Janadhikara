@@ -148,6 +148,7 @@ export async function downloadOffline(user) {
         memory.delete(doctype)
       }
     }
+    await writeTable('__team', { docs: data.team_members || [] }) // whose worklist this person may view
     await writeInfo({ user: data.user, generated: data.generated, bytes, counts, children, metaDoctypes: data.meta_doctypes || [] })
     await cacheAppIcon()
     setStep('Saving form layouts…', 85)
@@ -163,6 +164,9 @@ export async function downloadOffline(user) {
 
 // ---- Reading ---------------------------------------------------------------------------------------
 export const getTable = readTable // { title_field, istable, docs } | null
+export async function getTeamMembers() {
+  return (await readTable('__team'))?.docs || []
+}
 export async function getDocs(doctype) {
   return (await readTable(doctype))?.docs || null
 }

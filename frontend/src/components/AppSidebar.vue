@@ -132,14 +132,15 @@ SidebarItem/SidebarSection/SidebarHeader hardcode text-sm (13px) / text-base
 items and section labels 12px, the app/user title 13px, secondary lines 11px.
 Scoped to .app-sidebar, so it covers the desktop sidebar, the collapsed
 state and the mobile drawer's embedded copy - and nothing else in the app. */
+/* in rem (12 / 13 / 11px at a 16px root) so the sidebar scales with the rest of the app on every screen size */
 .app-sidebar .text-sm {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 .app-sidebar .text-base {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 .app-sidebar .text-xs {
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 
 /* Branding: the app logo takes 30% of the header row's width (frappe-ui's

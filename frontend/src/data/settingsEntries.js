@@ -1,3 +1,5 @@
+import { watch } from 'vue'
+import { session } from '@/data/session'
 import { useCall } from 'frappe-ui'
 
 // Settings dialog entries the logged-in user's role permissions allow,
@@ -10,7 +12,13 @@ export const settingsEntriesResource = useCall({
   url: '/api/v2/method/janadhikara.api.get_settings_entries',
   method: 'GET',
   cacheKey: 'janadhikara-settings-entries',
+  immediate: false, // only once signed in (see below): a signed-out visitor gets a 403
 })
+watch(
+  () => session.user,
+  (user) => user && !settingsEntriesResource.data && settingsEntriesResource.fetch(),
+  { immediate: true },
+)
 
 export function findSettingsEntryByRoute(routeSlug) {
   return (settingsEntriesResource.data || []).find((e) => e.desk_route === routeSlug)

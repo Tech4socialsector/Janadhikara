@@ -57,6 +57,14 @@ def get_user_partner_logo():
 
 
 @frappe.whitelist(allow_guest=True)
+def get_session_user():
+    """Who is signed in, or None when nobody is. The app asks this the moment it opens; Frappe's own
+    frappe.auth.get_logged_user refuses a signed-out visitor with a 403 and a traceback in the server log
+    every time the login page opens, so this answers quietly instead."""
+    return None if frappe.session.user == "Guest" else frappe.session.user
+
+
+@frappe.whitelist(allow_guest=True)
 def get_login_options():
     """What the login page should offer besides email + password: one entry
     per enabled Social Login Key (Google, GitHub, Office 365, Frappe, custom

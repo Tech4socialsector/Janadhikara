@@ -29,20 +29,37 @@
     <!-- A household: one place per family member (adults + children). Members already profiled are listed by name;
     for the rest, type the name and Add profile opens their Individual Profile with the household and name filled in. -->
     <div v-if="memberSlots" class="mt-3 rounded-lg border px-3 py-2.5 dark:border-gray-800">
-      <p class="mb-2 text-sm text-gray-700 dark:text-gray-300">
-        {{ t('Family members') }}: {{ memberSlots.profiles.length }} {{ t('of') }} {{ memberSlots.expected }} {{ t('profiles added') }}
-      </p>
-      <div class="space-y-1.5">
+      <div class="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ t('Family members') }}</p>
+        <span
+          class="rounded-full px-2 py-0.5 text-xs font-medium"
+          :class="memberSlots.missing ? 'bg-surface-amber-2 text-ink-amber-3' : 'bg-surface-green-2 text-ink-green-3'"
+        >
+          {{ memberSlots.profiles.length }} {{ t('of') }} {{ memberSlots.expected }} {{ t('profiles added') }}
+        </span>
+        <span class="h-1.5 w-24 overflow-hidden rounded-full bg-surface-gray-3" aria-hidden="true">
+          <span
+            class="block h-full rounded-full transition-all"
+            :class="memberSlots.missing ? 'bg-amber-500' : 'bg-green-500'"
+            :style="{ width: Math.min(100, Math.round((100 * memberSlots.profiles.length) / Math.max(1, memberSlots.expected))) + '%' }"
+          />
+        </span>
+      </div>
+      <!-- Members already profiled: compact, side by side as the width allows -->
+      <div class="grid grid-cols-1 gap-1.5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         <button
           v-for="(p, i) in memberSlots.profiles"
           :key="p.name"
           type="button"
-          class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-gray-800 hover:bg-surface-gray-1 dark:text-gray-200"
+          class="flex min-w-0 items-center gap-2 rounded-md border border-outline-gray-1 px-2.5 py-1.5 text-left text-sm text-gray-800 transition-colors hover:border-outline-gray-3 hover:bg-surface-gray-1 dark:text-gray-200"
           @click="openProfile(p.name)"
         >
           <FeatherIcon name="check-circle" class="h-4 w-4 flex-shrink-0 text-green-600" />
           <span class="truncate">{{ i + 1 }}. {{ p.member_name || p.name }}</span>
         </button>
+      </div>
+      <!-- Members still to add: name them here, Add profile opens their Individual Profile with it filled in -->
+      <div v-if="memberSlots.missing" class="mt-2 grid grid-cols-1 gap-2 lg:grid-cols-2">
         <div v-for="i in memberSlots.missing" :key="'new' + i" class="flex items-center gap-2">
           <span class="w-6 flex-shrink-0 text-right text-sm text-gray-500">{{ memberSlots.profiles.length + i }}.</span>
           <input

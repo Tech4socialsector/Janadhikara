@@ -389,6 +389,7 @@ const selectedKeys = ref([])
 const gridKey = ref(0)
 const listViewOptions = computed(() => ({
   selectable: canManage.value,
+  rowHeight: '2.5rem', // rem, so rows scale with the screen (frappe-ui's default is a flat 40px)
   showTooltip: false,
   onRowClick: (row) => openRow(rows.value.indexOf(row)),
   emptyState: { title: 'No rows yet' },

@@ -29,13 +29,43 @@
     <link rel="apple-touch-startup-image" href="/splash/iphone-1242x2208.png" media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
     <link rel="apple-touch-startup-image" href="/splash/iphone-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
     <title>Janadhikara</title>
+    <script>
+      // Size of the app on computer screens. Everything in the app follows the root font size (see index.css), set here
+      // before first paint from the window's PHYSICAL width: 15px on a 1280-wide screen up to 16px from 1600 up. A screen
+      // with Windows / Linux display scaling (125%, 150%) is compensated only HALF-way (SCALE_SHARE): fully matching a
+      // 100% screen made the app look small on laptops, whose pixels are smaller and viewed closer. 1 = match exactly,
+      // 0 = no compensation. Browser zoom (Ctrl +/-) is left alone (estimated from the window's outer / inner width).
+      // Phones and tablets (a touch screen as the main input) keep the plain 16px.
+      (function () {
+        var SCALE_SHARE = 0.5
+        var root = document.documentElement
+        function apply() {
+          try {
+            var dpr = window.devicePixelRatio || 1
+            var zoom = window.outerWidth && window.innerWidth ? Math.min(3, window.outerWidth / window.innerWidth) : 1
+            if (zoom < 1.15) zoom = 1
+            var os = Math.max(1, dpr / zoom)
+            var physical = window.innerWidth * dpr
+            if (window.matchMedia('(pointer: coarse)').matches || physical < 1000) {
+              root.style.removeProperty('--ui-root')
+              root.style.removeProperty('--ui-tile-scale')
+              return
+            }
+            var base = Math.min(16, Math.max(15, 15 + (physical - 1280) / 320))
+            root.style.setProperty('--ui-root', (base / Math.pow(os, SCALE_SHARE)).toFixed(3) + 'px')
+            // the Home screen's module tiles keep exactly their Linux (100%) size - they are the largest thing on screen
+            root.style.setProperty('--ui-tile-scale', (16 / base / Math.pow(os, SCALE_SHARE)).toFixed(4))
+          } catch (e) {}
+        }
+        apply()
+        window.addEventListener('resize', apply)
+      })()
+    </script>
   </head>
   <body>
     <div id="app">
-      <!-- Shown the instant the page arrives, until the app draws over it (Vue replaces this on mount). -->
+      <!-- Blank, in the theme's colour (no white flash in dark mode), until the app draws over it (Vue replaces this on mount). Only if the app has not drawn after 10 s does it say so (see the script below). -->
       <div id="boot" style="display:flex;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-family:system-ui,sans-serif;color:#6b7280;background:#fff">
-        <div style="width:34px;height:34px;border:3px solid #e5e7eb;border-top-color:#6b7280;border-radius:50%;animation:boot-spin .8s linear infinite"></div>
-        <div>Loading Janadhikara…</div>
         <div id="boot-slow" style="display:none;text-align:center;font-size:14px">
           Taking longer than usual.<br />
           <button id="boot-reload" style="margin-top:10px;padding:8px 16px;border:1px solid #d1d5db;border-radius:8px;background:#f9fafb;font-size:14px">Reload</button>

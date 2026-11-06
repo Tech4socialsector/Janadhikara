@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, START_LOCATION } from 'vue-router'
 import { installOverlayGuard } from '@/utils/backClose'
-import { session, initialUserCheck, userResource } from '@/data/session'
+import { session, initialUserCheck, userResource, rememberedUser } from '@/data/session'
 import { modulesResource, findModuleByRoute } from '@/data/modules'
 import { settingsEntriesResource, findSettingsEntryByRoute } from '@/data/settingsEntries'
 import { setActiveModule } from '@/data/activeModule'
@@ -118,7 +118,7 @@ let router = createRouter({
 // wave the navigation through onto fully-authenticated-looking UI with a
 // dead session underneath it.
 //
-// Awaiting a fresh frappe.auth.get_logged_user call before every single
+// Awaiting a fresh janadhikara.api.get_session_user call before every single
 // in-app navigation (as an earlier version of this did) makes each round
 // trip's latency part of every click's critical path - fine on localhost,
 // but a real network hop away (e.g. Frappe Cloud) that's enough to make the
@@ -164,8 +164,13 @@ async function ensureModulesLoaded() {
 }
 
 // Opening the app on a page other than Login: ask for the module list at the same moment as the
-// "who is signed in" check instead of after it - one round trip less before the first screen.
-if (typeof window !== 'undefined' && !location.pathname.endsWith('/login')) ensureModulesLoaded()
+// "who is signed in" check instead of after it - one round trip less before the first screen. Only when this
+// device has a signed-in user on record (for a visitor who is not signed in the server refuses it with a 403).
+// Called from main.js once every module is loaded: session.js and this file import each other, so touching
+// `session` while this file is still being evaluated fails.
+export function prefetchModulesIfKnown() {
+  if (!location.pathname.endsWith('/login') && (session.user || rememberedUser())) ensureModulesLoaded()
+}
 
 // Settings-dialog doctypes (Announcement, App Module Setting, ...) aren't in
 // any App Module Setting, but still render through the generic list/form
@@ -184,7 +189,7 @@ installOverlayGuard(router)
 router.beforeEach(async (to, from, next) => {
   if (from === START_LOCATION) {
     // On the app's very first navigation, session.user isn't known yet -
-    // it's only set once the initial frappe.auth.get_logged_user call
+    // it's only set once the initial janadhikara.api.get_session_user call
     // resolves. Awaiting that here (a no-op after it's settled) avoids
     // treating "not checked yet" as "logged out" and bouncing a real
     // session to /login.

@@ -5,6 +5,24 @@ import frappeui from 'frappe-ui/vite'
 import Components from 'unplugin-vue-components/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// frappe-ui injects the page's boot data as a <script> holding Jinja ({% for %} ... {{ }}), which editors read as
+// broken JavaScript. The same data is written here as a JSON block plus one plain line that copies it onto window,
+// so www/janadhikara.html contains no template syntax inside JavaScript. Same result in the browser.
+const bootDataAsJson = () => ({
+  name: 'janadhikara-boot-data-as-json',
+  transformIndexHtml: {
+    order: 'post',
+    handler(html, context) {
+      if (context.server) return html
+      return html.replace(
+        /<script>\s*\{% for key in boot %\}[\s\S]*?\{% endfor %\}\s*<\/script>/,
+        `<script id="boot-data" type="application/json">{{ boot | tojson }}</script>
+          <script>Object.assign(window, JSON.parse(document.getElementById('boot-data').textContent))</script>`,
+      )
+    },
+  },
+})
+
 export default defineConfig({
   plugins: [
     frappeui({
@@ -13,6 +31,7 @@ export default defineConfig({
       buildConfig: { sourcemap: false },
     }),
     vue(),
+    bootDataAsJson(),
     Components({
       dirs: ['src/components', 'src/pages'],
       dts: false,

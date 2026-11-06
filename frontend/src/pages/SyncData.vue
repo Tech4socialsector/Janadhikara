@@ -100,7 +100,7 @@
         :columns="columns"
         :rows="rows"
         row-key="id"
-        :options="{ selectable: true, showTooltip: false, resizeColumn: false }"
+        :options="{ selectable: true, showTooltip: false, resizeColumn: false, rowHeight: '2.5rem' }"
         @update:selections="(sel) => (selected = Array.from(sel))"
       >
         <template #cell="{ column, row, item }">

@@ -114,8 +114,108 @@ matches the content size. */
 html {
   font-family: var(--font-sans);
 }
+/* One look on every computer screen. Every rem-based Tailwind utility (text-*, p-*, w-*, icons, the sidebar width)
+resolves off the root font size, so scaling that one value scales the whole UI together. The script in index.html
+sets --ui-root before first paint: 15-16px from the window's physical width, reduced part-way for OS display scaling
+(a Windows laptop at 125% / 150% looks close to a Linux screen of the same resolution, a little larger). Phones and
+tablets leave it unset and keep the plain 16px root. */
+html {
+  font-size: var(--ui-root, 16px);
+}
+/* frappe-ui's Tailwind preset gives every text size (text-2xs ... text-3xl, text-p-*) as flat px, which ignores the
+root size above: on a scaled screen everything else shrinks while these stay put. The same sizes as rem, so they follow
+it (identical at a 16px root) - including the responsive forms (sm:text-sm, lg:text-2xl ...), which are separate rules.
+The leading `html` makes these win over Tailwind's own rules, which come later in the file. */
+html .text-2xs { font-size: 0.6875rem; }
+html .text-xs { font-size: 0.75rem; }
+html .text-p-xs { font-size: 0.75rem; }
+html .text-sm { font-size: 0.8125rem; }
+html .text-p-sm { font-size: 0.8125rem; }
+html .text-base { font-size: 0.875rem; }
+html .text-p-base { font-size: 0.875rem; }
+html .text-lg { font-size: 1rem; }
+html .text-p-lg { font-size: 1rem; }
+html .text-xl { font-size: 1.125rem; }
+html .text-p-xl { font-size: 1.125rem; }
+html .text-2xl { font-size: 1.25rem; }
+html .text-p-2xl { font-size: 1.25rem; }
+html .text-3xl { font-size: 1.5rem; }
+html .text-p-3xl { font-size: 1.5rem; }
+html .text-p-2xs { font-size: 0.6875rem; }
+@media (min-width: 640px) {
+  html .sm\:text-2xs { font-size: 0.6875rem; }
+  html .sm\:text-xs { font-size: 0.75rem; }
+  html .sm\:text-p-xs { font-size: 0.75rem; }
+  html .sm\:text-sm { font-size: 0.8125rem; }
+  html .sm\:text-p-sm { font-size: 0.8125rem; }
+  html .sm\:text-base { font-size: 0.875rem; }
+  html .sm\:text-p-base { font-size: 0.875rem; }
+  html .sm\:text-lg { font-size: 1rem; }
+  html .sm\:text-p-lg { font-size: 1rem; }
+  html .sm\:text-xl { font-size: 1.125rem; }
+  html .sm\:text-p-xl { font-size: 1.125rem; }
+  html .sm\:text-2xl { font-size: 1.25rem; }
+  html .sm\:text-p-2xl { font-size: 1.25rem; }
+  html .sm\:text-3xl { font-size: 1.5rem; }
+  html .sm\:text-p-3xl { font-size: 1.5rem; }
+  html .sm\:text-p-2xs { font-size: 0.6875rem; }
+}
+@media (min-width: 768px) {
+  html .md\:text-2xs { font-size: 0.6875rem; }
+  html .md\:text-xs { font-size: 0.75rem; }
+  html .md\:text-p-xs { font-size: 0.75rem; }
+  html .md\:text-sm { font-size: 0.8125rem; }
+  html .md\:text-p-sm { font-size: 0.8125rem; }
+  html .md\:text-base { font-size: 0.875rem; }
+  html .md\:text-p-base { font-size: 0.875rem; }
+  html .md\:text-lg { font-size: 1rem; }
+  html .md\:text-p-lg { font-size: 1rem; }
+  html .md\:text-xl { font-size: 1.125rem; }
+  html .md\:text-p-xl { font-size: 1.125rem; }
+  html .md\:text-2xl { font-size: 1.25rem; }
+  html .md\:text-p-2xl { font-size: 1.25rem; }
+  html .md\:text-3xl { font-size: 1.5rem; }
+  html .md\:text-p-3xl { font-size: 1.5rem; }
+  html .md\:text-p-2xs { font-size: 0.6875rem; }
+}
+@media (min-width: 1024px) {
+  html .lg\:text-2xs { font-size: 0.6875rem; }
+  html .lg\:text-xs { font-size: 0.75rem; }
+  html .lg\:text-p-xs { font-size: 0.75rem; }
+  html .lg\:text-sm { font-size: 0.8125rem; }
+  html .lg\:text-p-sm { font-size: 0.8125rem; }
+  html .lg\:text-base { font-size: 0.875rem; }
+  html .lg\:text-p-base { font-size: 0.875rem; }
+  html .lg\:text-lg { font-size: 1rem; }
+  html .lg\:text-p-lg { font-size: 1rem; }
+  html .lg\:text-xl { font-size: 1.125rem; }
+  html .lg\:text-p-xl { font-size: 1.125rem; }
+  html .lg\:text-2xl { font-size: 1.25rem; }
+  html .lg\:text-p-2xl { font-size: 1.25rem; }
+  html .lg\:text-3xl { font-size: 1.5rem; }
+  html .lg\:text-p-3xl { font-size: 1.5rem; }
+  html .lg\:text-p-2xs { font-size: 0.6875rem; }
+}
+@media (min-width: 1280px) {
+  html .xl\:text-2xs { font-size: 0.6875rem; }
+  html .xl\:text-xs { font-size: 0.75rem; }
+  html .xl\:text-p-xs { font-size: 0.75rem; }
+  html .xl\:text-sm { font-size: 0.8125rem; }
+  html .xl\:text-p-sm { font-size: 0.8125rem; }
+  html .xl\:text-base { font-size: 0.875rem; }
+  html .xl\:text-p-base { font-size: 0.875rem; }
+  html .xl\:text-lg { font-size: 1rem; }
+  html .xl\:text-p-lg { font-size: 1rem; }
+  html .xl\:text-xl { font-size: 1.125rem; }
+  html .xl\:text-p-xl { font-size: 1.125rem; }
+  html .xl\:text-2xl { font-size: 1.25rem; }
+  html .xl\:text-p-2xl { font-size: 1.25rem; }
+  html .xl\:text-3xl { font-size: 1.5rem; }
+  html .xl\:text-p-3xl { font-size: 1.5rem; }
+  html .xl\:text-p-2xs { font-size: 0.6875rem; }
+}
 body {
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.45;
   font-weight: 400;
 }

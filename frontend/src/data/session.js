@@ -33,7 +33,7 @@ const rememberUser = (user) => {
     // not remembered
   }
 }
-const rememberedUser = () => {
+export const rememberedUser = () => {
   try {
     return localStorage.getItem(LAST_USER) || null
   } catch {
@@ -58,7 +58,8 @@ async function forgetDevice() {
 }
 
 export const userResource = createResource({
-  url: 'frappe.auth.get_logged_user',
+  // answers a signed-out visitor with null instead of a 403 (see janadhikara.api.get_session_user)
+  url: 'janadhikara.api.get_session_user',
   cache: 'frappe-user',
   onError(error) {
     // No connection is not "signed out": keep the user this device last saw, so the app
@@ -70,7 +71,8 @@ export const userResource = createResource({
     session.user = null
   },
   onSuccess(user) {
-    session.user = user
+    session.user = user || null
+    if (!user) return
     rememberUser(user)
     fetchUserLanguage()
   },

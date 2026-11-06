@@ -827,6 +827,9 @@ const listViewColumns = computed(() =>
 
 const listViewOptions = computed(() => ({
   selectable: true,
+  // frappe-ui's default row height is a flat 40px, which ignores the screen scaling (rows were 50% too tall on a 150%
+  // Windows screen): in rem it scales with everything else.
+  rowHeight: '2.5rem',
   showTooltip: false,
   getRowRoute: (row) => getRowRouteFor(row.name),
   emptyState: {

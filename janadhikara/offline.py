@@ -16,7 +16,9 @@ MAX_ROWS = 5000
 APP_MODULES = ("Masters", "App Config", "Engine", "Baseline")
 
 # Held back from the device whatever the permissions say.
-EXCLUDED = {"DocType", "Role", "Entitlement", "Individual Document", "Health Condition", "Education Record", "Push Subscription", "ToDo"}
+# Doctypes outside the app's own modules that still work offline (the Worklist is made of ToDos).
+EXTRA_DOCTYPES = ("ToDo",)
+EXCLUDED = {"DocType", "Role", "Entitlement", "Individual Document", "Health Condition", "Education Record", "Push Subscription"}
 
 STORABLE = {
 	"Data", "Select", "Link", "Dynamic Link", "Int", "Float", "Currency", "Percent", "Check", "Date", "Datetime",
@@ -97,7 +99,7 @@ def _wanted_doctypes():
 	they link to (masters, partners, users...), followed out of the app's own doctypes only."""
 	from janadhikara.api import get_app_modules
 
-	seeds = []
+	seeds = list(EXTRA_DOCTYPES)
 	for module in get_app_modules():
 		seeds += [item["doctype_name"] for item in module.get("doctypes", []) if item.get("doctype_name")]
 
@@ -116,6 +118,22 @@ def _wanted_doctypes():
 
 def _plain_value(value):
 	return str(value) if hasattr(value, "isoformat") or hasattr(value, "total_seconds") else value
+
+
+def _team():
+	"""The people whose worklist this person may view (see worklist.get_team_members) and their tasks, so the
+	team view works offline too. Same rule as the server: nothing the person may not see."""
+	from janadhikara.worklist import get_team_members
+
+	try:
+		members = get_team_members()
+	except Exception:
+		return [], []
+	users = [m["user"] for m in members]
+	if not users:
+		return members, []
+	tasks = frappe.get_all("ToDo", filters={"allocated_to": ["in", users]}, fields=["*"], order_by="modified desc", limit_page_length=MAX_ROWS)
+	return members, [{k: _plain_value(v) for k, v in t.items() if v not in (None, "")} for t in tasks]
 
 
 @frappe.whitelist()
@@ -154,7 +172,13 @@ def get_offline_data(since=None):
 			names = [r.name for r in rows]
 			docs = [{f: _plain_value(r.get(f)) for f in fields} for r in rows]
 		doctypes[doctype] = {"title_field": meta.title_field, "istable": 1 if meta.istable else 0, "names": names, "docs": docs}
+	team_members, team_tasks = _team()
+	if team_tasks and "ToDo" in doctypes:
+		have = {d["name"] for d in doctypes["ToDo"]["docs"]}
+		doctypes["ToDo"]["docs"] += [t for t in team_tasks if t["name"] not in have]
+		doctypes["ToDo"]["names"] += [t["name"] for t in team_tasks if t["name"] not in doctypes["ToDo"]["names"]]
 	return {
+		"team_members": team_members,
 		"version": 2,
 		"generated": str(now_datetime()),
 		"user": frappe.session.user,
@@ -181,13 +205,14 @@ def _app_meta_doctypes():
 		for df in frappe.get_meta(d).fields:
 			if df.fieldtype in ("Table", "Table MultiSelect") and df.options in names:
 				children.add(df.options)
-	return sorted({*readable, *children})
+	extras = [d for d in EXTRA_DOCTYPES if frappe.has_permission(d, "read")]
+	return sorted({*readable, *children, *extras})
 
 
 # ---- Uploads from the phone (always started by the person, from Sync Data) --------------------------------------
 
 LOG = "Offline Sync Log"
-OWN_RECORD_DOCTYPES = ("Settlement", "Household Profile", "Individual Profile")
+OWN_RECORD_DOCTYPES = ("Settlement", "Household Profile", "Individual Profile", "ToDo")
 FILE_FIELDTYPES = {"Attach", "Attach Image", "Signature", "Image"}
 SKIP_TABLES = {"Individual Document"}  # attachments: never put on a device
 IGNORED_KEYS = {"name", "owner", "creation", "modified", "modified_by", "docstatus", "idx", "parent", "parentfield", "parenttype", "doctype", "__islocal", "__unsaved"}
@@ -197,7 +222,7 @@ def _check_doctype(doctype):
 	if doctype in EXCLUDED or not frappe.db.exists("DocType", doctype):
 		frappe.throw(f"{doctype} cannot be uploaded from a device.", frappe.PermissionError)
 	meta = frappe.get_meta(doctype)
-	if meta.module not in APP_MODULES or meta.istable or meta.issingle or meta.custom:
+	if (meta.module not in APP_MODULES and doctype not in EXTRA_DOCTYPES) or meta.istable or meta.issingle or meta.custom:
 		frappe.throw(f"{doctype} cannot be uploaded from a device.", frappe.PermissionError)
 	return meta
 

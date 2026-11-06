@@ -1,7 +1,7 @@
 import './index.css'
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
+import router, { prefetchModulesIfKnown } from './router'
 import { installOfflineApi } from '@/data/offlineApi'
 
 // A browser can restore this page from bfcache on Back/Forward instead of
@@ -47,6 +47,7 @@ window.addEventListener('load', () => {
 
 // With no connection, reads are answered from what this phone holds (see data/offlineApi.js).
 installOfflineApi()
+prefetchModulesIfKnown()
 
 let app = createApp(App)
 

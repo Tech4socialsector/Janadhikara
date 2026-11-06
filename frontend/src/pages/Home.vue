@@ -163,6 +163,13 @@
 </template>
 
 <style scoped>
+/* The module tiles keep the same physical size on every computer screen (see --ui-tile-scale in index.html); phones keep their own sizes. */
+@media (min-width: 640px) {
+  html .module-tile-icon {
+    width: calc(4.5rem * var(--ui-tile-scale, 1));
+    height: calc(4.5rem * var(--ui-tile-scale, 1));
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .module-tile-icon {
     transition: none !important;

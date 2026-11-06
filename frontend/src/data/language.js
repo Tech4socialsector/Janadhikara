@@ -40,7 +40,8 @@ export const languagesResource = createResource({
     order_by: 'language_name asc',
     limit_page_length: 0,
   },
-  auto: true,
+  // only once signed in: Frappe refuses this list to a signed-out visitor (a 403 in the server log on the login page)
+  auto: false,
   cache: 'janadhikara-languages-resource',
   transform: (data) => data.map((l) => ({ label: l.language_name, value: l.name })),
   onSuccess: (data) => write(LIST_KEY, JSON.stringify(data)),
@@ -50,7 +51,17 @@ export const languagesResource = createResource({
 // For the time being the app is offered in English, Assamese and Hindi only, whatever other languages the site has enabled.
 // To offer another, add its code here and add its translations.
 export const OFFERED_LANGUAGES = ['en', 'as', 'hi']
-export const languages = computed(() => (languagesResource.data || cachedLanguages() || []).filter((l) => OFFERED_LANGUAGES.includes(l.value)))
+// The three offered languages by their own names, for a visitor who is not signed in yet (nothing to fetch).
+const OWN_NAMES = [{ label: 'English', value: 'en' }, { label: 'অসমীয়া', value: 'as' }, { label: 'हिन्दी', value: 'hi' }]
+export const languages = computed(() => {
+  const list = (languagesResource.data || cachedLanguages() || []).filter((l) => OFFERED_LANGUAGES.includes(l.value))
+  return list.length ? list : OWN_NAMES
+})
+watch(
+  () => session.user,
+  (user) => user && !languagesResource.data && languagesResource.fetch(),
+  { immediate: true },
+)
 
 const chosen = ref(read(CHOICE_KEY))
 let unsynced = false

@@ -5,7 +5,8 @@
 // It sits in front of window.fetch, so every screen gets it without knowing: online, requests go
 // to the server untouched; with no network, a slow one (2G / 3G), or when a request fails to reach the
 // server or takes too long, the same request is answered locally. Only reads are answered; a write is never faked.
-import { getTable } from '@/data/offlineStore'
+import { getTable, getDoc, getTeamMembers } from '@/data/offlineStore'
+import { enqueueRecord, updateRecord, queue } from '@/data/offlineQueue'
 import { localDocs, query, pick, parsed, textOf } from '@/data/offlineQuery'
 import { offlineDashboard, offlineFilterOptions } from '@/data/offlineDashboard'
 import { SLOW_REPLY_MS, markSlowReplies, workOffline } from '@/data/connection'
@@ -63,7 +64,7 @@ async function answer(req) {
       return rows ? respond(req, rows.length) : null
     }
     case 'frappe.client.get_list': {
-      const rows = p.doctype === 'ToDo' ? [] : await query(p.doctype, p) // tasks are never kept on the phone
+      const rows = await query(p.doctype, p)
       if (!rows) return null
       const start = Number(p.limit_start || p.start || 0)
       const limit = Number(p.limit_page_length || p.limit || 20)
@@ -105,6 +106,12 @@ async function answer(req) {
     case 'frappe.client.has_permission':
       // the server still checks every change when it is uploaded
       return respond(req, { has_permission: p.perm_type !== 'delete' })
+    case 'janadhikara.worklist.get_team_members':
+      return respond(req, await getTeamMembers())
+    case 'janadhikara.worklist.get_team_tasks': {
+      const rows = await query('ToDo', { filters: { allocated_to: p.user }, order_by: 'modified desc' })
+      return rows ? respond(req, rows) : null
+    }
     case 'janadhikara.dashboard.get_dashboard':
       return respond(req, await offlineDashboard(p))
     case 'janadhikara.dashboard.get_filter_options':
@@ -119,9 +126,52 @@ async function answer(req) {
 
 const answerLocally = (req) => answer(req).catch((e) => (console.warn('offline answer failed', req.kind, req.doctype || req.method, e), null))
 
+// ---- Writes with no connection ----------------------------------------------------------------------
+// A save from any screen (a task's status, a new task, an edited record) is kept in the upload queue
+// (data/offlineQueue.js) and answered as saved, exactly like a form's own offline save. Nothing is sent;
+// the person uploads from Sync Data. Only doctypes held on this phone can be saved this way.
+async function queueWrite(req) {
+  const p = req.params
+  if (req.kind !== 'method') return null
+  const titleOf = (doc, fallback) => doc.task_title || doc.title || doc.subject || fallback
+  if (req.method === 'frappe.client.insert') {
+    const doc = parsed(p.doc)
+    if (!doc?.doctype || !(await getTable(doc.doctype))) return null
+    const item = await enqueueRecord({ doctype: doc.doctype, action: 'insert', doc, title: titleOf(doc, `New ${doc.doctype}`) })
+    return respond(req, { ...doc, name: item.tempName })
+  }
+  const isSet = req.method === 'frappe.client.set_value'
+  if (isSet || req.method === 'frappe.client.save') {
+    const incoming = isSet ? (typeof parsed(p.fieldname) === 'object' ? parsed(p.fieldname) : { [p.fieldname]: p.value }) : parsed(p.doc)
+    const doctype = isSet ? p.doctype : incoming?.doctype
+    const name = isSet ? p.name : incoming?.name
+    if (!doctype || !name || !(await getTable(doctype))) return null
+    const waiting = queue.value.find((i) => i.tempName === name) || queue.value.find((i) => i.action === 'update' && i.doctype === doctype && i.name === name)
+    if (waiting?.tempName) {
+      // a record made on this phone and not uploaded yet: change its saved copy
+      const doc = { ...waiting.doc, ...incoming }
+      await updateRecord(waiting.id, { doc, title: titleOf(doc, waiting.title) })
+      return respond(req, { ...doc, name })
+    }
+    const base = await getDoc(doctype, name)
+    if (!base) return null
+    const doc = { ...(waiting?.doc || base), ...incoming, doctype, name }
+    await enqueueRecord({ doctype, name, action: 'update', doc, base, title: titleOf(doc, name) })
+    return respond(req, doc)
+  }
+  return null
+}
+
+const offlineNow = () => typeof navigator !== 'undefined' && navigator.onLine === false
+
 async function proxied(input, init = {}) {
   const req = describe(input, init)
   if (!req) return realFetch(input, init)
+  // A save with no connection at all is kept in the upload queue (a slow network still sends it).
+  if (offlineNow()) {
+    const saved = await queueWrite(req).catch((e) => (console.warn('offline save failed', e), null))
+    if (saved) return saved
+  }
   // No network, or a slow one (2G / 3G): the phone's copy first, the server only for what it does not hold.
   if (workOffline()) return (await answerLocally(req)) || realFetch(input, init)
   // A network that turns out slow: stop waiting after a while when the phone can answer instead.

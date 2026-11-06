@@ -221,8 +221,30 @@
   A Yes / No question (a Select) uses the same tick boxes, but only one can be ticked: it still holds one value. -->
   <div v-else-if="controlType === 'multi-choice' || controlType === 'single-choice'">
     <label class="mb-1.5 block text-sm text-gray-700 dark:text-gray-300">{{ field.label }}<span v-if="isRequired" class="text-red-500">*</span></label>
-    <div class="overflow-hidden rounded-lg border border-outline-gray-2 bg-surface-white" :role="isSingleChoice ? 'radiogroup' : 'group'" :aria-label="field.label">
-      <div class="grid gap-0.5 p-1.5" :class="[isSingleChoice && choiceOptions.length === 2 ? 'grid-cols-2' : 'sm:grid-cols-2', choiceOptions.length > 8 ? 'lg:grid-cols-3' : '']">
+    <div :class="isCompactChoice ? 'w-fit max-w-full' : 'overflow-hidden rounded-lg border border-outline-gray-2 bg-surface-white'" :role="isSingleChoice ? 'radiogroup' : 'group'" :aria-label="field.label">
+      <!-- A short single answer (Yes / No, High / Moderate / Low) takes only the room its options need, side by side -->
+      <div v-if="isCompactChoice" class="flex flex-wrap gap-2">
+        <button
+          v-for="o in choiceOptions"
+          :key="o"
+          type="button"
+          :disabled="isReadOnly"
+          role="radio"
+          :aria-checked="chosenChoices.includes(o)"
+          class="flex items-center gap-2.5 rounded-lg border bg-surface-white py-1.5 pl-2.5 pr-4 text-left text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-outline-gray-3 disabled:cursor-not-allowed disabled:opacity-60"
+          :class="chosenChoices.includes(o) ? 'border-gray-900 bg-surface-gray-2 text-ink-gray-9 dark:border-gray-100' : 'border-outline-gray-2 text-ink-gray-7 hover:bg-surface-gray-1'"
+          @click="pickChoice(o)"
+        >
+          <span
+            class="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[5px] border transition-colors"
+            :class="chosenChoices.includes(o) ? 'border-gray-900 bg-gray-900 text-white dark:border-gray-100 dark:bg-gray-100 dark:text-gray-900' : 'border-outline-gray-3 bg-surface-white'"
+          >
+            <FeatherIcon v-if="chosenChoices.includes(o)" name="check" class="h-3 w-3" />
+          </span>
+          <span class="whitespace-nowrap" :class="chosenChoices.includes(o) ? 'font-medium' : ''">{{ optionLabel(o) }}</span>
+        </button>
+      </div>
+      <div v-else class="grid gap-0.5 p-1.5" :class="[isSingleChoice && choiceOptions.length === 2 ? 'grid-cols-2' : 'sm:grid-cols-2', choiceOptions.length > 8 ? 'lg:grid-cols-3' : '']">
         <button
           v-for="o in choiceOptions"
           :key="o"
@@ -893,6 +915,8 @@ const toggleChoice = (o) => {
 }
 const chosenChoices = computed(() => String(props.modelValue || '').split('\n').map((v) => v.trim()).filter(Boolean))
 const isSingleChoice = computed(() => controlType.value === 'single-choice')
+// up to 4 options of a few words: side by side (wrapping when the row is full) in a box no wider than they need
+const isCompactChoice = computed(() => isSingleChoice.value && choiceOptions.value.length <= 4 && choiceOptions.value.every((o) => optionLabel(o).length <= 40))
 // One answer: ticking another replaces it, ticking the ticked one again clears it.
 const pickChoice = (o) => emit('update:modelValue', props.modelValue === o ? '' : o)
 
