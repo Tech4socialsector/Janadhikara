@@ -18,7 +18,7 @@ function announce(log) {
   toast.info(text)
   try {
     if ('Notification' in window && Notification.permission === 'granted' && document.hidden) {
-      new Notification('Hyderabad Dignified', { body: text, icon: '/assets/janadhikara/default-logo.png', tag: log.name })
+      new Notification('Hyderabad Dignified', { body: text, tag: log.name })
     }
   } catch {
     // system notifications are a bonus - the toast and bell still work
