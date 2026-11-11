@@ -303,7 +303,7 @@ const props = defineProps({
 
 const route = useRoute()
 const router = useRouter()
-const appName = computed(() => brandingResource.data?.app_name || 'Janadhikara')
+const appName = computed(() => brandingResource.data?.app_name || 'Hyderabad Dignified')
 const assistantBotName = computed(() => assistantConfigResource.data?.bot_name || 'Assistant')
 const collapsed = ref(false)
 

@@ -7,7 +7,7 @@
           alt=""
           class="login-logo h-16 w-16 flex-shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20 lg:h-24 lg:w-24"
         />
-        <span class="login-rise text-xl font-semibold lg:text-2xl" style="--d: 0.25s">{{ brandingResource.data?.app_name || 'Janadhikara' }}</span>
+        <span class="login-rise text-xl font-semibold lg:text-2xl" style="--d: 0.25s">{{ brandingResource.data?.app_name || 'Hyderabad Dignified' }}</span>
       </div>
 
       <div class="login-rise mt-6 max-w-sm lg:mt-0" style="--d: 0.4s">
@@ -20,7 +20,7 @@
       </div>
 
       <p class="login-rise mt-6 hidden text-xs text-white/40 lg:mt-0 lg:block" style="--d: 0.7s">
-        &copy; {{ new Date().getFullYear() }} {{ brandingResource.data?.app_name || 'Janadhikara' }}
+        &copy; {{ new Date().getFullYear() }} {{ brandingResource.data?.app_name || 'Hyderabad Dignified' }}
         <template v-if="appVersion"> &middot; Version {{ appVersion }}</template>
       </p>
 

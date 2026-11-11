@@ -1,5 +1,5 @@
 app_name = "janadhikara"
-app_title = "Janadhikara"
+app_title = "Hyderabad Dignified"
 app_publisher = "tech4socialsector@azimpremjifoundation.org"
 app_description = "Community Health Worker Application"
 app_email = "tech4socialsector@azimpremjifoundation.org"
@@ -15,7 +15,7 @@ add_to_apps_screen = [
 	{
 		"name": "janadhikara",
 		"logo": "/assets/janadhikara/default-logo.png",
-		"title": "Janadhikara",
+		"title": "Hyderabad Dignified",
 		"route": "/janadhikara",
 	}
 ]

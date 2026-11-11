@@ -60,8 +60,8 @@ export default defineConfig({
       includeAssets: ['favicon.png', 'apple-touch-icon-180x180.png'],
       manifest: {
         id: '/janadhikara/',
-        name: 'Janadhikara',
-        short_name: 'Janadhikara',
+        name: 'Hyderabad Dignified',
+        short_name: 'HYD Dignified',
         description: 'Community health worker data capture and follow-up tracking.',
         start_url: '/janadhikara/home',
         scope: '/janadhikara/',

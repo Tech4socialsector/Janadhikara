@@ -30,7 +30,7 @@
  ],
  "fields": [
   {
-   "default": "Janadhikara",
+   "default": "Hyderabad Dignified",
    "description": "Shown in the Janadhikara Vue app's header, next to the logo.",
    "fieldname": "app_name",
    "fieldtype": "Data",

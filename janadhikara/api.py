@@ -23,7 +23,7 @@ def get_app_branding():
     # gets the App Setting logo as the fallback.
     partner_logo = get_user_partner_logo()
     return {
-        'app_name': settings.app_name or 'Janadhikara',
+        'app_name': settings.app_name or 'Hyderabad Dignified',
         'app_logo': partner_logo or settings.app_logo or None,
         'app_logo_dark': partner_logo or settings.app_logo_dark or settings.app_logo or None,
         'login_headline': settings.login_headline or None,
@@ -123,7 +123,7 @@ def get_pwa_manifest():
     changing the logo later won't update an already-installed icon without a
     reinstall - there's no push mechanism for that on any platform."""
     settings = frappe.get_single('App Setting')
-    app_name = settings.app_name or 'Janadhikara'
+    app_name = settings.app_name or 'Hyderabad Dignified'
     icon_version = _app_logo_cache_key(settings.app_logo)
 
     icons = [
