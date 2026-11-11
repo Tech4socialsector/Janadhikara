@@ -1,5 +1,5 @@
 <template>
-  <div ref="sidebarRef" class="app-sidebar flex h-full flex-shrink-0" :class="{ 'no-logo': !appLogo }" @click.capture="logoGoesHome">
+  <div ref="sidebarRef" class="app-sidebar flex h-full flex-shrink-0" @click.capture="logoGoesHome">
     <Sidebar
       v-model:collapsed="collapsed"
       :header="header"
@@ -160,9 +160,6 @@ to a square or making the row taller. The collapsed icon-only sidebar
   height: 2.5rem;
   flex-shrink: 0;
 }
-.app-sidebar.no-logo > div > button.h-12 > div:first-child {
-  display: none;
-}
 .app-sidebar > div.w-60 > button.h-12 > div:first-child img {
   width: 100%;
   height: 100%;
@@ -283,7 +280,6 @@ import SparklesIcon from '@/components/SparklesIcon.vue'
 import { session, logoutResource } from '@/data/session'
 import { clearSiteData } from '@/data/clearSiteData'
 import { brandingResource, appLogo } from '@/data/branding'
-const NoLogo = { render: () => null }
 import { activeModule } from '@/data/activeModule'
 import { notificationsResource, unreadCount, toggleNotifications } from '@/data/notifications'
 import { pendingCount } from '@/data/offlineQueue'
@@ -334,8 +330,7 @@ const LEAVES_THE_APP = new Set(['Help', 'Go to Desk'])
 const header = computed(() => ({
   title: appName.value,
   subtitle: session.full_name || session.user,
-  // no logo uploaded: an empty one (frappe-ui would otherwise draw the name's first letter), and its tile is hidden
-  logo: appLogo.value || NoLogo,
+  logo: appLogo.value || null,
   menuItems: [
     {
       label: 'Settings',

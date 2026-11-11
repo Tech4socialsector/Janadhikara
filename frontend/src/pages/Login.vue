@@ -3,7 +3,6 @@
     <div class="relative flex flex-shrink-0 flex-col justify-between overflow-hidden bg-gradient-to-br from-gray-900 to-gray-700 p-6 text-white sm:p-8 lg:w-1/2 lg:justify-between lg:p-12">
       <div class="flex items-center gap-3">
         <img
-          v-if="loginLogo"
           :src="loginLogo"
           alt=""
           class="login-logo h-16 w-16 flex-shrink-0 object-contain drop-shadow-lg sm:h-20 sm:w-20 lg:h-24 lg:w-24"
@@ -142,7 +141,7 @@
 import { computed, ref } from 'vue'
 import { FormControl, Button, ErrorMessage, Dialog, FeatherIcon, call, useCall } from 'frappe-ui'
 import { loginResource } from '@/data/session'
-import { brandingResource } from '@/data/branding'
+import { brandingResource, DEFAULT_LOGO } from '@/data/branding'
 
 // This panel's background (bg-gradient-to-br from-gray-900 to-gray-700
 // above) is permanently dark regardless of the app's light/dark theme
@@ -167,7 +166,7 @@ function signInWith(provider) {
 }
 const isImageUrl = (icon) => typeof icon === 'string' && /^(https?:)?\/|^data:image/.test(icon)
 
-const loginLogo = computed(() => brandingResource.data?.app_logo_dark || brandingResource.data?.app_logo || null)
+const loginLogo = computed(() => brandingResource.data?.app_logo_dark || brandingResource.data?.app_logo || DEFAULT_LOGO)
 
 const email = ref('')
 const password = ref('')

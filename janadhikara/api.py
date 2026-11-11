@@ -180,7 +180,7 @@ def _app_logo_cache_key(app_logo):
     the logo's own path already changes on every re-upload (Frappe names
     uploaded files uniquely), so it doubles as a fingerprint with no extra
     bookkeeping needed."""
-    return frappe.utils.sha256_hash(app_logo or 'default-plain')[:12]
+    return frappe.utils.sha256_hash(app_logo or 'default')[:12]
 
 
 @frappe.whitelist(allow_guest=True)
@@ -224,7 +224,7 @@ def _render_pwa_icon(app_logo, size, is_maskable):
             source = None
 
     if source is None:
-        # No logo configured (or it failed to load): a plain icon,
+        # No logo configured (or it failed to load): Janadhikara's own icon,
         # shipped in the app's public folder.
         try:
             default_path = frappe.get_app_path('janadhikara', 'public', 'default-logo.png')
