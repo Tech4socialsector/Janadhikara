@@ -48,11 +48,11 @@ export const languagesResource = createResource({
 })
 
 // Languages to offer, falling back to the last list seen when offline.
-// For the time being the app is offered in English, Assamese and Hindi only, whatever other languages the site has enabled.
+// For the time being the app is offered in English only, whatever other languages the site has enabled.
 // To offer another, add its code here and add its translations.
-export const OFFERED_LANGUAGES = ['en', 'as', 'hi']
-// The three offered languages by their own names, for a visitor who is not signed in yet (nothing to fetch).
-const OWN_NAMES = [{ label: 'English', value: 'en' }, { label: 'অসমীয়া', value: 'as' }, { label: 'हिन्दी', value: 'hi' }]
+export const OFFERED_LANGUAGES = ['en']
+// The offered languages by their own names, for a visitor who is not signed in yet (nothing to fetch).
+const OWN_NAMES = [{ label: 'English', value: 'en' }]
 export const languages = computed(() => {
   const list = (languagesResource.data || cachedLanguages() || []).filter((l) => OFFERED_LANGUAGES.includes(l.value))
   return list.length ? list : OWN_NAMES

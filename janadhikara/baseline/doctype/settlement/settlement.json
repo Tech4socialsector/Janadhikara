@@ -6,252 +6,198 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "tab_settlement_profile",
+  "tab_general",
   "section_identifiers",
   "record_date",
   "record_time",
   "settlement_name",
-  "column_break_main",
+  "column_break_1",
   "partner_organization",
   "organization_name",
   "orw_name",
+  "staff_contact_number",
   "cluster",
-  "section_settlement_details",
-  "q1_legislative_assembly_constituency",
-  "q2_gmc_zone_number",
-  "q3_ward_no_city_corporation",
-  "column_break_settlement_details",
-  "q4_age_settlement_overall_years",
-  "q5_settlement_officially_notified_by_govern",
-  "section_schooling",
-  "q16_1_1_accessibility_primary_secondary_schools",
-  "q16_1_1a_reasons_low_accessibility_primary_second",
-  "q16_1_1a_other_please_specify",
-  "q16_1_2_proportion_children_going_private_school",
-  "column_break_schooling",
-  "q16_1_3_proportion_children_going_government_sch",
-  "q16_1_4_proportion_children_going_government_aid",
-  "q16_1_5_name_schools_where_children_going",
-  "q16_1_6_summarise_remarks_community_your_own",
-  "section_anganwadi",
-  "q16_2_1_accessibility_anganwadis_early_childhood",
-  "q16_2_1a_reasons_low_accessibility_awcs",
-  "q16_2_1a_other_please_specify",
-  "column_break_anganwadi",
-  "q16_2_2_number_anganwadis_available_settlement_w",
-  "q16_2_3_list_anganwadis_where_children_going",
-  "q16_2_4_summarise_remarks_community_your_own",
-  "section_healthcare",
-  "q16_3_1_accessibility_nearest_uphc_government_pr",
-  "q16_3_1a_reasons_low_accessibility_uphc_governmen",
-  "q16_3_1a_other_please_specify",
-  "q16_3_2_name_distance_uphcs_government_private",
-  "q16_3_3_regular_mosquito_fogging_pest_control",
-  "column_break_healthcare",
-  "q16_3_4_other_health_services_available_communit",
-  "q16_3_5_when_last_time_asha_worker",
-  "q16_3_6_provision_paved_unblocked_access_lanes",
-  "q16_3_7_summarise_remarks_community_on_operation",
-  "section_pds_shop",
-  "q16_4_1_name_nearest_ration_shop",
-  "q16_4_2_if_pds_shop_outside_settlement",
-  "column_break_pds_shop",
-  "q16_4_3_other_concern_about_pds_shop",
-  "section_police_station",
-  "q16_5_1_settlement_comes_under_which_police",
-  "q16_5_2_distance_nearest_police_station",
-  "q16_5_3_where_nearest_all_woman_police",
-  "column_break_police_station",
-  "q16_5_4_distance_nearest_all_woman_police",
-  "q16_5_5_police_booth_inside_settlement",
-  "q16_5_6_summarise_safety_concerns_shared_by",
-  "section_other_services",
-  "q17_1_where_they_go_availing_entitlements",
-  "q17_2_distance_arunoday_kendra_csc_public",
-  "q17_3_name_nearest_csc_pfc",
-  "q17_4_access_shared_autorickshaw_stands_bus",
-  "column_break_other_services",
-  "q17_5_small_multi_purpose_community_halls",
-  "q17_6_easily_accessible_municipal_centres_wher",
-  "q17_7_other_services_by_government_settlement",
-  "q17_8_list_active_ngos_engaged_settlements",
-  "section_water_supply",
-  "q18_1_1_settlement_have_individual_household_wat",
-  "q18_1_2_how_many_hours_they_get",
-  "q18_1_3_if_no_what_sources_drinking",
-  "q18_1_3_other_please_specify",
-  "column_break_water_supply",
-  "q18_1_4_if_no_what_sources_water",
-  "q18_1_4_other_please_specify",
-  "q18_1_5_what_challenges_related_water_services",
-  "section_sewage_and_toilets",
-  "q18_2_1_settlement_have_individual_sewer_lines",
-  "q18_2_2_if_yes_it_functional",
-  "q18_2_3_settlement_have_common_functional_toilet",
-  "column_break_sewage_and_toilets",
-  "q18_2_4_if_yes_how_many_toilets",
-  "q18_2_5_summarise_remarks_concerns_on_availabili",
-  "section_flood_and_drain_system",
-  "q18_3_1_settlement_have_storm_water_drains",
-  "q18_3_1a_if_yes_it_covered",
-  "q18_3_2_settlement_have_greywater_drains_system",
-  "q18_3_2b_if_yes_it_covered",
-  "column_break_flood_and_drain_system",
-  "q18_3_3_settlement_prone_flooding",
-  "q18_3_4_flooding_caused_due_poor_drainage",
-  "q18_3_5_flooding_caused_by_high_water",
-  "q18_3_6_if_yes_what_impacts_flood",
-  "section_waste_management",
-  "q18_4_1_door_door_street_wise_garbage",
-  "q18_4_2_where_they_dispose_waste",
-  "q18_4_3_adequate_bins_within_near_settlement",
-  "q18_4_4_who_collects_waste",
-  "column_break_waste_management",
-  "q18_4_5_fee_waste_collection",
-  "q18_4_6_what_fee_cycle",
-  "q18_4_7_how_much_fee",
-  "q18_4_8_summarise_remarks_concerns_on_waste",
-  "section_street_lighting",
-  "q18_5_1_settlement_have_adequate_streetlights",
-  "q18_5_2_dark_unsafe_spaces_where_need",
-  "column_break_street_lighting",
-  "q18_5_3_summarise_remarks_concerns_on_lighting",
-  "section_parks_play_area_for_children",
-  "q18_6_1_playground_park_nearby_settlement",
-  "q18_6_2_where_children_play_settlement",
-  "column_break_parks_play_area_for_children",
-  "q18_6_3_summarise_concerns_shared_by_community",
-  "section_safety_amenities",
-  "q18_7_1_cctv_camera_common_areas_around",
-  "q18_7_2_if_not_at_all_inadequate",
-  "column_break_safety_amenities",
-  "q18_7_3_other_general_remarks_on_need",
-  "q18_7_4_general_safety_concerns_summarise",
-  "section_electricity",
-  "q18_8_1_households_settlement_have_access_formal",
-  "q18_8_2_what_other_arrangements_practices_househ",
-  "column_break_electricity",
-  "section_type_of_settlement",
-  "q6_type_settlement",
-  "section_types_of_housing",
-  "q6_1_temporary_shacks_made_with_tarpaulin",
-  "section_temporary_shacks_made_with_tarpaulin_and_bamboo",
-  "q6_1_1_no_temporary_shacks",
-  "q6_1_2_no_families_living_these_type",
-  "section_break_q6_2",
-  "q6_2_tin_roof_houses_with_bamboo",
-  "section_tin_roof_houses_with_bamboo_mud_walls",
-  "q6_2_1_no_tin_roof_houses_with",
-  "q6_2_2_no_families_living_these_type",
-  "section_break_q6_3",
-  "q6_3_tin_roof_houses_with_half",
-  "section_tin_roof_houses_with_half_brick_wall_and_half_bamb",
-  "q6_3_1_no_tin_roof_houses_with",
-  "q6_3_2_no_families_living_these_type",
-  "section_break_q6_4",
-  "q6_4_stilt_dwellings_with_bamboo_posts",
-  "section_stilt_dwellings_with_bamboo_posts",
-  "q6_4_1_no_houses_with_stilt_dwellings",
-  "q6_4_2_no_families_living_these_type",
-  "section_break_q6_5",
-  "q6_5_stilt_dwellings_with_cement_posts",
-  "section_stilt_dwellings_with_cement_posts",
-  "q6_5_1_no_houses_with_stilt_dwellings",
-  "q6_5_2_no_families_living_these_type",
-  "section_break_q6_6",
-  "q6_6_hill_slope_terraced_structures_settlemen",
-  "section_hill_slope_terraced_structures",
-  "q6_6_1_no_hill_slope_terraced_structures",
-  "q6_6_2_no_families_living_these_type",
-  "section_break_q6_7",
-  "q6_7_full_concrete_houses_settlement",
-  "section_concrete_houses",
-  "q6_7_1_no_concrete_houses",
-  "q6_7_2_no_families_living_these_type",
-  "section_break_q6_8",
-  "q6_8_tenement_constructed_by_gmc_govt",
-  "section_tenement_constructed_by_gmc_govt_authorities",
-  "q6_8_1_no_houses_as_tenement_constructed",
-  "q6_8_2_no_families_living_these_type",
-  "section_break_q6_9",
-  "q6_9_tenement_residing_tin_roof_house",
-  "section_tenement_residing_in_tin_roof_house_with_bamboo_mu",
-  "q6_9_1_no_tenements_residing_tin_roof",
-  "q6_9_2_no_families_living_these_type",
-  "section_housing_remarks",
-  "q6_10_remarks_types_housing",
-  "section_households_family_count",
-  "q7_1_indicate_total_number_houses_physical",
-  "column_break_households_family_count",
-  "q7_2_specify_total_number_families_currently",
-  "households_profiled",
-  "section_others",
-  "q8_houses_rented_out",
-  "q9_migrants_staying_here",
-  "q10_predominant_type_occupation_men_multiple",
-  "q10_other_please_specify",
-  "column_break_others",
-  "q11_predominant_type_occupation_women_multip",
-  "q11_other_please_specify",
-  "q12_predominant_caste_groups_present_settlem",
-  "q12_other_please_specify",
-  "tab_land_surroundings",
-  "section_land_housing",
-  "q13_1_community_eligible_land_housing_rights",
-  "q13_2_discussion_points_on_housing_pattas",
-  "q13_3_land_owning_board_department_multi",
-  "column_break_land_housing",
-  "q13_3_other_please_specify",
-  "q13_4_other_land_owning_department_involved",
-  "section_settlement_surroundings",
-  "q14_settlement_located_near_multi_select",
-  "column_break_settlement_surroundings",
-  "q14_other_please_specify",
-  "section_eviction_details",
-  "q15_1_eviction_threat",
-  "q15_2_describe_eviction_scenario",
-  "column_break_eviction_details",
-  "q15_3_probable_factors_eviction",
-  "tab_location_selection",
-  "section_location_and_other_details",
-  "q19_1_location_details_settlement",
-  "section_location_coordinates",
-  "latitude",
-  "longitude",
-  "column_break_location_coordinates",
+  "section_1",
+  "s1_municipal_corporation",
+  "s1_zone",
+  "s1_circle",
+  "s1_ward",
+  "s1_area",
+  "s1_area_unit",
+  "s1_age_years",
+  "column_break_2",
+  "s1_notified",
+  "s1_land_type",
+  "s1_category",
+  "s1_located_close_to",
+  "s1_located_close_to_other",
+  "s1_other_details",
+  "tab_people_housing",
+  "section_2",
+  "s2_total_households",
+  "s2_population_male",
+  "s2_population_female",
+  "s2_population_others",
+  "s2_total_population",
+  "s2_children_0_3",
+  "s2_children_3_6",
+  "s2_children_6_18",
+  "column_break_3",
+  "s2_orphan_children",
+  "s2_youth_18_29",
+  "s2_elderly_60_plus",
+  "s2_elderly_living_alone",
+  "s2_persons_with_disabilities",
+  "s2_migrant_households",
+  "s2_migrant_household_count",
+  "s2_migrant_type",
+  "s2_migrant_districts",
+  "s2_migrant_states",
+  "s2_migrant_states_other",
+  "s2_remarks",
+  "section_3",
+  "s3_pucca_houses",
+  "s3_pucca_families",
+  "s3_semi_pucca_houses",
+  "s3_semi_pucca_families",
+  "s3_kutcha_houses",
+  "s3_kutcha_families",
+  "s3_temporary_houses",
+  "s3_temporary_families",
+  "column_break_4",
+  "s3_house_ownership",
+  "s3_eviction_risk",
+  "s3_eviction_reasons",
+  "s3_eviction_notice",
+  "s3_notice_period",
+  "s3_notice_period_unit",
+  "s3_households_affected",
+  "s3_remarks",
+  "tab_services",
+  "section_4",
+  "s4_govt_creche",
+  "s4_child_caregiver",
+  "s4_child_caregiver_other",
+  "s4_anganwadi",
+  "s4_anganwadi_distance",
+  "s4_primary_school",
+  "s4_primary_school_distance",
+  "s4_secondary_school",
+  "s4_secondary_school_distance",
+  "s4_dropouts_6_18",
+  "column_break_5",
+  "s4_basti_dawakhana",
+  "s4_dawakhana_functional",
+  "s4_phc_uhc_distance",
+  "s4_health_care_place",
+  "s4_malnourished_mam",
+  "s4_malnourished_sam",
+  "s4_malnourished_stunted",
+  "s4_communicable_diseases",
+  "s4_ncd",
+  "s4_remarks",
+  "section_5",
+  "s5_csc_distance",
+  "s5_csc_access_percent",
+  "s5_pds_access_percent",
+  "s5_schemes_majority",
+  "column_break_6",
+  "s5_schemes_migrants",
+  "s5_scheme_challenges",
+  "s5_police_station_distance",
+  "s5_post_office_distance",
+  "s5_bank_distance",
+  "section_6",
+  "s6_drinking_water_source",
+  "s6_drinking_water_source_other",
+  "s6_water_frequency",
+  "s6_water_supply_hours",
+  "s6_water_supply_time",
+  "s6_household_toilets",
+  "s6_public_toilets",
+  "s6_public_toilet_functional",
+  "s6_public_toilet_manager",
+  "s6_drainage",
+  "s6_drainage_type",
+  "s6_drainage_type_other",
+  "s6_waste_collected",
+  "s6_waste_doorstep",
+  "s6_waste_frequency",
+  "column_break_7",
+  "s6_waste_disposal",
+  "s6_waste_disposal_other",
+  "s6_streets_cleaned",
+  "s6_street_cleaning_frequency",
+  "s6_road_condition",
+  "s6_road_condition_other",
+  "s6_electricity",
+  "s6_electricity_other",
+  "s6_streetlights",
+  "s6_public_transport",
+  "s6_cctv",
+  "s6_cctv_functional",
+  "s6_remarks",
+  "tab_livelihood",
+  "section_7",
+  "s7_occupation_women",
+  "s7_occupation_women_other",
+  "s7_occupation_men",
+  "s7_occupation_men_other",
+  "s7_occupation_young_women",
+  "s7_occupation_young_women_other",
+  "column_break_8",
+  "s7_occupation_young_men",
+  "s7_occupation_young_men_other",
+  "s7_skill_centre",
+  "s7_skill_centre_operator",
+  "s7_skill_courses",
+  "s7_seasonal_migration",
+  "s7_migrant_occupations",
+  "s7_migrant_occupations_other",
+  "s7_remarks",
+  "section_8",
+  "s8_flood_prone",
+  "s8_last_flooded",
+  "s8_flood_loss",
+  "column_break_9",
+  "s8_waterlogging",
+  "s8_remarks",
+  "section_9",
+  "s9_women_shgs",
+  "s9_youth_groups",
+  "s9_child_protection_committee",
+  "s9_other_cbos",
+  "s9_cbo_names",
+  "s9_cbo_programs",
+  "column_break_10",
+  "s9_other_ngos",
+  "s9_ngo_names",
+  "s9_ngo_programs",
+  "s9_remarks",
+  "tab_recommendation",
+  "section_10",
+  "s10_recommended",
+  "s10_coverage",
+  "s10_exempted",
+  "column_break_11",
+  "s10_reasons",
+  "section_location",
   "geo_location",
-  "section_break_location_point",
+  "latitude",
+  "column_break_12",
+  "longitude",
+  "section_photos",
   "q19_3_street_view_photos",
-  "section_implementing_org_recommendation",
-  "q20_1_implementing_org_team_s_recommendation",
-  "q20_2_if_yes_we_taking_all",
-  "q20_3_if_yes_partially_no_houses",
-  "q20_4_brief_rationale_your_recommendation",
-  "column_break_implementing_org_recommendation",
-  "q20_5_general_remarks",
-  "q20_6_profiling_status",
-  "q20_7_profiled_by",
-  "section_apf_team_selection",
-  "q21_1_apf_team_visit_status",
-  "q21_2_visited_by",
-  "q21_3_visit_observation",
-  "q21_4_apf_team_recommendation",
-  "column_break_apf_team_selection",
-  "q21_5_team_rationale",
-  "q21_6_final_selection_intervention_units",
-  "q21_7_no_hhs_considered",
-  "q21_8_statement_selection",
   "section_record_status",
   "validation_status",
-  "column_break_record_status",
-  "validation_comments",
-  "section_break_dzpe"
+  "column_break_13",
+  "validation_comments"
  ],
  "fields": [
   {
-   "fieldname": "tab_settlement_profile",
+   "fieldname": "tab_general",
    "fieldtype": "Tab Break",
-   "label": "Settlement Profile"
+   "label": "General Information"
   },
   {
    "fieldname": "section_identifiers",
@@ -280,18 +226,18 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Settlement Full Name"
+   "label": "Settlement"
   },
   {
-   "fieldname": "column_break_main",
+   "fieldname": "column_break_1",
    "fieldtype": "Column Break"
   },
   {
-   "description": "The partner working in this settlement. Its workers can be tagged on the Workers tab.",
+   "description": "Filled in from the signed-in worker's organisation.",
    "fieldname": "partner_organization",
    "fieldtype": "Link",
    "in_standard_filter": 1,
-   "label": "Partner Organization",
+   "label": "Name of Implementing Organization",
    "options": "Partner Details",
    "search_index": 1
   },
@@ -308,8 +254,15 @@
    "description": "The ORW who recorded this. Filled in with the signed-in user when left empty.",
    "fieldname": "orw_name",
    "fieldtype": "Link",
-   "label": "Name of the ORW",
+   "label": "Name of the staff preparing settlement profile",
    "options": "User"
+  },
+  {
+   "fieldname": "staff_contact_number",
+   "fieldtype": "Data",
+   "label": "Contact number of staff preparing settlement profile",
+   "options": "Phone",
+   "length": 10
   },
   {
    "fieldname": "cluster",
@@ -318,1213 +271,1055 @@
    "label": "Cluster"
   },
   {
-   "fieldname": "section_settlement_details",
+   "fieldname": "section_1",
    "fieldtype": "Section Break",
-   "label": "Settlement Details"
+   "label": "Section 1: General Information"
   },
   {
-   "description": "The Legislative Assembly Constituency the settlement falls in.",
-   "fieldname": "q1_legislative_assembly_constituency",
-   "fieldtype": "Data",
-   "label": "1. Legislative Assembly Constituency",
-   "length": 100
+   "fieldname": "s1_municipal_corporation",
+   "fieldtype": "Link",
+   "label": "1.1. Municipal Corporation Name",
+   "options": "Municipal Corporation",
+   "description": "Choose the appropriate Corporation name from the drop-down",
+   "in_standard_filter": 1,
+   "link_filters": "[[\"Municipal Corporation\", \"enabled\", \"=\", 1]]"
   },
   {
-   "description": "As per the new list. If it is not in City Corporation limit, please enter \"0\"",
-   "fieldname": "q2_gmc_zone_number",
-   "fieldtype": "Data",
-   "label": "2. GMC Zone Number",
-   "length": 100
+   "fieldname": "s1_zone",
+   "fieldtype": "Link",
+   "label": "1.2. Zone Name",
+   "options": "Municipal Zone",
+   "description": "Choose the appropriate zone name from the drop-down. Only zones of the Corporation chosen in 1.1 are listed.",
+   "link_filters": "[[\"Municipal Zone\", \"municipal_corporation\", \"=\", \"eval:doc.s1_municipal_corporation\"], [\"Municipal Zone\", \"enabled\", \"=\", 1]]"
   },
   {
-   "fieldname": "q3_ward_no_city_corporation",
-   "fieldtype": "Data",
-   "label": "3. Ward No: (of City Corporation)",
-   "length": 100
+   "fieldname": "s1_circle",
+   "fieldtype": "Link",
+   "label": "1.3. Circle Name",
+   "options": "Municipal Circle",
+   "description": "Choose the appropriate circle name from the drop-down. Only circles of the Zone chosen in 1.2 are listed.",
+   "link_filters": "[[\"Municipal Circle\", \"zone\", \"=\", \"eval:doc.s1_zone\"], [\"Municipal Circle\", \"enabled\", \"=\", 1]]"
   },
   {
-   "fieldname": "column_break_settlement_details",
-   "fieldtype": "Column Break"
+   "fieldname": "s1_ward",
+   "fieldtype": "Link",
+   "label": "1.4. Ward Name",
+   "options": "Municipal Ward",
+   "description": "Choose the appropriate ward name from the drop-down. Only wards of the Circle chosen in 1.3 are listed.",
+   "in_standard_filter": 1,
+   "link_filters": "[[\"Municipal Ward\", \"circle\", \"=\", \"eval:doc.s1_circle\"], [\"Municipal Ward\", \"enabled\", \"=\", 1]]"
   },
   {
-   "description": "Tentative based on an average of multiple responses from the conversation",
-   "fieldname": "q4_age_settlement_overall_years",
+   "fieldname": "s1_area",
+   "fieldtype": "Float",
+   "label": "1.5. Approximate area of the settlement",
+   "description": "Tentative, based on an average of multiple responses from the conversation."
+  },
+  {
+   "fieldname": "s1_area_unit",
+   "fieldtype": "Select",
+   "label": "Unit of area (1.5)",
+   "options": "\nSquare Yards\nAcres"
+  },
+  {
+   "fieldname": "s1_age_years",
    "fieldtype": "Int",
-   "label": "4. Age of the Settlement (overall in years)"
+   "label": "1.6. Age of the Settlement (overall in years)",
+   "description": "Tentative, based on an average of multiple responses from the conversation."
   },
   {
-   "fieldname": "q5_settlement_officially_notified_by_govern",
-   "fieldtype": "Select",
-   "label": "5. Is the settlement officially notified by the government?",
-   "length": 64,
-   "options": "\nYes, Notified\nNo, Non-Notified / Unrecognized\nDon't Know / Unsure"
-  },
-  {
-   "fieldname": "section_schooling",
-   "fieldtype": "Section Break",
-   "label": "Schooling"
-  },
-  {
-   "fieldname": "q16_1_1_accessibility_primary_secondary_schools",
-   "fieldtype": "Select",
-   "label": "16.1.1. Accessibility to primary and secondary schools",
-   "length": 64,
-   "options": "\nHigh\nModerate\nLow"
-  },
-  {
-   "depends_on": "eval:doc.q16_1_1_accessibility_primary_secondary_schools==\"Low\"",
-   "description": "Pick all that apply.",
-   "fieldname": "q16_1_1a_reasons_low_accessibility_primary_second",
-   "fieldtype": "Small Text",
-   "label": "16.1.1a. Reasons for Low accessibility to primary and secondary schools",
-   "options": "Distance\nBusy Roads\nPoor Public Infrastructure\nTraffic Accidents\nHarassment Risks\nCrime Exposure\nChild Labour\nSibling Care\nParental Illiteracy\nHidden Costs\nOvercrowded Schools\nLack of Documents\nOthers? Specify"
-  },
-  {
-   "depends_on": "eval:(doc.q16_1_1a_reasons_low_accessibility_primary_second||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")",
-   "fieldname": "q16_1_1a_other_please_specify",
-   "fieldtype": "Data",
-   "label": "Please specify (Q16.1.1a)",
-   "length": 100,
-   "mandatory_depends_on": "eval:(doc.q16_1_1a_reasons_low_accessibility_primary_second||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")"
-  },
-  {
-   "description": "Approximate share of children, in % (0 to 100). The three shares together cannot be more than 100.",
-   "fieldname": "q16_1_2_proportion_children_going_private_school",
-   "fieldtype": "Percent",
-   "label": "16.1.2. Proportion of children going to the Private Schools from the settlement"
-  },
-  {
-   "fieldname": "column_break_schooling",
+   "fieldname": "column_break_2",
    "fieldtype": "Column Break"
   },
   {
-   "description": "Approximate share of children, in % (0 to 100). The three shares together cannot be more than 100.",
-   "fieldname": "q16_1_3_proportion_children_going_government_sch",
-   "fieldtype": "Percent",
-   "label": "16.1.3. Proportion of children going to the Government Schools from the settlement"
-  },
-  {
-   "description": "Approximate share of children, in % (0 to 100). The three shares together cannot be more than 100.",
-   "fieldname": "q16_1_4_proportion_children_going_government_aid",
-   "fieldtype": "Percent",
-   "label": "16.1.4. Proportion of children going to the Government Aided Schools from the settlement"
-  },
-  {
-   "description": "Both Private and Government. If possible, list the schools.",
-   "fieldname": "q16_1_5_name_schools_where_children_going",
-   "fieldtype": "Small Text",
-   "label": "16.1.5. Name the Schools where children are going from the Settlement"
-  },
-  {
-   "fieldname": "q16_1_6_summarise_remarks_community_your_own",
-   "fieldtype": "Small Text",
-   "label": "16.1.6. Summarise the remarks of the community and your own observations, impressions on schooling available to the residents of the Settlement"
-  },
-  {
-   "fieldname": "section_anganwadi",
-   "fieldtype": "Section Break",
-   "label": "Anganwadi"
-  },
-  {
-   "fieldname": "q16_2_1_accessibility_anganwadis_early_childhood",
+   "fieldname": "s1_notified",
    "fieldtype": "Select",
-   "label": "16.2.1. Accessibility to Anganwadis, Early Childhood Daycare or creche facilities",
-   "length": 64,
-   "options": "\nHigh\nModerate\nLow"
+   "label": "1.7. Is the settlement officially notified by the government?",
+   "options": "\nNotified\nNon-Notified\nResettlement",
+   "description": "Notified: officially identified, declared and recorded as a settlement by the Government of Telangana or GHMC; generally eligible for government infrastructure, basic services and welfare.\nNon-Notified: a low-income informal settlement (basti) not officially recognised or declared; usually has inadequate housing, limited basic services and insecure tenure.\nResettlement: households covered under a government housing scheme and living in government-constructed housing settlements."
   },
   {
-   "depends_on": "eval:doc.q16_2_1_accessibility_anganwadis_early_childhood==\"Low\"",
-   "description": "Pick all that apply.",
-   "fieldname": "q16_2_1a_reasons_low_accessibility_awcs",
-   "fieldtype": "Small Text",
-   "label": "16.2.1a. Reasons for Low accessibility to AWCs",
-   "options": "Distance\nBusy Roads\nPoor Public Infrastructure\nTraffic Accidents\nHarassment Risks\nCrime Exposure\nChild Labour\nSibling Care\nParental Illiteracy\nOvercrowded AWCs\nLack of Documents\nOthers? Specify"
+   "fieldname": "s1_land_type",
+   "fieldtype": "Select",
+   "label": "1.8. Is the settlement located in government or private land?",
+   "options": "\nGovernment\nPrivate",
+   "description": "Government: households occupy and live on government land.\nPrivate: households occupy and live on private land, with or without the landlord's permission."
   },
   {
-   "depends_on": "eval:(doc.q16_2_1a_reasons_low_accessibility_awcs||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")",
-   "fieldname": "q16_2_1a_other_please_specify",
+   "fieldname": "s1_category",
+   "fieldtype": "Select",
+   "label": "1.9. Category of settlement",
+   "options": "\nA: Settled settlements with Land Tenure\nB: Settled settlements without Land Tenure\nC: Resettlement Areas\nD: Emerging settlements",
+   "description": "A: pucca, semi-pucca or tin-roof houses with valid land ownership or occupancy rights (patta, title deed or government authorisation) and access to electricity, drinking water and sanitation.\nB: pucca, semi-pucca or tin-roof houses without formal land ownership or legal occupancy rights (encroached government land, private land, or sites without approved permissions or regularised tenure).\nC: households under a government housing scheme living in government-constructed housing colonies or rehabilitation settlements with basic infrastructure.\nD: newly emerged informal settlements (0-5 years), mostly on the periphery of the city, often of recent migrant families with limited services."
+  },
+  {
+   "fieldname": "s1_located_close_to",
+   "fieldtype": "Select",
+   "label": "1.10. Is this settlement located close to any of these locations?",
+   "options": "\nA: Along nala\nB: Along railway track\nC: Industrial area\nD: Other (specify)",
+   "description": "A: beside a nala/drain or stormwater channel.\nB: adjacent to or close to railway tracks or railway land.\nC: within or near industrial estates, factories, warehouses or manufacturing units.\nD: residential, commercial, roadside, peri-urban or any other area not covered above."
+  },
+  {
+   "fieldname": "s1_located_close_to_other",
    "fieldtype": "Data",
-   "label": "Please specify (Q16.2.1a)",
-   "length": 100,
-   "mandatory_depends_on": "eval:(doc.q16_2_1a_reasons_low_accessibility_awcs||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")"
+   "label": "Please specify (1.10)",
+   "depends_on": "eval:doc.s1_located_close_to==\"D: Other (specify)\"",
+   "mandatory_depends_on": "eval:doc.s1_located_close_to==\"D: Other (specify)\"",
+   "length": 140
   },
   {
-   "fieldname": "column_break_anganwadi",
-   "fieldtype": "Column Break"
+   "fieldname": "s1_other_details",
+   "fieldtype": "Small Text",
+   "label": "1.11. Share any other details about the settlement",
+   "description": "Write your observation on the settlement, e.g. houses built in the area / square yards, number of small houses or multi-storey buildings and more."
   },
   {
-   "fieldname": "q16_2_2_number_anganwadis_available_settlement_w",
+   "fieldname": "tab_people_housing",
+   "fieldtype": "Tab Break",
+   "label": "People & Housing"
+  },
+  {
+   "fieldname": "section_2",
+   "fieldtype": "Section Break",
+   "label": "Section 2: Demographic Profile"
+  },
+  {
+   "fieldname": "s2_total_households",
    "fieldtype": "Int",
-   "label": "16.2.2. Number of Anganwadis available in settlement or within accessible distance"
+   "label": "2.1. Total number of households (families)",
+   "description": "Enter the total number of households/families in the settlement."
   },
   {
-   "description": "Name and location of the Anganwadi to be mentioned",
-   "fieldname": "q16_2_3_list_anganwadis_where_children_going",
-   "fieldtype": "Small Text",
-   "label": "16.2.3. List the Anganwadis where children are going from the Settlement"
-  },
-  {
-   "fieldname": "q16_2_4_summarise_remarks_community_your_own",
-   "fieldtype": "Small Text",
-   "label": "16.2.4. Summarise the remarks of the community and your own observations, impressions on Anganwadi services available for them"
-  },
-  {
-   "fieldname": "section_healthcare",
-   "fieldtype": "Section Break",
-   "label": "Healthcare"
-  },
-  {
-   "fieldname": "q16_3_1_accessibility_nearest_uphc_government_pr",
-   "fieldtype": "Select",
-   "label": "16.3.1. Accessibility to nearest UPHC, Government or Private Hospital",
-   "length": 64,
-   "options": "\nHigh\nModerate\nLow"
-  },
-  {
-   "depends_on": "eval:doc.q16_3_1_accessibility_nearest_uphc_government_pr==\"Low\"",
-   "description": "Pick all that apply.",
-   "fieldname": "q16_3_1a_reasons_low_accessibility_uphc_governmen",
-   "fieldtype": "Small Text",
-   "label": "16.3.1a. Reasons for Low accessibility to UPHC, Government or Private Hospital",
-   "options": "Distance & poor connectivity\nFinancial barriers\nOvercrowded facilities\nLimited distribution of UPHCs\nAwareness & social barriers\nWork & livelihood constraints\nOthers, specify"
-  },
-  {
-   "depends_on": "eval:(doc.q16_3_1a_reasons_low_accessibility_uphc_governmen||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, specify\")",
-   "fieldname": "q16_3_1a_other_please_specify",
-   "fieldtype": "Data",
-   "label": "Please specify (Q16.3.1a)",
-   "length": 100,
-   "mandatory_depends_on": "eval:(doc.q16_3_1a_reasons_low_accessibility_uphc_governmen||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, specify\")"
-  },
-  {
-   "fieldname": "q16_3_2_name_distance_uphcs_government_private",
-   "fieldtype": "Small Text",
-   "label": "16.3.2. Name & Distance of the UPHCs, Government or Private Hospitals where residents from the settlement are accessing the health services"
-  },
-  {
-   "fieldname": "q16_3_3_regular_mosquito_fogging_pest_control",
-   "fieldtype": "Select",
-   "label": "16.3.3. Are there regular mosquito fogging, pest control drives, and anti-malaria/dengue campaigns run by municipal health workers (Vector Control)",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "column_break_healthcare",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "q16_3_4_other_health_services_available_communit",
-   "fieldtype": "Small Text",
-   "label": "16.3.4. Any other health services available in the community?"
-  },
-  {
-   "fieldname": "q16_3_5_when_last_time_asha_worker",
-   "fieldtype": "Select",
-   "label": "16.3.5. When is the last time an Asha Worker or ANM reach out to any community member in the settlement?",
-   "length": 64,
-   "options": "\nLess than 1 month\n1-3 months\n4-6 months\nMore than 6 months\nNever came\nUnsure"
-  },
-  {
-   "fieldname": "q16_3_6_provision_paved_unblocked_access_lanes",
-   "fieldtype": "Select",
-   "label": "16.3.6. Is there provision of paved, unblocked access lanes wide enough for ambulances to enter during disasters/emergencies?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "q16_3_7_summarise_remarks_community_on_operation",
-   "fieldtype": "Small Text",
-   "label": "16.3.7. Summarise the remarks of the community on operations of the UPHCs and any other unmet health needs"
-  },
-  {
-   "fieldname": "section_pds_shop",
-   "fieldtype": "Section Break",
-   "label": "PDS Shop"
-  },
-  {
-   "description": "Street name or any other identifier. Capture only if functioning",
-   "fieldname": "q16_4_1_name_nearest_ration_shop",
-   "fieldtype": "Data",
-   "label": "16.4.1. Name the nearest Ration Shop",
-   "length": 100
-  },
-  {
-   "description": "If it is within the settlement, mark as \"0\"",
-   "fieldname": "q16_4_2_if_pds_shop_outside_settlement",
-   "fieldtype": "Float",
-   "label": "16.4.2. If PDS Shop is outside the settlement, state the distance in KM"
-  },
-  {
-   "fieldname": "column_break_pds_shop",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "q16_4_3_other_concern_about_pds_shop",
-   "fieldtype": "Small Text",
-   "label": "16.4.3. Any other concern about the PDS Shop - a summary from the conversation"
-  },
-  {
-   "fieldname": "section_police_station",
-   "fieldtype": "Section Break",
-   "label": "Police Station"
-  },
-  {
-   "description": "Capture the complete name with number",
-   "fieldname": "q16_5_1_settlement_comes_under_which_police",
-   "fieldtype": "Data",
-   "label": "16.5.1. Settlement comes under which Police station?",
-   "length": 100
-  },
-  {
-   "description": "Distance in km",
-   "fieldname": "q16_5_2_distance_nearest_police_station",
-   "fieldtype": "Float",
-   "label": "16.5.2. Distance to the nearest Police station"
-  },
-  {
-   "description": "Capture the complete name with number",
-   "fieldname": "q16_5_3_where_nearest_all_woman_police",
-   "fieldtype": "Data",
-   "label": "16.5.3. Where is the nearest All Woman Police Station located?",
-   "length": 100
-  },
-  {
-   "fieldname": "column_break_police_station",
-   "fieldtype": "Column Break"
-  },
-  {
-   "description": "Distance in km",
-   "fieldname": "q16_5_4_distance_nearest_all_woman_police",
-   "fieldtype": "Float",
-   "label": "16.5.4. Distance to the nearest All Woman Police Station"
-  },
-  {
-   "description": "Mark \"yes\" only if Functional",
-   "fieldname": "q16_5_5_police_booth_inside_settlement",
-   "fieldtype": "Select",
-   "label": "16.5.5. Is there a police booth inside the settlement?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "q16_5_6_summarise_safety_concerns_shared_by",
-   "fieldtype": "Small Text",
-   "label": "16.5.6. Summarise safety concerns shared by the community"
-  },
-  {
-   "fieldname": "section_other_services",
-   "fieldtype": "Section Break",
-   "label": "Other Services"
-  },
-  {
-   "description": "Mention who is helping them - community leaders, fellows, does directly with some offices, other NGOs etc. - state it",
-   "fieldname": "q17_1_where_they_go_availing_entitlements",
-   "fieldtype": "Small Text",
-   "label": "17.1. Where do they go for availing entitlements and related services?"
-  },
-  {
-   "description": "In km",
-   "fieldname": "q17_2_distance_arunoday_kendra_csc_public",
-   "fieldtype": "Float",
-   "label": "17.2. Distance to Arunoday Kendra (CSC)/Public Facilitation Centre (PFC)"
-  },
-  {
-   "fieldname": "q17_3_name_nearest_csc_pfc",
-   "fieldtype": "Data",
-   "label": "17.3. Name of the nearest CSC/PFC",
-   "length": 100
-  },
-  {
-   "description": "Highlight the cost involved in a day's transit from home to place to work",
-   "fieldname": "q17_4_access_shared_autorickshaw_stands_bus",
-   "fieldtype": "Small Text",
-   "label": "17.4. Is there access to shared autorickshaw stands, bus stops, or railway stations located within walking distance to connect residents to informal and formal city job markets?"
-  },
-  {
-   "fieldname": "column_break_other_services",
-   "fieldtype": "Column Break"
-  },
-  {
-   "description": "Highlight the type of infrastructure available and the cost involved in using it",
-   "fieldname": "q17_5_small_multi_purpose_community_halls",
-   "fieldtype": "Small Text",
-   "label": "17.5. Are there small, multi-purpose community halls available for public meetings, training and skill development workshops, or social gatherings within or near to the settlement?"
-  },
-  {
-   "fieldname": "q17_6_easily_accessible_municipal_centres_wher",
-   "fieldtype": "Select",
-   "label": "17.6. Are there easily accessible municipal centres where residents can register births, deaths, marriages, and apply for identity/ration cards?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "description": "What, how, where, when, by whom",
-   "fieldname": "q17_7_other_services_by_government_settlement",
-   "fieldtype": "Small Text",
-   "label": "17.7. Any other services by the government in the settlement"
-  },
-  {
-   "description": "Mention name of the NGOs and what they do in the settlements",
-   "fieldname": "q17_8_list_active_ngos_engaged_settlements",
-   "fieldtype": "Small Text",
-   "label": "17.8. List the active NGOs engaged in the settlements"
-  },
-  {
-   "fieldname": "section_water_supply",
-   "fieldtype": "Section Break",
-   "label": "Water Supply"
-  },
-  {
-   "description": "Mark \"yes\" if majority of the houses got piped water connection",
-   "fieldname": "q18_1_1_settlement_have_individual_household_wat",
-   "fieldtype": "Select",
-   "label": "18.1.1. Does the settlement have individual household water connection?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q18_1_1_settlement_have_individual_household_wat==\"Yes\"",
-   "fieldname": "q18_1_2_how_many_hours_they_get",
+   "fieldname": "s2_population_male",
    "fieldtype": "Int",
-   "label": "18.1.2. For how many hours do they get running water services?",
-   "mandatory_depends_on": "eval:doc.q18_1_1_settlement_have_individual_household_wat==\"Yes\""
+   "label": "2.2. Total Population - Male"
   },
   {
-   "depends_on": "eval:doc.q18_1_1_settlement_have_individual_household_wat==\"No\"",
-   "fieldname": "q18_1_3_if_no_what_sources_drinking",
+   "fieldname": "s2_population_female",
+   "fieldtype": "Int",
+   "label": "2.2. Total Population - Female"
+  },
+  {
+   "fieldname": "s2_population_others",
+   "fieldtype": "Int",
+   "label": "2.2. Total Population - Others"
+  },
+  {
+   "fieldname": "s2_total_population",
+   "fieldtype": "Int",
+   "label": "2.2. Total Population",
+   "description": "Male + Female + Others, added up as they are entered.",
+   "read_only": 1
+  },
+  {
+   "fieldname": "s2_children_0_3",
+   "fieldtype": "Int",
+   "label": "2.3. Number of children aged 0-3 years",
+   "description": "Enter the number. If none, enter 0."
+  },
+  {
+   "fieldname": "s2_children_3_6",
+   "fieldtype": "Int",
+   "label": "2.4. Number of children aged 3-6 years",
+   "description": "Enter the number. If none, enter 0."
+  },
+  {
+   "fieldname": "s2_children_6_18",
+   "fieldtype": "Int",
+   "label": "2.5. Number of children aged 6-18 years",
+   "description": "Enter the number. If none, enter 0."
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "s2_orphan_children",
+   "fieldtype": "Int",
+   "label": "2.6. Number of orphan and semi-orphan children",
+   "description": "Enter the number. If none, enter 0."
+  },
+  {
+   "fieldname": "s2_youth_18_29",
+   "fieldtype": "Int",
+   "label": "2.7. Number of youth aged 18-29 years",
+   "description": "Enter the number. If none, enter 0."
+  },
+  {
+   "fieldname": "s2_elderly_60_plus",
+   "fieldtype": "Int",
+   "label": "2.8. Number of elderly persons (60 years and above)",
+   "description": "Enter the number. If none, enter 0."
+  },
+  {
+   "fieldname": "s2_elderly_living_alone",
+   "fieldtype": "Int",
+   "label": "2.9. Number of elderly persons (60 years and above) living alone",
+   "description": "Enter the number. If none, enter 0."
+  },
+  {
+   "fieldname": "s2_persons_with_disabilities",
+   "fieldtype": "Int",
+   "label": "2.10. Number of persons with disabilities",
+   "description": "Enter the number. If none, enter 0."
+  },
+  {
+   "fieldname": "s2_migrant_households",
+   "fieldtype": "Select",
+   "label": "2.11. Are there migrant households in this settlement?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "s2_migrant_household_count",
+   "fieldtype": "Int",
+   "label": "2.12. Number of Migrant Households",
+   "description": "Enter the total number of migrant households residing in the settlement.",
+   "depends_on": "eval:doc.s2_migrant_households==\"Yes\""
+  },
+  {
+   "fieldname": "s2_migrant_type",
+   "fieldtype": "Select",
+   "label": "2.13. Type of Migrants",
+   "options": "\nIntra-State\nInter-State\nBoth",
+   "description": "Select the category that best represents the migrant population residing in the settlement.",
+   "depends_on": "eval:doc.s2_migrant_households==\"Yes\""
+  },
+  {
+   "fieldname": "s2_migrant_districts",
    "fieldtype": "Small Text",
-   "label": "18.1.3. If no, what are the sources for drinking water?",
-   "options": "Shared handpump\nShared tap / standpost\nCommunity well\nOwn well\nTube well / borewell\nBuying water (tanker / jar / bottle)\nRiver / stream / pond\nRainwater harvesting\nOthers, Specify",
+   "label": "2.13a. Districts of Telangana the migrants come from",
+   "options": "Adilabad\nBhadradri Kothagudem\nHanumakonda\nHyderabad\nJagtial\nJangaon\nJayashankar Bhupalpally\nJogulamba Gadwal\nKamareddy\nKarimnagar\nKhammam\nKomaram Bheem Asifabad\nMahabubabad\nMahabubnagar\nMancherial\nMedak\nMedchal-Malkajgiri\nMulugu\nNagarkurnool\nNalgonda\nNarayanpet\nNirmal\nNizamabad\nPeddapalli\nRajanna Sircilla\nRangareddy\nSangareddy\nSiddipet\nSuryapet\nVikarabad\nWanaparthy\nWarangal\nYadadri Bhuvanagiri",
+   "description": "Pick all that apply.",
+   "depends_on": "eval:doc.s2_migrant_type==\"Intra-State\" || doc.s2_migrant_type==\"Both\""
+  },
+  {
+   "fieldname": "s2_migrant_states",
+   "fieldtype": "Small Text",
+   "label": "2.13b. States the migrants come from",
+   "options": "Andhra Pradesh\nArunachal Pradesh\nAssam\nBihar\nChhattisgarh\nGoa\nGujarat\nHaryana\nHimachal Pradesh\nJharkhand\nKarnataka\nKerala\nMadhya Pradesh\nMaharashtra\nManipur\nMeghalaya\nMizoram\nNagaland\nOdisha\nPunjab\nRajasthan\nSikkim\nTamil Nadu\nTripura\nUttar Pradesh\nUttarakhand\nWest Bengal\nAndaman and Nicobar Islands\nChandigarh\nDadra and Nagar Haveli and Daman and Diu\nDelhi\nJammu and Kashmir\nLadakh\nLakshadweep\nPuducherry\nNepal\nBangladesh\nOther (specify)",
+   "description": "Pick all that apply.",
+   "depends_on": "eval:doc.s2_migrant_type==\"Inter-State\" || doc.s2_migrant_type==\"Both\""
+  },
+  {
+   "fieldname": "s2_migrant_states_other",
+   "fieldtype": "Data",
+   "label": "Please specify (2.13b)",
+   "depends_on": "eval:(doc.s2_migrant_states||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "mandatory_depends_on": "eval:(doc.s2_migrant_states||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "length": 140
+  },
+  {
+   "fieldname": "s2_remarks",
+   "fieldtype": "Small Text",
+   "label": "2.14. Any other observations and remarks on demographic profile",
+   "description": "E.g. migration with or without families, seasonal migration, status of elderly people, types of disabilities in the settlement."
+  },
+  {
+   "fieldname": "section_3",
+   "fieldtype": "Section Break",
+   "label": "Section 3: Housing Conditions"
+  },
+  {
+   "fieldname": "s3_pucca_houses",
+   "fieldtype": "Int",
+   "label": "3.1. Number of Pucca houses",
+   "description": "A permanent house built with durable materials such as cement, concrete, bricks and RCC roofing, with a strong and stable structure."
+  },
+  {
+   "fieldname": "s3_pucca_families",
+   "fieldtype": "Int",
+   "label": "3.2. Number of families living in the pucca houses",
+   "description": "Enter the number. If none, enter 0."
+  },
+  {
+   "fieldname": "s3_semi_pucca_houses",
+   "fieldtype": "Int",
+   "label": "3.3. Number of semi-pucca houses",
+   "description": "A house built with a mix of durable and temporary materials, e.g. brick or cement walls with tin, asbestos or tiled roofing."
+  },
+  {
+   "fieldname": "s3_semi_pucca_families",
+   "fieldtype": "Int",
+   "label": "3.4. Number of families living in the semi-pucca houses",
+   "description": "Enter the number. If none, enter 0."
+  },
+  {
+   "fieldname": "s3_kutcha_houses",
+   "fieldtype": "Int",
+   "label": "3.5. Number of kutcha houses",
+   "description": "A temporary house built with mud, bamboo, wooden planks, plastic sheets, tarpaulin or thatched roofing, with limited durability."
+  },
+  {
+   "fieldname": "s3_kutcha_families",
+   "fieldtype": "Int",
+   "label": "3.6. Number of families living in the kutcha houses",
+   "description": "Enter the number. If none, enter 0."
+  },
+  {
+   "fieldname": "s3_temporary_houses",
+   "fieldtype": "Int",
+   "label": "3.7. Number of temporary/tin sheet/thatched houses",
+   "description": "A temporary shelter mainly of tin sheets, plastic sheets, tarpaulin or thatch, with minimal stability and little protection from the weather."
+  },
+  {
+   "fieldname": "s3_temporary_families",
+   "fieldtype": "Int",
+   "label": "3.8. Number of families living in temporary/tin sheet/thatched houses",
+   "description": "Enter the number. If none, enter 0."
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "s3_house_ownership",
+   "fieldtype": "Small Text",
+   "label": "3.9. Status of residents' house ownership",
+   "options": "Own\nRented\nTemporary shelter",
+   "description": "Tentative, based on multiple responses from the conversation and how the majority of people in the settlement live. Pick all that apply."
+  },
+  {
+   "fieldname": "s3_eviction_risk",
+   "fieldtype": "Select",
+   "label": "3.10. Is there any risk of Eviction?",
+   "options": "\nYes\nNo",
+   "description": "Based on the assessment, indicate whether there is a potential risk of eviction in the settlement."
+  },
+  {
+   "fieldname": "s3_eviction_reasons",
+   "fieldtype": "Small Text",
+   "label": "3.11. Reasons for eviction",
+   "description": "Specify the main reason for eviction from the settlement.",
+   "depends_on": "eval:doc.s3_eviction_risk==\"Yes\""
+  },
+  {
+   "fieldname": "s3_eviction_notice",
+   "fieldtype": "Select",
+   "label": "3.12. Has there been a verbal or written communication or notification on the eviction?",
+   "options": "\nYes\nNo",
+   "description": "Indicate whether the community or any households have received written or oral communication about eviction.",
+   "depends_on": "eval:doc.s3_eviction_risk==\"Yes\""
+  },
+  {
+   "fieldname": "s3_notice_period",
+   "fieldtype": "Int",
+   "label": "3.13. If yes, what is the notice period for evicting the place?",
+   "description": "Enter the number of days or months given as notice. If no notice period was given, enter 0.",
+   "depends_on": "eval:doc.s3_eviction_risk==\"Yes\" && doc.s3_eviction_notice==\"Yes\""
+  },
+  {
+   "fieldname": "s3_notice_period_unit",
+   "fieldtype": "Select",
+   "label": "Unit of notice period (3.13)",
+   "options": "\nDays\nMonths",
+   "depends_on": "eval:doc.s3_eviction_risk==\"Yes\" && doc.s3_eviction_notice==\"Yes\""
+  },
+  {
+   "fieldname": "s3_households_affected",
+   "fieldtype": "Int",
+   "label": "3.14. How many households would be affected due to eviction?",
+   "description": "Enter the total number of households likely to be affected. If none, enter 0.",
+   "depends_on": "eval:doc.s3_eviction_risk==\"Yes\""
+  },
+  {
+   "fieldname": "s3_remarks",
+   "fieldtype": "Small Text",
+   "label": "3.15. Any other observations and remarks on housing conditions",
+   "description": "E.g. the type of most houses, land rights, whether most people live in rented houses or own them."
+  },
+  {
+   "fieldname": "tab_services",
+   "fieldtype": "Tab Break",
+   "label": "Services & Infrastructure"
+  },
+  {
+   "fieldname": "section_4",
+   "fieldtype": "Section Break",
+   "label": "Section 4: Education, Health & Nutrition"
+  },
+  {
+   "fieldname": "s4_govt_creche",
+   "fieldtype": "Select",
+   "label": "4.1. Is there a government-run creche for children in the settlement?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "s4_child_caregiver",
+   "fieldtype": "Select",
+   "label": "4.2. If No, who takes care of the children?",
+   "options": "\nOne of the parents\nGrand parents\nSiblings\nPrivate creche\nOthers (specify)",
+   "depends_on": "eval:doc.s4_govt_creche==\"No\""
+  },
+  {
+   "fieldname": "s4_child_caregiver_other",
+   "fieldtype": "Data",
+   "label": "Please specify (4.2)",
+   "depends_on": "eval:doc.s4_child_caregiver==\"Others (specify)\"",
+   "mandatory_depends_on": "eval:doc.s4_child_caregiver==\"Others (specify)\"",
+   "length": 140
+  },
+  {
+   "fieldname": "s4_anganwadi",
+   "fieldtype": "Select",
+   "label": "4.3. Is the Anganwadi centre available in the settlement?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "s4_anganwadi_distance",
+   "fieldtype": "Float",
+   "label": "4.4. If No, how far is the nearest Anganwadi Centre (in KMs)?",
+   "description": "Distance from the settlement in kilometres (numbers only). Enter 0 if it is inside the settlement.",
+   "depends_on": "eval:doc.s4_anganwadi==\"No\""
+  },
+  {
+   "fieldname": "s4_primary_school",
+   "fieldtype": "Select",
+   "label": "4.5. Is a Primary School available in the settlement?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "s4_primary_school_distance",
+   "fieldtype": "Float",
+   "label": "4.6. If No, how far is the nearest Primary School (in KMs)?",
+   "description": "Distance from the settlement in kilometres (numbers only). Enter 0 if it is inside the settlement.",
+   "depends_on": "eval:doc.s4_primary_school==\"No\""
+  },
+  {
+   "fieldname": "s4_secondary_school",
+   "fieldtype": "Select",
+   "label": "4.7. Is a Secondary School available in the settlement?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "s4_secondary_school_distance",
+   "fieldtype": "Float",
+   "label": "4.8. If No, how far is the nearest Secondary School (in KMs)?",
+   "description": "Distance from the settlement in kilometres (numbers only). Enter 0 if it is inside the settlement.",
+   "depends_on": "eval:doc.s4_secondary_school==\"No\""
+  },
+  {
+   "fieldname": "s4_dropouts_6_18",
+   "fieldtype": "Int",
+   "label": "4.9. How many children in 6 to 18 years have dropped out of school?",
+   "description": "Enter the number of children who never enrolled in school and/or dropped out of school."
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "s4_basti_dawakhana",
+   "fieldtype": "Select",
+   "label": "4.10. Is Basti Dawakhana available?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "s4_dawakhana_functional",
+   "fieldtype": "Select",
+   "label": "4.11. If yes, is it functional?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.s4_basti_dawakhana==\"Yes\""
+  },
+  {
+   "fieldname": "s4_phc_uhc_distance",
+   "fieldtype": "Float",
+   "label": "4.12. If no, how far is the nearest PHC / UHC (in KMs)?",
+   "description": "Distance from the settlement in kilometres (numbers only). Enter 0 if it is inside the settlement.",
+   "depends_on": "eval:doc.s4_basti_dawakhana==\"No\" || doc.s4_dawakhana_functional==\"No\""
+  },
+  {
+   "fieldname": "s4_health_care_place",
+   "fieldtype": "Select",
+   "label": "4.13. Where does the community go for health care?",
+   "options": "\nBasti Dawakhana\nPHC\nUHC\nPrivate Clinic"
+  },
+  {
+   "fieldname": "s4_malnourished_mam",
+   "fieldtype": "Int",
+   "label": "4.14. Estimate malnourished under-five children - MAM",
+   "description": "From available records and talking with the community. If none, enter 0."
+  },
+  {
+   "fieldname": "s4_malnourished_sam",
+   "fieldtype": "Int",
+   "label": "4.14. Estimate malnourished under-five children - SAM"
+  },
+  {
+   "fieldname": "s4_malnourished_stunted",
+   "fieldtype": "Int",
+   "label": "4.14. Estimate malnourished under-five children - Stunted"
+  },
+  {
+   "fieldname": "s4_communicable_diseases",
+   "fieldtype": "Small Text",
+   "label": "4.15. What are the common communicable diseases in the community?",
+   "description": "Specify the communicable diseases commonly reported in the community/settlement."
+  },
+  {
+   "fieldname": "s4_ncd",
+   "fieldtype": "Small Text",
+   "label": "4.16. What are the common non-communicable diseases (NCD) in the community?",
+   "description": "Specify the non-communicable diseases (NCD) commonly reported in the community/settlement."
+  },
+  {
+   "fieldname": "s4_remarks",
+   "fieldtype": "Small Text",
+   "label": "4.17. Any other observations and remarks on education, health, and nutrition",
+   "description": "E.g. transition from primary to high school and high school to higher education, major health issues, where most people get treatment, health hazards in the settlement."
+  },
+  {
+   "fieldname": "section_5",
+   "fieldtype": "Section Break",
+   "label": "Section 5: Access to Documents and Welfare Schemes"
+  },
+  {
+   "fieldname": "s5_csc_distance",
+   "fieldtype": "Select",
+   "label": "5.1. The nearest Common Service Centre (CSC) is located within",
+   "options": "\n1 to 2 Kms\n3 to 5 Kms\n6 Kms and above"
+  },
+  {
+   "fieldname": "s5_csc_access_percent",
+   "fieldtype": "Percent",
+   "label": "5.2. What % of people access the nearest CSC?",
+   "description": "Estimated percentage."
+  },
+  {
+   "fieldname": "s5_pds_access_percent",
+   "fieldtype": "Percent",
+   "label": "5.3. What estimated % of households have access to PDS?",
+   "description": "Estimated percentage."
+  },
+  {
+   "fieldname": "s5_schemes_majority",
+   "fieldtype": "Small Text",
+   "label": "5.4. What are the other government schemes accessed by the majority of households/people?",
+   "description": "Mention the names of schemes accessed by people."
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "s5_schemes_migrants",
+   "fieldtype": "Small Text",
+   "label": "5.5. What schemes are largely accessed by migrant households?",
+   "description": "Mention the names of schemes accessed by migrants."
+  },
+  {
+   "fieldname": "s5_scheme_challenges",
+   "fieldtype": "Small Text",
+   "label": "5.6. What are the common challenges in accessing welfare schemes and documents?",
+   "description": "Challenges"
+  },
+  {
+   "fieldname": "s5_police_station_distance",
+   "fieldtype": "Float",
+   "label": "5.7. How far is the Police Station from the settlement (in KMs)?",
+   "description": "Distance from the settlement in kilometres (numbers only). Enter 0 if it is inside the settlement."
+  },
+  {
+   "fieldname": "s5_post_office_distance",
+   "fieldtype": "Float",
+   "label": "5.8. How far is the Post Office from the settlement (in KMs)?",
+   "description": "Distance from the settlement in kilometres (numbers only). Enter 0 if it is inside the settlement."
+  },
+  {
+   "fieldname": "s5_bank_distance",
+   "fieldtype": "Float",
+   "label": "5.9. Availability of Bank/Banking Correspondent service within or near the settlement (in KMs)",
+   "description": "Distance from the settlement in kilometres (numbers only). Enter 0 if it is inside the settlement."
+  },
+  {
+   "fieldname": "section_6",
+   "fieldtype": "Section Break",
+   "label": "Section 6: Basic Infrastructure & Civic Amenities"
+  },
+  {
+   "fieldname": "s6_drinking_water_source",
+   "fieldtype": "Small Text",
+   "label": "6.1. What is the main source of drinking water?",
+   "options": "Piped water connection (HH level taps)\nPublic Taps\nWater Tanker\nBorewell\nWater Plants / Treated Can Water\nOther (specify)",
    "description": "Pick all that apply."
   },
   {
-   "fieldname": "q18_1_3_other_please_specify",
+   "fieldname": "s6_drinking_water_source_other",
    "fieldtype": "Data",
-   "label": "Please specify (Q18.1.3)",
-   "depends_on": "eval:doc.q18_1_1_settlement_have_individual_household_wat==\"No\" && (doc.q18_1_3_if_no_what_sources_drinking||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, Specify\")",
-   "mandatory_depends_on": "eval:doc.q18_1_1_settlement_have_individual_household_wat==\"No\" && (doc.q18_1_3_if_no_what_sources_drinking||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, Specify\")"
+   "label": "Please specify (6.1)",
+   "depends_on": "eval:(doc.s6_drinking_water_source||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "mandatory_depends_on": "eval:(doc.s6_drinking_water_source||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "length": 140
   },
   {
-   "fieldname": "column_break_water_supply",
+   "fieldname": "s6_water_frequency",
+   "fieldtype": "Select",
+   "label": "6.2. How frequently do you get drinking water?",
+   "options": "\nDaily\nAlternate Day\nTwice a week\nWeekly",
+   "depends_on": "eval:(doc.s6_drinking_water_source||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Piped water connection (HH level taps)\") || (doc.s6_drinking_water_source||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Public Taps\") || (doc.s6_drinking_water_source||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Water Tanker\")"
+  },
+  {
+   "fieldname": "s6_water_supply_hours",
+   "fieldtype": "Float",
+   "label": "6.3. How many hours of water supply are available per day?",
+   "description": "Average number of hours of water supply on a typical supply day.",
+   "depends_on": "eval:(doc.s6_drinking_water_source||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Piped water connection (HH level taps)\") || (doc.s6_drinking_water_source||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Public Taps\") || (doc.s6_drinking_water_source||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Water Tanker\")"
+  },
+  {
+   "fieldname": "s6_water_supply_time",
+   "fieldtype": "Time",
+   "label": "6.3. During what time is the water supplied?",
+   "description": "The usual time of supply.",
+   "depends_on": "eval:(doc.s6_drinking_water_source||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Piped water connection (HH level taps)\") || (doc.s6_drinking_water_source||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Public Taps\") || (doc.s6_drinking_water_source||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Water Tanker\")"
+  },
+  {
+   "fieldname": "s6_household_toilets",
+   "fieldtype": "Select",
+   "label": "6.4. How many households have toilets at household level?",
+   "options": "\nEvery house\nPartially\nNo"
+  },
+  {
+   "fieldname": "s6_public_toilets",
+   "fieldtype": "Select",
+   "label": "6.5. Are there public toilets in the settlement?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "s6_public_toilet_functional",
+   "fieldtype": "Select",
+   "label": "6.6. If yes, is the public toilet functional?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.s6_public_toilets==\"Yes\""
+  },
+  {
+   "fieldname": "s6_public_toilet_manager",
+   "fieldtype": "Data",
+   "label": "6.7. If yes, who manages the public toilet?",
+   "description": "The person, group or organisation that manages and maintains the facility.",
+   "depends_on": "eval:doc.s6_public_toilets==\"Yes\"",
+   "length": 140
+  },
+  {
+   "fieldname": "s6_drainage",
+   "fieldtype": "Select",
+   "label": "6.8. Is drainage available?",
+   "options": "\nYes\nYes Partially\nNo",
+   "description": "Whether a drainage system is available for the disposal of wastewater and stormwater."
+  },
+  {
+   "fieldname": "s6_drainage_type",
+   "fieldtype": "Select",
+   "label": "6.9. If yes, what type of drainage system?",
+   "options": "\nUnderground\nOpen Nalas\nOther (specify)",
+   "depends_on": "eval:doc.s6_drainage==\"Yes\" || doc.s6_drainage==\"Yes Partially\""
+  },
+  {
+   "fieldname": "s6_drainage_type_other",
+   "fieldtype": "Data",
+   "label": "Please specify (6.9)",
+   "depends_on": "eval:doc.s6_drainage_type==\"Other (specify)\"",
+   "mandatory_depends_on": "eval:doc.s6_drainage_type==\"Other (specify)\"",
+   "length": 140
+  },
+  {
+   "fieldname": "s6_waste_collected",
+   "fieldtype": "Select",
+   "label": "6.10. Is waste collected from the settlement?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "s6_waste_doorstep",
+   "fieldtype": "Select",
+   "label": "6.11. Is waste collected from doorsteps?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.s6_waste_collected==\"Yes\""
+  },
+  {
+   "fieldname": "s6_waste_frequency",
+   "fieldtype": "Select",
+   "label": "6.12. If yes, how often is household waste collected?",
+   "options": "\nDaily\nAlternate Day\nWeekly\nMonthly",
+   "depends_on": "eval:doc.s6_waste_collected==\"Yes\""
+  },
+  {
+   "fieldname": "column_break_7",
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:doc.q18_1_1_settlement_have_individual_household_wat==\"No\"",
-   "fieldname": "q18_1_4_if_no_what_sources_water",
+   "fieldname": "s6_waste_disposal",
    "fieldtype": "Small Text",
-   "label": "18.1.4. If no, what are the sources of water for other residential utilities?",
-   "options": "Shared handpump\nShared tap / standpost\nCommunity well\nOwn well\nTube well / borewell\nBuying water (tanker / jar / bottle)\nRiver / stream / pond\nRainwater harvesting\nOthers, Specify",
+   "label": "6.13. If No, how do households dispose of their garbage?",
+   "options": "Dump in open areas\nDump into drains or nala\nBurn the waste\nDispose of waste in nearby vacant plots\nBury the waste\nDispose of waste in community bins\nDispose of waste in nearby designated collection points\nOther (specify)",
+   "description": "Pick all that apply.",
+   "depends_on": "eval:doc.s6_waste_collected==\"No\" || doc.s6_waste_doorstep==\"No\""
+  },
+  {
+   "fieldname": "s6_waste_disposal_other",
+   "fieldtype": "Data",
+   "label": "Please specify (6.13)",
+   "depends_on": "eval:(doc.s6_waste_disposal||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "mandatory_depends_on": "eval:(doc.s6_waste_disposal||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "length": 140
+  },
+  {
+   "fieldname": "s6_streets_cleaned",
+   "fieldtype": "Select",
+   "label": "6.14. Are streets and lanes cleaned regularly?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "s6_street_cleaning_frequency",
+   "fieldtype": "Select",
+   "label": "6.15. If yes, how frequently are they cleaned?",
+   "options": "\nDaily\nAlternate Day\nWeekly\nMonthly",
+   "depends_on": "eval:doc.s6_streets_cleaned==\"Yes\""
+  },
+  {
+   "fieldname": "s6_road_condition",
+   "fieldtype": "Small Text",
+   "label": "6.16. What is the condition of roads in the settlement?",
+   "options": "CC Roads\nNormal Roads\nNo Proper Roads\nOther (specify)",
    "description": "Pick all that apply."
   },
   {
-   "fieldname": "q18_1_4_other_please_specify",
+   "fieldname": "s6_road_condition_other",
    "fieldtype": "Data",
-   "label": "Please specify (Q18.1.4)",
-   "depends_on": "eval:doc.q18_1_1_settlement_have_individual_household_wat==\"No\" && (doc.q18_1_4_if_no_what_sources_water||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, Specify\")",
-   "mandatory_depends_on": "eval:doc.q18_1_1_settlement_have_individual_household_wat==\"No\" && (doc.q18_1_4_if_no_what_sources_water||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others, Specify\")"
+   "label": "Please specify (6.16)",
+   "depends_on": "eval:(doc.s6_road_condition||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "mandatory_depends_on": "eval:(doc.s6_road_condition||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "length": 140
   },
   {
-   "fieldname": "q18_1_5_what_challenges_related_water_services",
+   "fieldname": "s6_electricity",
    "fieldtype": "Small Text",
-   "label": "18.1.5. What are the challenges related to Water services? - Summarise the conversations"
+   "label": "6.17. Is electricity available in the settlement?",
+   "options": "HH Level\nSettlement Level\nOther (specify)",
+   "description": "Pick all that apply."
   },
   {
-   "fieldname": "section_sewage_and_toilets",
-   "fieldtype": "Section Break",
-   "label": "Sewage and Toilets"
-  },
-  {
-   "fieldname": "q18_2_1_settlement_have_individual_sewer_lines",
-   "fieldtype": "Select",
-   "label": "18.2.1. Does the settlement have individual sewer lines?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q18_2_1_settlement_have_individual_sewer_lines==\"Yes\"",
-   "fieldname": "q18_2_2_if_yes_it_functional",
-   "fieldtype": "Select",
-   "label": "18.2.2. If yes, is it functional?",
-   "length": 64,
-   "mandatory_depends_on": "eval:doc.q18_2_1_settlement_have_individual_sewer_lines==\"Yes\"",
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "q18_2_3_settlement_have_common_functional_toilet",
-   "fieldtype": "Select",
-   "label": "18.2.3. Does the settlement have common Functional toilets?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "column_break_sewage_and_toilets",
-   "fieldtype": "Column Break"
-  },
-  {
-   "depends_on": "eval:doc.q18_2_3_settlement_have_common_functional_toilet==\"Yes\"",
-   "description": "Include only Functional",
-   "fieldname": "q18_2_4_if_yes_how_many_toilets",
-   "fieldtype": "Int",
-   "label": "18.2.4. If yes, How many toilets?",
-   "mandatory_depends_on": "eval:doc.q18_2_3_settlement_have_common_functional_toilet==\"Yes\""
-  },
-  {
-   "fieldname": "q18_2_5_summarise_remarks_concerns_on_availabili",
-   "fieldtype": "Small Text",
-   "label": "18.2.5. Summarise the remarks and concerns on the availability of Sewage and Toilets"
-  },
-  {
-   "fieldname": "section_flood_and_drain_system",
-   "fieldtype": "Section Break",
-   "label": "Flood and Drain System"
-  },
-  {
-   "description": "Select \"yes\" only if functional and reparable",
-   "fieldname": "q18_3_1_settlement_have_storm_water_drains",
-   "fieldtype": "Select",
-   "label": "18.3.1. Does the settlement have storm water drains system?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q18_3_1_settlement_have_storm_water_drains==\"Yes\"",
-   "fieldname": "q18_3_1a_if_yes_it_covered",
-   "fieldtype": "Select",
-   "label": "18.3.1a. If \"Yes\" is it covered?",
-   "length": 64,
-   "mandatory_depends_on": "eval:doc.q18_3_1_settlement_have_storm_water_drains==\"Yes\"",
-   "options": "\nYes\nNo"
-  },
-  {
-   "description": "Select \"yes\" only if functional and reparable",
-   "fieldname": "q18_3_2_settlement_have_greywater_drains_system",
-   "fieldtype": "Select",
-   "label": "18.3.2. Does the settlement have greywater drains system?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q18_3_2_settlement_have_greywater_drains_system==\"Yes\"",
-   "fieldname": "q18_3_2b_if_yes_it_covered",
-   "fieldtype": "Select",
-   "label": "18.3.2b. If \"Yes\" is it covered?",
-   "length": 64,
-   "mandatory_depends_on": "eval:doc.q18_3_2_settlement_have_greywater_drains_system==\"Yes\"",
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "column_break_flood_and_drain_system",
-   "fieldtype": "Column Break"
-  },
-  {
-   "description": "Based on last 5 years",
-   "fieldname": "q18_3_3_settlement_prone_flooding",
-   "fieldtype": "Select",
-   "label": "18.3.3. Is the settlement prone to flooding?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q18_3_3_settlement_prone_flooding==\"Yes\"",
-   "fieldname": "q18_3_4_flooding_caused_due_poor_drainage",
-   "fieldtype": "Select",
-   "label": "18.3.4. Is the flooding caused due to poor drainage?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q18_3_3_settlement_prone_flooding==\"Yes\"",
-   "fieldname": "q18_3_5_flooding_caused_by_high_water",
-   "fieldtype": "Select",
-   "label": "18.3.5. Is the flooding caused by high water level in rivers and other water bodies near by?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q18_3_3_settlement_prone_flooding==\"Yes\"",
-   "fieldname": "q18_3_6_if_yes_what_impacts_flood",
-   "fieldtype": "Small Text",
-   "label": "18.3.6. If yes, what are the impacts of the flood? Summarise the conversation"
-  },
-  {
-   "fieldname": "section_waste_management",
-   "fieldtype": "Section Break",
-   "label": "Waste Management"
-  },
-  {
-   "fieldname": "q18_4_1_door_door_street_wise_garbage",
-   "fieldtype": "Select",
-   "label": "18.4.1. Is there a door-to-door / street-wise garbage collection mechanism?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "q18_4_2_where_they_dispose_waste",
-   "fieldtype": "Select",
-   "label": "18.4.2. Where do they dispose waste?",
-   "length": 100,
-   "options": "\nGovernment-designated space\nUnregulated space"
-  },
-  {
-   "fieldname": "q18_4_3_adequate_bins_within_near_settlement",
-   "fieldtype": "Select",
-   "label": "18.4.3. Are there adequate bins within and near to the settlement?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "q18_4_4_who_collects_waste",
+   "fieldname": "s6_electricity_other",
    "fieldtype": "Data",
-   "label": "18.4.4. Who collects the waste?",
-   "length": 100
+   "label": "Please specify (6.17)",
+   "depends_on": "eval:(doc.s6_electricity||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "mandatory_depends_on": "eval:(doc.s6_electricity||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "length": 140
   },
   {
-   "fieldname": "column_break_waste_management",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "q18_4_5_fee_waste_collection",
+   "fieldname": "s6_streetlights",
    "fieldtype": "Select",
-   "label": "18.4.5. Is there a fee for waste collection?",
-   "length": 64,
+   "label": "6.18. Are streetlights working?",
+   "options": "\nYes\nYes Partially\nNot working\nNo proper streetlights"
+  },
+  {
+   "fieldname": "s6_public_transport",
+   "fieldtype": "Select",
+   "label": "6.19. Is public transport accessible?",
+   "options": "\nYes\nYes Partially\nNo"
+  },
+  {
+   "fieldname": "s6_cctv",
+   "fieldtype": "Select",
+   "label": "6.20. Are CCTV cameras installed in public places?",
    "options": "\nYes\nNo"
   },
   {
-   "fieldname": "q18_4_6_what_fee_cycle",
+   "fieldname": "s6_cctv_functional",
    "fieldtype": "Select",
-   "label": "18.4.6. What is the fee cycle?",
-   "length": 64,
-   "options": "\nMonthly\nFortnightly\nWeekly\nNo Fees"
+   "label": "6.21. If yes, are the installed CCTV cameras functional?",
+   "options": "\nAll are functional\nPartially functional\nNone are functional",
+   "depends_on": "eval:doc.s6_cctv==\"Yes\""
   },
   {
-   "depends_on": "eval:doc.q18_4_5_fee_waste_collection==\"Yes\"",
-   "fieldname": "q18_4_7_how_much_fee",
-   "fieldtype": "Float",
-   "label": "18.4.7. How much is the fee?",
-   "mandatory_depends_on": "eval:doc.q18_4_5_fee_waste_collection==\"Yes\""
-  },
-  {
-   "depends_on": "eval:doc.q18_4_5_fee_waste_collection==\"Yes\"",
-   "fieldname": "q18_4_8_summarise_remarks_concerns_on_waste",
+   "fieldname": "s6_remarks",
    "fieldtype": "Small Text",
-   "label": "18.4.8. Summarise the remarks and concerns on waste management in the settlement"
+   "label": "6.22. Any other observations and remarks",
+   "description": "Write your observations on basic infrastructure and civic amenities."
   },
   {
-   "fieldname": "section_street_lighting",
-   "fieldtype": "Section Break",
-   "label": "Street Lighting"
-  },
-  {
-   "fieldname": "q18_5_1_settlement_have_adequate_streetlights",
-   "fieldtype": "Select",
-   "label": "18.5.1. Does the settlement have adequate streetlights?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "q18_5_2_dark_unsafe_spaces_where_need",
-   "fieldtype": "Select",
-   "label": "18.5.2. Are there any dark unsafe spaces where there is a need for lighting?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "column_break_street_lighting",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "q18_5_3_summarise_remarks_concerns_on_lighting",
-   "fieldtype": "Small Text",
-   "label": "18.5.3. Summarise remarks and concerns on the lighting available in the settlements"
-  },
-  {
-   "fieldname": "section_parks_play_area_for_children",
-   "fieldtype": "Section Break",
-   "label": "Parks / Play Area for Children"
-  },
-  {
-   "fieldname": "q18_6_1_playground_park_nearby_settlement",
-   "fieldtype": "Select",
-   "label": "18.6.1. Is there a Playground or Park nearby to the settlement?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "q18_6_2_where_children_play_settlement",
-   "fieldtype": "Data",
-   "label": "18.6.2. Where do children play in the settlement?",
-   "length": 100
-  },
-  {
-   "fieldname": "column_break_parks_play_area_for_children",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "q18_6_3_summarise_concerns_shared_by_community",
-   "fieldtype": "Small Text",
-   "label": "18.6.3. Summarise the concerns shared by the Community on Parks/ Play area for children in the settlements"
-  },
-  {
-   "fieldname": "section_safety_amenities",
-   "fieldtype": "Section Break",
-   "label": "Safety Amenities"
-  },
-  {
-   "fieldname": "q18_7_1_cctv_camera_common_areas_around",
-   "fieldtype": "Select",
-   "label": "18.7.1. Is there a CCTV camera for the common areas in and around the settlements?",
-   "length": 64,
-   "options": "\nYes\nInadequate\nNot at all"
-  },
-  {
-   "depends_on": "eval:doc.q18_7_1_cctv_camera_common_areas_around && doc.q18_7_1_cctv_camera_common_areas_around!=\"Yes\"",
-   "fieldname": "q18_7_2_if_not_at_all_inadequate",
-   "fieldtype": "Small Text",
-   "label": "18.7.2. If not at all or inadequate, specify where and why, the need for CCTV?"
-  },
-  {
-   "fieldname": "column_break_safety_amenities",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "q18_7_3_other_general_remarks_on_need",
-   "fieldtype": "Small Text",
-   "label": "18.7.3. Any other general remarks on need for CCTV camera - Summarise the conversation"
-  },
-  {
-   "description": "Substance usage in public spaces, teasing, bullying, etc.",
-   "fieldname": "q18_7_4_general_safety_concerns_summarise",
-   "fieldtype": "Small Text",
-   "label": "18.7.4. General Safety concerns - Summarise"
-  },
-  {
-   "fieldname": "section_electricity",
-   "fieldtype": "Section Break",
-   "label": "Electricity"
-  },
-  {
-   "fieldname": "q18_8_1_households_settlement_have_access_formal",
-   "fieldtype": "Select",
-   "label": "18.8.1. Do households in the settlement have access to formal grid electricity connections?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "q18_8_2_what_other_arrangements_practices_househ",
-   "fieldtype": "Small Text",
-   "label": "18.8.2. What other arrangements or practices do households in this settlement rely on to obtain electricity connections?"
-  },
-  {
-   "fieldname": "column_break_electricity",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "section_type_of_settlement",
-   "fieldtype": "Section Break",
-   "label": "Type of Settlement"
-  },
-  {
-   "description": "Category A (criteria):\nCriteria 1: Notified\nCriteria 2: Government constructed pucca rooms with basic amenities like electricity, water supply in household/settlement\nCriteria 3: Self-constructed houses in the same settlement (pucca, semi-pucca, tin)\n\nCategory B (criteria):\nCriteria 1: Settlement on railway land, army land or other government land\nCriteria 2: Pucca, semi-pucca, tin/bamboo/stilt houses\nCriteria 3: Basic amenities (water, electricity) provided by government or self",
-   "fieldname": "q6_type_settlement",
-   "fieldtype": "Small Text",
-   "label": "6. Type of Settlement",
-   "options": "Category A – Settlements with one room pucca houses or tin/bamboo houses with basic amenities\nCategory B – Settlements with pucca, semi pucca or tin/bamboo/stilt houses mainly on railway land/army land or other government land with basic amenities\nCategory C – Settlements in private land - rented gated compounds with small rooms primarily made of tin/bamboo with pucca houses only in some pockets. Shared toilets and basic amenities provided by the owners\nCategory D – Settlements near railway or dumping ground in make-shift houses with no amenities"
-  },
-  {
-   "fieldname": "section_types_of_housing",
-   "fieldtype": "Section Break",
-   "label": "Types of Housing"
-  },
-  {
-   "fieldname": "q6_1_temporary_shacks_made_with_tarpaulin",
-   "fieldtype": "Select",
-   "label": "6.1. Are there temporary shacks made with tarpaulin and bamboo in the Settlement?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q6_1_temporary_shacks_made_with_tarpaulin==\"Yes\"",
-   "fieldname": "section_temporary_shacks_made_with_tarpaulin_and_bamboo",
-   "fieldtype": "Section Break",
-   "label": "Temporary Shacks made with tarpaulin and bamboo"
-  },
-  {
-   "fieldname": "q6_1_1_no_temporary_shacks",
-   "fieldtype": "Int",
-   "label": "6.1.1. No. of Temporary Shacks",
-   "mandatory_depends_on": "eval:doc.q6_1_temporary_shacks_made_with_tarpaulin==\"Yes\""
-  },
-  {
-   "fieldname": "q6_1_2_no_families_living_these_type",
-   "fieldtype": "Int",
-   "label": "6.1.2. No. of Families living in these type of structures",
-   "mandatory_depends_on": "eval:doc.q6_1_temporary_shacks_made_with_tarpaulin==\"Yes\""
-  },
-  {
-   "fieldname": "section_break_q6_2",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "q6_2_tin_roof_houses_with_bamboo",
-   "fieldtype": "Select",
-   "label": "6.2. Are there tin-roof houses with bamboo/mud walls in the Settlement?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q6_2_tin_roof_houses_with_bamboo==\"Yes\"",
-   "fieldname": "section_tin_roof_houses_with_bamboo_mud_walls",
-   "fieldtype": "Section Break",
-   "label": "Tin-roof houses with bamboo/mud walls"
-  },
-  {
-   "fieldname": "q6_2_1_no_tin_roof_houses_with",
-   "fieldtype": "Int",
-   "label": "6.2.1. No. of Tin-roof houses with bamboo/mud walls",
-   "mandatory_depends_on": "eval:doc.q6_2_tin_roof_houses_with_bamboo==\"Yes\""
-  },
-  {
-   "fieldname": "q6_2_2_no_families_living_these_type",
-   "fieldtype": "Int",
-   "label": "6.2.2. No. of Families living in these type of structures",
-   "mandatory_depends_on": "eval:doc.q6_2_tin_roof_houses_with_bamboo==\"Yes\""
-  },
-  {
-   "fieldname": "section_break_q6_3",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "q6_3_tin_roof_houses_with_half",
-   "fieldtype": "Select",
-   "label": "6.3. Are there tin-roof houses with half brick wall and half bamboo/mud walls in the Settlement?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q6_3_tin_roof_houses_with_half==\"Yes\"",
-   "fieldname": "section_tin_roof_houses_with_half_brick_wall_and_half_bamb",
-   "fieldtype": "Section Break",
-   "label": "Tin-roof houses with half brick wall and half bamboo/mud walls"
-  },
-  {
-   "fieldname": "q6_3_1_no_tin_roof_houses_with",
-   "fieldtype": "Int",
-   "label": "6.3.1. No. of Tin-roof houses with half brick wall and half bamboo/mud walls",
-   "mandatory_depends_on": "eval:doc.q6_3_tin_roof_houses_with_half==\"Yes\""
-  },
-  {
-   "fieldname": "q6_3_2_no_families_living_these_type",
-   "fieldtype": "Int",
-   "label": "6.3.2. No. of Families living in these type of structures",
-   "mandatory_depends_on": "eval:doc.q6_3_tin_roof_houses_with_half==\"Yes\""
-  },
-  {
-   "fieldname": "section_break_q6_4",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "q6_4_stilt_dwellings_with_bamboo_posts",
-   "fieldtype": "Select",
-   "label": "6.4. Are there Stilt Dwellings with bamboo posts in the Settlement?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q6_4_stilt_dwellings_with_bamboo_posts==\"Yes\"",
-   "fieldname": "section_stilt_dwellings_with_bamboo_posts",
-   "fieldtype": "Section Break",
-   "label": "Stilt Dwellings with bamboo posts"
-  },
-  {
-   "fieldname": "q6_4_1_no_houses_with_stilt_dwellings",
-   "fieldtype": "Int",
-   "label": "6.4.1. No. of houses with Stilt Dwellings with bamboo posts",
-   "mandatory_depends_on": "eval:doc.q6_4_stilt_dwellings_with_bamboo_posts==\"Yes\""
-  },
-  {
-   "fieldname": "q6_4_2_no_families_living_these_type",
-   "fieldtype": "Int",
-   "label": "6.4.2. No. of Families living in these type of structures",
-   "mandatory_depends_on": "eval:doc.q6_4_stilt_dwellings_with_bamboo_posts==\"Yes\""
-  },
-  {
-   "fieldname": "section_break_q6_5",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "q6_5_stilt_dwellings_with_cement_posts",
-   "fieldtype": "Select",
-   "label": "6.5. Are there Stilt Dwellings with cement posts in the settlement?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q6_5_stilt_dwellings_with_cement_posts==\"Yes\"",
-   "fieldname": "section_stilt_dwellings_with_cement_posts",
-   "fieldtype": "Section Break",
-   "label": "Stilt Dwellings with cement posts"
-  },
-  {
-   "fieldname": "q6_5_1_no_houses_with_stilt_dwellings",
-   "fieldtype": "Int",
-   "label": "6.5.1. No. of houses with Stilt Dwellings with cement posts",
-   "mandatory_depends_on": "eval:doc.q6_5_stilt_dwellings_with_cement_posts==\"Yes\""
-  },
-  {
-   "fieldname": "q6_5_2_no_families_living_these_type",
-   "fieldtype": "Int",
-   "label": "6.5.2. No. of Families living in these type of structures",
-   "mandatory_depends_on": "eval:doc.q6_5_stilt_dwellings_with_cement_posts==\"Yes\""
-  },
-  {
-   "fieldname": "section_break_q6_6",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "q6_6_hill_slope_terraced_structures_settlemen",
-   "fieldtype": "Select",
-   "label": "6.6. Are there Hill-Slope Terraced Structures in the settlement?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q6_6_hill_slope_terraced_structures_settlemen==\"Yes\"",
-   "fieldname": "section_hill_slope_terraced_structures",
-   "fieldtype": "Section Break",
-   "label": "Hill-Slope Terraced Structures"
-  },
-  {
-   "fieldname": "q6_6_1_no_hill_slope_terraced_structures",
-   "fieldtype": "Int",
-   "label": "6.6.1. No. of Hill-Slope Terraced Structures",
-   "mandatory_depends_on": "eval:doc.q6_6_hill_slope_terraced_structures_settlemen==\"Yes\""
-  },
-  {
-   "fieldname": "q6_6_2_no_families_living_these_type",
-   "fieldtype": "Int",
-   "label": "6.6.2. No. of Families living in these type of structures",
-   "mandatory_depends_on": "eval:doc.q6_6_hill_slope_terraced_structures_settlemen==\"Yes\""
-  },
-  {
-   "fieldname": "section_break_q6_7",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "q6_7_full_concrete_houses_settlement",
-   "fieldtype": "Select",
-   "label": "6.7. Are there full Concrete Houses in the settlement?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q6_7_full_concrete_houses_settlement==\"Yes\"",
-   "fieldname": "section_concrete_houses",
-   "fieldtype": "Section Break",
-   "label": "Concrete Houses"
-  },
-  {
-   "fieldname": "q6_7_1_no_concrete_houses",
-   "fieldtype": "Int",
-   "label": "6.7.1. No. of Concrete Houses",
-   "mandatory_depends_on": "eval:doc.q6_7_full_concrete_houses_settlement==\"Yes\""
-  },
-  {
-   "fieldname": "q6_7_2_no_families_living_these_type",
-   "fieldtype": "Int",
-   "label": "6.7.2. No. of Families living in these type of structures",
-   "mandatory_depends_on": "eval:doc.q6_7_full_concrete_houses_settlement==\"Yes\""
-  },
-  {
-   "fieldname": "section_break_q6_8",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "q6_8_tenement_constructed_by_gmc_govt",
-   "fieldtype": "Select",
-   "label": "6.8. Are there tenement constructed by GMC/Govt. Authorities",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q6_8_tenement_constructed_by_gmc_govt==\"Yes\"",
-   "fieldname": "section_tenement_constructed_by_gmc_govt_authorities",
-   "fieldtype": "Section Break",
-   "label": "Tenement constructed by GMC/Govt. Authorities"
-  },
-  {
-   "fieldname": "q6_8_1_no_houses_as_tenement_constructed",
-   "fieldtype": "Int",
-   "label": "6.8.1. No. of houses as tenement constructed by GMC/Govt. Authorities",
-   "mandatory_depends_on": "eval:doc.q6_8_tenement_constructed_by_gmc_govt==\"Yes\""
-  },
-  {
-   "fieldname": "q6_8_2_no_families_living_these_type",
-   "fieldtype": "Int",
-   "label": "6.8.2. No. of Families living in these type of structures",
-   "mandatory_depends_on": "eval:doc.q6_8_tenement_constructed_by_gmc_govt==\"Yes\""
-  },
-  {
-   "fieldname": "section_break_q6_9",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "q6_9_tenement_residing_tin_roof_house",
-   "fieldtype": "Select",
-   "label": "6.9. Are there tenement residing in tin-roof house with bamboo/mud/concrete walls inside GMC/Government Land (which includes railway land, army land, forest land, etc.)",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q6_9_tenement_residing_tin_roof_house==\"Yes\"",
-   "fieldname": "section_tenement_residing_in_tin_roof_house_with_bamboo_mu",
-   "fieldtype": "Section Break",
-   "label": "Tenement residing in tin-roof house with bamboo/mud/concrete walls inside GMC/Government Land"
-  },
-  {
-   "fieldname": "q6_9_1_no_tenements_residing_tin_roof",
-   "fieldtype": "Int",
-   "label": "6.9.1. No. of tenements residing in tin-roof house with bamboo/mud/concrete walls inside GMC/Government Land",
-   "mandatory_depends_on": "eval:doc.q6_9_tenement_residing_tin_roof_house==\"Yes\""
-  },
-  {
-   "fieldname": "q6_9_2_no_families_living_these_type",
-   "fieldtype": "Int",
-   "label": "6.9.2. No. of Families living in these type of structures",
-   "mandatory_depends_on": "eval:doc.q6_9_tenement_residing_tin_roof_house==\"Yes\""
-  },
-  {
-   "fieldname": "section_housing_remarks",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "q6_10_remarks_types_housing",
-   "fieldtype": "Small Text",
-   "label": "6.10. Remarks on the overall housing conditions",
-   "description": "An overall picture of the housing in the settlement, beyond the numbers above."
-  },
-  {
-   "fieldname": "section_households_family_count",
-   "fieldtype": "Section Break",
-   "label": "Households & Family Count"
-  },
-  {
-   "description": "Added up from the house counts in 6.1.1 to 6.9.1 as you enter them. You can change it.",
-   "fieldname": "q7_1_indicate_total_number_houses_physical",
-   "fieldtype": "Int",
-   "label": "7.1. Indicate the total number of houses or physical structures present in this settlement"
-  },
-  {
-   "fieldname": "column_break_households_family_count",
-   "fieldtype": "Column Break"
-  },
-  {
-   "description": "Added up from the family counts in 6.1.2 to 6.9.2 as you enter them. You can change it.",
-   "fieldname": "q7_2_specify_total_number_families_currently",
-   "fieldtype": "Int",
-   "label": "7.2. Specify the total number of families currently residing in this settlement"
-  },
-  {
-   "fieldname": "households_profiled",
-   "fieldtype": "Int",
-   "label": "7.3. Households profiled so far",
-   "read_only": 1,
-   "no_copy": 1,
-   "description": "Counted automatically from the Household Profiles of this settlement."
-  },
-  {
-   "fieldname": "section_others",
-   "fieldtype": "Section Break",
-   "label": "Others"
-  },
-  {
-   "fieldname": "q8_houses_rented_out",
-   "fieldtype": "Select",
-   "label": "8. Are houses rented out?",
-   "length": 64,
-   "options": "\nYes\nNo\nUnsure"
-  },
-  {
-   "fieldname": "q9_migrants_staying_here",
-   "fieldtype": "Select",
-   "label": "9. Are there migrants staying here?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "description": "Describe what occupations men and women are largely involved in. Share an impression from the conversation\nPick all that apply.",
-   "fieldname": "q10_predominant_type_occupation_men_multiple",
-   "fieldtype": "Small Text",
-   "label": "10. Predominant type of occupation for men (multiple selection)",
-   "options": "Casual Daily Wage & Construction Labor\nMunicipal Sanitation & Waste Management\nStreet Vending, Hawking & Petty Retail\nLow-Tier Private Sector Employment\nInformal Transport & Driving Operations\nSkilled Vocational Trades & Artisanal Services\nSelf-Employment\nOthers? Specify"
-  },
-  {
-   "depends_on": "eval:(doc.q10_predominant_type_occupation_men_multiple||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")",
-   "fieldname": "q10_other_please_specify",
-   "fieldtype": "Data",
-   "label": "Please specify (Q10)",
-   "length": 100,
-   "mandatory_depends_on": "eval:(doc.q10_predominant_type_occupation_men_multiple||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")"
-  },
-  {
-   "fieldname": "column_break_others",
-   "fieldtype": "Column Break"
-  },
-  {
-   "description": "Describe what occupations men and women are largely involved in. Share an impression from the conversation\nPick all that apply.",
-   "fieldname": "q11_predominant_type_occupation_women_multip",
-   "fieldtype": "Small Text",
-   "label": "11. Predominant type of occupation for women (multiple selection)",
-   "options": "Domestic and care work\nHomemaker\nSmall-Scale Trading\nStreet Vending\nHawking\nHome-based micro-enterprises\nCasual wage labour and construction-related work\nHome based manufacturing and piece-rate work\nHome-based tailoring\nLow-Tier Private Sector Employment\nSelf-employment\nOthers? Specify"
-  },
-  {
-   "depends_on": "eval:(doc.q11_predominant_type_occupation_women_multip||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")",
-   "fieldname": "q11_other_please_specify",
-   "fieldtype": "Data",
-   "label": "Please specify (Q11)",
-   "length": 100,
-   "mandatory_depends_on": "eval:(doc.q11_predominant_type_occupation_women_multip||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")"
-  },
-  {
-   "description": "From the conversations, please describe which caste groups largely reside in the settlement. This is only to help us understand potential vulnerabilities or exclusions, and not to differentiate or label any settlements\nPick all that apply.",
-   "fieldname": "q12_predominant_caste_groups_present_settlem",
-   "fieldtype": "Small Text",
-   "label": "12. Predominant caste groups present in the settlements",
-   "options": "General\nSC\nST\nOBC\nMOBC\nOthers? Specify"
-  },
-  {
-   "depends_on": "eval:(doc.q12_predominant_caste_groups_present_settlem||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")",
-   "fieldname": "q12_other_please_specify",
-   "fieldtype": "Data",
-   "label": "Please specify (Q12)",
-   "length": 100,
-   "mandatory_depends_on": "eval:(doc.q12_predominant_caste_groups_present_settlem||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others? Specify\")"
-  },
-  {
-   "fieldname": "tab_land_surroundings",
+   "fieldname": "tab_livelihood",
    "fieldtype": "Tab Break",
-   "label": "Land & Surroundings"
+   "label": "Livelihood & Community"
   },
   {
-   "fieldname": "section_land_housing",
+   "fieldname": "section_7",
    "fieldtype": "Section Break",
-   "label": "Land & Housing"
+   "label": "Section 7: Livelihood Options"
   },
   {
-   "description": "Even if 1 person got it, select Yes and mention details in the next descriptive response",
-   "fieldname": "q13_1_community_eligible_land_housing_rights",
+   "fieldname": "s7_occupation_women",
+   "fieldtype": "Small Text",
+   "label": "7.1. What is the occupation of the Women?",
+   "options": "Domestic labour\nWaste pickers\nSanitation worker\nHome makers\nPrivate employee\nDriver (Auto/Cab/Taxi/Truck)\nSelf employee\nOthers (specify)",
+   "description": "Pick all that apply, starting with the occupation most people do."
+  },
+  {
+   "fieldname": "s7_occupation_women_other",
+   "fieldtype": "Data",
+   "label": "Please specify (7.1)",
+   "depends_on": "eval:(doc.s7_occupation_women||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others (specify)\")",
+   "mandatory_depends_on": "eval:(doc.s7_occupation_women||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others (specify)\")",
+   "length": 140
+  },
+  {
+   "fieldname": "s7_occupation_men",
+   "fieldtype": "Small Text",
+   "label": "7.2. What is the occupation of the Men?",
+   "options": "Domestic labour\nWaste pickers\nSanitation worker\nHome makers\nPrivate employee\nDriver (Auto/Cab/Taxi/Truck)\nSelf employee\nOthers (specify)",
+   "description": "Pick all that apply, starting with the occupation most people do."
+  },
+  {
+   "fieldname": "s7_occupation_men_other",
+   "fieldtype": "Data",
+   "label": "Please specify (7.2)",
+   "depends_on": "eval:(doc.s7_occupation_men||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others (specify)\")",
+   "mandatory_depends_on": "eval:(doc.s7_occupation_men||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others (specify)\")",
+   "length": 140
+  },
+  {
+   "fieldname": "s7_occupation_young_women",
+   "fieldtype": "Small Text",
+   "label": "7.3. What is the occupation of the Youth (Women 18-29 Years)?",
+   "options": "Domestic Worker\nConstruction Worker\nIndustrial Worker\nHousekeeping staff\nSanitation Worker\nRetail / Sales Worker\nStreet Vendor / Small business\nTailoring\nBeauty / Personal Care Services\nFood Services / Hospitality\nDomestic Food Preparation\nOffice / Administrative Staff\nIT / Computer-related Jobs\nTeaching\nHealthcare Worker\nCustomer Support / BPO\nDelivery / Logistics Worker\nDriver / Transport Services\nSecurity staff\nRag pickers\nPrivate Sector Employee\nGig / Freelance Worker\nStudent\nVocational Training / Skill Development\nUnemployed - Seeking Employment\nNot Working - Not Seeking Employment\nHousewife\nOther (specify)",
+   "description": "Pick all that apply, starting with the occupation most people do."
+  },
+  {
+   "fieldname": "s7_occupation_young_women_other",
+   "fieldtype": "Data",
+   "label": "Please specify (7.3)",
+   "depends_on": "eval:(doc.s7_occupation_young_women||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "mandatory_depends_on": "eval:(doc.s7_occupation_young_women||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "length": 140
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "s7_occupation_young_men",
+   "fieldtype": "Small Text",
+   "label": "7.4. What is the occupation of the Youth (Men 18-29 Years)?",
+   "options": "Construction Worker\nDaily Wage Labourer\nIndustrial Worker\nDriver (Auto, cab, private vehicle, goods vehicle)\nStreet Vendor\nSelf-employed\nSalesperson\nSecurity Guard\nHotel / Restaurant Worker\nHousekeeping / Cleaning Staff\nMechanic\nElectrician\nPlumber\nCarpenter\nWelder / Fabricator\nPainter\nTailoring / Garment Worker\nIT / Software Professional\nComputer Operator / Data Entry\nOffice / Administrative Staff\nCustomer Support / BPO\nTechnician (AC, refrigerator, mobile repair)\nTeaching / Education\nPrivate Sector Employee\nRag Picking / Waste Collection / Recycling Worker\nWarehouse / Logistics Worker\nGig / Freelance Worker\nStudent\nVocational Training / Skill Development\nUnemployed - Seeking Employment\nNot Working - Not Seeking Employment\nOther (specify)",
+   "description": "Pick all that apply, starting with the occupation most people do."
+  },
+  {
+   "fieldname": "s7_occupation_young_men_other",
+   "fieldtype": "Data",
+   "label": "Please specify (7.4)",
+   "depends_on": "eval:(doc.s7_occupation_young_men||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "mandatory_depends_on": "eval:(doc.s7_occupation_young_men||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "length": 140
+  },
+  {
+   "fieldname": "s7_skill_centre",
    "fieldtype": "Select",
-   "label": "13.1. Is the community eligible for land/housing rights and have they obtained pattas/sale deed?",
-   "length": 64,
+   "label": "7.5. Are there any Skill Development Centres near the settlement?",
+   "options": "\nYes\nNo",
+   "description": "Whether any skill development or vocational training centre is available within or near the settlement."
+  },
+  {
+   "fieldname": "s7_skill_centre_operator",
+   "fieldtype": "Select",
+   "label": "7.6. Who operates the Skill Development Centre?",
+   "options": "\nGovernment\nPrivate\nNGO",
+   "depends_on": "eval:doc.s7_skill_centre==\"Yes\""
+  },
+  {
+   "fieldname": "s7_skill_courses",
+   "fieldtype": "Small Text",
+   "label": "7.7. What types of skill development courses/trades are available?",
+   "description": "Specify the trades or vocational courses offered by the skill development centre.",
+   "depends_on": "eval:doc.s7_skill_centre==\"Yes\""
+  },
+  {
+   "fieldname": "s7_seasonal_migration",
+   "fieldtype": "Select",
+   "label": "7.8. Is there any seasonal in-migration or out-migration in the settlement?",
    "options": "\nYes\nNo"
   },
   {
-   "fieldname": "q13_2_discussion_points_on_housing_pattas",
+   "fieldname": "s7_migrant_occupations",
    "fieldtype": "Small Text",
-   "label": "13.2. Any discussion points on Housing, Pattas, Sale deed etc."
-  },
-  {
-   "description": "Ownership of the land may be distributed across different departments - please choose multiple options accordingly\nPick all that apply.",
-   "fieldname": "q13_3_land_owning_board_department_multi",
-   "fieldtype": "Small Text",
-   "label": "13.3. Land owning Board/Department (Multi-select option)",
-   "options": "PWD\nGMC/GMDA\nASHB (Assam State Housing Board)\nRailways\nAirport\nReligious Land\nPrivate Land\nDefence / Cantonment\nAny other, Specify"
-  },
-  {
-   "fieldname": "column_break_land_housing",
-   "fieldtype": "Column Break"
-  },
-  {
-   "depends_on": "eval:(doc.q13_3_land_owning_board_department_multi||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Any other, Specify\")",
-   "fieldname": "q13_3_other_please_specify",
-   "fieldtype": "Data",
-   "label": "Please specify (Q13.3)",
-   "length": 100,
-   "mandatory_depends_on": "eval:(doc.q13_3_land_owning_board_department_multi||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Any other, Specify\")"
-  },
-  {
-   "depends_on": "eval:(doc.q13_3_land_owning_board_department_multi||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Any other, Specify\")",
-   "description": "Use \",\" to separate multiple responses",
-   "fieldname": "q13_4_other_land_owning_department_involved",
-   "fieldtype": "Data",
-   "label": "13.4. Any other land owning department involved",
-   "length": 100
-  },
-  {
-   "fieldname": "section_settlement_surroundings",
-   "fieldtype": "Section Break",
-   "label": "Settlement Surroundings"
-  },
-  {
-   "description": "If the settlement is located near any other vulnerable location/site, please specify\nPick all that apply.",
-   "fieldname": "q14_settlement_located_near_multi_select",
-   "fieldtype": "Small Text",
-   "label": "14. Is the settlement located near (Multi-select option)",
-   "options": "Factory or Industrial plant\nGodowns or Warehouses\nLake or Wetland\nHigh-tide river or stream\nPolluted river, stream, Drain or water body\nWaste dump site or landfill\nMajor highway or busy transit road\nRailway lines\nAirport Periphery\nReligious Institutions\nGraveyards\nMajor Markets\nAny other vulnerable locations - Specify"
-  },
-  {
-   "fieldname": "column_break_settlement_surroundings",
-   "fieldtype": "Column Break"
-  },
-  {
-   "depends_on": "eval:(doc.q14_settlement_located_near_multi_select||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Any other vulnerable locations - Specify\")",
-   "fieldname": "q14_other_please_specify",
-   "fieldtype": "Data",
-   "label": "Please specify (Q14)",
-   "length": 100,
-   "mandatory_depends_on": "eval:(doc.q14_settlement_located_near_multi_select||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Any other vulnerable locations - Specify\")"
-  },
-  {
-   "fieldname": "section_eviction_details",
-   "fieldtype": "Section Break",
-   "label": "Eviction Details"
-  },
-  {
-   "description": "Settlements that eventually will face eviction threat: 1. Settlement with close proximity to water bodies (rivers, lakes and canals), railway lines, located above conduit pipes, close to the seashore and road margins. 2. Settlement on railway land or defence land. 3. Settlement on private land. 4. Settlement on temple land.\n\nHow to identify if a settlement is facing immediate eviction threat? Lead questions (to be asked only in the above-mentioned categories): 1. Has there been any information about eviction? 2. Any enumeration conducted with or without stating reasons? 3. Any eviction notices issued? 4. Any formal or informal meetings regarding eviction or resettlement conducted? 5. Any pending court case related to eviction?",
-   "fieldname": "q15_1_eviction_threat",
-   "fieldtype": "Select",
-   "label": "15.1. Is there an Eviction threat?",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q15_1_eviction_threat==\"Yes\"",
-   "description": "Survey conducted, notice given, token given, survey stone, settlements partially evicted - describe eviction chances, stage under which eviction is in progress, possibilities for eviction etc.",
-   "fieldname": "q15_2_describe_eviction_scenario",
-   "fieldtype": "Small Text",
-   "label": "15.2. Describe eviction scenario",
-   "mandatory_depends_on": "eval:doc.q15_1_eviction_threat==\"Yes\""
-  },
-  {
-   "fieldname": "column_break_eviction_details",
-   "fieldtype": "Column Break"
-  },
-  {
-   "depends_on": "eval:doc.q15_1_eviction_threat==\"Yes\"",
+   "label": "7.9. Primary occupations undertaken by migrant workers residing in the settlement",
+   "options": "Construction Labour\nDaily Wage Labour\nDomestic Work\nStreet Vending\nFactory / Industrial Work\nDriver / Transport Work\nHotel / Restaurant Work\nWaste Collection / Recycling\nOther (specify)",
    "description": "Pick all that apply.",
-   "fieldname": "q15_3_probable_factors_eviction",
-   "fieldtype": "Small Text",
-   "label": "15.3. Probable factors for eviction",
-   "options": "Encroachment on public/government land\nMunicipal Infrastructure Expansion (Roads/metro lines)\nPrivate Developer buyouts\nNeighbourhood crime syndicates\nExclusionary Urban Modernization\nFlood and disaster vulnerability\nEnvironmental protection measures\nHealth and sanitation concerns\nLegal disputes over land ownership\nPolitical and administrative decisions"
+   "depends_on": "eval:doc.s7_seasonal_migration==\"Yes\" || doc.s2_migrant_households==\"Yes\""
   },
   {
-   "fieldname": "tab_location_selection",
+   "fieldname": "s7_migrant_occupations_other",
+   "fieldtype": "Data",
+   "label": "Please specify (7.9)",
+   "depends_on": "eval:(doc.s7_migrant_occupations||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "mandatory_depends_on": "eval:(doc.s7_migrant_occupations||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (specify)\")",
+   "length": 140
+  },
+  {
+   "fieldname": "s7_remarks",
+   "fieldtype": "Small Text",
+   "label": "7.10. Any other observations and remarks on livelihood options",
+   "description": "E.g. occupations, wages and how they are paid."
+  },
+  {
+   "fieldname": "section_8",
+   "fieldtype": "Section Break",
+   "label": "Section 8: Disaster Risks"
+  },
+  {
+   "fieldname": "s8_flood_prone",
+   "fieldtype": "Select",
+   "label": "8.1. Is the settlement flood-prone?",
+   "options": "\nVery High\nHigh\nMedium\nLow"
+  },
+  {
+   "fieldname": "s8_last_flooded",
+   "fieldtype": "Data",
+   "label": "8.2. When was it last flooded?",
+   "description": "Month and year, e.g. July 2025.",
+   "length": 60
+  },
+  {
+   "fieldname": "s8_flood_loss",
+   "fieldtype": "Small Text",
+   "label": "8.3. Describe the loss suffered due to flood"
+  },
+  {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "s8_waterlogging",
+   "fieldtype": "Select",
+   "label": "8.4. Is the settlement prone to waterlogging?",
+   "options": "\nVery High\nHigh\nMedium\nLow"
+  },
+  {
+   "fieldname": "s8_remarks",
+   "fieldtype": "Small Text",
+   "label": "8.5. Any other observations and remarks on disasters",
+   "description": "E.g. disasters and climate risks for the community."
+  },
+  {
+   "fieldname": "section_9",
+   "fieldtype": "Section Break",
+   "label": "Section 9: Community-based Organisations / Institutions"
+  },
+  {
+   "fieldname": "s9_women_shgs",
+   "fieldtype": "Select",
+   "label": "9.1. Are there women's self-help groups in the settlement?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "s9_youth_groups",
+   "fieldtype": "Select",
+   "label": "9.2. Are there youth groups?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "s9_child_protection_committee",
+   "fieldtype": "Select",
+   "label": "9.3. Is there a Child Protection Committee?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "s9_other_cbos",
+   "fieldtype": "Select",
+   "label": "9.4. Are there any other Community-Based Organisations (CBOs)?",
+   "options": "\nWorking\nNot-Working"
+  },
+  {
+   "fieldname": "s9_cbo_names",
+   "fieldtype": "Small Text",
+   "label": "9.5. If yes, name of the CBO",
+   "description": "Name(s) of the CBOs working in the settlement. Several may be recorded.",
+   "depends_on": "eval:doc.s9_other_cbos==\"Working\""
+  },
+  {
+   "fieldname": "s9_cbo_programs",
+   "fieldtype": "Small Text",
+   "label": "9.6. What are the key programs implemented by CBOs?",
+   "description": "The key thematic areas the CBOs work on in the settlement.",
+   "depends_on": "eval:doc.s9_other_cbos==\"Working\""
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "s9_other_ngos",
+   "fieldtype": "Select",
+   "label": "9.7. Are there any other NGOs working in the settlement?",
+   "options": "\nWorking\nNot-Working"
+  },
+  {
+   "fieldname": "s9_ngo_names",
+   "fieldtype": "Small Text",
+   "label": "9.8. If yes, name of the NGO",
+   "description": "Name(s) of the NGOs working in the settlement. Several may be recorded.",
+   "depends_on": "eval:doc.s9_other_ngos==\"Working\""
+  },
+  {
+   "fieldname": "s9_ngo_programs",
+   "fieldtype": "Small Text",
+   "label": "9.9. What are the key programs implemented by these NGOs?",
+   "description": "The key thematic areas the NGOs work on in the settlement.",
+   "depends_on": "eval:doc.s9_other_ngos==\"Working\""
+  },
+  {
+   "fieldname": "s9_remarks",
+   "fieldtype": "Small Text",
+   "label": "9.10. Share any other observations and remarks",
+   "description": "E.g. community-level institutions, how well they function, and other support systems for the settlement."
+  },
+  {
+   "fieldname": "tab_recommendation",
    "fieldtype": "Tab Break",
-   "label": "Location & Selection"
+   "label": "Recommendation"
   },
   {
-   "fieldname": "section_location_and_other_details",
+   "fieldname": "section_10",
    "fieldtype": "Section Break",
-   "label": "Location and Other Details"
+   "label": "Section 10: Organisation's Recommendations / Views"
   },
   {
-   "fieldname": "q19_1_location_details_settlement",
+   "fieldname": "s10_recommended",
+   "fieldtype": "Select",
+   "label": "10.1. After assessing the settlement, do you recommend the settlement for the proposed program?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "s10_coverage",
+   "fieldtype": "Select",
+   "label": "10.2. If yes, would we cover all households or partially?",
+   "options": "\nAll\nPartially",
+   "depends_on": "eval:doc.s10_recommended==\"Yes\""
+  },
+  {
+   "fieldname": "s10_exempted",
    "fieldtype": "Small Text",
-   "label": "19.1. Location details of the Settlement"
+   "label": "10.3. If partial, mention street(s) or households to be exempted",
+   "description": "The streets/lanes or households that will not be covered, with details of the extent of coverage if available.",
+   "depends_on": "eval:doc.s10_recommended==\"Yes\" && doc.s10_coverage==\"Partially\""
   },
   {
-   "fieldname": "section_location_coordinates",
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "s10_reasons",
+   "fieldtype": "Small Text",
+   "label": "10.4. Reasons for your recommendation",
+   "description": "The key reasons for recommending (or not recommending) the settlement, based on vulnerability, living conditions, access to basic services and the needs of the community."
+  },
+  {
+   "fieldname": "section_location",
    "fieldtype": "Section Break",
-   "label": "Location Coordinates"
+   "label": "Settlement Boundary & Photos",
+   "depends_on": "eval:doc.s10_recommended==\"Yes\""
+  },
+  {
+   "description": "Draw the settlement boundary on the map.",
+   "fieldname": "geo_location",
+   "fieldtype": "Geolocation",
+   "label": "10.5. Draw settlement boundaries"
   },
   {
    "description": "Reference point",
@@ -1535,6 +1330,10 @@
    "read_only": 1
   },
   {
+   "fieldname": "column_break_12",
+   "fieldtype": "Column Break"
+  },
+  {
    "description": "Reference point",
    "fieldname": "longitude",
    "fieldtype": "Float",
@@ -1543,141 +1342,16 @@
    "read_only": 1
   },
   {
-   "fieldname": "column_break_location_coordinates",
-   "fieldtype": "Column Break"
-  },
-  {
-   "description": "Pick the point on the map.",
-   "fieldname": "geo_location",
-   "fieldtype": "Geolocation",
-   "label": "19.2. Record location of the settlement (coordinates)"
-  },
-  {
-   "fieldname": "section_break_location_point",
+   "fieldname": "section_photos",
    "fieldtype": "Section Break",
-   "label": "Location Supporting Documents"
+   "depends_on": "eval:doc.s10_recommended==\"Yes\""
   },
   {
-   "description": "Add as many photos as needed.",
+   "description": "Clear photos of the streets and lanes, key community infrastructure, public facilities and any vulnerable locations or conditions seen during the assessment.",
    "fieldname": "q19_3_street_view_photos",
    "fieldtype": "Table",
-   "label": "19.3. Capture street view photos",
+   "label": "10.6. Capture street views of the settlement",
    "options": "Settlement Street Photo"
-  },
-  {
-   "fieldname": "section_implementing_org_recommendation",
-   "fieldtype": "Section Break",
-   "label": "Implementing Org Recommendation"
-  },
-  {
-   "fieldname": "q20_1_implementing_org_team_s_recommendation",
-   "fieldtype": "Select",
-   "label": "20.1. Implementing Org Team's recommendation - Considering this settlement for proposed program?",
-   "length": 64,
-   "options": "\nYes\nYes, Partially\nNo"
-  },
-  {
-   "depends_on": "eval:doc.q20_1_implementing_org_team_s_recommendation && doc.q20_1_implementing_org_team_s_recommendation!=\"No\"",
-   "fieldname": "q20_2_if_yes_we_taking_all",
-   "fieldtype": "Small Text",
-   "label": "20.2. If yes, are we taking all the Households or partially? - Mention any streets or HHs to be exempted"
-  },
-  {
-   "depends_on": "eval:doc.q20_1_implementing_org_team_s_recommendation==\"Yes, Partially\"",
-   "description": "Suggested by the Implementing org",
-   "fieldname": "q20_3_if_yes_partially_no_houses",
-   "fieldtype": "Int",
-   "label": "20.3. If Yes Partially, No. of Houses to be considered",
-   "mandatory_depends_on": "eval:doc.q20_1_implementing_org_team_s_recommendation==\"Yes, Partially\""
-  },
-  {
-   "description": "Both Yes and No should be rationalised in your words",
-   "fieldname": "q20_4_brief_rationale_your_recommendation",
-   "fieldtype": "Small Text",
-   "label": "20.4. Brief the rationale for your recommendation"
-  },
-  {
-   "fieldname": "column_break_implementing_org_recommendation",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "q20_5_general_remarks",
-   "fieldtype": "Small Text",
-   "label": "20.5. General Remarks"
-  },
-  {
-   "fieldname": "q20_6_profiling_status",
-   "fieldtype": "Select",
-   "label": "20.6. Profiling Status",
-   "length": 64,
-   "options": "\nCompleted\nNot Completed"
-  },
-  {
-   "fieldname": "q20_7_profiled_by",
-   "fieldtype": "Data",
-   "label": "20.7. Profiled by",
-   "length": 100
-  },
-  {
-   "fieldname": "section_apf_team_selection",
-   "fieldtype": "Section Break",
-   "label": "APF Team Selection"
-  },
-  {
-   "description": "Updated by APF Team",
-   "fieldname": "q21_1_apf_team_visit_status",
-   "fieldtype": "Select",
-   "label": "21.1. APF Team Visit Status",
-   "length": 64,
-   "options": "\nYes\nNo"
-  },
-  {
-   "fieldname": "q21_2_visited_by",
-   "fieldtype": "Data",
-   "label": "21.2. Visited By",
-   "length": 100
-  },
-  {
-   "fieldname": "q21_3_visit_observation",
-   "fieldtype": "Small Text",
-   "label": "21.3. Visit Observation"
-  },
-  {
-   "description": "1st level of recommendation after visit and discussion on individual settlements with Implementing org team",
-   "fieldname": "q21_4_apf_team_recommendation",
-   "fieldtype": "Select",
-   "label": "21.4. APF Team Recommendation",
-   "length": 64,
-   "options": "\nNo\nYes\nYes, Partially"
-  },
-  {
-   "fieldname": "column_break_apf_team_selection",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "q21_5_team_rationale",
-   "fieldtype": "Small Text",
-   "label": "21.5. Team Rationale"
-  },
-  {
-   "description": "Final selection based on inputs from the Implementing org, Technical partners and field visits by the APF Team",
-   "fieldname": "q21_6_final_selection_intervention_units",
-   "fieldtype": "Select",
-   "label": "21.6. Final Selection of Intervention Units",
-   "length": 64,
-   "options": "\nNo\nYes\nYes, Partially\nYes, but not for Phase 1"
-  },
-  {
-   "description": "Number of houses considered for intervention in both scenarios, where a settlement is fully or partially included. The count in 7.1 is an estimate for the entire settlement. In cases where a settlement is considered only partially, this field will indicate the estimated number of houses included for intervention.",
-   "fieldname": "q21_7_no_hhs_considered",
-   "fieldtype": "Int",
-   "label": "21.7. No. of HHs considered"
-  },
-  {
-   "description": "Prepared by the Foundation Team for both Yes and No decisions, this explains the rationale for choosing to intervene or not intervene in a settlement. The decision is based on primary information collected by the Partner organization, and insights from field visits conducted by the APF Team. In cases where only a portion of the settlement is selected for intervention, this will also be clearly explained here.",
-   "fieldname": "q21_8_statement_selection",
-   "fieldtype": "Small Text",
-   "label": "21.8. Statement of Selection"
   },
   {
    "fieldname": "section_record_status",
@@ -1696,28 +1370,18 @@
    "search_index": 1
   },
   {
-   "fieldname": "column_break_record_status",
+   "fieldname": "column_break_13",
    "fieldtype": "Column Break"
   },
   {
    "fieldname": "validation_comments",
    "fieldtype": "Small Text",
    "label": "Validation Comments"
-  },
-  {
-   "fieldname": "section_break_dzpe",
-   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [
-  {
-   "group": "Households",
-   "link_doctype": "Household Profile",
-   "link_fieldname": "settlement"
-  }
- ],
- "modified": "2026-10-26 10:48:25.914031",
+ "links": [],
+ "modified": "2026-11-11 17:30:00.000000",
  "modified_by": "Administrator",
  "module": "Baseline",
  "name": "Settlement",
@@ -1784,7 +1448,7 @@
   }
  ],
  "row_format": "Dynamic",
- "search_fields": "settlement_name,partner_organization,cluster,orw_name",
+ "search_fields": "settlement_name,partner_organization,cluster,s1_ward",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",

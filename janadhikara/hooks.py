@@ -28,10 +28,6 @@ add_to_apps_screen = [
 fixtures = [
 	# Sync Data is created by code (modules_setup.py) so that the roles set on a site are not overwritten here.
 	{"dt": "App Module Setting", "filters": [["name", "!=", "Sync Data"]]},
-	{"dt": "Assam District"},
-	{"dt": "Welfare Board"},
-	{"dt": "Relationship Type"},
-	{"dt": "Cooking Fuel"},
 	{"dt": "Field Function Mapping"},
 ]
 
@@ -39,16 +35,12 @@ fixtures = [
 permission_query_conditions = {
 	"Validation Status": "janadhikara.masters.doctype.validation_status.validation_status.get_permission_query_conditions",
 	"Partner Details": "janadhikara.security.partner_conditions",
-	"Household Profile": "janadhikara.security.household_conditions",
 	"Settlement": "janadhikara.security.settlement_conditions",
-	"Individual Profile": "janadhikara.security.individual_conditions",
 }
 has_permission = {
 	"Validation Status": "janadhikara.masters.doctype.validation_status.validation_status.has_permission",
 	"Partner Details": "janadhikara.security.partner_has_permission",
-	"Household Profile": "janadhikara.security.household_has_permission",
 	"Settlement": "janadhikara.security.settlement_has_permission",
-	"Individual Profile": "janadhikara.security.individual_has_permission",
 }
 
 # Includes in <head>
@@ -312,7 +304,6 @@ doc_events = {
 	},
 	"DocType": {"after_insert": "janadhikara.ai.policy.on_doctype_created"},
 	"Error Log": {"before_insert": "janadhikara.security.scrub_error_log"},
-	"Household Profile": {"on_update": "janadhikara.worklist.household_updated"},
 	"Notification Log": {"after_insert": "janadhikara.push.notification_created"},
 	"Announcement": {"on_update": "janadhikara.announcements.announcement_saved"},
 	"ToDo": {
@@ -327,7 +318,6 @@ doc_events = {
 # ---------------
 scheduler_events = {
 	"daily": [
-		"janadhikara.worklist.nudge_stale_households",
 		"janadhikara.announcements.notify_started_announcements",
 	],
 }

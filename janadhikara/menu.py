@@ -15,15 +15,11 @@ MASTER_ICON = "database"
 # Sidebar icon per doctype (Lucide names) and per module.
 ITEM_ICONS = {
 	"Settlement": "map-pin",
-	"Household Profile": "house",
-	"Individual Profile": "users",
-	"Relationship Type": "heart-handshake",
 	"Survey": "clipboard-list",
 	"Partner Details": "building-2",
 	"Announcement": "megaphone",
 	"AI Guide Section": "book-open",
 	"Validation Status": "badge-check",
-	"Cooking Fuel": "flame",
 	"Cluster": "network",
 	"Question Bank": "list-checks",
 	"AI Guide Instruction": "book-open",

@@ -19,7 +19,7 @@ const props = defineProps({
   horizontal: { type: Boolean, default: false },
   suffix: { type: String, default: '' },
   max: { type: Number, default: undefined },
-  seriesName: { type: String, default: 'Individuals' },
+  seriesName: { type: String, default: 'Settlements' },
   months: { type: Array, default: () => [] },
   series: { type: Array, default: () => [] },
 })

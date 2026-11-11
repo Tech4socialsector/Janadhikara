@@ -12,7 +12,6 @@
     <div class="flex flex-shrink-0 items-center gap-2">
       <NetworkPill />
       <AwesomeBar />
-      <LanguageSwitcher />
       <Button
         variant="ghost"
         :icon="theme === 'dark' ? 'moon' : 'sun'"
@@ -29,7 +28,6 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Button } from 'frappe-ui'
 import AwesomeBar from '@/components/AwesomeBar.vue'
-import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import NetworkPill from '@/components/NetworkPill.vue'
 import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import { currentTheme } from '@/data/theme'

@@ -41,10 +41,9 @@ RANGES = {
 	"stay_months": (0, 11),
 	"stay_years": (0, 120),
 	"year": (1900, None),
-	"q18_1_2_how_many_hours_they_get": (0, 24),
-	"q16_1_2_proportion_children_going_private_school": (0, 100),
-	"q16_1_3_proportion_children_going_government_sch": (0, 100),
-	"q16_1_4_proportion_children_going_government_aid": (0, 100),
+	"s6_water_supply_hours": (0, 24),
+	"s5_csc_access_percent": (0, 100),
+	"s5_pds_access_percent": (0, 100),
 }
 SIGNED_OK = {"latitude", "longitude"}
 
@@ -146,7 +145,7 @@ def _range_message(label, low, high):
 	return _("{0} can't be more than {1}.").format(label, cint(high))
 
 
-# --- Conditional questions (Settlement and Household Profile) -------------------------------
+# --- Conditional questions (Settlement) -------------------------------
 # A question hidden by its "show only if" holds no answer, and a question the form shows as mandatory
 # can't be left empty. The same simple conditions the form evaluates, evaluated again on save.
 _EQ = re.compile(r'^eval:doc\.(\w+)\s*==\s*"([^"]*)"$')
@@ -174,7 +173,11 @@ def condition_met(doc, expression):
 	if m := _EQ.match(expression):
 		return doc.get(m.group(1)) == m.group(2)
 	if expression.startswith("eval:"):
-		return all(_part_met(doc, part.strip()) for part in expression[5:].split(" && "))
+		# "a && b || c": met when every part of any one alternative is met
+		return any(
+			all(_part_met(doc, part.strip()) for part in alternative.split(" && "))
+			for alternative in expression[5:].split(" || ")
+		)
 	return True
 
 

@@ -211,8 +211,6 @@ const iconName = (n) => TYPE_ICONS[n.type] || 'bell'
 // What the notification is about -> icon + tint (document first, then its type).
 const DOC_ICONS = {
   ToDo: 'check-square',
-  'Household Profile': 'home',
-  'Individual Profile': 'users',
   Settlement: 'map-pin',
   Survey: 'clipboard',
   'Partner Details': 'briefcase',

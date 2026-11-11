@@ -1,4 +1,4 @@
-"""App translations (Assamese, Hindi) kept as Frappe Translation records.
+"""App translations kept as Frappe Translation records. The app is offered in English only for now, so there are none.
 
 Every record carries a context starting with "janadhikara:" so it never touches Desk's own text:
   janadhikara:ui | heading | option | help | dpdp     interface text, keyed by the English sentence
@@ -16,12 +16,12 @@ PREFIX = "janadhikara:"
 DATA_FILE = os.path.join(os.path.dirname(__file__), "translation_data", "translations.json")
 
 
-LANGUAGES = {"en": "English", "as": "অসমীয়া", "hi": "हिन्दी"}
+LANGUAGES = {"en": "English"}
 
 
 def ensure_languages(restrict=False):
-	"""The app is offered in English, Assamese and Hindi. Make sure they exist and are enabled (a new site
-	may not have Assamese at all); with restrict=True every other language is switched off."""
+	"""The app is offered in English only. Make sure it exists and is enabled; with restrict=True every other
+	language is switched off."""
 	for code, name in LANGUAGES.items():
 		if frappe.db.exists("Language", code):
 			frappe.db.set_value("Language", code, {"enabled": 1, "language_name": name})
@@ -36,8 +36,10 @@ def ensure_languages(restrict=False):
 def import_translations():
 	"""Create the Translation records that are not there yet (existing ones are left as they are)."""
 	ensure_languages()
+	if not os.path.exists(DATA_FILE):
+		return 0
 	with open(DATA_FILE, encoding="utf-8") as f:
-		rows = json.load(f)
+		rows = [r for r in json.load(f) if r["language"] in LANGUAGES]
 	existing = {
 		(r.language, r.context, r.source_text)
 		for r in frappe.get_all(
@@ -85,7 +87,7 @@ def get_app_translations(language):
 	"""The app's translations for one language, shaped for the app: interface text by English sentence and
 	questionnaire text by DocType and field. Only app text (not sensitive), readable by any signed-in user."""
 	out = {"ui": {}, "heading": {}, "option": {}, "help": {}, "dpdp": {}, "fields": {}}
-	if not language or language == "en":
+	if not language or language == "en" or language not in LANGUAGES:
 		return out
 	if not frappe.db.exists("Translation", {"language": language, "context": ["like", PREFIX + "%"]}):
 		_import_in_background()

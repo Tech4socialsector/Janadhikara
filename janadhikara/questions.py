@@ -119,7 +119,7 @@ def is_shown(question, doc, answers):
 def validate_answers(doc, method=None):
 	"""On save: keep each answer row in step with its question, drop answers to questions that are
 	no longer shown, and require the mandatory ones that are."""
-	# Runs for every doctype (see hooks.py); Household Profile's own controller also calls it.
+	# Runs for every doctype (see hooks.py).
 	if doc.flags.get("answers_validated") or doc.meta.istable or doc.meta.issingle:
 		return
 	if doc.meta.module not in ("Masters", "App Config", "Engine", "Baseline"):

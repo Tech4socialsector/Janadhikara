@@ -13,35 +13,6 @@ import json
 import frappe
 
 REQUIRED = {
- "Education Record": [
-  "education_level",
-  "status"
- ],
- "Entitlement": [
-  "scheme_name",
-  "entitlement_type",
-  "status"
- ],
- "Health Condition": [
-  "condition",
-  "condition_type"
- ],
- "Household Profile": [
-  "household_status",
-  "validation_status",
-  "settlement",
-  "partner_organization",
-  "record_date"
- ],
- "Individual Document": [
-  "document_type"
- ],
- "Individual Profile": [
-  "record_date",
-  "household",
-  "member_name",
-  "validation_status"
- ],
  "Settlement": [
   "record_date",
   "settlement_name",
@@ -64,9 +35,6 @@ REQUIRED = {
   "contact_person",
   "state",
   "district"
- ],
- "Household Cooking Fuel": [
-  "fuel"
  ]
 }
 

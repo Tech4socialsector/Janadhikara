@@ -421,7 +421,7 @@ def get_user_employee(user=None):
 
 @frappe.whitelist()
 def get_household_field_defaults():
-    """What a new Household Profile can fill in for the logged-in user: their
+    """What a new Settlement can fill in for the logged-in user: their
     partner and worker record, and the settlements of their partner.
     Shape: { partner_organization, assigned_worker, assignments: [{ settlement }] } - the signed-in
     user as the ORW, and the rest only for a partner worker."""

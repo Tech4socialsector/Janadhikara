@@ -224,7 +224,7 @@ const groupedTabs = computed(() => {
         { key: 'profile', label: t('Profile'), icon: moduleIcon('user') },
         { key: 'notifications', label: t('Notifications'), icon: moduleIcon('bell') },
         { key: 'appearance', label: t('Appearance'), icon: moduleIcon('sun') },
-        { key: 'language', label: t('Language'), icon: moduleIcon('globe') },
+        // Language: the app is offered in English only for now, so there is nothing to choose
       ],
     },
   ]

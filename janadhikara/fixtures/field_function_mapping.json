@@ -4,7 +4,7 @@
   "docstatus": 0,
   "doctype": "Field Function Mapping",
   "enabled": 1,
-  "expression": "Settlement.geo_location → Geo Shape Capture()\n  latitude → latitude    [Latitude (centre point)]\n  longitude → longitude    [Longitude (centre point)]\n  address → q19_1_location_details_settlement    [Address of the centre point]\n  ward → q3_ward_no_city_corporation    [Ward]",
+  "expression": "Settlement.geo_location → Geo Shape Capture()\n  latitude → latitude    [Latitude (centre point)]\n  longitude → longitude    [Longitude (centre point)]",
   "field_mappings": [
    {
     "function_name": "Geo Shape Capture",
@@ -19,25 +19,11 @@
     "only_if_empty": 0,
     "output": "longitude",
     "target_field": "longitude"
-   },
-   {
-    "function_name": "Geo Shape Capture",
-    "input_field": null,
-    "only_if_empty": 0,
-    "output": "address",
-    "target_field": "q19_1_location_details_settlement"
-   },
-   {
-    "function_name": "Geo Shape Capture",
-    "input_field": null,
-    "only_if_empty": 0,
-    "output": "ward",
-    "target_field": "q3_ward_no_city_corporation"
    }
   ],
   "function_description": "Runs when something is drawn, edited or deleted on a Geolocation map (line, polygon, rectangle or circle). Works out the shape's centre point, boundary polygon, area (sq m) and perimeter (m), and looks up the address, pincode, state, district, city and ward of its centre.",
   "function_name": "Geo Shape Capture",
-  "modified": "2026-10-06 14:05:24.882699",
+  "modified": "2026-11-11 17:30:00.000000",
   "name": "Settlement map capture",
   "rule_name": "Settlement map capture",
   "target_doctype": "Settlement",

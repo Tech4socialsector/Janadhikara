@@ -1,8 +1,7 @@
-"""Numbers behind the Dashboard page.
+"""Numbers behind the Dashboard page: the Settlement profiles.
 
 Every query goes through frappe.get_list, so a user only ever counts the records they may read.
-The filters narrow both Household Profile and Individual Profile; the settlement and partner
-organisation of an individual are the ones stored from their household."""
+frontend/src/data/offlineDashboard.js works out the same numbers on the phone - keep the two in step."""
 
 import calendar
 from collections import Counter
@@ -13,22 +12,38 @@ from frappe.utils import cint
 
 from janadhikara.security import user_scope
 
-HOUSEHOLD = "Household Profile"
-INDIVIDUAL = "Individual Profile"
+SETTLEMENT = "Settlement"
+STATUS_ORDER = ["Partially Completed", "Completed", "Revision Needed", "Validated"]
 
-AGE_GROUPS = [("0-5", 0, 5), ("6-14", 6, 14), ("15-17", 15, 17), ("18-35", 18, 35), ("36-59", 36, 59), ("60+", 60, 200)]
-# Individual Profile question -> label, for "how many have it"
-DOCUMENTS = [
-	("doc_aadhaar", "Aadhaar"), ("doc_ration_card", "Ration card"), ("doc_voter_id", "Voter ID"),
-	("doc_bank_account", "Bank account"), ("doc_pan", "PAN"), ("doc_birth_certificate", "Birth certificate"),
-	("doc_eshram", "E-Shram"), ("doc_income_certificate", "Income certificate"),
+# key, title, fields added up over the settlements
+TOTALS = [
+	("households", "Households", ["s2_total_households"]),
+	("population", "Population", ["s2_total_population"]),
+	("migrant_households", "Migrant households", ["s2_migrant_household_count"]),
+	("children_0_6", "Children aged 0-6", ["s2_children_0_3", "s2_children_3_6"]),
+	("disability", "Persons with disabilities", ["s2_persons_with_disabilities"]),
+]
+# key, title, field, answer: settlements that gave that answer
+ANSWER_CARDS = [
+	("eviction_risk", "Settlements at risk of eviction", "s3_eviction_risk", "Yes"),
+	("recommended", "Recommended for the program", "s10_recommended", "Yes"),
+]
+# key, title, field, kind ("donut" | "bar" | "hbar"), keep the field's option order
+CHARTS = [
+	("validation_status", "Profile status", "validation_status", "donut", True),
+	("notified", "Notified status", "s1_notified", "donut", True),
+	("category", "Category of settlement", "s1_category", "hbar", True),
+	("land_type", "Government or private land", "s1_land_type", "donut", True),
+	("zone", "Settlements by zone", "s1_zone", "hbar", False),
+	("located_close_to", "Located close to", "s1_located_close_to", "hbar", True),
+	("migrant_type", "Type of migrants", "s2_migrant_type", "donut", True),
+	("recommended", "Recommended for the program", "s10_recommended", "donut", True),
 ]
 
 
 @frappe.whitelist()
 def get_filter_options():
 	"""What the dashboard's filters can offer this user."""
-	settlements = frappe.get_list("Settlement", fields=["name", "settlement_name"], limit_page_length=0, order_by="settlement_name")
 	# Partner Details is an admin-only list (it holds the workers' contacts), so the names come from the user's own scope:
 	# every partner for the programme team, just their own partner for anyone else.
 	kind, own_partner = user_scope()
@@ -37,18 +52,14 @@ def get_filter_options():
 	else:
 		partners = [frappe._dict(name=own_partner, organization_name=frappe.db.get_value("Partner Details", own_partner, "organization_name"))] if own_partner else []
 	return {
-		"settlements": [{"value": s.name, "label": s.settlement_name or s.name} for s in settlements],
 		"partners": [{"value": p.name, "label": p.organization_name or p.name} for p in partners],
-		"genders": ["Female", "Male", "Other"],
-		"age_groups": [g[0] for g in AGE_GROUPS],
-		"household_statuses": _select_options(HOUSEHOLD, "household_status"),
+		"zones": frappe.get_all("Municipal Zone", filters={"enabled": 1}, pluck="name", order_by="name"),
+		"wards": frappe.get_all("Municipal Ward", filters={"enabled": 1}, pluck="name", order_by="name"),
+		"categories": _select_options("s1_category"),
 		"validation_statuses": _status_options(),
 		# who may download the records behind a number (Frappe's own Export permission)
-		"can_export": {d: bool(frappe.has_permission(d, "export")) for d in (HOUSEHOLD, INDIVIDUAL)},
+		"can_export": {SETTLEMENT: bool(frappe.has_permission(SETTLEMENT, "export"))},
 	}
-
-
-STATUS_ORDER = ["Partially Completed", "Completed", "Revision Needed", "Validated"]
 
 
 def _status_options():
@@ -56,162 +67,80 @@ def _status_options():
 	return [n for n in STATUS_ORDER if n in names] + sorted(n for n in names if n not in STATUS_ORDER)
 
 
-def _select_options(doctype, fieldname):
-	options = frappe.get_meta(doctype).get_field(fieldname).options or ""
-	return [o for o in options.split("\n") if o]
+def _select_options(fieldname):
+	field = frappe.get_meta(SETTLEMENT).get_field(fieldname)
+	return [o for o in (field.options or "").split("\n") if o] if field else []
 
 
-def _date_field(doctype):
-	"""The date a record is counted on: its Date, or - where the form has none - when it was created."""
-	return "record_date" if frappe.get_meta(doctype).has_field("record_date") else "creation"
-
-
-def _date_filter(doctype, filters, from_date, to_date):
-	field = _date_field(doctype)
-	if from_date and to_date:
-		filters[field] = ["between", [from_date, to_date]]
-	elif from_date:
-		filters[field] = [">=", from_date]
-	elif to_date:
-		filters[field] = ["<=", to_date]
-
-
-def _counts(doctype, fieldname, filters):
-	"""{answer: how many records}, blank answers left out."""
+def _counts(fieldname, filters):
+	"""{answer: how many settlements}, blank answers left out."""
 	rows = frappe.get_list(
-		doctype, filters=filters, fields=[fieldname, {"COUNT": "name", "as": "count"}], group_by=fieldname, limit_page_length=0
+		SETTLEMENT, filters=filters, fields=[fieldname, {"COUNT": "name", "as": "count"}], group_by=fieldname, limit_page_length=0
 	)
 	return {r[fieldname]: r["count"] for r in rows if r[fieldname] not in (None, "")}
 
 
-def _series(counts, order=None, filters=None, fieldname=None):
-	"""Chart rows. With `fieldname`, each row also carries the list filters that show its records."""
-	keys = order or sorted(counts, key=lambda k: -counts[k])
-	return [
-		{"label": k, "count": counts.get(k, 0), **({"filters": {**filters, fieldname: k}} if fieldname else {})}
-		for k in keys
-		if counts.get(k, 0) or order
-	]
-
-
-def _month_filters(doctype, filters, month):
-	"""The list filters for one `YYYY-MM`: that month replaces any date range."""
-	year, mon = (int(x) for x in month.split("-"))
-	last = calendar.monthrange(year, mon)[1]
-	return {**filters, _date_field(doctype): ["between", [f"{month}-01", f"{month}-{last:02d}"]]}
-
-
-def _total(doctype, filters):
-	return cint(frappe.get_list(doctype, filters=filters, fields=[{"COUNT": "name", "as": "count"}])[0]["count"])
-
-
-def _monthly(doctype, filters):
-	field = _date_field(doctype)
-	dates = frappe.get_list(doctype, filters=filters, fields=[field], limit_page_length=0, pluck=field)
-	per_month = Counter(str(d)[:7] for d in dates if d)
-	return per_month
+def _rows(counts, filters, fieldname, order=None):
+	"""Chart rows, each with the list filters that show its settlements."""
+	keys = [k for k in order if counts.get(k)] + sorted(k for k in counts if k not in order) if order else sorted(counts, key=lambda k: -counts[k])
+	return [{"label": k, "count": counts[k], "filters": {**filters, fieldname: k}} for k in keys]
 
 
 @frappe.whitelist()
-def get_dashboard(
-	settlement=None, partner_organization=None, from_date=None, to_date=None, gender=None,
-	age_group=None, household_status=None, validation_status=None,
-):
-	hh = {}
-	ind = {}
-	if settlement:
-		hh["settlement"] = settlement
-		ind["settlement_intervention_unit"] = settlement
-	if partner_organization:
-		hh["partner_organization"] = partner_organization
-		ind["implementing_org"] = partner_organization
-	_date_filter(HOUSEHOLD, hh, from_date, to_date)
-	_date_filter(INDIVIDUAL, ind, from_date, to_date)
-	if gender:
-		ind["gender"] = gender
-	if validation_status:
-		ind["validation_status"] = validation_status
-	if household_status:
-		hh["household_status"] = household_status
-	for label, low, high in AGE_GROUPS:
-		if label == age_group:
-			ind["age"] = ["between", [low, high]]
+def get_dashboard(partner_organization=None, zone=None, ward=None, category=None, validation_status=None, from_date=None, to_date=None):
+	filters = {}
+	for field, value in (
+		("partner_organization", partner_organization), ("s1_zone", zone), ("s1_ward", ward),
+		("s1_category", category), ("validation_status", validation_status),
+	):
+		if value:
+			filters[field] = value
+	if from_date and to_date:
+		filters["record_date"] = ["between", [from_date, to_date]]
+	elif from_date:
+		filters["record_date"] = [">=", from_date]
+	elif to_date:
+		filters["record_date"] = ["<=", to_date]
 
-	households = _total(HOUSEHOLD, hh)
-	members = frappe.get_list(HOUSEHOLD, filters=hh, fields=[{"SUM": "member_count", "as": "members"}])[0]["members"]
-	individuals = _total(INDIVIDUAL, ind)
+	settlements = frappe.get_list(
+		SETTLEMENT, filters=filters, limit_page_length=0,
+		fields=["record_date", *dict.fromkeys(f for _, _, fields in TOTALS for f in fields)],
+	)
 
-	# One Status question: Partially Completed -> Completed -> Revision Needed / Validated
-	status = _counts(INDIVIDUAL, "validation_status", ind)
-	validated = status.get("Validated", 0)
-	completed = status.get("Completed", 0) + validated
+	def card(key, title, value, card_filters, suffix=None):
+		return {"key": key, "title": title, "value": value, "suffix": suffix, "doctype": SETTLEMENT, "filters": card_filters}
 
-	ages = Counter()
-	for age, count in _counts(INDIVIDUAL, "age", ind).items():
-		for label, low, high in AGE_GROUPS:
-			if low <= cint(age) <= high:
-				ages[label] += count
-	# children of school-going age who are not in school
-	out_of_school = _total(INDIVIDUAL, {**ind, "out_of_school_status": ["is", "set"]})
+	cards = [card("settlements", "Settlements profiled", len(settlements), filters)]
+	for key, title, fields in TOTALS:
+		cards.append(card(key, title, sum(cint(s.get(f)) for s in settlements for f in fields), filters))
+	for key, title, field, answer in ANSWER_CARDS:
+		cards.append(card(key, title, _counts(field, filters).get(answer, 0), {**filters, field: answer}))
 
-	documents = []
-	for fieldname, label in DOCUMENTS:
-		answers = _counts(INDIVIDUAL, fieldname, ind)
-		asked = sum(answers.values())
-		have = answers.get("Yes", 0)
-		documents.append({
-			"label": label, "have": have, "asked": asked, "percent": round(100 * have / asked) if asked else 0,
-			"filters": {**ind, fieldname: "Yes"},
+	charts = []
+	for key, title, field, kind, ordered in CHARTS:
+		order = (STATUS_ORDER if field == "validation_status" else _select_options(field)) if ordered else None
+		charts.append({"key": key, "title": title, "kind": kind, "rows": _rows(_counts(field, filters), filters, field, order)})
+
+	per_month = Counter(str(s.record_date)[:7] for s in settlements if s.record_date)
+	monthly = []
+	for month in sorted(per_month):
+		year, mon = (int(x) for x in month.split("-"))
+		last = calendar.monthrange(year, mon)[1]
+		monthly.append({
+			"month": month, "count": per_month[month],
+			"filters": {**filters, "record_date": ["between", [f"{month}-01", f"{month}-{last:02d}"]]},
 		})
-
-	hh_per_month, ind_per_month = _monthly(HOUSEHOLD, hh), _monthly(INDIVIDUAL, ind)
-	months = sorted(set(hh_per_month) | set(ind_per_month))
-
-	def card(key, title, value, doctype, filters, suffix=None):
-		return {"key": key, "title": title, "value": value, "suffix": suffix, "doctype": doctype, "filters": filters}
-
-	disability = _total(INDIVIDUAL, {**ind, "disability_type": ["is", "set"]})
-	women_not_working = _counts(INDIVIDUAL, "women_full_time_work", ind).get("No", 0)
-	return {
-		"cards": [
-			card("households", "Households", households, HOUSEHOLD, hh),
-			card("members", "Members (as told by households)", cint(members), HOUSEHOLD, hh),
-			card("individuals", "Individual profiles", individuals, INDIVIDUAL, ind),
-			card("completed", "Profiles completed", round(100 * completed / individuals) if individuals else 0, INDIVIDUAL, {**ind, "validation_status": ["in", ["Completed", "Validated"]]}, "%"),
-			card("validated", "Profiles validated", round(100 * validated / individuals) if individuals else 0, INDIVIDUAL, {**ind, "validation_status": "Validated"}, "%"),
-			card("out_of_school", "Children out of school", out_of_school, INDIVIDUAL, {**ind, "out_of_school_status": ["is", "set"]}),
-			card("disability", "Persons with disability", disability, INDIVIDUAL, {**ind, "disability_type": ["is", "set"]}),
-			card("women_not_working", "Women not in full-time work", women_not_working, INDIVIDUAL, {**ind, "women_full_time_work": "No"}),
-		],
-		"household_status": _series(_counts(HOUSEHOLD, "household_status", hh), filters=hh, fieldname="household_status"),
-		"household_documentation": _series(_counts(HOUSEHOLD, "validation_status", hh), STATUS_ORDER, hh, "validation_status"),
-		"gender": _series(_counts(INDIVIDUAL, "gender", ind), filters=ind, fieldname="gender"),
-		"age_groups": [
-			{"label": label, "count": ages.get(label, 0), "filters": {**ind, "age": ["between", [low, high]]}}
-			for label, low, high in AGE_GROUPS
-		],
-		"education": _series(_counts(INDIVIDUAL, "highest_education", ind), filters=ind, fieldname="highest_education"),
-		"documentation": _series(status, STATUS_ORDER, ind, "validation_status"),
-		"documents": documents,
-		"occupation": _series(_counts(INDIVIDUAL, "occupation_1", ind), filters=ind, fieldname="occupation_1")[:10],
-		"monthly": [
-			{
-				"month": m, "Households": hh_per_month.get(m, 0), "Individuals": ind_per_month.get(m, 0),
-				"household_filters": _month_filters(HOUSEHOLD, hh, m), "individual_filters": _month_filters(INDIVIDUAL, ind, m),
-			}
-			for m in months
-		],
-	}
+	return {"cards": cards, "charts": charts, "monthly": monthly}
 
 
-EXPORTABLE = (HOUSEHOLD, INDIVIDUAL)
+EXPORTABLE = (SETTLEMENT,)
 EXPORT_LIMIT = 50000
 STANDARD_COLUMNS = {"owner": "Created By", "creation": "Created On", "modified": "Last Modified"}
 NOT_A_COLUMN = ("Section Break", "Column Break", "Tab Break", "Table", "Table MultiSelect", "HTML", "Button", "Image", "Password", "Attach", "Attach Image", "Geolocation")
 
 
 def _exportable(doctype):
-	"""The dashboard's two doctypes, and every doctype in the app's own navigation (its lists)."""
+	"""The dashboard's doctype, and every doctype in the app's own navigation (its lists)."""
 	if doctype in EXPORTABLE:
 		return True
 	from janadhikara.api import get_app_modules

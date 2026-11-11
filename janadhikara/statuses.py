@@ -1,4 +1,4 @@
-"""The one "Status" question on a Household and an Individual Profile.
+"""The one "Status" question on a Settlement.
 
 Its options are Validation Status records, and each record lists the roles that may use it (empty = everyone), so
 the dropdown, the API and a hand-made request all agree. ORWs see Partially Completed and Completed;

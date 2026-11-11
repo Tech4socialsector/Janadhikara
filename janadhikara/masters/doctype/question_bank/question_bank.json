@@ -209,14 +209,14 @@
    "fieldname": "section_break_show_if",
    "fieldtype": "Section Break",
    "label": "Display depends on (optional)",
-   "description": "Show this question only while a field of a doctype has a value, e.g. Household Profile > House Ownership = Rented."
+   "description": "Show this question only while a field of a doctype has a value, e.g. Settlement > 3.10 Is there any risk of Eviction = Yes."
   },
   {
    "fieldname": "show_if_doctype",
    "fieldtype": "Link",
    "label": "Doctype",
    "options": "DocType",
-   "description": "The form that holds the deciding field, e.g. Household Profile."
+   "description": "The form that holds the deciding field, e.g. Settlement."
   },
   {
    "fieldname": "show_if_field",
@@ -258,7 +258,7 @@
    "fieldtype": "Link",
    "label": "Doctype",
    "options": "DocType",
-   "description": "The form that holds the deciding field, e.g. Household Profile."
+   "description": "The form that holds the deciding field, e.g. Settlement."
   },
   {
    "fieldname": "section_show_if_field",

@@ -26,60 +26,13 @@
         <Button v-if="conn.canCreate" variant="ghost" size="sm" icon="plus" :tooltip="t('Add')" :aria-label="t('Add')" @click="addNew(conn)" />
       </div>
     </div>
-    <!-- A household: one place per family member (adults + children). Members already profiled are listed by name;
-    for the rest, type the name and Add profile opens their Individual Profile with the household and name filled in. -->
-    <div v-if="memberSlots" class="mt-3 rounded-lg border px-3 py-2.5 dark:border-gray-800">
-      <div class="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
-        <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ t('Family members') }}</p>
-        <span
-          class="rounded-full px-2 py-0.5 text-xs font-medium"
-          :class="memberSlots.missing ? 'bg-surface-amber-2 text-ink-amber-3' : 'bg-surface-green-2 text-ink-green-3'"
-        >
-          {{ memberSlots.profiles.length }} {{ t('of') }} {{ memberSlots.expected }} {{ t('profiles added') }}
-        </span>
-        <span class="h-1.5 w-24 overflow-hidden rounded-full bg-surface-gray-3" aria-hidden="true">
-          <span
-            class="block h-full rounded-full transition-all"
-            :class="memberSlots.missing ? 'bg-amber-500' : 'bg-green-500'"
-            :style="{ width: Math.min(100, Math.round((100 * memberSlots.profiles.length) / Math.max(1, memberSlots.expected))) + '%' }"
-          />
-        </span>
-      </div>
-      <!-- Members already profiled: compact, side by side as the width allows -->
-      <div class="grid grid-cols-1 gap-1.5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        <button
-          v-for="(p, i) in memberSlots.profiles"
-          :key="p.name"
-          type="button"
-          class="flex min-w-0 items-center gap-2 rounded-md border border-outline-gray-1 px-2.5 py-1.5 text-left text-sm text-gray-800 transition-colors hover:border-outline-gray-3 hover:bg-surface-gray-1 dark:text-gray-200"
-          @click="openProfile(p.name)"
-        >
-          <FeatherIcon name="check-circle" class="h-4 w-4 flex-shrink-0 text-green-600" />
-          <span class="truncate">{{ i + 1 }}. {{ p.member_name || p.name }}</span>
-        </button>
-      </div>
-      <!-- Members still to add: name them here, Add profile opens their Individual Profile with it filled in -->
-      <div v-if="memberSlots.missing" class="mt-2 grid grid-cols-1 gap-2 lg:grid-cols-2">
-        <div v-for="i in memberSlots.missing" :key="'new' + i" class="flex items-center gap-2">
-          <span class="w-6 flex-shrink-0 text-right text-sm text-gray-500">{{ memberSlots.profiles.length + i }}.</span>
-          <input
-            v-model="newNames[i]"
-            type="text"
-            class="min-w-0 flex-1 rounded border border-outline-gray-2 bg-surface-white px-2 py-1 text-sm"
-            :placeholder="t('Name of the member')"
-            :aria-label="t('Name of the member')"
-          />
-          <Button size="sm" icon-left="plus" @click="addMember(i)">{{ t('Add profile') }}</Button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup>
-import { computed, reactive, watch } from 'vue'
+import { watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { FeatherIcon, Button, useCall } from 'frappe-ui'
+import { Button, useCall } from 'frappe-ui'
 import { findModuleByDoctype } from '@/data/modules'
 import { t } from '@/utils/translate'
 
@@ -101,7 +54,7 @@ const props = defineProps({
   doctype: { type: String, required: true },
   name: { type: String, required: true },
   links: { type: Array, default: () => [] },
-  // the record's own values: a household's member count decides how many member profiles are expected
+  // the record's own values (kept for callers that pass them)
   values: { type: Object, default: () => ({}) },
 })
 
@@ -129,34 +82,8 @@ const connections = props.links
     }
   })
 
-// Member profiles of a household (see the template): how many are expected, and those already made.
-const memberConn = props.doctype === 'Household Profile' ? connections.find((c) => c.linkDoctype === 'Individual Profile' && c.route) : null
-const memberProfiles = useCall({
-  url: '/api/v2/document/Individual Profile',
-  method: 'GET',
-  params: () => ({ fields: JSON.stringify(['name', 'member_name']), filters: JSON.stringify({ household: props.name }), order_by: 'creation asc', limit: 100 }),
-  immediate: false,
-})
-const newNames = reactive({})
-const memberSlots = computed(() => {
-  const expected = Number(props.values?.member_count) || 0
-  if (!memberConn || !expected) return null
-  const profiles = memberProfiles.data || []
-  return { expected, profiles, missing: Math.max(0, expected - profiles.length) }
-})
-function addMember(i) {
-  router.push({
-    name: 'DoctypeNew',
-    params: { doctypeRoute: memberConn.route },
-    query: { household: props.name, ...(newNames[i]?.trim() ? { member_name: newNames[i].trim() } : {}) },
-  })
-}
-function openProfile(profile) {
-  router.push({ name: 'DoctypeForm', params: { doctypeRoute: memberConn.route, name: profile } })
-}
-
 // Re-fetch every connection's count whenever the record itself changes
-// (e.g. navigating from one Household profile to another without a full
+// (e.g. navigating from one record to another without a full
 // page reload) - immediate:true covers the first mount.
 watch(
   () => props.name,
@@ -164,7 +91,6 @@ watch(
     for (const conn of connections) {
       conn.countResource.fetch()
     }
-    if (memberConn) memberProfiles.fetch()
   },
   { immediate: true },
 )

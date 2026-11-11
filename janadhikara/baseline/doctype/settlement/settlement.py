@@ -4,7 +4,7 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import flt
+from frappe.utils import cint
 
 from janadhikara.security import enforce_own_partner
 from janadhikara.validation import clear_hidden_answers, require_shown_answers
@@ -28,28 +28,33 @@ class Settlement(Document):
 		check_status_change(self)
 
 	def validate_questionnaire(self):
+		self.validate_location_hierarchy()
+
+		# 2.2: the total population is Male + Female + Others
+		parts = ("s2_population_male", "s2_population_female", "s2_population_others")
+		if any(self.get(f) not in (None, "") for f in parts):
+			self.s2_total_population = sum(cint(self.get(f)) for f in parts)
+
 		# values can arrive as text from the form: compare them as numbers
-		# a "Yes" to a housing type means there is at least one such house
-		for key in range(1, 10):
-			answer = next((df.fieldname for df in self.meta.fields if df.fieldname.startswith(f"q6_{key}_") and df.fieldtype == "Select"), None)
-			count = next((df.fieldname for df in self.meta.fields if df.fieldname.startswith(f"q6_{key}_1_")), None)
-			if answer and count and self.get(answer) == "Yes" and self.get(count) not in (None, "") and flt(self.get(count)) < 1:
-				frappe.throw(_("{0}: enter at least 1, or answer No above.").format(self.meta.get_label(count)))
+		def more_than(part, whole, message):
+			if self.get(part) not in (None, "") and self.get(whole) not in (None, "") and cint(self.get(part)) > cint(self.get(whole)):
+				frappe.throw(message)
 
-		total = flt(self.get("q7_1_indicate_total_number_houses_physical"))
-		families = self.get("q7_2_specify_total_number_families_currently")
-		if families not in (None, "") and flt(families) < 0:
-			frappe.throw(_("Number of families can't be negative."))
+		more_than("s2_migrant_household_count", "s2_total_households", _("2.12: Migrant households can't be more than the total number of households (2.1)."))
+		more_than("s3_households_affected", "s2_total_households", _("3.14: Households affected by eviction can't be more than the total number of households (2.1)."))
+		more_than("s2_elderly_living_alone", "s2_elderly_60_plus", _("2.9: Elderly persons living alone can't be more than the elderly persons (2.8)."))
 
-		shares = [flt(self.get(f"q16_1_{n}_proportion_children_going_{kind}")) for n, kind in ((2, "private_school"), (3, "government_sch"), (4, "government_aid"))]
-		if any(share < 0 or share > 100 for share in shares):
-			frappe.throw(_("Enter the share of children as a percentage between 0 and 100."))
-		if sum(shares) > 100:
-			frappe.throw(_("The shares of children going to private, government and government-aided schools add up to more than 100."))
-
-		partial = flt(self.get("q20_3_if_yes_partially_no_houses"))
-		if partial and total and partial > total:
-			frappe.throw(_("Houses considered for the programme can't be more than the total number of houses in the settlement."))
+	def validate_location_hierarchy(self):
+		"""1.1 to 1.4: the zone, circle and ward must belong to the corporation, zone and circle chosen above them."""
+		levels = (
+			("s1_zone", "Municipal Zone", "municipal_corporation", "s1_municipal_corporation", _("Zone")),
+			("s1_circle", "Municipal Circle", "zone", "s1_zone", _("Circle")),
+			("s1_ward", "Municipal Ward", "circle", "s1_circle", _("Ward")),
+		)
+		for field, doctype, parent_field, parent, label in levels:
+			if self.get(field) and self.get(parent):
+				if frappe.db.get_value(doctype, self.get(field), parent_field) != self.get(parent):
+					frappe.throw(_("{0} {1} does not belong to {2}.").format(label, frappe.bold(self.get(field)), frappe.bold(self.get(parent))))
 
 	def fill_partner(self):
 		"""The partner organisation of the signed-in worker, when none was chosen (and its name, for lists and exports)."""

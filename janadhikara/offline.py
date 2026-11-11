@@ -18,7 +18,7 @@ APP_MODULES = ("Masters", "App Config", "Engine", "Baseline")
 # Held back from the device whatever the permissions say.
 # Doctypes outside the app's own modules that still work offline (the Worklist is made of ToDos).
 EXTRA_DOCTYPES = ("ToDo",)
-EXCLUDED = {"DocType", "Role", "Entitlement", "Individual Document", "Health Condition", "Education Record", "Push Subscription"}
+EXCLUDED = {"DocType", "Role", "Push Subscription"}
 
 STORABLE = {
 	"Data", "Select", "Link", "Dynamic Link", "Int", "Float", "Currency", "Percent", "Check", "Date", "Datetime",
@@ -212,9 +212,9 @@ def _app_meta_doctypes():
 # ---- Uploads from the phone (always started by the person, from Sync Data) --------------------------------------
 
 LOG = "Offline Sync Log"
-OWN_RECORD_DOCTYPES = ("Settlement", "Household Profile", "Individual Profile", "ToDo")
+OWN_RECORD_DOCTYPES = ("Settlement", "ToDo")
 FILE_FIELDTYPES = {"Attach", "Attach Image", "Signature", "Image"}
-SKIP_TABLES = {"Individual Document"}  # attachments: never put on a device
+SKIP_TABLES = set()  # child tables never put on a device
 IGNORED_KEYS = {"name", "owner", "creation", "modified", "modified_by", "docstatus", "idx", "parent", "parentfield", "parenttype", "doctype", "__islocal", "__unsaved"}
 
 

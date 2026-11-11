@@ -16,7 +16,6 @@
         {{ pageTitle }}
       </h1>
       <AwesomeBar />
-      <LanguageSwitcher />
       <NetworkPill compact />
       <Button
         variant="ghost"
@@ -60,7 +59,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { Button, FeatherIcon } from 'frappe-ui'
 import AwesomeBar from '@/components/AwesomeBar.vue'
 import NetworkPill from '@/components/NetworkPill.vue'
-import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 import { currentTheme } from '@/data/theme'
 import { t } from '@/utils/translate'
 import MobileNav from '@/components/MobileNav.vue'
