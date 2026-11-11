@@ -21,7 +21,7 @@ export const brandingResource = useCall(
 // get_app_branding already falls app_logo_dark back to app_logo server-side,
 // so this only needs to choose between the two, not reimplement that
 // fallback too.
-// Janadhikara's own icon, used whenever no logo has been uploaded (and a
+// The app's own plain HD icon, used whenever no logo has been uploaded (and a
 // partner without a logo of its own falls back to App Setting's, then to this).
 export const DEFAULT_LOGO = defaultLogo
 
