@@ -3,6 +3,7 @@ import { call } from 'frappe-ui'
 import { appLanguage, OFFERED_LANGUAGES } from '@/data/language'
 import { session } from '@/data/session'
 import { online } from '@/data/connection'
+import { doctypePrefix } from '@/data/doctypePrefix'
 
 // The app's translations live in Frappe's Translation doctype (contexts starting "janadhikara:"), where they can
 // be edited in Desk. They are fetched for the chosen language and kept on this device, so they work offline.
@@ -110,15 +111,13 @@ async function prefetchLanguages() {
     prefetching = false
   }
 }
-watch([online, () => session.user], prefetchLanguages, { immediate: true })
+// Started once every module has loaded (`session` is part of a circular import, see data/settingsEntries.js).
+queueMicrotask(() => watch([online, () => session.user], prefetchLanguages, { immediate: true }))
 
 // Interface text: t('Save') is the chosen language's version, or the English text when there is none.
 // A city's own doctypes start with its short code ("HYD Settlement Profile", so that two cities can both have a
 // Settlement Profile). The code is for the system: users always see the name without it.
-const hiddenPrefix = shallowRef(null)
-export const setDoctypePrefix = (prefix) => {
-  hiddenPrefix.value = prefix || null
-}
+const hiddenPrefix = doctypePrefix
 export const withoutPrefix = (text) =>
   hiddenPrefix.value && typeof text === 'string' && text.startsWith(`${hiddenPrefix.value} `) ? text.slice(hiddenPrefix.value.length + 1) : text
 

@@ -51,6 +51,16 @@ def hidden_doctypes():
 	return set((current_pack() or {}).get("hide", []))
 
 
+def dashboard_spec():
+	"""This city's own dashboard (pack "dashboard": filters, numbers and charts over its settlement profiles), or None
+	for a city whose dashboard is the household and individual one."""
+	filename = (current_pack() or {}).get("dashboard")
+	if not filename:
+		return None
+	with open(os.path.join(PACK_DIR, filename)) as f:
+		return json.load(f)
+
+
 def city_prefix():
 	"""The short code that starts the names of this site's city doctypes (HYD), or None."""
 	return (current_pack() or {}).get("prefix")

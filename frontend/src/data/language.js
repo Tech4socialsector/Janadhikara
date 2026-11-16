@@ -57,10 +57,13 @@ export const languages = computed(() => {
   const list = (languagesResource.data || cachedLanguages() || []).filter((l) => OFFERED_LANGUAGES.includes(l.value))
   return list.length ? list : OWN_NAMES
 })
-watch(
-  () => session.user,
-  (user) => user && !languagesResource.data && languagesResource.fetch(),
-  { immediate: true },
+// Started once every module has loaded (`session` is part of a circular import, see settingsEntries.js).
+queueMicrotask(() =>
+  watch(
+    () => session.user,
+    (user) => user && !languagesResource.data && languagesResource.fetch(),
+    { immediate: true },
+  ),
 )
 
 const chosen = ref(read(CHOICE_KEY))

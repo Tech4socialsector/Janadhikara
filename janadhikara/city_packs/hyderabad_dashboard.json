@@ -1,0 +1,257 @@
+{
+ "doctype": "HYD Settlement Profile",
+ "date_field": "record_date",
+ "default_columns": [
+  "settlement_name",
+  "municipal_ward",
+  "cluster",
+  "validation_status"
+ ],
+ "filters": [
+  {
+   "key": "municipal_corporation",
+   "label": "Municipal corporation",
+   "source": {
+    "doctype": "HYD Municipal Corporation",
+    "label": "corporation_name"
+   }
+  },
+  {
+   "key": "municipal_zone",
+   "label": "Zone",
+   "source": {
+    "doctype": "HYD Municipal Zone",
+    "label": "zone_name"
+   }
+  },
+  {
+   "key": "partner_organization",
+   "label": "Partner organization",
+   "source": {
+    "doctype": "Partner Details",
+    "label": "organization_name"
+   }
+  },
+  {
+   "key": "validation_status",
+   "label": "Status",
+   "source": "status"
+  }
+ ],
+ "cards": [
+  {
+   "key": "profiles",
+   "title": "Settlement profiles",
+   "op": "count"
+  },
+  {
+   "key": "recommended",
+   "title": "Recommended for the program",
+   "op": "count",
+   "where": {
+    "q10_1_after_assessing_the_settlement_do_you": "Yes"
+   }
+  },
+  {
+   "key": "households",
+   "title": "Households",
+   "op": "sum",
+   "fields": [
+    "q2_1_total_number_of_households_families"
+   ]
+  },
+  {
+   "key": "population",
+   "title": "Population",
+   "op": "sum",
+   "fields": [
+    "q2_2_total_population_male",
+    "q2_3_total_population_female",
+    "q2_4_total_population_others"
+   ]
+  },
+  {
+   "key": "children",
+   "title": "Children (0-18 years)",
+   "op": "sum",
+   "fields": [
+    "q2_5_number_of_children_aged_0_3_years",
+    "q2_6_number_of_children_aged_3_6_years",
+    "q2_7_number_of_children_aged_6_18_years"
+   ]
+  },
+  {
+   "key": "disability",
+   "title": "Persons with disability",
+   "op": "sum",
+   "fields": [
+    "q2_12_number_of_persons_with_disabilities"
+   ]
+  },
+  {
+   "key": "eviction",
+   "title": "Settlements at risk of eviction",
+   "op": "count",
+   "where": {
+    "q3_10_is_there_any_risk_of_eviction": "Yes"
+   }
+  },
+  {
+   "key": "validated",
+   "title": "Profiles validated",
+   "op": "percent",
+   "where": {
+    "validation_status": "Validated"
+   },
+   "suffix": "%"
+  }
+ ],
+ "charts": [
+  {
+   "key": "monthly",
+   "title": "Recorded over time",
+   "subtitle": "Settlement profiles added each month",
+   "kind": "line",
+   "op": "monthly",
+   "series": "Settlement profiles",
+   "wide": true
+  },
+  {
+   "key": "corporation",
+   "title": "By municipal corporation",
+   "kind": "donut",
+   "op": "counts",
+   "field": "municipal_corporation"
+  },
+  {
+   "key": "zone",
+   "title": "By zone",
+   "subtitle": "Top 12",
+   "kind": "bar",
+   "horizontal": true,
+   "op": "counts",
+   "field": "municipal_zone",
+   "labels": {
+    "doctype": "HYD Municipal Zone",
+    "field": "zone_name"
+   },
+   "limit": 12
+  },
+  {
+   "key": "notified",
+   "title": "Notified status",
+   "kind": "donut",
+   "op": "counts",
+   "field": "q1_7_is_the_settlement_officially_notified"
+  },
+  {
+   "key": "category",
+   "title": "Category of settlement",
+   "kind": "bar",
+   "horizontal": true,
+   "op": "counts",
+   "field": "q1_9_category_of_settlement"
+  },
+  {
+   "key": "land",
+   "title": "Government or private land",
+   "kind": "donut",
+   "op": "counts",
+   "field": "q1_8_is_the_settlement_located_on_governmen"
+  },
+  {
+   "key": "housing",
+   "title": "Houses by type",
+   "subtitle": "Number of houses, all profiles",
+   "kind": "bar",
+   "horizontal": true,
+   "op": "sums",
+   "items": [
+    [
+     "Pucca",
+     "q3_1_number_of_pucca_houses"
+    ],
+    [
+     "Semi-pucca",
+     "q3_3_number_of_semi_pucca_houses"
+    ],
+    [
+     "Kutcha",
+     "q3_5_number_of_kutcha_houses"
+    ],
+    [
+     "Temporary / tin sheet / thatched",
+     "q3_7_number_of_temporary_tin_sheet_thatched"
+    ]
+   ]
+  },
+  {
+   "key": "services",
+   "title": "Services available",
+   "subtitle": "Share of profiles answering Yes",
+   "kind": "bar",
+   "horizontal": true,
+   "suffix": "%",
+   "op": "yes_share",
+   "items": [
+    [
+     "Government creche",
+     "q4_1_is_there_a_government_run_creche_for"
+    ],
+    [
+     "Anganwadi centre",
+     "q4_3_is_the_anganwadi_centre_available_in_t"
+    ],
+    [
+     "Primary school",
+     "q4_5_is_a_primary_school_available_in_the"
+    ],
+    [
+     "Secondary school",
+     "q4_7_is_a_secondary_school_available_in_the"
+    ],
+    [
+     "Basti Dawakhana",
+     "q4_10_is_a_basti_dawakhana_available"
+    ],
+    [
+     "Public toilets",
+     "q6_6_are_there_public_toilets_in_the_settle"
+    ],
+    [
+     "Waste collected",
+     "q6_11_is_waste_collected_from_the_settlement"
+    ],
+    [
+     "Streets cleaned regularly",
+     "q6_15_are_streets_and_lanes_cleaned_regularl"
+    ],
+    [
+     "CCTV in public places",
+     "q6_21_are_cctv_cameras_installed_in_public_p"
+    ]
+   ]
+  },
+  {
+   "key": "flood",
+   "title": "Flood risk",
+   "kind": "donut",
+   "op": "counts",
+   "field": "q8_1_is_the_settlement_flood_prone",
+   "order": [
+    "Very High",
+    "High",
+    "Medium",
+    "Low"
+   ]
+  },
+  {
+   "key": "status",
+   "title": "Profile status",
+   "kind": "donut",
+   "op": "counts",
+   "field": "validation_status",
+   "order": "status"
+  }
+ ]
+}

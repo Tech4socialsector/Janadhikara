@@ -151,8 +151,8 @@ const quickLinks = computed(() => [
   { key: 'home', label: t('Home'), lucide: 'home', go: goto({ name: 'Home' }) },
   { key: 'dashboard', label: t('Dashboard'), lucide: 'layout-dashboard', go: goto({ name: 'Dashboard' }) },
   { key: 'worklist', label: t('Worklist'), lucide: 'check-square', go: goto({ name: 'Worklist' }) },
-  { key: 'help', label: t('Help'), lucide: 'help-circle', go: goto({ name: 'Help' }) },
   ...(hasPage('sync-data') ? [{ key: 'sync', label: t('Sync Data'), icon: SyncCloudIcon, badge: pendingCount.value > 0 ? (pendingCount.value > 9 ? '9+' : String(pendingCount.value)) : '', go: goto({ name: 'SyncData' }) }] : []),
+  { key: 'help', label: t('Help'), lucide: 'help-circle', go: goto({ name: 'Help' }) },
 ])
 function openItem(item) {
   navigate(item.type === 'Page' ? `/${item.route}` : { name: 'DoctypeList', params: { doctypeRoute: item.route } })

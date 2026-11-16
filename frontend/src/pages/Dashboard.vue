@@ -17,8 +17,27 @@
       {{ t('Offline copy - the numbers are as of your last download:') }} {{ data.offline_as_of }}
     </p>
 
+    <!-- A city with its own dashboard (Hyderabad: settlement profiles) has its own filters -->
+    <section v-if="isProfile" class="dash-filters mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+      <FormControl v-for="f in options?.filters || []" :key="f.key" type="select" class="w-full" :label="t(f.label)" :options="withAll(f.options)" v-model="filters[f.key]" />
+      <div>
+        <label class="mb-1.5 block text-xs text-ink-gray-5">{{ t('From') }}</label>
+        <DatePicker class="w-full" format="DD MMM YYYY" v-model="filters.from_date" />
+      </div>
+      <div>
+        <label class="mb-1.5 block text-xs text-ink-gray-5">{{ t('To') }}</label>
+        <DatePicker class="w-full" format="DD MMM YYYY" v-model="filters.to_date" />
+      </div>
+      <div v-if="activeFilters" class="sm:col-span-2 lg:col-span-4 xl:col-span-5">
+        <Button variant="ghost" size="sm" @click="clearFilters">
+          <template #prefix><FeatherIcon name="x" class="h-3.5 w-3.5" /></template>
+          Clear {{ activeFilters }} filter{{ activeFilters > 1 ? 's' : '' }}
+        </Button>
+      </div>
+    </section>
+
     <!-- Filters -->
-    <section class="dash-filters mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+    <section v-else class="dash-filters mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
       <FormControl type="select" class="w-full" label="Settlement" :options="withAll(options?.settlements)" v-model="filters.settlement" />
       <FormControl type="select" class="w-full" :label="t('Partner organization')" :options="withAll(options?.partners)" v-model="filters.partner_organization" />
       <FormControl type="select" class="w-full" :label="t('Gender')" :options="withAll(options?.genders)" v-model="filters.gender" />
@@ -60,7 +79,31 @@
 
     <!-- Charts: click a bar, slice or point to open the records behind it -->
     <p class="mb-2 text-xs text-gray-500 dark:text-gray-400">{{ t('Click any bar, slice or point to see the records.') }}</p>
-    <section class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <section v-if="isProfile" class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <ChartCard
+        v-for="c in data?.charts || []"
+        :key="c.key"
+        :title="t(c.title)"
+        :subtitle="c.subtitle ? t(c.subtitle) : undefined"
+        :empty="!chartHasData(c)"
+        :table="c.table"
+        :class="c.wide ? 'lg:col-span-2' : ''"
+      >
+        <DrillChart
+          v-if="chartHasData(c)"
+          :kind="c.kind"
+          :rows="c.rows"
+          :months="c.months"
+          :series="c.series"
+          :horizontal="c.horizontal"
+          :suffix="c.suffix"
+          :max="c.suffix ? 100 : undefined"
+          :series-name="c.table?.headers?.[1]"
+          @select="onProfileChart(c, $event)"
+        />
+      </ChartCard>
+    </section>
+    <section v-else class="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <ChartCard :title="t('Recorded over time')" :subtitle="t('Households and individuals added each month')" :empty="!data?.monthly?.length" :table="monthlyTable" class="lg:col-span-2">
         <DrillChart v-if="data?.monthly?.length" kind="line" :months="data.monthly.map((m) => m.month)" :series="monthlySeries" @select="onMonthly" />
       </ChartCard>
@@ -102,7 +145,7 @@
       :title="drillTitle"
       :doctype="drillDoctype"
       :filters="drillFilters"
-      :default-columns="DEFAULT_COLUMNS[drillDoctype]"
+      :default-columns="defaultColumns"
       :can-export="!!options?.can_export?.[drillDoctype]"
       @open-record="openRecord"
       @open-list="openList"
@@ -118,6 +161,7 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import DrillChart from '@/components/DrillChart.vue'
 import { findModuleByDoctype } from '@/data/modules'
+import { brandingResource } from '@/data/branding'
 import { session } from '@/data/session'
 import { setPageTitle } from '@/data/pageTitle'
 import DrillDialog from '@/components/DrillDialog.vue'
@@ -175,11 +219,20 @@ const emptyFilters = () => ({
 const filters = reactive(emptyFilters())
 const activeFilters = computed(() => Object.values(filters).filter(Boolean).length)
 function clearFilters() {
-  Object.assign(filters, emptyFilters())
+  for (const key of Object.keys(filters)) filters[key] = '' // including a city's own filters
 }
 
 const optionsResource = useCall({ url: '/api/v2/method/janadhikara.dashboard.get_filter_options', method: 'GET', cacheKey: 'janadhikara-dashboard-filters' })
 const options = computed(() => optionsResource.data)
+// A city's own filters start on "All" like the rest.
+watch(
+  () => optionsResource.data?.filters,
+  (list) => (list || []).forEach((f) => { if (!(f.key in filters)) filters[f.key] = '' }),
+  { immediate: true },
+)
+// A city with its own dashboard (the spec comes with the branding, so this is known before anything loads, offline too).
+const isProfile = computed(() => !!brandingResource.data?.city?.dashboard || optionsResource.data?.mode === 'profile')
+const chartHasData = (c) => (c.kind === 'line' ? !!c.months?.length : !!c.rows?.length)
 // A select needs a way back to "everything".
 const withAll = (list) => [
   { label: 'All', value: '' },
@@ -198,7 +251,12 @@ function load() {
 }
 onMounted(load)
 let timer
+let lastParams = '[]' // no filter set
 watch(filters, () => {
+  // only when a filter really changed (a filter list loading in adds empty keys, which is no change)
+  const now = JSON.stringify(Object.entries(filters).filter(([, v]) => v))
+  if (now === lastParams) return
+  lastParams = now
   clearTimeout(timer)
   timer = setTimeout(load, 250)
 })
@@ -218,7 +276,13 @@ function exportSummary() {
   const applied = Object.entries(filters).filter(([, v]) => v).map(([k, v]) => `${k.replace(/_/g, ' ')}: ${v}`).join('; ')
   rows.push(['Filters', applied || 'None', ''])
   for (const c of d.cards) rows.push(['Numbers', c.title, `${c.value}${c.suffix || ''}`])
-  const groups = [
+  if (d.kind === 'profile') {
+    for (const c of d.charts) {
+      if (c.kind === 'line') c.months.forEach((m, i) => rows.push([c.title, m, c.series[0].values[i]]))
+      else for (const r of c.rows) rows.push([c.title, r.label, c.suffix ? r.percent : r.count])
+    }
+  }
+  const groups = d.kind === 'profile' ? [] : [
     ['Household status', d.household_status], ['Household profile status', d.household_documentation], ['Gender', d.gender],
     ['Age groups', d.age_groups], ['Highest education', d.education], ['Individual profile status', d.documentation], ['Main occupation', d.occupation],
   ]
@@ -246,6 +310,8 @@ const DEFAULT_COLUMNS = {
   [HOUSEHOLD]: ['respondent_name', 'settlement', 'household_status', 'validation_status'],
   [INDIVIDUAL]: ['member_name', 'gender', 'age', 'household', 'validation_status'],
 }
+// The columns the popup lists: a city's own doctype names its columns in the dashboard spec.
+const defaultColumns = computed(() => (data.value?.default_columns && drillDoctype.value === data.value.doctype ? data.value.default_columns : DEFAULT_COLUMNS[drillDoctype.value]))
 const show = ref(false)
 const drillOpen = ref(false)
 const drillKey = ref(0)
@@ -269,6 +335,11 @@ function openRecord(name) {
 function openList(filters) {
   const route = findModuleByDoctype(drillDoctype.value)?.route
   if (route) router.push({ name: 'DoctypeList', params: { doctypeRoute: route }, query: { filters: JSON.stringify(filters || {}) } })
+}
+// A click on one of a city dashboard's charts: the profiles behind that bar, slice or point.
+function onProfileChart(chart, params) {
+  const row = chart.rows?.[params.dataIndex]
+  if (row) drill(data.value.doctype, row.filters, `${row.label || row.month} - ${chart.title}`)
 }
 const unit = (doctype) => (doctype === HOUSEHOLD ? 'Households' : 'Individuals')
 const onRow = (doctype, rows, params) => {

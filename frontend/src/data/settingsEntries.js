@@ -14,10 +14,14 @@ export const settingsEntriesResource = useCall({
   cacheKey: 'janadhikara-settings-entries',
   immediate: false, // only once signed in (see below): a signed-out visitor gets a 403
 })
-watch(
-  () => session.user,
-  (user) => user && !settingsEntriesResource.data && settingsEntriesResource.fetch(),
-  { immediate: true },
+// Started once every module has loaded: `session` lives in a module that is itself part of a circular import,
+// so reading it while this one is still loading can fail depending on the order the files are loaded in.
+queueMicrotask(() =>
+  watch(
+    () => session.user,
+    (user) => user && !settingsEntriesResource.data && settingsEntriesResource.fetch(),
+    { immediate: true },
+  ),
 )
 
 export function findSettingsEntryByRoute(routeSlug) {

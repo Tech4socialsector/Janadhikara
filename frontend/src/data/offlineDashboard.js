@@ -3,7 +3,8 @@
 // charts and filters, over the same records the person may see - as of the last download.
 import { getDocs, getTable, storeInfo } from '@/data/offlineStore'
 import { localDocs, matches, countBy } from '@/data/offlineQuery'
-import { settlementDoctype } from '@/data/branding'
+import { settlementDoctype, brandingResource } from '@/data/branding'
+import { computeProfileDashboard, profileFilterOptions } from '@/data/profileDashboard'
 
 const HOUSEHOLD = 'Household Profile'
 const INDIVIDUAL = 'Individual Profile'
@@ -45,7 +46,34 @@ const series = (counts, order, filters, fieldname) => {
     .map((k) => ({ label: k, count: counts[k] || 0, ...(fieldname ? { filters: { ...filters, [fieldname]: k } } : {}) }))
 }
 
+// A city with its own dashboard (the spec comes with the branding, which is kept offline too).
+const citySpec = () => brandingResource.data?.city?.dashboard || null
+
+async function cityDashboard(spec, p) {
+  const labels = {}
+  for (const c of spec.charts) {
+    if (!c.labels) continue
+    labels[c.labels.doctype] = Object.fromEntries(((await getDocs(c.labels.doctype)) || []).map((d) => [d.name, d[c.labels.field]]))
+  }
+  return computeProfileDashboard(spec, (await localDocs(spec.doctype)) || [], p, { labels, asOf: asOf() })
+}
+
+async function cityFilterOptions(spec) {
+  const options = {}
+  for (const f of spec.filters) {
+    if (f.source === 'status') continue
+    const rows = (await getDocs(f.source.doctype)) || []
+    options[f.source.doctype] = rows
+      .map((d) => ({ value: d.name, label: d[f.source.label] || d.name }))
+      .sort((a, b) => a.label.localeCompare(b.label))
+  }
+  const statuses = ((await getTable('Validation Status'))?.docs || []).filter((d) => d.enabled === 1 || d.enabled === true).map((d) => d.name)
+  return profileFilterOptions(spec, { options, statuses, asOf: asOf() })
+}
+
 export async function offlineDashboard(p) {
+  const spec = citySpec()
+  if (spec) return cityDashboard(spec, p)
   const households = (await localDocs(HOUSEHOLD)) || []
   const individuals = (await localDocs(INDIVIDUAL)) || []
   const hhDate = dateField(households)
@@ -130,6 +158,8 @@ async function selectOptions(doctype, fieldname, fallbackDocs) {
 }
 
 export async function offlineFilterOptions() {
+  const spec = citySpec()
+  if (spec) return cityFilterOptions(spec)
   const settlements = (await getDocs(settlementDoctype())) || []
   const partners = (await getDocs('Partner Details')) || []
   const statuses = ((await getTable('Validation Status'))?.docs || []).filter((d) => d.enabled === 1 || d.enabled === true).map((d) => d.name)

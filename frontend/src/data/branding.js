@@ -5,7 +5,7 @@ import { currentTheme } from '@/data/theme'
 import defaultLogo from '@/assets/default-logo.png'
 import { online } from '@/data/connection'
 import { appIconDataUrl } from '@/data/offlineStore'
-import { setDoctypePrefix } from '@/utils/translate'
+import { doctypePrefix } from '@/data/doctypePrefix'
 
 // The app's configurable name/logo, from App Setting (allow_guest=True
 // so the Login page can also show it before authentication).
@@ -74,7 +74,9 @@ function shade(hex, percent) {
   return `rgb(${r}, ${g}, ${b})`
 }
 
-watchEffect(() => setDoctypePrefix(brandingResource.data?.city?.doctype_prefix))
+watchEffect(() => {
+  doctypePrefix.value = brandingResource.data?.city?.doctype_prefix || null
+})
 
 watchEffect(() => {
   const color = accentColor.value

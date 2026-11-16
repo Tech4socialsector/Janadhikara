@@ -11,7 +11,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint
 
-from janadhikara.city_pack import city_doctype
+from janadhikara.city_pack import city_doctype, dashboard_spec
 from janadhikara.security import user_scope
 
 HOUSEHOLD = "Household Profile"
@@ -29,6 +29,9 @@ DOCUMENTS = [
 @frappe.whitelist()
 def get_filter_options():
 	"""What the dashboard's filters can offer this user."""
+	spec = dashboard_spec()
+	if spec:
+		return _profile_options(spec)
 	settlements = frappe.get_list(city_doctype("Settlement"), fields=["name", "settlement_name"], limit_page_length=0, order_by="settlement_name")
 	# Partner Details is an admin-only list (it holds the workers' contacts), so the names come from the user's own scope:
 	# every partner for the programme team, just their own partner for anyone else.
@@ -116,8 +119,15 @@ def _monthly(doctype, filters):
 @frappe.whitelist()
 def get_dashboard(
 	settlement=None, partner_organization=None, from_date=None, to_date=None, gender=None,
-	age_group=None, household_status=None, validation_status=None,
+	age_group=None, household_status=None, validation_status=None, **extra_filters,
 ):
+	spec = dashboard_spec()
+	if spec:  # a city with its own dashboard (see city_packs/): its settlement profiles, not households
+		return _profile_dashboard(
+			spec,
+			{**extra_filters, "partner_organization": partner_organization, "validation_status": validation_status,
+			 "from_date": from_date, "to_date": to_date},
+		)
 	hh = {}
 	ind = {}
 	if settlement:
@@ -202,6 +212,101 @@ def get_dashboard(
 			}
 			for m in months
 		],
+	}
+
+
+# ---- A city's own dashboard ------------------------------------------------------------------
+# Described by the pack's dashboard spec (city_packs/<city>_dashboard.json) - filters, numbers and charts over one
+# doctype - and worked out the same way on the phone (frontend/src/data/profileDashboard.js), so the figures match.
+def _partner_options():
+	kind, own_partner = user_scope()
+	if kind == "all":
+		partners = frappe.get_all("Partner Details", fields=["name", "organization_name"], limit_page_length=0, order_by="organization_name")
+	else:
+		partners = [frappe._dict(name=own_partner, organization_name=frappe.db.get_value("Partner Details", own_partner, "organization_name"))] if own_partner else []
+	return [{"value": p.name, "label": p.organization_name or p.name} for p in partners]
+
+
+def _profile_options(spec):
+	filters = []
+	for f in spec["filters"]:
+		source = f["source"]
+		if source == "status":
+			options = [{"value": s, "label": s} for s in _status_options()]
+		elif source["doctype"] == "Partner Details":
+			options = _partner_options()
+		else:
+			rows = frappe.get_list(source["doctype"], fields=["name", source["label"]], limit_page_length=0, order_by=source["label"])
+			options = [{"value": r.name, "label": r.get(source["label"]) or r.name} for r in rows]
+		filters.append({"key": f["key"], "label": f["label"], "options": options})
+	doctype = spec["doctype"]
+	return {"mode": "profile", "filters": filters, "can_export": {doctype: bool(frappe.has_permission(doctype, "export"))}}
+
+
+def _profile_dashboard(spec, params):
+	doctype = spec["doctype"]
+	base = {f["key"]: params[f["key"]] for f in spec["filters"] if params.get(f["key"])}
+	_date_filter(doctype, base, params.get("from_date"), params.get("to_date"))
+	everything = _total(doctype, base)
+
+	def card(c):
+		where = {**base, **c.get("where", {})}
+		if c["op"] == "sum":
+			sums = frappe.get_list(doctype, filters=base, fields=[{"SUM": f, "as": f"s{i}"} for i, f in enumerate(c["fields"])])[0]
+			value = sum(cint(sums[f"s{i}"]) for i in range(len(c["fields"])))
+		elif c["op"] == "percent":
+			part = _total(doctype, where)
+			value = round(100 * part / everything) if everything else 0
+		else:
+			value = _total(doctype, where)
+		return {"key": c["key"], "title": c["title"], "value": value, "suffix": c.get("suffix"), "doctype": doctype, "filters": where}
+
+	def chart(c):
+		out = {"key": c["key"], "title": c["title"], "subtitle": c.get("subtitle"), "kind": c["kind"], "horizontal": bool(c.get("horizontal")),
+		       "suffix": c.get("suffix", ""), "wide": bool(c.get("wide"))}
+		op = c["op"]
+		if op == "monthly":
+			per = _monthly(doctype, base)
+			months = sorted(per)
+			out.update(
+				months=months, series=[{"name": c["series"], "values": [per[m] for m in months]}],
+				rows=[{"month": m, "filters": _month_filters(doctype, base, m)} for m in months],
+				table={"headers": ["Month", c["series"]], "rows": [[m, per[m]] for m in months]},
+			)
+			return out
+		if op == "counts":
+			counts = _counts(doctype, c["field"], base)
+			order = STATUS_ORDER if c.get("order") == "status" else c.get("order")
+			keys = (order or sorted(counts, key=lambda k: (-counts[k], str(k))))
+			keys = [k for k in keys if counts.get(k) or (order and k in counts)] if order else keys
+			shown = {}
+			if c.get("labels"):
+				shown = {r.name: r.get(c["labels"]["field"]) for r in frappe.get_all(c["labels"]["doctype"], fields=["name", c["labels"]["field"]], limit_page_length=0)}
+			rows = [{"label": shown.get(k) or k, "count": counts[k], "filters": {**base, c["field"]: k}} for k in keys][: c.get("limit") or None]
+			unit = "Profiles"
+		elif op == "sums":
+			rows = []
+			for label, field in c["items"]:
+				total = cint(frappe.get_list(doctype, filters=base, fields=[{"SUM": field, "as": "s"}])[0]["s"])
+				rows.append({"label": label, "count": total, "filters": {**base, field: [">", 0]}})
+			unit = "Houses"
+		else:  # yes_share: of the profiles that answered, how many said Yes
+			rows = []
+			for label, field in c["items"]:
+				answers = _counts(doctype, field, base)
+				asked, have = sum(answers.values()), answers.get("Yes", 0)
+				rows.append({"label": label, "have": have, "asked": asked, "percent": round(100 * have / asked) if asked else 0,
+				             "count": have, "filters": {**base, field: "Yes"}})
+		if op == "yes_share":
+			out["table"] = {"headers": ["Service", "Yes (%)", "Yes", "Answered"], "rows": [[r["label"], r["percent"], r["have"], r["asked"]] for r in rows]}
+		else:
+			out["table"] = {"headers": ["Category", unit], "rows": [[r["label"], r["count"]] for r in rows]}
+		out["rows"] = rows
+		return out
+
+	return {
+		"kind": "profile", "doctype": doctype, "default_columns": spec["default_columns"],
+		"cards": [card(c) for c in spec["cards"]], "charts": [chart(c) for c in spec["charts"]],
 	}
 
 
