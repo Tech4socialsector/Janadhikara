@@ -13,7 +13,7 @@ import frappe
 from frappe.utils import now_datetime
 
 MAX_ROWS = 5000
-APP_MODULES = ("Masters", "App Config", "Engine", "Baseline")
+from janadhikara.app_modules import APP_MODULES, active_modules
 
 # Held back from the device whatever the permissions say.
 # Doctypes outside the app's own modules that still work offline (the Worklist is made of ToDos).
@@ -193,12 +193,15 @@ def _app_meta_doctypes():
 	"""The app's own doctypes whose form layout the signed-in user may need: those they can
 	read, plus the child tables of those (their field definitions, not any data)."""
 	names = frappe.get_all(
-		"DocType", filters={"module": ["in", APP_MODULES], "custom": 0, "issingle": 0}, pluck="name"
+		"DocType", filters={"module": ["in", active_modules()], "custom": 0, "issingle": 0}, pluck="name"
 	)
+	from janadhikara.city_pack import hidden_doctypes
+
+	unused = hidden_doctypes()  # what this site's city does not use is not kept offline
 	readable = [
 		d
 		for d in names
-		if d != "Push Subscription" and not frappe.get_meta(d).istable and frappe.has_permission(d, "read")
+		if d != "Push Subscription" and d not in unused and not frappe.get_meta(d).istable and frappe.has_permission(d, "read")
 	]
 	children = set()
 	for d in readable:
@@ -212,7 +215,7 @@ def _app_meta_doctypes():
 # ---- Uploads from the phone (always started by the person, from Sync Data) --------------------------------------
 
 LOG = "Offline Sync Log"
-OWN_RECORD_DOCTYPES = ("Settlement", "Household Profile", "Individual Profile", "ToDo")
+OWN_RECORD_DOCTYPES = ("Settlement", "HYD Settlement Profile", "Household Profile", "Individual Profile", "ToDo")
 FILE_FIELDTYPES = {"Attach", "Attach Image", "Signature", "Image"}
 SKIP_TABLES = {"Individual Document"}  # attachments: never put on a device
 IGNORED_KEYS = {"name", "owner", "creation", "modified", "modified_by", "docstatus", "idx", "parent", "parentfield", "parenttype", "doctype", "__islocal", "__unsaved"}

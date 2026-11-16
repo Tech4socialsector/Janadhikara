@@ -4,7 +4,7 @@ import json
 
 import frappe
 
-APP_MODULES = ("Masters", "App Config", "Engine", "Baseline")
+from janadhikara.app_modules import APP_MODULES
 LOG = "Customization Log"
 SKIP_PROPERTIES = {"modified", "modified_by", "creation", "owner", "idx", "docstatus", "name", "parent", "parentfield", "parenttype", "doctype"}
 CUSTOM_FIELD_KEYS = ("label", "fieldtype", "options", "reqd", "hidden", "read_only", "default", "description", "insert_after", "depends_on", "mandatory_depends_on", "in_list_view", "in_standard_filter", "fetch_from")

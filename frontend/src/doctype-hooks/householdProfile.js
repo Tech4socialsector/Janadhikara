@@ -1,4 +1,5 @@
 import { HOUSEHOLD_NOTICE, todayString } from '@/utils/dpdpNotice'
+import { settlementDoctype } from '@/data/branding'
 
 // Household Profile: capture what the logged-in worker already implies.
 //
@@ -62,7 +63,7 @@ export function onFieldChange(fieldname, values, ctx) {
   }
   // The partner follows the chosen settlement.
   if (fieldname === 'settlement' && values.settlement) {
-    ctx.call('frappe.client.get_value', { doctype: 'Settlement', filters: { name: values.settlement }, fieldname: 'partner_organization' })
+    ctx.call('frappe.client.get_value', { doctype: settlementDoctype(), filters: { name: values.settlement }, fieldname: 'partner_organization' })
       .then((res) => {
         const partner = (res?.message ?? res)?.partner_organization
         if (partner) values.partner_organization = partner

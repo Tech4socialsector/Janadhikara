@@ -15,6 +15,7 @@ MASTER_ICON = "database"
 # Sidebar icon per doctype (Lucide names) and per module.
 ITEM_ICONS = {
 	"Settlement": "map-pin",
+	"HYD Settlement Profile": "map-pin",
 	"Household Profile": "house",
 	"Individual Profile": "users",
 	"Relationship Type": "heart-handshake",
@@ -55,22 +56,40 @@ def ensure_master_sidebar():
 	"""after_migrate: Master Data lists every non-child doctype of the Masters module."""
 	if not frappe.db.exists("DocType", "App Module Setting"):
 		return
+	from janadhikara.city_pack import city_module
+
+	modules = [MASTERS] + ([city_module()] if city_module() else [])  # a city's own masters are listed on its site
 	doctypes = frappe.get_all(
 		"DocType",
-		filters={"module": MASTERS, "istable": 0, "issingle": 0, "custom": 0},
+		filters={"module": ["in", modules], "istable": 0, "issingle": 0, "custom": 0, "name": ["not in", ["HYD Settlement Profile"]]},
 		pluck="name",
 		order_by="name asc",
 	)
 	if not doctypes:
 		return
+	from janadhikara.city_pack import display_name
+
 	setting = _get_or_create_setting(MASTERS, MASTER_LABEL, MASTER_ICON, 4)
 	listed = {row.doctype_name for row in setting.doctypes or []}
 	missing = [d for d in doctypes if d not in listed]
-	if not missing and not setting.is_new():
+
+	def shown(doctype):
+		"""A city doctype is listed and addressed without the city's short code ("HYD Municipal Ward" -> Municipal Ward)."""
+		name = display_name(doctype)
+		return (name, frappe.scrub(name).replace("_", "-")) if name != doctype else (None, None)
+
+	fixed = False
+	for row in setting.doctypes or []:
+		label, route = shown(row.doctype_name or "")
+		if label and (row.label, row.route) != (label, route):
+			row.label, row.route, fixed = label, route, True
+	if not missing and not fixed and not setting.is_new():
 		return
 	for doctype in missing:
+		label, route = shown(doctype)
 		setting.append(
-			"doctypes", {"item_type": "Link", "doctype_name": doctype, "icon": ITEM_ICONS.get(doctype)}
+			"doctypes",
+			{"item_type": "Link", "doctype_name": doctype, "icon": ITEM_ICONS.get(doctype), "label": label, "route": route},
 		)
 	setting.flags.ignore_permissions = True
 	setting.save() if not setting.is_new() else setting.insert()

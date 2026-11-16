@@ -1,0 +1,26 @@
+[
+ {
+  "corporation_name": "Greater Hyderabad Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Corporation",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Greater Hyderabad Municipal Corporation"
+ },
+ {
+  "corporation_name": "Cyberabad Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Corporation",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Cyberabad Municipal Corporation"
+ },
+ {
+  "corporation_name": "Malkajgiri Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Corporation",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Malkajgiri Municipal Corporation"
+ }
+]

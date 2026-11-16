@@ -32,6 +32,11 @@ const routes = [
     component: () => import('@/pages/Worklist.vue'),
   },
   {
+    path: '/help',
+    name: 'Help',
+    component: () => import('@/pages/Help.vue'),
+  },
+  {
     path: '/sync-data',
     name: 'SyncData',
     component: () => import('@/pages/SyncData.vue'),

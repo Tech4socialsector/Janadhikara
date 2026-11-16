@@ -1,0 +1,91 @@
+{
+ "actions": [],
+ "creation": "2026-11-16 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-16 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Hyderabad",
+ "name": "HYD Municipal Corporation",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "states": [],
+ "autoname": "field:corporation_name",
+ "naming_rule": "By fieldname",
+ "field_order": [
+  "corporation_name",
+  "column_break_main",
+  "enabled"
+ ],
+ "fields": [
+  {
+   "fieldname": "corporation_name",
+   "fieldtype": "Data",
+   "label": "Municipal Corporation",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled",
+   "default": "1",
+   "in_list_view": 1
+  }
+ ],
+ "permissions": [
+  {
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "share": 1,
+   "import": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Program Coordinator",
+   "create": 1,
+   "write": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "share": 1,
+   "import": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Program Manager"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Organization Admin"
+  },
+  {
+   "role": "ORW",
+   "read": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "corporation_name",
+ "show_title_field_in_link": 1,
+ "search_fields": "corporation_name",
+ "allow_import": 1
+}

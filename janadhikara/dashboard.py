@@ -11,6 +11,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint
 
+from janadhikara.city_pack import city_doctype
 from janadhikara.security import user_scope
 
 HOUSEHOLD = "Household Profile"
@@ -28,7 +29,7 @@ DOCUMENTS = [
 @frappe.whitelist()
 def get_filter_options():
 	"""What the dashboard's filters can offer this user."""
-	settlements = frappe.get_list("Settlement", fields=["name", "settlement_name"], limit_page_length=0, order_by="settlement_name")
+	settlements = frappe.get_list(city_doctype("Settlement"), fields=["name", "settlement_name"], limit_page_length=0, order_by="settlement_name")
 	# Partner Details is an admin-only list (it holds the workers' contacts), so the names come from the user's own scope:
 	# every partner for the programme team, just their own partner for anyone else.
 	kind, own_partner = user_scope()

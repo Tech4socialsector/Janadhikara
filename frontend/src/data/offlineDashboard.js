@@ -3,6 +3,7 @@
 // charts and filters, over the same records the person may see - as of the last download.
 import { getDocs, getTable, storeInfo } from '@/data/offlineStore'
 import { localDocs, matches, countBy } from '@/data/offlineQuery'
+import { settlementDoctype } from '@/data/branding'
 
 const HOUSEHOLD = 'Household Profile'
 const INDIVIDUAL = 'Individual Profile'
@@ -129,7 +130,7 @@ async function selectOptions(doctype, fieldname, fallbackDocs) {
 }
 
 export async function offlineFilterOptions() {
-  const settlements = (await getDocs('Settlement')) || []
+  const settlements = (await getDocs(settlementDoctype())) || []
   const partners = (await getDocs('Partner Details')) || []
   const statuses = ((await getTable('Validation Status'))?.docs || []).filter((d) => d.enabled === 1 || d.enabled === true).map((d) => d.name)
   const households = (await localDocs(HOUSEHOLD)) || []

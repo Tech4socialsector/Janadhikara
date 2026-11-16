@@ -1,0 +1,17 @@
+{
+ "city": "hyderabad",
+ "description": "Hyderabad Urban Program: its own Settlement Profile stands in for Settlement. Households and individuals (and the masters only they use) are not part of it yet, so they are not shown.",
+ "module": "Hyderabad",
+ "prefix": "HYD",
+ "replaces": {
+  "Settlement": "HYD Settlement Profile"
+ },
+ "hide": [
+  "Household Profile",
+  "Individual Profile",
+  "Relationship Type",
+  "Cooking Fuel",
+  "Welfare Board",
+  "Assam District"
+ ]
+}

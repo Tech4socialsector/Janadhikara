@@ -6,6 +6,8 @@ from frappe.utils import getdate, nowdate
 from frappe.utils.file_manager import get_file_path
 from PIL import Image
 
+from janadhikara.city_pack import city_doctype, city_prefix, hidden_doctypes
+
 
 PRIVILEGED_ROLES = {'Administrator', 'System Manager', 'Program Coordinator'}
 
@@ -29,6 +31,7 @@ def get_app_branding():
         'login_headline': settings.login_headline or None,
         'login_description': settings.login_description or None,
         'accent_color': settings.accent_color or None,
+        'city': {**get_city_config(settings), 'settlement_doctype': city_doctype('Settlement'), 'doctype_prefix': city_prefix()},
     }
 
 
@@ -54,6 +57,23 @@ def get_user_partner_logo():
         {'user': user},
     )
     return rows[0][0] if rows else None
+
+
+# What this site's city looks like when App Setting hasn't been filled in: the original Guwahati programme.
+CITY_DEFAULTS = {
+    'name': 'Guwahati', 'code': 'guwahati', 'state': 'Assam',
+    'map_center': [26.1445, 91.7362], 'map_zoom': 12,
+    'map_bounds': [[25.95, 91.45], [26.35, 92.05]],
+}
+
+
+def get_city_config(settings=None):
+    """The city this site serves (App Setting > City), looked up in the city directory: name, code, state
+    and the map's opening view and limits. Every site runs the same app; only the chosen city differs."""
+    from janadhikara.city_directory import get_city
+
+    settings = settings or frappe.get_single('App Setting')
+    return get_city(settings.city_name) or CITY_DEFAULTS
 
 
 @frappe.whitelist(allow_guest=True)
@@ -433,7 +453,7 @@ def get_household_field_defaults():
     assignments = [
         {'settlement': settlement}
         for settlement in frappe.get_list(
-            'Settlement',
+            city_doctype('Settlement'),
             filters={'partner_organization': employee.parent},
             pluck='name',
             limit_page_length=50,
@@ -587,6 +607,7 @@ def get_app_modules():
 
     user_roles = set(frappe.get_roles())
     names = frappe.get_all('App Module Setting', pluck='name', order_by='sort_order asc')
+    unused = hidden_doctypes()  # what this site's city does not use
 
     modules = []
     for name in names:
@@ -602,7 +623,7 @@ def get_app_modules():
         for item in module_doc.doctypes or []:
             kind = item.item_type or 'Link'
             if kind == 'Link':
-                if not item.doctype_name:
+                if not item.doctype_name or item.doctype_name in unused:
                     continue
                 items.append({
                     'type': 'Link',
@@ -732,13 +753,14 @@ def global_search(txt):
     module_names = frappe.get_all('App Module Setting', pluck='name')
 
     seen_doctypes = set()
+    unused = hidden_doctypes()
     doctype_routes = {}
     for module_name in module_names:
         module_doc = frappe.get_cached_doc('App Module Setting', module_name)
         if not module_visible_to_user(module_doc, user_roles):
             continue
         for item in (module_doc.doctypes or []):
-            if not item.doctype_name or item.doctype_name in seen_doctypes:
+            if not item.doctype_name or item.doctype_name in seen_doctypes or item.doctype_name in unused:
                 continue
             seen_doctypes.add(item.doctype_name)
             doctype_routes[item.doctype_name] = item.route or frappe.scrub(item.doctype_name).replace('_', '-')

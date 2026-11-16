@@ -27,7 +27,7 @@ def add_security_headers(response=None, request=None):
 # partner worker sees nothing.
 
 PROGRAMME_ROLES = {"System Manager", "Program Coordinator", "Program Manager"}
-PARTNER_FIELD = {"Household Profile": "partner_organization", "Settlement": "partner_organization", "Individual Profile": "implementing_org"}
+PARTNER_FIELD = {"Household Profile": "partner_organization", "Settlement": "partner_organization", "HYD Settlement Profile": "partner_organization", "Individual Profile": "implementing_org"}
 
 
 def user_scope(user=None):
@@ -103,6 +103,10 @@ def settlement_conditions(user=None, **kwargs):
 	return _query_conditions("Settlement", user)
 
 
+def settlement_profile_conditions(user=None, **kwargs):
+	return _query_conditions("HYD Settlement Profile", user)
+
+
 def individual_conditions(user=None, **kwargs):
 	return _query_conditions("Individual Profile", user)
 
@@ -113,6 +117,10 @@ def household_has_permission(doc, ptype=None, user=None, **kwargs):
 
 def settlement_has_permission(doc, ptype=None, user=None, **kwargs):
 	return _has_permission(doc, "Settlement", user, ptype)
+
+
+def settlement_profile_has_permission(doc, ptype=None, user=None, **kwargs):
+	return _has_permission(doc, "HYD Settlement Profile", user, ptype)
 
 
 def individual_has_permission(doc, ptype=None, user=None, **kwargs):

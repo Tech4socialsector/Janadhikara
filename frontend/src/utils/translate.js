@@ -113,7 +113,16 @@ async function prefetchLanguages() {
 watch([online, () => session.user], prefetchLanguages, { immediate: true })
 
 // Interface text: t('Save') is the chosen language's version, or the English text when there is none.
-export const t = (text) => store.value.ui[text] || text
+// A city's own doctypes start with its short code ("HYD Settlement Profile", so that two cities can both have a
+// Settlement Profile). The code is for the system: users always see the name without it.
+const hiddenPrefix = shallowRef(null)
+export const setDoctypePrefix = (prefix) => {
+  hiddenPrefix.value = prefix || null
+}
+export const withoutPrefix = (text) =>
+  hiddenPrefix.value && typeof text === 'string' && text.startsWith(`${hiddenPrefix.value} `) ? text.slice(hiddenPrefix.value.length + 1) : text
+
+export const t = (text) => store.value.ui[text] || store.value.ui[withoutPrefix(text)] || withoutPrefix(text)
 
 // The DPDP consent notice: its sentences in the chosen language.
 export const tn = (text) => store.value.dpdp[text] || text

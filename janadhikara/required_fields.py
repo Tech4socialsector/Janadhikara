@@ -67,6 +67,18 @@ REQUIRED = {
  ],
  "Household Cooking Fuel": [
   "fuel"
+ ],
+ "HYD Settlement Profile": [
+  "record_date",
+  "settlement_name",
+  "cluster",
+  "validation_status",
+  "staff_phone_number",
+  "municipal_corporation",
+  "municipal_zone",
+  "municipal_circle",
+  "municipal_ward",
+  "q10_1_after_assessing_the_settlement_do_you"
  ]
 }
 

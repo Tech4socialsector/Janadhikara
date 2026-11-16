@@ -7,6 +7,8 @@ one row in that table. This module serves the questions and checks the answers o
 import frappe
 from frappe import _
 
+from janadhikara.app_modules import APP_MODULES
+
 ANSWERS_TABLE_DOCTYPE = "Question Answer"
 CHOICE_TYPES = ("Select", "Multi-select")
 
@@ -122,7 +124,7 @@ def validate_answers(doc, method=None):
 	# Runs for every doctype (see hooks.py); Household Profile's own controller also calls it.
 	if doc.flags.get("answers_validated") or doc.meta.istable or doc.meta.issingle:
 		return
-	if doc.meta.module not in ("Masters", "App Config", "Engine", "Baseline"):
+	if doc.meta.module not in APP_MODULES:
 		return  # questions only live on this app's own doctypes
 	fieldname = answers_fieldname(doc.doctype)
 	if not fieldname:

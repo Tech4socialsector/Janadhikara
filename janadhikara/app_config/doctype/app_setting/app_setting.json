@@ -10,6 +10,23 @@
   "app_logo_dark",
   "section_break_appearance",
   "accent_color",
+  "section_break_city",
+  "city_name",
+  "column_break_city",
+  "city_code",
+  "column_break_city_state",
+  "state",
+  "section_break_city_map",
+  "city_map",
+  "map_center_lat",
+  "map_center_lng",
+  "map_default_zoom",
+  "section_break_map_bounds",
+  "map_south",
+  "map_west",
+  "column_break_map_bounds",
+  "map_north",
+  "map_east",
   "section_break_login",
   "login_headline",
   "column_break_section_break_login_x",
@@ -64,6 +81,107 @@
    "fieldname": "accent_color",
    "fieldtype": "Color",
    "label": "Accent Color"
+  },
+  {
+   "fieldname": "section_break_city",
+   "fieldtype": "Section Break",
+   "label": "City"
+  },
+  {
+   "fieldname": "city_name",
+   "fieldtype": "Select",
+   "label": "City Name",
+   "description": "Normally chosen once when the site is set up; only a System Manager can change it later. The code, state and map are filled in from it.",
+   "options": "\nGuwahati\nHyderabad\nBengaluru\nChennai\nDelhi\nKolkata\nMumbai\nPune\nAhmedabad\nJaipur\nLucknow\nBhubaneswar\nPatna\nShillong"
+  },
+  {
+   "fieldname": "city_code",
+   "fieldtype": "Data",
+   "label": "City Code",
+   "read_only": 1,
+   "description": "Filled in from the city; picks this city's configuration pack."
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_city",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "city_map",
+   "fieldtype": "HTML",
+   "label": "City Map"
+  },
+  {
+   "fieldname": "map_center_lat",
+   "fieldtype": "Float",
+   "label": "Map Centre Latitude",
+   "precision": "6",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "map_center_lng",
+   "fieldtype": "Float",
+   "label": "Map Centre Longitude",
+   "precision": "6",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "map_default_zoom",
+   "fieldtype": "Int",
+   "label": "Map Opening Zoom",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "section_break_map_bounds",
+   "fieldtype": "Section Break",
+   "label": "Map Limits",
+   "description": "Filled in from the city: the map cannot be moved outside this box.",
+   "hidden": 1
+  },
+  {
+   "fieldname": "map_south",
+   "fieldtype": "Float",
+   "label": "South Latitude",
+   "precision": "6",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "map_west",
+   "fieldtype": "Float",
+   "label": "West Longitude",
+   "precision": "6",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "column_break_map_bounds",
+   "fieldtype": "Column Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "map_north",
+   "fieldtype": "Float",
+   "label": "North Latitude",
+   "precision": "6",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "map_east",
+   "fieldtype": "Float",
+   "label": "East Longitude",
+   "precision": "6",
+   "read_only": 1,
+   "hidden": 1
   },
   {
    "collapsible": 1,
@@ -172,6 +290,14 @@
    "fieldtype": "Password",
    "label": "Push Private Key",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_city_state",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_city_map",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,

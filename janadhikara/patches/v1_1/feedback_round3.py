@@ -1,6 +1,6 @@
 import frappe
 
-from janadhikara.baseline.doctype.household_profile.household_profile import count_households, household_label
+from janadhikara.guwahati.doctype.household_profile.household_profile import count_households, household_label
 
 
 def execute():

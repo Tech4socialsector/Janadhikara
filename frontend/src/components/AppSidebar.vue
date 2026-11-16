@@ -453,6 +453,12 @@ const sections = computed(() => {
           to: { name: 'Worklist' },
           isActive: route.name === 'Worklist',
         },
+        {
+          label: 'Help',
+          icon: moduleIcon('help-circle'),
+          to: { name: 'Help' },
+          isActive: route.name === 'Help',
+        },
         ...pageEntries.value.map((page) => ({
           label: page.label,
           icon: page.route === 'sync-data' ? SyncCloudIcon : moduleIcon(page.icon),

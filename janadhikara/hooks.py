@@ -33,6 +33,11 @@ fixtures = [
 	{"dt": "Relationship Type"},
 	{"dt": "Cooking Fuel"},
 	{"dt": "Field Function Mapping"},
+	# Hyderabad's municipal areas: loaded on every site, but only the Hyderabad site shows them (see city_packs/).
+	{"dt": "HYD Municipal Corporation"},
+	{"dt": "HYD Municipal Zone"},
+	{"dt": "HYD Municipal Circle"},
+	{"dt": "HYD Municipal Ward"},
 ]
 
 # Validation Status options are role-restricted (see masters/doctype/validation_status).
@@ -41,6 +46,7 @@ permission_query_conditions = {
 	"Partner Details": "janadhikara.security.partner_conditions",
 	"Household Profile": "janadhikara.security.household_conditions",
 	"Settlement": "janadhikara.security.settlement_conditions",
+	"HYD Settlement Profile": "janadhikara.security.settlement_profile_conditions",
 	"Individual Profile": "janadhikara.security.individual_conditions",
 }
 has_permission = {
@@ -48,6 +54,7 @@ has_permission = {
 	"Partner Details": "janadhikara.security.partner_has_permission",
 	"Household Profile": "janadhikara.security.household_has_permission",
 	"Settlement": "janadhikara.security.settlement_has_permission",
+	"HYD Settlement Profile": "janadhikara.security.settlement_profile_has_permission",
 	"Individual Profile": "janadhikara.security.individual_has_permission",
 }
 
@@ -286,6 +293,7 @@ after_install = "janadhikara.install.after_install"
 # Every doctype of this app gets a (disabled) AI Data Policy so the AI assistant
 # can't see it until someone has reviewed it - see janadhikara/ai/policy.py.
 after_request = ["janadhikara.security.add_security_headers"]
+before_migrate = ["janadhikara.app_modules.refresh_module_map"]
 after_migrate = [
 	"janadhikara.ai.policy.ensure_policies",
 	"janadhikara.menu.ensure_master_sidebar",
@@ -294,6 +302,7 @@ after_migrate = [
 	"janadhikara.required_fields.seed_required_fields",
 	"janadhikara.todo_setup.ensure_todo_setup",
 	"janadhikara.translations.import_translations",
+	"janadhikara.city_pack.sync_city_packs",
 ]
 doc_events = {
 	"Property Setter": {

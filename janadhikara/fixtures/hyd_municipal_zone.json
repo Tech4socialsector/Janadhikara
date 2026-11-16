@@ -1,0 +1,110 @@
+[
+ {
+  "corporation": "Greater Hyderabad Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Zone",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Greater Hyderabad Municipal Corporation-Shamshabad",
+  "zone_name": "Shamshabad"
+ },
+ {
+  "corporation": "Greater Hyderabad Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Zone",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Greater Hyderabad Municipal Corporation-Rajendranagar",
+  "zone_name": "Rajendranagar"
+ },
+ {
+  "corporation": "Greater Hyderabad Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Zone",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Greater Hyderabad Municipal Corporation-Charminar",
+  "zone_name": "Charminar"
+ },
+ {
+  "corporation": "Greater Hyderabad Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Zone",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Greater Hyderabad Municipal Corporation-Golconda",
+  "zone_name": "Golconda"
+ },
+ {
+  "corporation": "Greater Hyderabad Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Zone",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Greater Hyderabad Municipal Corporation-Khairatabad",
+  "zone_name": "Khairatabad"
+ },
+ {
+  "corporation": "Greater Hyderabad Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Zone",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Greater Hyderabad Municipal Corporation-Secunderabad",
+  "zone_name": "Secunderabad"
+ },
+ {
+  "corporation": "Cyberabad Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Zone",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Cyberabad Municipal Corporation-Serilingampally",
+  "zone_name": "Serilingampally"
+ },
+ {
+  "corporation": "Cyberabad Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Zone",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Cyberabad Municipal Corporation-Kukatpally",
+  "zone_name": "Kukatpally"
+ },
+ {
+  "corporation": "Cyberabad Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Zone",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Cyberabad Municipal Corporation-Quthbullapur",
+  "zone_name": "Quthbullapur"
+ },
+ {
+  "corporation": "Malkajgiri Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Zone",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Malkajgiri Municipal Corporation-Malkajgiri",
+  "zone_name": "Malkajgiri"
+ },
+ {
+  "corporation": "Malkajgiri Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Zone",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Malkajgiri Municipal Corporation-Uppal",
+  "zone_name": "Uppal"
+ },
+ {
+  "corporation": "Malkajgiri Municipal Corporation",
+  "docstatus": 0,
+  "doctype": "HYD Municipal Zone",
+  "enabled": 1,
+  "modified": "2026-11-16 09:00:00.000000",
+  "name": "Malkajgiri Municipal Corporation-L. B. Nagar",
+  "zone_name": "L. B. Nagar"
+ }
+]

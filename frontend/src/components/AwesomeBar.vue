@@ -78,7 +78,7 @@
               @mouseenter="highlightKey = `rec-${idx}`"
             >
               <span class="text-sm text-gray-900 dark:text-gray-100">{{ item.description || item.name }}</span>
-              <span class="text-xs text-gray-500 dark:text-gray-400">{{ item.doctype_name }}</span>
+              <span class="text-xs text-gray-500 dark:text-gray-400">{{ withoutPrefix(item.doctype_name) }}</span>
             </button>
           </div>
         </div>
@@ -115,7 +115,7 @@
 
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue'
-import { t } from '@/utils/translate'
+import { t, withoutPrefix } from '@/utils/translate'
 import { useRouter } from 'vue-router'
 import { useDebounceFn } from '@vueuse/core'
 import { Dialog, FeatherIcon, Tooltip, Button } from 'frappe-ui'

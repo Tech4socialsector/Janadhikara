@@ -11,7 +11,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt, getdate, now_datetime, nowtime, today
 
-APP_MODULES = {"Masters", "App Config", "Engine", "Baseline"}
+from janadhikara.app_modules import APP_MODULES
 
 MOBILE_RE = re.compile(r"^\d{10}$")
 PINCODE_RE = re.compile(r"^[1-9]\d{5}$")

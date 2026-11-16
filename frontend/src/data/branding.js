@@ -5,6 +5,7 @@ import { currentTheme } from '@/data/theme'
 import defaultLogo from '@/assets/default-logo.png'
 import { online } from '@/data/connection'
 import { appIconDataUrl } from '@/data/offlineStore'
+import { setDoctypePrefix } from '@/utils/translate'
 
 // The app's configurable name/logo, from App Setting (allow_guest=True
 // so the Login page can also show it before authentication).
@@ -47,6 +48,9 @@ export const appLogo = computed(
 // been saved yet (brandingResource.data is null before its first fetch
 // resolves) or the field is left blank.
 const DEFAULT_ACCENT = '#111827'
+// The doctype that stands in for Settlement on this site (Hyderabad has its own); Settlement elsewhere.
+export const settlementDoctype = () => brandingResource.data?.city?.settlement_doctype || 'Settlement'
+
 export const accentColor = computed(() => brandingResource.data?.accent_color || DEFAULT_ACCENT)
 
 // A CSS custom property, not a Tailwind class swap - frappe-ui's own
@@ -69,6 +73,8 @@ function shade(hex, percent) {
   const b = Math.max(0, Math.min(255, (num & 0xff) + percent))
   return `rgb(${r}, ${g}, ${b})`
 }
+
+watchEffect(() => setDoctypePrefix(brandingResource.data?.city?.doctype_prefix))
 
 watchEffect(() => {
   const color = accentColor.value

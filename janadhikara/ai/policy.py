@@ -16,7 +16,7 @@ import frappe
 
 from janadhikara.ai.data_service import ALWAYS_BLOCKED, POLICY_CACHE_KEY
 
-APP_MODULES = ('Masters', 'App Config', 'Engine', 'Baseline')
+from janadhikara.app_modules import APP_MODULES
 
 INDIVIDUAL_PROFILE_VISIBLE = {
     'individual_id', 'household', 'implementing_org', 'hhid', 'settlement_intervention_unit',
@@ -28,7 +28,7 @@ INDIVIDUAL_PROFILE_VISIBLE = {
 def _individual_profile_hidden():
     """Every answer field of Individual Profile except the few in INDIVIDUAL_PROFILE_VISIBLE,
     read from the doctype definition so a new question is confidential until someone reviews it."""
-    path = frappe.get_app_path('janadhikara', 'baseline', 'doctype', 'individual_profile', 'individual_profile.json')
+    path = frappe.get_app_path('janadhikara', 'guwahati', 'doctype', 'individual_profile', 'individual_profile.json')
     with open(path) as f:
         fields = json.load(f)['fields']
     return {
