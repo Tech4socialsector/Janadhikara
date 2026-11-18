@@ -31,6 +31,7 @@ declare module 'vue' {
     IosInstallHint: typeof import('./src/components/IosInstallHint.vue')['default']
     LanguageSwitcher: typeof import('./src/components/LanguageSwitcher.vue')['default']
     LinkField: typeof import('./src/components/LinkField.vue')['default']
+    LinkFilterPicker: typeof import('./src/components/LinkFilterPicker.vue')['default']
     LucideIcon: typeof import('./src/components/LucideIcon.vue')['default']
     MobileNav: typeof import('./src/components/MobileNav.vue')['default']
     MobileShell: typeof import('./src/components/MobileShell.vue')['default']

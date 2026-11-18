@@ -13,16 +13,27 @@ import os
 import frappe
 
 PREFIX = "janadhikara:"
-DATA_FILE = os.path.join(os.path.dirname(__file__), "translation_data", "translations.json")
+DATA_DIR = os.path.join(os.path.dirname(__file__), "translation_data")
 
 
-LANGUAGES = {"en": "English", "as": "অসমীয়া", "hi": "हिन्दी"}
+# Every language the app has text for, by its own name. Which of them a site offers depends on its city.
+LANGUAGES = {"en": "English", "as": "অসমীয়া", "hi": "हिन्दी", "te": "తెలుగు"}
+DEFAULT_LANGUAGES = ("en", "as", "hi")  # a city without a pack of its own (Guwahati)
+
+
+def offered_languages():
+	"""The languages this site offers: its city's (pack "languages"), else English, Assamese and Hindi."""
+	from janadhikara.city_pack import city_languages
+
+	return [code for code in city_languages() if code in LANGUAGES]
 
 
 def ensure_languages(restrict=False):
-	"""The app is offered in English, Assamese and Hindi. Make sure they exist and are enabled (a new site
-	may not have Assamese at all); with restrict=True every other language is switched off."""
-	for code, name in LANGUAGES.items():
+	"""Make sure the languages this site offers exist and are enabled (a new site may not have Assamese or Telugu
+	at all); with restrict=True every other language is switched off."""
+	offered = offered_languages()
+	for code in offered:
+		name = LANGUAGES[code]
 		if frappe.db.exists("Language", code):
 			frappe.db.set_value("Language", code, {"enabled": 1, "language_name": name})
 		else:
@@ -30,14 +41,18 @@ def ensure_languages(restrict=False):
 				ignore_permissions=True
 			)
 	if restrict:
-		frappe.db.set_value("Language", {"name": ["not in", list(LANGUAGES)]}, "enabled", 0)
+		frappe.db.set_value("Language", {"name": ["not in", offered]}, "enabled", 0)
 
 
 def import_translations():
 	"""Create the Translation records that are not there yet (existing ones are left as they are)."""
 	ensure_languages()
-	with open(DATA_FILE, encoding="utf-8") as f:
-		rows = json.load(f)
+	offered = set(offered_languages())
+	rows = []
+	for filename in sorted(os.listdir(DATA_DIR)):  # translations.json, and one file per extra language (translations_te.json)
+		if filename.startswith("translations") and filename.endswith(".json"):
+			with open(os.path.join(DATA_DIR, filename), encoding="utf-8") as f:
+				rows += [row for row in json.load(f) if row["language"] in offered]  # only this city's languages
 	existing = {
 		(r.language, r.context, r.source_text)
 		for r in frappe.get_all(
@@ -85,7 +100,7 @@ def get_app_translations(language):
 	"""The app's translations for one language, shaped for the app: interface text by English sentence and
 	questionnaire text by DocType and field. Only app text (not sensitive), readable by any signed-in user."""
 	out = {"ui": {}, "heading": {}, "option": {}, "help": {}, "dpdp": {}, "fields": {}}
-	if not language or language == "en":
+	if not language or language == "en" or language not in offered_languages():
 		return out
 	if not frappe.db.exists("Translation", {"language": language, "context": ["like", PREFIX + "%"]}):
 		_import_in_background()

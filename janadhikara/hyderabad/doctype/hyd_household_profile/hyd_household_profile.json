@@ -1,0 +1,908 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "index_web_pages_for_search": 1,
+ "modified_by": "Administrator",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "allow_import": 1,
+ "name": "HYD Household Profile",
+ "module": "Hyderabad",
+ "creation": "2026-11-17 10:00:00.000000",
+ "modified": "2026-11-17 10:00:00.000000",
+ "autoname": "HYD-HH.####",
+ "naming_rule": "Expression",
+ "title_field": "household_label",
+ "search_fields": "hhid,respondent_name,house_no,address,settlement,municipal_ward",
+ "links": [
+  {
+   "group": "Individuals",
+   "link_doctype": "HYD Individual Profile",
+   "link_fieldname": "household"
+  }
+ ],
+ "field_order": [
+  "tab_household_profile",
+  "section_identification",
+  "hhid",
+  "house_no",
+  "address",
+  "landmark",
+  "column_break_identification",
+  "cluster",
+  "municipal_corporation",
+  "municipal_zone",
+  "municipal_circle",
+  "municipal_ward",
+  "geo_location",
+  "section_status",
+  "household_status",
+  "consent",
+  "section_respondent",
+  "respondent_name",
+  "q14_respondent_s_relation_household_he",
+  "q14_respondent_s_relation_household_he_other",
+  "contact_phone_number",
+  "household_roster",
+  "member_count",
+  "q17_language_spoken_family",
+  "q17_language_spoken_family_other",
+  "q18_social_status_household",
+  "q18_social_status_household_other",
+  "section_housing",
+  "q19_type_house_does_household_reside",
+  "house_land_type",
+  "q20_house_ownership_status",
+  "q20_house_ownership_status_other",
+  "q20_1_nature_ownership",
+  "q20_1_nature_ownership_other",
+  "q20_2_house_ownership_documents",
+  "q20_2_house_ownership_documents_other",
+  "q20_3_duration_ownership",
+  "q21_rented_duration_residence_as_tenan",
+  "q22_housing_observations",
+  "section_amenities",
+  "q23_electricity_supply",
+  "q23_1_electricity_meters",
+  "q23_2_electricity_meters_registered",
+  "q23_3_access_gruha_jyothi_scheme",
+  "q24_alternate_source_light_house",
+  "q24_alternate_source_light_house_other",
+  "q25_fuels_used_cooking",
+  "q26_registered_lpg_cooking_gas_connect",
+  "q26_2_access_mahalakshmi_scheme",
+  "q27_water_facility",
+  "q27_1_yes_source_water",
+  "q27_1_yes_source_water_other",
+  "q28_no_source_water",
+  "q29_drainage_facility_house",
+  "q30_type_toilet_facility_used",
+  "q30_1_case_public_toilet_pay_and",
+  "q32_far_common_service_centre_csc",
+  "q33_access_common_service_centres_cscs",
+  "q34_amenities_observations",
+  "section_health",
+  "q35_does_household_member_currently_su",
+  "q35_1_yes_major_health_conditions",
+  "q35_1_yes_major_health_conditions_other",
+  "q36_family_member_with_disabilities",
+  "q37_where_does_household_usually_go",
+  "q37_where_does_household_usually_go_other",
+  "q38_approximately_far_nearest_healthca",
+  "q39_approximately_much_did_household_s",
+  "q40_household_member_covered_under_hea",
+  "q40_1_yes_scheme",
+  "q40_1_yes_scheme_other",
+  "q41_not_covered_main_reasons",
+  "q41_not_covered_main_reasons_other",
+  "q42_there_currently_pregnant_woman_hou",
+  "q42_1_yes_she_receiving_regular_pregnanc",
+  "q42_2_where_does_she_access_pregnancy",
+  "q42_2_where_does_she_access_pregnancy_other",
+  "q42_3_does_mother_receive_post_delivery",
+  "q43_many_children_below_five_years",
+  "q44_all_children_receiving_vaccination",
+  "q47_child_been_identified_with_severe",
+  "q49_household_member_aged_30_years",
+  "q50_diagnosed_they_receiving_regular_t",
+  "q51_during_last_12_months_household",
+  "q51_1_yes_were_main_reasons",
+  "q51_1_yes_were_main_reasons_other",
+  "q52_health_observations",
+  "section_closing",
+  "q53_overall_remarks",
+  "profiles_match_members",
+  "column_break_closing",
+  "validation_status",
+  "validation_comments",
+  "section_assignment",
+  "settlement",
+  "partner_organization",
+  "organization_name",
+  "column_break_assignment",
+  "assigned_worker",
+  "record_date",
+  "household_label"
+ ],
+ "fields": [
+  {
+   "fieldname": "tab_household_profile",
+   "fieldtype": "Tab Break",
+   "label": "Household Profile"
+  },
+  {
+   "fieldname": "section_identification",
+   "fieldtype": "Section Break",
+   "label": "1. Household identification"
+  },
+  {
+   "fieldname": "hhid",
+   "fieldtype": "Data",
+   "label": "1. Household ID",
+   "read_only": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "depends_on": "eval:doc.hhid",
+   "description": "Generated automatically when the record is created; used to find this household again."
+  },
+  {
+   "fieldname": "house_no",
+   "fieldtype": "Data",
+   "label": "2. House No.",
+   "description": "Enter the official house number available. If no numbers are available please mention Not Applicable.",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "3. Address: Street Name, Road/Street Number, Slum Name",
+   "description": "Capture the address as accurately as possible to enable household identification and future verification visits. If the household is located in a slum, ensure the Slum Name is recorded correctly."
+  },
+  {
+   "fieldname": "landmark",
+   "fieldtype": "Data",
+   "label": "4. Landmark",
+   "description": "To capture a simple address with a landmark for revisiting the same Household."
+  },
+  {
+   "fieldname": "column_break_identification",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cluster",
+   "fieldtype": "Link",
+   "options": "Cluster",
+   "label": "5. Cluster name",
+   "in_standard_filter": 1,
+   "description": "Select or record the official cluster name as per the project's cluster mapping list."
+  },
+  {
+   "fieldname": "municipal_corporation",
+   "fieldtype": "Link",
+   "options": "HYD Municipal Corporation",
+   "label": "6. Municipal Corporation name",
+   "in_standard_filter": 1,
+   "description": "Record the official name of the Municipal Corporation."
+  },
+  {
+   "fieldname": "municipal_zone",
+   "fieldtype": "Link",
+   "options": "HYD Municipal Zone",
+   "label": "7. Zone name & number",
+   "link_filters": "[[\"HYD Municipal Zone\", \"corporation\", \"=\", \"eval:doc.municipal_corporation\"]]",
+   "description": "Record the official name of the Zone."
+  },
+  {
+   "fieldname": "municipal_circle",
+   "fieldtype": "Link",
+   "options": "HYD Municipal Circle",
+   "label": "8. Circle name & number",
+   "link_filters": "[[\"HYD Municipal Circle\", \"zone\", \"=\", \"eval:doc.municipal_zone\"]]",
+   "description": "Record the official name of the Circle."
+  },
+  {
+   "fieldname": "municipal_ward",
+   "fieldtype": "Link",
+   "options": "HYD Municipal Ward",
+   "label": "9. Ward name & number",
+   "in_standard_filter": 1,
+   "link_filters": "[[\"HYD Municipal Ward\", \"circle\", \"=\", \"eval:doc.municipal_circle\"]]",
+   "description": "Record the official name of the Ward."
+  },
+  {
+   "fieldname": "geo_location",
+   "fieldtype": "Geolocation",
+   "label": "10. GPS location",
+   "description": "Capture the GPS location while standing near the household entrance. Ensure location services are enabled on the device and wait for an accurate GPS reading before saving."
+  },
+  {
+   "fieldname": "section_status",
+   "fieldtype": "Section Break",
+   "label": "Household status and consent"
+  },
+  {
+   "fieldname": "household_status",
+   "fieldtype": "Select",
+   "label": "11. Household status",
+   "options": "\nOccupied\nVacant House\nDoor closed\nMoved out",
+   "description": "If house is not occupied and permanently closed, end the household interview. If house is occupied but locked, end the household interview and come back to this house once you complete all the houses in that street.",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "consent",
+   "fieldtype": "Select",
+   "label": "12. Has the respondent given his/her consent for the survey?",
+   "options": "\nYes\nNo\nAsked to revisit later",
+   "description": "Obtain the respondent's voluntary and informed consent before proceeding with the interview. Explain the purpose of the survey, how the information will be used, and assure confidentiality. The survey should only continue if consent is provided. Only if Yes are the rest of the questions asked; if the respondent does not consent, thank them and discontinue the survey.",
+   "depends_on": "eval:doc.household_status==\"Occupied\"",
+   "mandatory_depends_on": "eval:doc.household_status==\"Occupied\""
+  },
+  {
+   "fieldname": "section_respondent",
+   "fieldtype": "Section Break",
+   "label": "2. Respondent & Household Members Details",
+   "depends_on": "eval:doc.consent==\"Yes\""
+  },
+  {
+   "fieldname": "respondent_name",
+   "fieldtype": "Data",
+   "label": "13. Respondent's Name",
+   "description": "Always choose the respondent who is 18 years of age and above.",
+   "mandatory_depends_on": "eval:doc.consent==\"Yes\"",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "q14_respondent_s_relation_household_he",
+   "fieldtype": "Select",
+   "label": "14. Respondent's relation to household head",
+   "options": "\nHousehold head\nHusband\nWife\nSon\nDaughter\nDaughter-in-law\nSon-in-law\nFather\nMother\nOthers specify",
+   "description": "Identifies the respondent's relationship to the head of the household."
+  },
+  {
+   "fieldname": "q14_respondent_s_relation_household_he_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q14)",
+   "depends_on": "eval:doc.q14_respondent_s_relation_household_he==\"Others specify\""
+  },
+  {
+   "fieldname": "contact_phone_number",
+   "fieldtype": "Data",
+   "label": "15. Contact Number of the HH",
+   "description": "Numerical; exactly 10 digits."
+  },
+  {
+   "fieldname": "household_roster",
+   "fieldtype": "Table",
+   "label": "16. Household Roster",
+   "options": "HYD Household Member",
+   "description": "Use the roster to capture all the household members' data (one row per member)."
+  },
+  {
+   "fieldname": "member_count",
+   "fieldtype": "Int",
+   "label": "No. of members staying in the family",
+   "hidden": 1,
+   "read_only": 1,
+   "description": "The rows of the household roster, counted automatically."
+  },
+  {
+   "fieldname": "q17_language_spoken_family",
+   "fieldtype": "Select",
+   "label": "17. Language spoken in the family",
+   "options": "\nTelugu\nHindi\nUrdu\nOther (Specify)",
+   "description": "Identifies the primary language(s) commonly spoken by household members for daily communication."
+  },
+  {
+   "fieldname": "q17_language_spoken_family_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q17)",
+   "depends_on": "eval:doc.q17_language_spoken_family==\"Other (Specify)\""
+  },
+  {
+   "fieldname": "q18_social_status_household",
+   "fieldtype": "Select",
+   "label": "18. Social status of the household",
+   "options": "\nGeneral\nSC\nST\nOBC\nNot Applicable\nOther (Specify)",
+   "description": "Identifies the household's social category as recognized for government records."
+  },
+  {
+   "fieldname": "q18_social_status_household_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q18)",
+   "depends_on": "eval:doc.q18_social_status_household==\"Other (Specify)\""
+  },
+  {
+   "fieldname": "section_housing",
+   "fieldtype": "Section Break",
+   "label": "3. Housing & Living Conditions",
+   "depends_on": "eval:doc.consent==\"Yes\""
+  },
+  {
+   "fieldname": "q19_type_house_does_household_reside",
+   "fieldtype": "Select",
+   "label": "19. What type of house does the household reside in?",
+   "options": "\nPucca House\nSemi-Pucca House\nKutcha House\nTin Sheet House\nTarpaulin/Plastic Sheet Shelter\nMakeshift Hut/Shack",
+   "description": "Identifies the structural condition and construction material of the house, where the respondent is currently living. This information helps assess housing quality and living conditions."
+  },
+  {
+   "fieldname": "house_land_type",
+   "fieldtype": "Select",
+   "label": "House located in",
+   "options": "\nGovernment land\nPrivate land",
+   "description": "Identifies the ownership status of the land on which the respondent's current house is located. This information helps understand land tenure and housing security."
+  },
+  {
+   "fieldname": "q20_house_ownership_status",
+   "fieldtype": "Select",
+   "label": "20. House ownership status",
+   "options": "\nOwned\nRented\nShared\nEmployer-provided\nEncroached\nOthers specify",
+   "description": "Identifies the household's occupancy and ownership arrangement for the house, where the respondent currently resides. If Owned, continue with the ownership questions; if Rented, go directly to question 21."
+  },
+  {
+   "fieldname": "q20_house_ownership_status_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q20)",
+   "depends_on": "eval:doc.q20_house_ownership_status==\"Others specify\""
+  },
+  {
+   "fieldname": "q20_1_nature_ownership",
+   "fieldtype": "Select",
+   "label": "20.1. Nature of ownership",
+   "options": "\nOwned by the HH\nOriginally allotted by Govt (Government Housing Schemes)\nAllotted to someone else but bought from them\nOthers, specify",
+   "description": "Identifies the source or basis of ownership of the house occupied by the respondent, helping to understand housing tenure and acquisition status.",
+   "depends_on": "eval:doc.q20_house_ownership_status==\"Owned\""
+  },
+  {
+   "fieldname": "q20_1_nature_ownership_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q20.1)",
+   "depends_on": "eval:doc.q20_1_nature_ownership==\"Others, specify\""
+  },
+  {
+   "fieldname": "q20_2_house_ownership_documents",
+   "fieldtype": "Small Text",
+   "label": "20.2. Which house ownership documents do you have?",
+   "options": "Patta/Title Deed\nRegistered Sale Deed\nGovernment Allotment Letter\nProperty Tax Receipt\nMunicipal Assessment Record\nPossession Certificate\nNotary Agreement\nNone of the above\nOthers (Specify)",
+   "description": "Identifies the legal or supporting documents available with the household to establish ownership, possession, or occupancy rights. More than one can be selected.",
+   "depends_on": "eval:doc.q20_house_ownership_status==\"Owned\""
+  },
+  {
+   "fieldname": "q20_2_house_ownership_documents_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q20.2)",
+   "depends_on": "eval:(doc.q20_2_house_ownership_documents||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Others (Specify)\")"
+  },
+  {
+   "fieldname": "q20_3_duration_ownership",
+   "fieldtype": "Select",
+   "label": "20.3. Duration of ownership",
+   "options": "\n0-1 Years\n1-3 years\n3-5 years\n5 years and above",
+   "description": "Identifies the duration of ownership of the house where the respondent is living, helping to understand housing stability and tenure history.",
+   "depends_on": "eval:doc.q20_house_ownership_status==\"Owned\""
+  },
+  {
+   "fieldname": "q21_rented_duration_residence_as_tenan",
+   "fieldtype": "Select",
+   "label": "21. If rented, duration of residence as tenant",
+   "options": "\n0-1 Years\n1-3 years\n3-5 years\n5 years and above",
+   "description": "Identifies the length of time the household has been living in the current dwelling as a tenant.",
+   "depends_on": "eval:doc.q20_house_ownership_status==\"Rented\""
+  },
+  {
+   "fieldname": "q22_housing_observations",
+   "fieldtype": "Small Text",
+   "label": "22. Mention any other observations and details",
+   "description": "Record any additional observations about the household's housing condition, living environment, infrastructure and other relevant information: visible risks, overcrowding, accessibility issues, sanitation concerns or any unique circumstances."
+  },
+  {
+   "fieldname": "section_amenities",
+   "fieldtype": "Section Break",
+   "label": "4. Basic Amenities",
+   "depends_on": "eval:doc.consent==\"Yes\""
+  },
+  {
+   "fieldname": "q23_electricity_supply",
+   "fieldtype": "Select",
+   "label": "23. Do you have electricity supply?",
+   "options": "\nYes\nNo",
+   "description": "Identifies whether the household has access to an electricity connection for domestic use."
+  },
+  {
+   "fieldname": "q23_1_electricity_meters",
+   "fieldtype": "Select",
+   "label": "23.1. Do you have electricity meters?",
+   "options": "\nYes\nNo",
+   "description": "Whether the household has an electricity meter installed for measuring and billing consumption.",
+   "depends_on": "eval:doc.q23_electricity_supply==\"Yes\""
+  },
+  {
+   "fieldname": "q23_2_electricity_meters_registered",
+   "fieldtype": "Select",
+   "label": "23.2. Electricity meters registered for",
+   "options": "\nIndividual Connection\nShared Connection",
+   "description": "Whether the connection is registered exclusively for the household or shared with other households.",
+   "depends_on": "eval:doc.q23_electricity_supply==\"Yes\""
+  },
+  {
+   "fieldname": "q23_3_access_gruha_jyothi_scheme",
+   "fieldtype": "Select",
+   "label": "23.3. Do you access gruha jyothi scheme?",
+   "options": "\nYes\nNo",
+   "description": "Whether the household is enrolled in and currently receiving benefits under the Gruha Jyothi electricity subsidy scheme.",
+   "depends_on": "eval:doc.q23_electricity_supply==\"Yes\""
+  },
+  {
+   "fieldname": "q24_alternate_source_light_house",
+   "fieldtype": "Select",
+   "label": "24. What is the alternate source of light in your house?",
+   "options": "\nEarthen lamps\nKerosene lamps\nCandles\nBiomass/wood fires\nBattery-powered torches\nSolar lanterns\nOthers (Specify)",
+   "description": "The source of lighting used by the household when electricity is unavailable or not accessible."
+  },
+  {
+   "fieldname": "q24_alternate_source_light_house_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q24)",
+   "depends_on": "eval:doc.q24_alternate_source_light_house==\"Others (Specify)\""
+  },
+  {
+   "fieldname": "q25_fuels_used_cooking",
+   "fieldtype": "Small Text",
+   "label": "25. Fuels used for cooking",
+   "options": "Firewood\nCharcoal\nKerosene\nElectricity\nGas",
+   "description": "The fuel(s) the household uses for cooking food. More than one can be selected."
+  },
+  {
+   "fieldname": "q26_registered_lpg_cooking_gas_connect",
+   "fieldtype": "Select",
+   "label": "26. Do you have a registered LPG (cooking gas) connection in your household?",
+   "options": "\nYes\nNo",
+   "description": "Whether the household has a valid LPG connection registered in the name of a household member."
+  },
+  {
+   "fieldname": "q26_2_access_mahalakshmi_scheme",
+   "fieldtype": "Select",
+   "label": "26.2. Do you access Mahalakshmi scheme?",
+   "options": "\nYes\nNo",
+   "description": "Whether the household is enrolled in and receiving LPG subsidy benefits through the Mahalakshmi Scheme or the Direct Benefit Transfer for LPG (DBTL) programme.",
+   "depends_on": "eval:doc.q26_registered_lpg_cooking_gas_connect==\"Yes\""
+  },
+  {
+   "fieldname": "q27_water_facility",
+   "fieldtype": "Select",
+   "label": "27. Do you have water facility?",
+   "options": "\nYes\nNo",
+   "description": "Whether the household has access to a water supply for drinking and domestic use."
+  },
+  {
+   "fieldname": "q27_1_yes_source_water",
+   "fieldtype": "Select",
+   "label": "27.1. If Yes, what is the source for water?",
+   "options": "\nPiped water connection (HH level taps)\nPublic Taps\nWater Tanker\nBorewell\nWater Plants/ Treated Can Water\nOther Specify",
+   "description": "The primary source from which the household obtains water for drinking and domestic use.",
+   "depends_on": "eval:doc.q27_water_facility==\"Yes\""
+  },
+  {
+   "fieldname": "q27_1_yes_source_water_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q27.1)",
+   "depends_on": "eval:doc.q27_1_yes_source_water==\"Other Specify\""
+  },
+  {
+   "fieldname": "q28_no_source_water",
+   "fieldtype": "Select",
+   "label": "28. If No, what is the source of water?",
+   "options": "\nPublic Taps within 100mt distance\nPublic Taps between 100mt to 500mt distance\nPublic Taps beyond 500mt\nWater Tanker within 500mt distance\nBorewell between 500mt to 1000mt distance",
+   "description": "The alternative source from which the household collects water, including the distance travelled to access it.",
+   "depends_on": "eval:doc.q27_water_facility==\"No\""
+  },
+  {
+   "fieldname": "q29_drainage_facility_house",
+   "fieldtype": "Select",
+   "label": "29. Do you have drainage facility for your house?",
+   "options": "\nYes\nNo",
+   "description": "Availability of a drainage system for wastewater disposal."
+  },
+  {
+   "fieldname": "q30_type_toilet_facility_used",
+   "fieldtype": "Select",
+   "label": "30. Type of toilet facility used",
+   "options": "\nAt home\nPublic Toilet\nOpen defecation",
+   "description": "The usual toilet facility used by household members."
+  },
+  {
+   "fieldname": "q30_1_case_public_toilet_pay_and",
+   "fieldtype": "Select",
+   "label": "30.1. In case of public toilet, do you pay and use?",
+   "options": "\nYes\nNo",
+   "description": "Whether payment is required to use the public toilet.",
+   "depends_on": "eval:doc.q30_type_toilet_facility_used==\"Public Toilet\""
+  },
+  {
+   "fieldname": "q32_far_common_service_centre_csc",
+   "fieldtype": "Select",
+   "label": "32. How far is the Common Service Centre (CSC)/e-seva?",
+   "options": "\nWithin 1 Km\nAbove 2 Kms\nDon't know",
+   "description": "Distance from the household to the nearest CSC/e-Seva/m-Seva centre."
+  },
+  {
+   "fieldname": "q33_access_common_service_centres_cscs",
+   "fieldtype": "Select",
+   "label": "33. Do you access Common Service Centres (CSCs)?",
+   "options": "\nYes\nNo",
+   "description": "Application assistance for schemes, grievance filing, documentation support."
+  },
+  {
+   "fieldname": "q34_amenities_observations",
+   "fieldtype": "Small Text",
+   "label": "34. Mention any other observations and details"
+  },
+  {
+   "fieldname": "section_health",
+   "fieldtype": "Section Break",
+   "label": "5. Health and Healthcare Access",
+   "depends_on": "eval:doc.consent==\"Yes\""
+  },
+  {
+   "fieldname": "q35_does_household_member_currently_su",
+   "fieldtype": "Select",
+   "label": "35. Does any household member currently suffer from a chronic illness or long-term health condition?",
+   "options": "\nYes\nNo",
+   "description": "Whether any household member has a long-term or chronic health condition requiring ongoing care."
+  },
+  {
+   "fieldname": "q35_1_yes_major_health_conditions",
+   "fieldtype": "Small Text",
+   "label": "35.1. If yes, what are the major health conditions?",
+   "options": "High Blood Pressure (BP)\nDiabetes\nHeart disease\nAsthma / Respiratory illness\nKidney disease\nCancer\nOther, specify",
+   "description": "Main chronic or long-term health conditions affecting household members. More than one can be selected.",
+   "depends_on": "eval:doc.q35_does_household_member_currently_su==\"Yes\""
+  },
+  {
+   "fieldname": "q35_1_yes_major_health_conditions_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q35.1)",
+   "depends_on": "eval:(doc.q35_1_yes_major_health_conditions||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other, specify\")"
+  },
+  {
+   "fieldname": "q36_family_member_with_disabilities",
+   "fieldtype": "Select",
+   "label": "36. Any family member with disabilities?",
+   "options": "\nYes\nNo",
+   "description": "Whether any member of the household has a physical, sensory, intellectual, or other disability."
+  },
+  {
+   "fieldname": "q37_where_does_household_usually_go",
+   "fieldtype": "Select",
+   "label": "37. Where does your household usually go for medical treatment?",
+   "options": "\nBasthi Dawakhana\nGovernment hospital / PHC / UPHC\nPrivate hospital / Clinic\nOther, specify",
+   "description": "The healthcare facility most commonly used by household members when they need medical care."
+  },
+  {
+   "fieldname": "q37_where_does_household_usually_go_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q37)",
+   "depends_on": "eval:doc.q37_where_does_household_usually_go==\"Other, specify\""
+  },
+  {
+   "fieldname": "q38_approximately_far_nearest_healthca",
+   "fieldtype": "Select",
+   "label": "38. Approximately how far is the nearest healthcare facility from your household?",
+   "options": "\nWithin 500 metres\n500 metres-1 km\n1-3 km\n3-5 km\nMore than 5 km",
+   "description": "Distance from the household to the nearest healthcare facility."
+  },
+  {
+   "fieldname": "q39_approximately_much_did_household_s",
+   "fieldtype": "Select",
+   "label": "39. Approximately how much did your household spend on healthcare during the last 12 months?",
+   "options": "\nNo expenditure\nBelow ₹5,000\n₹5,001-₹10,000\n₹10,001-₹25,000\n₹25,001-₹50,000\nAbove ₹50,000",
+   "description": "Total household expenditure on medical treatment and healthcare in the past 12 months."
+  },
+  {
+   "fieldname": "q40_household_member_covered_under_hea",
+   "fieldtype": "Select",
+   "label": "40. Is any household member covered under a health insurance scheme?",
+   "options": "\nYes\nNo",
+   "description": "Whether any household member is enrolled in a health insurance scheme."
+  },
+  {
+   "fieldname": "q40_1_yes_scheme",
+   "fieldtype": "Select",
+   "label": "40.1. If yes, which scheme?",
+   "options": "\nTelangana Aarogyasri\nAyushman Bharat (PM-JAY)\nPrivate health insurance\nEmployer-provided insurance\nOther, specify",
+   "description": "Type of health insurance scheme covering household member(s).",
+   "depends_on": "eval:doc.q40_household_member_covered_under_hea==\"Yes\""
+  },
+  {
+   "fieldname": "q40_1_yes_scheme_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q40.1)",
+   "depends_on": "eval:doc.q40_1_yes_scheme==\"Other, specify\""
+  },
+  {
+   "fieldname": "q41_not_covered_main_reasons",
+   "fieldtype": "Small Text",
+   "label": "41. If not covered, what are the main reasons",
+   "options": "Not aware of available schemes\nLack of required documents\nNot aware of the application process\nNot eligible\nApplication pending\nDifficulties in registration\nOther, specify",
+   "description": "Main reasons for not being covered under any health insurance scheme. More than one can be selected.",
+   "depends_on": "eval:doc.q40_household_member_covered_under_hea==\"No\""
+  },
+  {
+   "fieldname": "q41_not_covered_main_reasons_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q41)",
+   "depends_on": "eval:(doc.q41_not_covered_main_reasons||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other, specify\")"
+  },
+  {
+   "fieldname": "q42_there_currently_pregnant_woman_hou",
+   "fieldtype": "Select",
+   "label": "42. Is there any currently pregnant woman in your household?",
+   "options": "\nYes\nNo",
+   "description": "Whether any female household member is currently pregnant."
+  },
+  {
+   "fieldname": "q42_1_yes_she_receiving_regular_pregnanc",
+   "fieldtype": "Select",
+   "label": "42.1. If yes, is she receiving regular pregnancy check-ups (ANC)?",
+   "options": "\nYes\nNo\nOccasionally",
+   "description": "Frequency of pregnancy check-ups received by the pregnant woman.",
+   "depends_on": "eval:doc.q42_there_currently_pregnant_woman_hou==\"Yes\""
+  },
+  {
+   "fieldname": "q42_2_where_does_she_access_pregnancy",
+   "fieldtype": "Select",
+   "label": "42.2. Where does she access pregnancy and delivery-related healthcare services?",
+   "options": "\nGovernment maternity hospital/ UPHC\nPrivate hospital\nOther, specify",
+   "description": "Primary facility used for pregnancy check-ups and childbirth services.",
+   "depends_on": "eval:doc.q42_there_currently_pregnant_woman_hou==\"Yes\""
+  },
+  {
+   "fieldname": "q42_2_where_does_she_access_pregnancy_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q42.2)",
+   "depends_on": "eval:doc.q42_2_where_does_she_access_pregnancy==\"Other, specify\""
+  },
+  {
+   "fieldname": "q42_3_does_mother_receive_post_delivery",
+   "fieldtype": "Select",
+   "label": "42.3. Does the mother receive post-delivery health check-ups (PNC)?",
+   "options": "\nYes\nNo\nOccasionally",
+   "description": "Whether the mother receives health check-ups after childbirth.",
+   "depends_on": "eval:doc.q42_there_currently_pregnant_woman_hou==\"Yes\""
+  },
+  {
+   "fieldname": "q43_many_children_below_five_years",
+   "fieldtype": "Int",
+   "label": "43. How many children below five years are there in your household?",
+   "description": "Ask only if children below five years are present in the household."
+  },
+  {
+   "fieldname": "q44_all_children_receiving_vaccination",
+   "fieldtype": "Select",
+   "label": "44. Are all children receiving vaccinations and regular growth monitoring as per their age?",
+   "options": "\nBoth vaccination and growth monitoring\nVaccination only\nGrowth monitoring only\nNeither",
+   "description": "Immunization and growth monitoring status of children in the household.",
+   "depends_on": "eval:(doc.q43_many_children_below_five_years||0) > 0"
+  },
+  {
+   "fieldname": "q47_child_been_identified_with_severe",
+   "fieldtype": "Select",
+   "label": "47. Has any child been identified with Severe Acute Malnutrition (SAM) or Moderate Acute Malnutrition (MAM)?",
+   "options": "\nYes, SAM\nYes, MAM\nNo\nDon't know",
+   "description": "Nutritional status of children in the household based on identification by a health worker or healthcare provider.",
+   "depends_on": "eval:(doc.q43_many_children_below_five_years||0) > 0"
+  },
+  {
+   "fieldname": "q49_household_member_aged_30_years",
+   "fieldtype": "Select",
+   "label": "49. Has any household member aged 30 years or above been diagnosed with high BP or diabetes (NCD)?",
+   "options": "\nHigh BP\nDiabetes\nBoth\nNeither",
+   "description": "Presence of High BP or Diabetes among household members aged 30 years and above."
+  },
+  {
+   "fieldname": "q50_diagnosed_they_receiving_regular_t",
+   "fieldtype": "Select",
+   "label": "50. If diagnosed, are they receiving regular treatment and medicines?",
+   "options": "\nYes, regularly\nOccasionally\nNo",
+   "description": "Whether diagnosed household members receive treatment and medicines regularly.",
+   "depends_on": "eval:doc.q49_household_member_aged_30_years && doc.q49_household_member_aged_30_years != \"Neither\""
+  },
+  {
+   "fieldname": "q51_during_last_12_months_household",
+   "fieldtype": "Select",
+   "label": "51. During the last 12 months, has any household member needed medical treatment but been unable to access it?",
+   "options": "\nYes\nNo",
+   "description": "Whether any household member was unable to obtain needed medical care during the past 12 months."
+  },
+  {
+   "fieldname": "q51_1_yes_were_main_reasons",
+   "fieldtype": "Small Text",
+   "label": "51.1. If yes, what were the main reasons?",
+   "options": "High cost of treatment\nCost of medicines\nDistance to healthcare facilities\nLack of transportation\nNon-availability of doctors or medicines\nWork commitments / Loss of daily wages\nLack of awareness\nOther, specify",
+   "description": "Main reasons for not being able to access needed medical treatment. More than one can be selected.",
+   "depends_on": "eval:doc.q51_during_last_12_months_household==\"Yes\""
+  },
+  {
+   "fieldname": "q51_1_yes_were_main_reasons_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q51.1)",
+   "depends_on": "eval:(doc.q51_1_yes_were_main_reasons||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other, specify\")"
+  },
+  {
+   "fieldname": "q52_health_observations",
+   "fieldtype": "Small Text",
+   "label": "52. Overall observation on Health at the Household level"
+  },
+  {
+   "fieldname": "section_closing",
+   "fieldtype": "Section Break",
+   "label": "6. Closing and Record Status"
+  },
+  {
+   "fieldname": "q53_overall_remarks",
+   "fieldtype": "Small Text",
+   "label": "53. Overall Observations and General Remarks on the Household (HH)",
+   "description": "Summarize the overall living conditions, socio-economic status, key vulnerabilities, strengths, and any notable concerns of the household. Include observations related to housing, income, health, education, livelihood, access to basic services, and support systems. Mention any specific needs or risks identified during the assessment."
+  },
+  {
+   "fieldname": "profiles_match_members",
+   "fieldtype": "Check",
+   "label": "54. Number of Individual profiles captured are equal to the number of members in the household mentioned above",
+   "description": "Ticked automatically when the number of Individual profiles captured equals the number of members in the roster.",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_closing",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "validation_status",
+   "fieldtype": "Link",
+   "options": "Validation Status",
+   "default": "Partially Completed",
+   "label": "55-56. Status",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1,
+   "description": "Documentation status (55) and validation status (56): the Community Volunteer sets Partially Completed or Completed; the Program Manager/Coordinator sets Revision Needed or Validated. Choose Revision Needed and refer to the comments when something must be corrected."
+  },
+  {
+   "fieldname": "validation_comments",
+   "fieldtype": "Small Text",
+   "label": "Validation Comments"
+  },
+  {
+   "fieldname": "section_assignment",
+   "fieldtype": "Section Break",
+   "label": "Assignment"
+  },
+  {
+   "fieldname": "settlement",
+   "fieldtype": "Link",
+   "options": "HYD Settlement Profile",
+   "label": "Settlement",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "The settlement this household belongs to (when it has been profiled)."
+  },
+  {
+   "fieldname": "partner_organization",
+   "fieldtype": "Link",
+   "options": "Partner Details",
+   "label": "Partner Organization",
+   "in_standard_filter": 1,
+   "description": "Filled in from the settlement or the signed-in worker."
+  },
+  {
+   "fieldname": "organization_name",
+   "fieldtype": "Data",
+   "label": "Organization Name",
+   "read_only": 1,
+   "in_list_view": 1,
+   "fetch_from": "partner_organization.organization_name",
+   "description": "Fetched from the Partner Details."
+  },
+  {
+   "fieldname": "column_break_assignment",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "assigned_worker",
+   "fieldtype": "Link",
+   "options": "User",
+   "label": "Name of the ORW",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1,
+   "description": "The staff member collecting this household's data. Filled in with the signed-in user when left empty."
+  },
+  {
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "default": "Today",
+   "label": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1,
+   "description": "Defaults to today; change it to record a different date."
+  },
+  {
+   "fieldname": "household_label",
+   "fieldtype": "Data",
+   "label": "Household",
+   "read_only": 1,
+   "hidden": 1,
+   "no_copy": 1,
+   "length": 240
+  }
+ ],
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1,
+   "import": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Program Coordinator",
+   "share": 1,
+   "write": 1,
+   "import": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Program Manager",
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "import": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Organization Admin",
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "import": 1
+  },
+  {
+   "role": "ORW",
+   "read": 1,
+   "write": 1,
+   "create": 1
+  }
+ ]
+}

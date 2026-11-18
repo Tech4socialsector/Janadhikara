@@ -1,0 +1,68 @@
+{
+ "actions": [],
+ "creation": "2026-11-17 10:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "istable": 1,
+ "links": [],
+ "modified": "2026-11-18 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Hyderabad",
+ "name": "HYD Household Member",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "field_order": [
+  "member_name",
+  "individual_profile",
+  "uin",
+  "age",
+  "gender"
+ ],
+ "fields": [
+  {
+   "fieldname": "member_name",
+   "fieldtype": "Data",
+   "label": "Member Name",
+   "in_list_view": 1,
+   "reqd": 0,
+   "read_only": 1
+  },
+  {
+   "fieldname": "individual_profile",
+   "fieldtype": "Link",
+   "label": "Individual Profile",
+   "options": "HYD Individual Profile",
+   "in_list_view": 1,
+   "read_only": 1,
+   "description": "Filled in automatically: the roster row is made from the member's Individual Profile."
+  },
+  {
+   "fieldname": "uin",
+   "fieldtype": "Data",
+   "label": "UIN",
+   "in_list_view": 1,
+   "description": "The member's Individual ID.",
+   "read_only": 1
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Int",
+   "label": "Age",
+   "in_list_view": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "\nMale\nFemale\nOther",
+   "in_list_view": 1,
+   "read_only": 1
+  }
+ ],
+ "permissions": []
+}

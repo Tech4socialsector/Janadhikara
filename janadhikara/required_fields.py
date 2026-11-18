@@ -68,6 +68,17 @@ REQUIRED = {
  "Household Cooking Fuel": [
   "fuel"
  ],
+ "HYD Individual Profile": [
+  "household",
+  "member_name",
+  "validation_status",
+  "record_date"
+ ],
+ "HYD Household Profile": [
+  "household_status",
+  "validation_status",
+  "record_date"
+ ],
  "HYD Settlement Profile": [
   "record_date",
   "settlement_name",

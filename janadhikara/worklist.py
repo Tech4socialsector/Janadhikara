@@ -14,6 +14,7 @@ from frappe import _
 from frappe.desk.form.assign_to import _add, close_all_assignments
 from frappe.utils import add_days, nowdate
 
+HOUSEHOLD_DOCTYPES = ("Household Profile", "HYD Household Profile")
 STALE_DAYS = 7
 OPEN_STATUSES = ("Partially Completed",)
 DONE_STATUSES = ("Validated", "Completed")
@@ -88,16 +89,21 @@ def household_updated(doc, method=None):
 def nudge_stale_households():
 	"""Scheduler (daily): Draft / Partially Completed households with no update for STALE_DAYS."""
 	cutoff = add_days(nowdate(), -STALE_DAYS)
-	households = frappe.get_all(
-		"Household Profile",
-		filters={"validation_status": ["in", OPEN_STATUSES], "modified": ["<", cutoff]},
-		fields=["name", "respondent_name", "assigned_worker", "validation_status"],
-		order_by="modified asc",
-		limit=500,
-	)
+	households = []
+	for doctype in HOUSEHOLD_DOCTYPES:  # the shared household, and a city's own
+		households += [
+			frappe._dict(row, doctype=doctype)
+			for row in frappe.get_all(
+				doctype,
+				filters={"validation_status": ["in", OPEN_STATUSES], "modified": ["<", cutoff]},
+				fields=["name", "respondent_name", "assigned_worker", "validation_status"],
+				order_by="modified asc",
+				limit=500,
+			)
+		]
 	for row in households:
 		try:
-			doc = frappe._dict(row, doctype="Household Profile")
+			doc = row
 			_assign(
 				doc,
 				_("Household {0} has had no update for {1} days - please continue or close it").format(

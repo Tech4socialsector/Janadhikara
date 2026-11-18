@@ -6,7 +6,7 @@ from frappe.utils import getdate, nowdate
 from frappe.utils.file_manager import get_file_path
 from PIL import Image
 
-from janadhikara.city_pack import city_doctype, city_prefix, dashboard_spec, hidden_doctypes
+from janadhikara.city_pack import city_doctype, city_languages, city_prefix, dashboard_spec, hidden_doctypes
 
 
 PRIVILEGED_ROLES = {'Administrator', 'System Manager', 'Program Coordinator'}
@@ -31,7 +31,7 @@ def get_app_branding():
         'login_headline': settings.login_headline or None,
         'login_description': settings.login_description or None,
         'accent_color': settings.accent_color or None,
-        'city': {**get_city_config(settings), 'settlement_doctype': city_doctype('Settlement'), 'doctype_prefix': city_prefix(), 'dashboard': dashboard_spec()},
+        'city': {**get_city_config(settings), 'settlement_doctype': city_doctype('Settlement'), 'doctype_prefix': city_prefix(), 'dashboard': dashboard_spec(), 'languages': city_languages()},
     }
 
 

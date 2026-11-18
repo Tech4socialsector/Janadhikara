@@ -13,8 +13,8 @@
     <div v-else-if="groups.length" class="space-y-5">
       <section v-for="group in groups" :key="group.name">
         <h3 v-if="group.name" class="mb-3 text-base font-medium text-ink-gray-9">{{ group.name }}</h3>
-        <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
-          <div v-for="q in group.items" :key="q.name" :class="isWide(q) ? 'sm:col-span-2' : ''">
+        <div class="questions-grid">
+          <div v-for="q in group.items" :key="q.name" :class="isWide(q) ? 'questions-full' : ''">
             <label class="mb-1.5 block text-sm text-ink-gray-7">
               <span class="text-ink-gray-5">{{ q.question_no }}.</span> {{ q.question }}<span v-if="q.is_mandatory" class="text-red-500"> *</span>
             </label>
@@ -199,3 +199,21 @@ watch(
   { deep: false },
 )
 </script>
+
+<style scoped>
+.questions-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem 1.5rem;
+  align-items: start;
+}
+/* two columns from tablet width up; one on a phone */
+@media (min-width: 640px) {
+  .questions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.questions-grid > .questions-full {
+  grid-column: 1 / -1;
+}
+</style>

@@ -38,6 +38,8 @@ fixtures = [
 	{"dt": "HYD Municipal Zone"},
 	{"dt": "HYD Municipal Circle"},
 	{"dt": "HYD Municipal Ward"},
+	# Telugu text of the Hyderabad forms (from the sheets). Only the Telugu rows of this app are exported; Hindi/Assamese stay in translation_data/.
+	{"dt": "Translation", "filters": [["language", "=", "te"], ["context", "like", "janadhikara:%"]]},
 ]
 
 # Validation Status options are role-restricted (see masters/doctype/validation_status).
@@ -47,6 +49,8 @@ permission_query_conditions = {
 	"Household Profile": "janadhikara.security.household_conditions",
 	"Settlement": "janadhikara.security.settlement_conditions",
 	"HYD Settlement Profile": "janadhikara.security.settlement_profile_conditions",
+	"HYD Household Profile": "janadhikara.security.hyd_household_conditions",
+	"HYD Individual Profile": "janadhikara.security.hyd_individual_conditions",
 	"Individual Profile": "janadhikara.security.individual_conditions",
 }
 has_permission = {
@@ -55,6 +59,8 @@ has_permission = {
 	"Household Profile": "janadhikara.security.household_has_permission",
 	"Settlement": "janadhikara.security.settlement_has_permission",
 	"HYD Settlement Profile": "janadhikara.security.settlement_profile_has_permission",
+	"HYD Household Profile": "janadhikara.security.hyd_household_has_permission",
+	"HYD Individual Profile": "janadhikara.security.hyd_individual_has_permission",
 	"Individual Profile": "janadhikara.security.individual_has_permission",
 }
 
@@ -322,6 +328,7 @@ doc_events = {
 	"DocType": {"after_insert": "janadhikara.ai.policy.on_doctype_created"},
 	"Error Log": {"before_insert": "janadhikara.security.scrub_error_log"},
 	"Household Profile": {"on_update": "janadhikara.worklist.household_updated"},
+	"HYD Household Profile": {"on_update": "janadhikara.worklist.household_updated"},
 	"Notification Log": {"after_insert": "janadhikara.push.notification_created"},
 	"Announcement": {"on_update": "janadhikara.announcements.announcement_saved"},
 	"ToDo": {

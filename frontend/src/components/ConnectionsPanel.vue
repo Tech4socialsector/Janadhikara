@@ -130,9 +130,10 @@ const connections = props.links
   })
 
 // Member profiles of a household (see the template): how many are expected, and those already made.
-const memberConn = props.doctype === 'Household Profile' ? connections.find((c) => c.linkDoctype === 'Individual Profile' && c.route) : null
+// (the household's own link: a profile whose `household` field points back at it - Guwahati's or a city's own)
+const memberConn = connections.find((c) => c.linkFieldname === 'household' && c.route) || null
 const memberProfiles = useCall({
-  url: '/api/v2/document/Individual Profile',
+  url: `/api/v2/document/${memberConn?.linkDoctype || 'Individual Profile'}`,
   method: 'GET',
   params: () => ({ fields: JSON.stringify(['name', 'member_name']), filters: JSON.stringify({ household: props.name }), order_by: 'creation asc', limit: 100 }),
   immediate: false,

@@ -81,7 +81,13 @@
  "naming_rule": "Expression (old style)",
  "creation": "2026-11-16 15:00:00.000000",
  "modified": "2026-11-16 15:00:00.000000",
- "links": [],
+ "links": [
+  {
+   "group": "Households",
+   "link_doctype": "HYD Household Profile",
+   "link_fieldname": "settlement"
+  }
+ ],
  "field_order": [
   "tab_profile",
   "section_identifiers",
@@ -113,6 +119,7 @@
   "tab_people_housing",
   "section_demographic",
   "q2_1_total_number_of_households_families",
+  "households_profiled",
   "q2_2_total_population_male",
   "q2_3_total_population_female",
   "q2_4_total_population_others",
@@ -461,6 +468,14 @@
    "fieldtype": "Int",
    "label": "2.1. Total number of households (families)",
    "description": "Enter the total number of households/families in the settlement."
+  },
+  {
+   "fieldname": "households_profiled",
+   "fieldtype": "Int",
+   "label": "Households profiled so far",
+   "read_only": 1,
+   "no_copy": 1,
+   "description": "Counted automatically from the Household Profiles of this settlement."
   },
   {
    "fieldname": "q2_2_total_population_male",

@@ -1,6 +1,7 @@
 import { shallowRef, watch } from 'vue'
 import { call } from 'frappe-ui'
-import { appLanguage, OFFERED_LANGUAGES } from '@/data/language'
+import { appLanguage } from '@/data/language'
+import { offeredLanguages } from '@/data/cityLanguages'
 import { session } from '@/data/session'
 import { online } from '@/data/connection'
 import { doctypePrefix } from '@/data/doctypePrefix'
@@ -58,7 +59,7 @@ async function writeCache(language, data) {
 }
 // The earlier copy in localStorage (bigger, and only for languages already used) is no longer needed.
 try {
-  for (const l of OFFERED_LANGUAGES) localStorage.removeItem(`janadhikara-translations-${l}`)
+  for (const l of ['en', 'as', 'hi', 'te']) localStorage.removeItem(`janadhikara-translations-${l}`)
 } catch {
   // nothing to remove
 }
@@ -98,7 +99,7 @@ async function prefetchLanguages() {
   if (prefetching || !navigator.onLine || !session.user) return
   prefetching = true
   try {
-    for (const language of OFFERED_LANGUAGES) {
+    for (const language of offeredLanguages.value) {
       if (language === 'en' || language === appLanguage.value) continue
       if (await readCache(language)) continue
       try {

@@ -1,0 +1,840 @@
+{
+ "actions": [],
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "index_web_pages_for_search": 1,
+ "modified_by": "Administrator",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "states": [],
+ "show_title_field_in_link": 1,
+ "allow_rename": 1,
+ "track_changes": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "allow_import": 1,
+ "name": "HYD Individual Profile",
+ "module": "Hyderabad",
+ "creation": "2026-11-17 12:00:00.000000",
+ "modified": "2026-11-17 12:00:00.000000",
+ "autoname": "HYD-IND.####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "member_name",
+ "search_fields": "member_name,individual_id,household,settlement",
+ "links": [],
+ "field_order": [
+  "tab_individual_profile",
+  "section_identification",
+  "household",
+  "individual_id",
+  "member_name",
+  "column_break_identification",
+  "date_of_birth",
+  "age",
+  "sex",
+  "section_education",
+  "q2_1_education_status",
+  "q2_2_currently_studying_mention_current",
+  "q2_3_where_study",
+  "q2_4_completed_or_dropped_out_education",
+  "q2_5_reasons_never_enrolled_or_dropped",
+  "q2_5_reasons_never_enrolled_or_dropped_other",
+  "q2_6_child_below_6_years_child",
+  "q2_7_reasons_not_enrolling_children_cre",
+  "q2_7_reasons_not_enrolling_children_cre_other",
+  "q2_8_reasons_not_enrolling_children_ang",
+  "q2_8_reasons_not_enrolling_children_ang_other",
+  "section_health",
+  "q3_1_where_was_child_born",
+  "q3_2_when_was_last_height_weight",
+  "q3_3_child_received_age_appropriate_imm",
+  "q3_4_no_reasons",
+  "q3_4_no_reasons_other",
+  "q3_5_individual_disability",
+  "q3_6_yes_specify",
+  "q3_6_yes_specify_other",
+  "q3_7_individual_disability_certificate",
+  "q3_9_individual_diagnosed_chronic_or_lo",
+  "q3_10_yes_illness_or_health_condition",
+  "q3_10_yes_illness_or_health_condition_other",
+  "q3_11_individual_require_regular_medicat",
+  "section_livelihood",
+  "q4_1_employment_status",
+  "q4_1_employment_status_other",
+  "q4_2_employed_occupation",
+  "q4_2_employed_occupation_other",
+  "q4_3_work_regularity_mention_days_worke",
+  "q4_4_monthly_income_inr",
+  "q4_4_prefer_not_to_respond",
+  "q4_5_income_stability",
+  "q4_6_unemployed_reasons",
+  "q4_6_unemployed_reasons_other",
+  "q4_7_s_livelihood_aspirations",
+  "q4_8_support_required_achieve_livelihoo",
+  "section_documents",
+  "q5_1_aadhar_card",
+  "q5_2_voter_id",
+  "q5_3_pan_card",
+  "q5_4_birth_certificate",
+  "q5_5_caste_community_certificate",
+  "q5_6_income_certificate",
+  "q5_7_abha_ayushman_bharath_card",
+  "q5_8_e_shram_card",
+  "section_schemes",
+  "q6_1_telangana_gruha_lakshmi_gas_cylind",
+  "q6_1_telangana_gruha_lakshmi_gas_cylind_other",
+  "q6_2_telangana_gruha_jyothi_free_electr",
+  "q6_2_telangana_gruha_jyothi_free_electr_other",
+  "q6_3_cheyutha_pensions_old_age_pension",
+  "q6_3_cheyutha_pensions_old_age_pension_other",
+  "q6_4_kalyana_lakshmi_pathakam_shaadi_mu",
+  "q6_4_kalyana_lakshmi_pathakam_shaadi_mu_other",
+  "q6_5_food_security_card_benefits_ration",
+  "q6_5_food_security_card_benefits_ration_other",
+  "q6_6_arogyasri_benefits",
+  "q6_6_arogyasri_benefits_other",
+  "q6_7_bocw_labour_card_benefits",
+  "q6_7_bocw_labour_card_benefits_other",
+  "q6_8_indiramma_indlu_benefits",
+  "q6_8_indiramma_indlu_benefits_other",
+  "q6_9_mission_vatsalya_benefits_icps_spo",
+  "q6_9_mission_vatsalya_benefits_icps_spo_other",
+  "q6_10_sukanya_samriddhi_yojana_benefits",
+  "q6_10_sukanya_samriddhi_yojana_benefits_other",
+  "q6_11_pradhan_mantri_jeevan_jyoti_bima",
+  "q6_11_pradhan_mantri_jeevan_jyoti_bima_other",
+  "q6_12_pradhan_mantri_suraksha_bima_yojan",
+  "q6_12_pradhan_mantri_suraksha_bima_yojan_other",
+  "q6_13_atal_pension_yojana_apy",
+  "q6_13_atal_pension_yojana_apy_other",
+  "q6_14_pm_street_vendor_s_atmanirbhar",
+  "q6_14_pm_street_vendor_s_atmanirbhar_other",
+  "section_closing",
+  "validation_status",
+  "validation_comments",
+  "section_assignment",
+  "settlement",
+  "partner_organization",
+  "organization_name",
+  "column_break_assignment",
+  "assigned_worker",
+  "record_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "tab_individual_profile",
+   "fieldtype": "Tab Break",
+   "label": "Individual Profile"
+  },
+  {
+   "fieldname": "section_identification",
+   "fieldtype": "Section Break",
+   "label": "1. Individual Identification Details"
+  },
+  {
+   "fieldname": "household",
+   "fieldtype": "Link",
+   "options": "HYD Household Profile",
+   "label": "1.1 Household ID",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1,
+   "description": "The household this person lives in (taken from the household list)."
+  },
+  {
+   "fieldname": "individual_id",
+   "fieldtype": "Data",
+   "label": "1.2 Individual ID",
+   "description": "The member's ID from the household roster (UIN). Filled in from the roster when the household and name match a roster row."
+  },
+  {
+   "fieldname": "member_name",
+   "fieldtype": "Data",
+   "label": "1.3 Individual Name",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "Enter the individual's name as recorded in the family."
+  },
+  {
+   "fieldname": "column_break_identification",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "1.4 Date of birth",
+   "description": "Enter the individual's date of birth. If the exact date is not known, enter the first day of the month or year mentioned."
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Int",
+   "label": "1.5 Age",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Calculated automatically from the date of birth (completed years)."
+  },
+  {
+   "fieldname": "sex",
+   "fieldtype": "Select",
+   "label": "1.6. Sex",
+   "options": "\nMale\nFemale\nOthers\nPrefer not to say",
+   "description": "Ask the respondent to select the sex category that best describes the individual.",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "section_education",
+   "fieldtype": "Section Break",
+   "label": "2. Education Details"
+  },
+  {
+   "fieldname": "q2_1_education_status",
+   "fieldtype": "Select",
+   "label": "2.1. Education status",
+   "options": "\nCurrently studying\nCompleted Education\nDropped\nNever school enrolled\nYet to enrol in school (in case child is below 6 years of age)",
+   "description": "Record the individual's current education status. Select the option that best describes their schooling or educational situation. Currently studying: ask 2.2 and 2.3. Completed: 2.4. Dropped: 2.4 and 2.5. Never enrolled: 2.5. Yet to enrol: 2.6."
+  },
+  {
+   "fieldname": "q2_2_currently_studying_mention_current",
+   "fieldtype": "Data",
+   "label": "2.2. If currently studying, mention current education",
+   "description": "Mention current class if studying below class 10 (e.g. grade 3, grade 7) or course and year of education (e.g. 1st year Intermediate, 2nd year UG).",
+   "depends_on": "eval:doc.q2_1_education_status==\"Currently studying\""
+  },
+  {
+   "fieldname": "q2_3_where_study",
+   "fieldtype": "Select",
+   "label": "2.3. Where do you study?",
+   "options": "\nGovernment institution\nPrivate institution",
+   "description": "Record the type of educational institution they are attending, based on the management of the school, college or institution.",
+   "depends_on": "eval:doc.q2_1_education_status==\"Currently studying\""
+  },
+  {
+   "fieldname": "q2_4_completed_or_dropped_out_education",
+   "fieldtype": "Data",
+   "label": "2.4. If completed or dropped out of education, what is the highest level of education completed?",
+   "description": "Record the highest level or class successfully completed. Write actuals, e.g. grade 5, 10, or intermediate, or UG, or PG, or diploma in computers.",
+   "depends_on": "eval:doc.q2_1_education_status==\"Completed Education\" || doc.q2_1_education_status==\"Dropped\""
+  },
+  {
+   "fieldname": "q2_5_reasons_never_enrolled_or_dropped",
+   "fieldtype": "Select",
+   "label": "2.5. Reasons for never enrolled or dropped out of education",
+   "options": "\nNot interested\nNo access to institutions\nDue to financial constraints\nSchools/colleges did not admit (mention reasons)\nSupport in household income\nMigration\nMedium of teaching\nOthers, specify",
+   "description": "Select the primary reason why the individual never enrolled in school or discontinued education before completion.",
+   "depends_on": "eval:doc.q2_1_education_status==\"Dropped\" || doc.q2_1_education_status==\"Never school enrolled\""
+  },
+  {
+   "fieldname": "q2_5_reasons_never_enrolled_or_dropped_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q2.5)",
+   "depends_on": "eval:doc.q2_5_reasons_never_enrolled_or_dropped==\"Others, specify\""
+  },
+  {
+   "fieldname": "q2_6_child_below_6_years_child",
+   "fieldtype": "Select",
+   "label": "2.6. If child is below 6 years, child is enrolled in the following",
+   "options": "\nCreche\nAnganwadi centre\nNot enrolled in either creche or Anganwadi centre",
+   "description": "Captures the child's participation in early childhood care, nutrition and pre-school education services.",
+   "depends_on": "eval:doc.q2_1_education_status==\"Yet to enrol in school (in case child is below 6 years of age)\""
+  },
+  {
+   "fieldname": "q2_7_reasons_not_enrolling_children_cre",
+   "fieldtype": "Select",
+   "label": "2.7. Reasons for not enrolling children in creche",
+   "options": "\nNo creche nearby\nExpensive to enrol in creche\nDon't know if there is creche nearby\nNot interested to enrol\nOthers, specify",
+   "description": "The main reason why the child is not enrolled in a creche.",
+   "depends_on": "eval:doc.q2_6_child_below_6_years_child==\"Not enrolled in either creche or Anganwadi centre\""
+  },
+  {
+   "fieldname": "q2_7_reasons_not_enrolling_children_cre_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q2.7)",
+   "depends_on": "eval:doc.q2_7_reasons_not_enrolling_children_cre==\"Others, specify\""
+  },
+  {
+   "fieldname": "q2_8_reasons_not_enrolling_children_ang",
+   "fieldtype": "Select",
+   "label": "2.8. Reasons for not enrolling children in Anganwadi",
+   "options": "\nNo Anganwadi centre\nDon't know if there is Anganwadi nearby\nAnganwadi did not admit - no Aadhar\nAnganwadi did not admit - no immunization card\nNot interested to enrol\nOthers, specify",
+   "description": "The main reason why the child is not enrolled in an Anganwadi centre.",
+   "depends_on": "eval:doc.q2_6_child_below_6_years_child==\"Not enrolled in either creche or Anganwadi centre\""
+  },
+  {
+   "fieldname": "q2_8_reasons_not_enrolling_children_ang_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q2.8)",
+   "depends_on": "eval:doc.q2_8_reasons_not_enrolling_children_ang==\"Others, specify\""
+  },
+  {
+   "fieldname": "section_health",
+   "fieldtype": "Section Break",
+   "label": "3. Health"
+  },
+  {
+   "fieldname": "q3_1_where_was_child_born",
+   "fieldtype": "Select",
+   "label": "3.1. Where was the child born?",
+   "options": "\nHospital\nHome",
+   "description": "Questions 3.1 to 3.4 are for children below 6 years. The rest are for everyone. The place where the child was born.",
+   "depends_on": "eval:(doc.age||doc.age===0) && doc.age < 6"
+  },
+  {
+   "fieldname": "q3_2_when_was_last_height_weight",
+   "fieldtype": "Select",
+   "label": "3.2. When was the last height & weight of child checked?",
+   "options": "\nLess than 1 month ago\n6 months ago\nI don't remember\nNever checked",
+   "description": "How recently the child's growth was monitored through height and weight measurement.",
+   "depends_on": "eval:(doc.age||doc.age===0) && doc.age < 6"
+  },
+  {
+   "fieldname": "q3_3_child_received_age_appropriate_imm",
+   "fieldtype": "Select",
+   "label": "3.3. Has the child received age-appropriate immunization?",
+   "options": "\nYes\nNo\nI don't know",
+   "description": "Whether the child has received all vaccinations recommended for their age.",
+   "depends_on": "eval:(doc.age||doc.age===0) && doc.age < 6"
+  },
+  {
+   "fieldname": "q3_4_no_reasons",
+   "fieldtype": "Select",
+   "label": "3.4. If no, what are the reasons?",
+   "options": "\nLack of awareness about immunization\nDistance to vaccination centre\nVaccine not available\nOther (Specify)",
+   "description": "The main reason why the child has not received age-appropriate immunization.",
+   "depends_on": "eval:doc.q3_3_child_received_age_appropriate_imm==\"No\""
+  },
+  {
+   "fieldname": "q3_4_no_reasons_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q3.4)",
+   "depends_on": "eval:doc.q3_4_no_reasons==\"Other (Specify)\""
+  },
+  {
+   "fieldname": "q3_5_individual_disability",
+   "fieldtype": "Select",
+   "label": "3.5. Does the individual have any disability?",
+   "options": "\nYes\nNo",
+   "description": "Whether the individual has any long-term physical, sensory, intellectual, or developmental disability."
+  },
+  {
+   "fieldname": "q3_6_yes_specify",
+   "fieldtype": "Select",
+   "label": "3.6. If yes, specify",
+   "options": "\nBlindness\nDeafness\nSpeech disorder\nAutism\nMobility-impaired\nOther (Specify)",
+   "description": "The type of disability experienced by the individual.",
+   "depends_on": "eval:doc.q3_5_individual_disability==\"Yes\""
+  },
+  {
+   "fieldname": "q3_6_yes_specify_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q3.6)",
+   "depends_on": "eval:doc.q3_6_yes_specify==\"Other (Specify)\""
+  },
+  {
+   "fieldname": "q3_7_individual_disability_certificate",
+   "fieldtype": "Select",
+   "label": "3.7. Does the individual have a disability certificate?",
+   "options": "\nI have\nI have but corrections required\nI have but not sure if corrections required\nApplied but rejected\nApplied but haven't received\nI never applied\nDon't know where to apply",
+   "description": "The individual's disability certificate status, and any support required to obtain or update the certificate.",
+   "depends_on": "eval:doc.q3_5_individual_disability==\"Yes\""
+  },
+  {
+   "fieldname": "q3_9_individual_diagnosed_chronic_or_lo",
+   "fieldtype": "Select",
+   "label": "3.9. Does the individual have any diagnosed chronic or long-term illness?",
+   "options": "\nYes\nNo\nPrefer not to say",
+   "description": "Whether the individual has been diagnosed by a healthcare professional with any long-term or chronic health condition."
+  },
+  {
+   "fieldname": "q3_10_yes_illness_or_health_condition",
+   "fieldtype": "Small Text",
+   "label": "3.10. If yes, what illness or health condition does the individual have?",
+   "options": "Diabetes\nHypertension\nHeart disease\nKidney disease\nRespiratory illness (asthma, TB, etc.)\nCancer\nEpilepsy\nNeurological condition\nMental health condition\nOther (Specify)",
+   "description": "The diagnosed chronic illness or long-term health condition affecting the individual. More than one can be selected.",
+   "depends_on": "eval:doc.q3_9_individual_diagnosed_chronic_or_lo==\"Yes\""
+  },
+  {
+   "fieldname": "q3_10_yes_illness_or_health_condition_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q3.10)",
+   "depends_on": "eval:(doc.q3_10_yes_illness_or_health_condition||\"\").split(\"\\n\").map(s=>s.trim()).includes(\"Other (Specify)\")"
+  },
+  {
+   "fieldname": "q3_11_individual_require_regular_medicat",
+   "fieldtype": "Select",
+   "label": "3.11. Does the individual require regular medication or ongoing treatment?",
+   "options": "\nYes\nNo",
+   "description": "Whether the individual requires regular medication or ongoing treatment for a health condition."
+  },
+  {
+   "fieldname": "section_livelihood",
+   "fieldtype": "Section Break",
+   "label": "4. Livelihood",
+   "depends_on": "eval:(doc.age||doc.age===0) && doc.age >= 18"
+  },
+  {
+   "fieldname": "q4_1_employment_status",
+   "fieldtype": "Select",
+   "label": "4.1. Employment status",
+   "options": "\nEmployed\nUnemployed\nStudent\nHomemaker\nRetired\nUnable to work due to health\nOther (Specify)",
+   "description": "The individual's current employment or primary activity status. Ask these questions only if the individual is 18 years or above. If unemployed, skip to 4.6."
+  },
+  {
+   "fieldname": "q4_1_employment_status_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q4.1)",
+   "depends_on": "eval:doc.q4_1_employment_status==\"Other (Specify)\""
+  },
+  {
+   "fieldname": "q4_2_employed_occupation",
+   "fieldtype": "Select",
+   "label": "4.2. If employed, what is the occupation of this person?",
+   "options": "\nDaily-wage worker\nStreet vendor\nDomestic worker\nConstruction worker\nGig/platform worker (auto, cab, bike, delivery partner & services)\nSecurity guard\nWaste picker\nSanitation worker\nTailor\nFactory worker\nHome-based worker\nHousekeeping (hotel/hospital, etc.,)\nSalesperson/marketing\nBeautician\nHamali\nTeacher\nIT services\nOther (Specify)",
+   "description": "The individual's primary occupation or type of work.",
+   "depends_on": "eval:doc.q4_1_employment_status==\"Employed\""
+  },
+  {
+   "fieldname": "q4_2_employed_occupation_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q4.2)",
+   "depends_on": "eval:doc.q4_2_employed_occupation==\"Other (Specify)\""
+  },
+  {
+   "fieldname": "q4_3_work_regularity_mention_days_worke",
+   "fieldtype": "Int",
+   "label": "4.3. Work regularity (mention days worked in a typical month)",
+   "description": "How many days the individual typically works in a month.",
+   "depends_on": "eval:doc.q4_1_employment_status==\"Employed\""
+  },
+  {
+   "fieldname": "q4_4_monthly_income_inr",
+   "fieldtype": "Int",
+   "label": "4.4. Monthly income in INR",
+   "description": "The individual's average monthly income from all sources, in rupees. If the respondent prefers not to disclose their income, tick 'Prefer not to respond' and go to the next question.",
+   "depends_on": "eval:doc.q4_1_employment_status==\"Employed\""
+  },
+  {
+   "fieldname": "q4_4_prefer_not_to_respond",
+   "fieldtype": "Check",
+   "label": "Prefer not to respond (income)",
+   "depends_on": "eval:doc.q4_1_employment_status==\"Employed\""
+  },
+  {
+   "fieldname": "q4_5_income_stability",
+   "fieldtype": "Select",
+   "label": "4.5. Income stability",
+   "options": "\nRegular\nSeasonal",
+   "description": "Whether the individual's income is received consistently throughout the year or varies by season or availability of work.",
+   "depends_on": "eval:doc.q4_1_employment_status==\"Employed\" && !doc.q4_4_prefer_not_to_respond"
+  },
+  {
+   "fieldname": "q4_6_unemployed_reasons",
+   "fieldtype": "Select",
+   "label": "4.6. If unemployed, reasons",
+   "options": "\nDisability/illness\nLack skills\nChildcare responsibilities\nHousehold responsibilities\nJobs not available nearby\nPregnancy or recent childbirth\nElderly care responsibilities\nSafety concerns at the workplace\nLow wages / work not financially viable\nSeasonal or irregular availability of work\nOther (Specify)",
+   "description": "The main reason why the individual is currently unemployed.",
+   "depends_on": "eval:doc.q4_1_employment_status==\"Unemployed\""
+  },
+  {
+   "fieldname": "q4_6_unemployed_reasons_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q4.6)",
+   "depends_on": "eval:doc.q4_6_unemployed_reasons==\"Other (Specify)\""
+  },
+  {
+   "fieldname": "q4_7_s_livelihood_aspirations",
+   "fieldtype": "Small Text",
+   "label": "4.7. What are this person's livelihood aspirations?",
+   "description": "The type of livelihood, employment, or income-generating opportunity the individual would like to pursue in the future."
+  },
+  {
+   "fieldname": "q4_8_support_required_achieve_livelihoo",
+   "fieldtype": "Small Text",
+   "label": "4.8. Support required to achieve livelihood aspirations?",
+   "description": "The support, resources, or assistance required by the individual to achieve their livelihood or employment goals."
+  },
+  {
+   "fieldname": "section_documents",
+   "fieldtype": "Section Break",
+   "label": "5. Access to basic documents"
+  },
+  {
+   "fieldname": "q5_1_aadhar_card",
+   "fieldtype": "Select",
+   "label": "5.1. Aadhar card",
+   "options": "\nI have\nI have but corrections required\nI have but not sure if corrections required\nApplied but rejected\nApplied but haven't received\nI don't have",
+   "description": "The individual's Aadhaar card status, and any pending issues related to application, receipt, or corrections."
+  },
+  {
+   "fieldname": "q5_2_voter_id",
+   "fieldtype": "Select",
+   "label": "5.2. Voter ID",
+   "options": "\nI have\nI have but corrections required\nI have but not sure if corrections required\nApplied but rejected\nApplied but haven't received\nI never applied",
+   "description": "The individual's Voter ID status, and any pending issues related to application, receipt, or corrections."
+  },
+  {
+   "fieldname": "q5_3_pan_card",
+   "fieldtype": "Select",
+   "label": "5.3. PAN Card",
+   "options": "\nI have\nApplied but rejected\nApplied but haven't received\nI don't have",
+   "description": "The individual's PAN card status, and any pending issues related to application or receipt."
+  },
+  {
+   "fieldname": "q5_4_birth_certificate",
+   "fieldtype": "Select",
+   "label": "5.4. Birth certificate",
+   "options": "\nI have\nI have but corrections required\nI have but not sure if corrections required\nApplied but rejected\nApplied but haven't received\nI never applied",
+   "description": "The individual's birth certificate status, and any pending issues related to application, receipt, or corrections."
+  },
+  {
+   "fieldname": "q5_5_caste_community_certificate",
+   "fieldtype": "Select",
+   "label": "5.5. Caste/community certificate",
+   "options": "\nI have\nI have but corrections required\nI have but not sure if corrections required\nApplied but rejected\nApplied but haven't received\nI never applied",
+   "description": "The individual's caste/community certificate status, and any pending issues related to application, receipt, or corrections."
+  },
+  {
+   "fieldname": "q5_6_income_certificate",
+   "fieldtype": "Select",
+   "label": "5.6. Income certificate",
+   "options": "\nI have\nI have but corrections required\nI have but not sure if corrections required\nApplied but rejected\nApplied but haven't received\nI never applied",
+   "description": "The individual's income certificate status, and any pending issues related to application, receipt, or corrections."
+  },
+  {
+   "fieldname": "q5_7_abha_ayushman_bharath_card",
+   "fieldtype": "Select",
+   "label": "5.7. ABHA (Ayushman Bharath) Card",
+   "options": "\nI have\nI have but corrections required\nI have but not sure if corrections required\nApplied but rejected\nApplied but haven't received\nI never applied",
+   "description": "The individual's ABHA card status, and any pending issues related to application, receipt, or corrections."
+  },
+  {
+   "fieldname": "q5_8_e_shram_card",
+   "fieldtype": "Select",
+   "label": "5.8. e-Shram Card",
+   "options": "\nI have\nI have but corrections required\nI have but not sure if corrections required\nApplied but rejected\nApplied but haven't received\nI never applied",
+   "description": "The individual's e-Shram card status, and any pending issues related to application, receipt, or corrections."
+  },
+  {
+   "fieldname": "section_schemes",
+   "fieldtype": "Section Break",
+   "label": "6. Social Security Schemes"
+  },
+  {
+   "fieldname": "q6_1_telangana_gruha_lakshmi_gas_cylind",
+   "fieldtype": "Select",
+   "label": "6.1. Telangana Gruha Lakshmi (Gas Cylinder Subsidy)",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them."
+  },
+  {
+   "fieldname": "q6_1_telangana_gruha_lakshmi_gas_cylind_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.1)",
+   "depends_on": "eval:doc.q6_1_telangana_gruha_lakshmi_gas_cylind==\"Others (specify)\""
+  },
+  {
+   "fieldname": "q6_2_telangana_gruha_jyothi_free_electr",
+   "fieldtype": "Select",
+   "label": "6.2. Telangana Gruha Jyothi (Free electricity of 200 Units)",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them."
+  },
+  {
+   "fieldname": "q6_2_telangana_gruha_jyothi_free_electr_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.2)",
+   "depends_on": "eval:doc.q6_2_telangana_gruha_jyothi_free_electr==\"Others (specify)\""
+  },
+  {
+   "fieldname": "q6_3_cheyutha_pensions_old_age_pension",
+   "fieldtype": "Select",
+   "label": "6.3. Cheyutha Pensions (Old Age Pension, Disability Pension, Single Women Pension, Widow Pension)",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them."
+  },
+  {
+   "fieldname": "q6_3_cheyutha_pensions_old_age_pension_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.3)",
+   "depends_on": "eval:doc.q6_3_cheyutha_pensions_old_age_pension==\"Others (specify)\""
+  },
+  {
+   "fieldname": "q6_4_kalyana_lakshmi_pathakam_shaadi_mu",
+   "fieldtype": "Select",
+   "label": "6.4. Kalyana Lakshmi Pathakam / Shaadi Mubarak",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them."
+  },
+  {
+   "fieldname": "q6_4_kalyana_lakshmi_pathakam_shaadi_mu_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.4)",
+   "depends_on": "eval:doc.q6_4_kalyana_lakshmi_pathakam_shaadi_mu==\"Others (specify)\""
+  },
+  {
+   "fieldname": "q6_5_food_security_card_benefits_ration",
+   "fieldtype": "Select",
+   "label": "6.5. Food Security Card benefits (ration card)",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them."
+  },
+  {
+   "fieldname": "q6_5_food_security_card_benefits_ration_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.5)",
+   "depends_on": "eval:doc.q6_5_food_security_card_benefits_ration==\"Others (specify)\""
+  },
+  {
+   "fieldname": "q6_6_arogyasri_benefits",
+   "fieldtype": "Select",
+   "label": "6.6. Arogyasri benefits",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them."
+  },
+  {
+   "fieldname": "q6_6_arogyasri_benefits_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.6)",
+   "depends_on": "eval:doc.q6_6_arogyasri_benefits==\"Others (specify)\""
+  },
+  {
+   "fieldname": "q6_7_bocw_labour_card_benefits",
+   "fieldtype": "Select",
+   "label": "6.7. BoCW (Labour) Card benefits",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them."
+  },
+  {
+   "fieldname": "q6_7_bocw_labour_card_benefits_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.7)",
+   "depends_on": "eval:doc.q6_7_bocw_labour_card_benefits==\"Others (specify)\""
+  },
+  {
+   "fieldname": "q6_8_indiramma_indlu_benefits",
+   "fieldtype": "Select",
+   "label": "6.8. Indiramma Indlu benefits",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them."
+  },
+  {
+   "fieldname": "q6_8_indiramma_indlu_benefits_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.8)",
+   "depends_on": "eval:doc.q6_8_indiramma_indlu_benefits==\"Others (specify)\""
+  },
+  {
+   "fieldname": "q6_9_mission_vatsalya_benefits_icps_spo",
+   "fieldtype": "Select",
+   "label": "6.9. Mission Vatsalya benefits (ICPS Sponsorship Scheme)",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them."
+  },
+  {
+   "fieldname": "q6_9_mission_vatsalya_benefits_icps_spo_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.9)",
+   "depends_on": "eval:doc.q6_9_mission_vatsalya_benefits_icps_spo==\"Others (specify)\""
+  },
+  {
+   "fieldname": "q6_10_sukanya_samriddhi_yojana_benefits",
+   "fieldtype": "Select",
+   "label": "6.10. Sukanya Samriddhi Yojana benefits",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them. Ask only if the girl child is below 10 years old.",
+   "depends_on": "eval:doc.sex==\"Female\" && (doc.age||doc.age===0) && doc.age < 10"
+  },
+  {
+   "fieldname": "q6_10_sukanya_samriddhi_yojana_benefits_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.10)",
+   "depends_on": "eval:doc.q6_10_sukanya_samriddhi_yojana_benefits==\"Others (specify)\""
+  },
+  {
+   "fieldname": "q6_11_pradhan_mantri_jeevan_jyoti_bima",
+   "fieldtype": "Select",
+   "label": "6.11. Pradhan Mantri Jeevan Jyoti Bima Yojana (PMJJBY)",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them."
+  },
+  {
+   "fieldname": "q6_11_pradhan_mantri_jeevan_jyoti_bima_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.11)",
+   "depends_on": "eval:doc.q6_11_pradhan_mantri_jeevan_jyoti_bima==\"Others (specify)\""
+  },
+  {
+   "fieldname": "q6_12_pradhan_mantri_suraksha_bima_yojan",
+   "fieldtype": "Select",
+   "label": "6.12. Pradhan Mantri Suraksha Bima Yojana",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them."
+  },
+  {
+   "fieldname": "q6_12_pradhan_mantri_suraksha_bima_yojan_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.12)",
+   "depends_on": "eval:doc.q6_12_pradhan_mantri_suraksha_bima_yojan==\"Others (specify)\""
+  },
+  {
+   "fieldname": "q6_13_atal_pension_yojana_apy",
+   "fieldtype": "Select",
+   "label": "6.13. Atal Pension Yojana (APY)",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them."
+  },
+  {
+   "fieldname": "q6_13_atal_pension_yojana_apy_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.13)",
+   "depends_on": "eval:doc.q6_13_atal_pension_yojana_apy==\"Others (specify)\""
+  },
+  {
+   "fieldname": "q6_14_pm_street_vendor_s_atmanirbhar",
+   "fieldtype": "Select",
+   "label": "6.14. PM Street Vendor's AtmaNirbhar Nidhi",
+   "options": "\nAvailing benefits\nApplied but rejected being a migrant\nApplied but rejected due to lack of documents\nApplied and yet to receive\nNot eligible\nNever applied\nOthers (specify)",
+   "description": "The individual's current status in accessing benefits under this scheme, and any barriers to availing them."
+  },
+  {
+   "fieldname": "q6_14_pm_street_vendor_s_atmanirbhar_other",
+   "fieldtype": "Data",
+   "label": "Please specify (Q6.14)",
+   "depends_on": "eval:doc.q6_14_pm_street_vendor_s_atmanirbhar==\"Others (specify)\""
+  },
+  {
+   "fieldname": "section_closing",
+   "fieldtype": "Section Break",
+   "label": "7. Closing and Record Status"
+  },
+  {
+   "fieldname": "validation_status",
+   "fieldtype": "Link",
+   "options": "Validation Status",
+   "default": "Partially Completed",
+   "label": "7.1-7.2 Status",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1,
+   "description": "Documentation status (7.1) and validation status (7.2): the Community Organiser sets Partially Completed or Completed; the Area Coordinator sets Revision Needed or Validated. Choose Revision Needed and refer to the comments when something must be corrected."
+  },
+  {
+   "fieldname": "validation_comments",
+   "fieldtype": "Small Text",
+   "label": "Validation Comments"
+  },
+  {
+   "fieldname": "section_assignment",
+   "fieldtype": "Section Break",
+   "label": "Assignment"
+  },
+  {
+   "fieldname": "settlement",
+   "fieldtype": "Link",
+   "options": "HYD Settlement Profile",
+   "label": "Settlement",
+   "read_only": 1,
+   "in_standard_filter": 1,
+   "fetch_from": "household.settlement",
+   "description": "Filled in from the Household Profile."
+  },
+  {
+   "fieldname": "partner_organization",
+   "fieldtype": "Link",
+   "options": "Partner Details",
+   "label": "Partner Organization",
+   "read_only": 1,
+   "in_standard_filter": 1,
+   "fetch_from": "household.partner_organization",
+   "description": "Filled in from the Household Profile."
+  },
+  {
+   "fieldname": "organization_name",
+   "fieldtype": "Data",
+   "label": "Organization Name",
+   "read_only": 1,
+   "fetch_from": "partner_organization.organization_name"
+  },
+  {
+   "fieldname": "column_break_assignment",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "assigned_worker",
+   "fieldtype": "Link",
+   "options": "User",
+   "label": "Name of the ORW",
+   "in_standard_filter": 1,
+   "description": "The staff member collecting this profile. Filled in with the signed-in user when left empty."
+  },
+  {
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "default": "Today",
+   "label": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1,
+   "description": "Defaults to today; change it to record a different date."
+  }
+ ],
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1,
+   "import": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Program Coordinator",
+   "share": 1,
+   "write": 1,
+   "import": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Program Manager",
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "import": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Organization Admin",
+   "write": 1,
+   "delete": 1,
+   "export": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1,
+   "import": 1
+  },
+  {
+   "role": "ORW",
+   "read": 1,
+   "write": 1,
+   "create": 1
+  }
+ ]
+}

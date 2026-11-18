@@ -61,6 +61,19 @@ def dashboard_spec():
 		return json.load(f)
 
 
+def replacement_doctypes():
+	"""The city doctypes that stand in for shared ones (they belong in the module menus, not in Master Data)."""
+	return set((current_pack() or {}).get("replaces", {}).values())
+
+
+def city_languages():
+	"""The languages this site offers (pack "languages"): English and Telugu on Hyderabad's site; English,
+	Assamese and Hindi where the city has no pack of its own (Guwahati)."""
+	from janadhikara.translations import DEFAULT_LANGUAGES
+
+	return list((current_pack() or {}).get("languages") or DEFAULT_LANGUAGES)
+
+
 def city_prefix():
 	"""The short code that starts the names of this site's city doctypes (HYD), or None."""
 	return (current_pack() or {}).get("prefix")
@@ -106,8 +119,11 @@ def remove_city_pack(city_code):
 
 
 def sync_city_packs():
-	"""Make the site match its city: the city's pack is applied and every other city's is taken off. Runs after each
-	migrate and whenever the city is changed, so the result never depends on what the site looked like before."""
+	"""Make the site match its city: the city's pack is applied and every other city's is taken off, and only the
+	city's languages are on. Runs after each migrate and whenever the city is changed, so the result never depends
+	on what the site looked like before."""
+	from janadhikara.translations import ensure_languages
+
 	active = current_city_code()
 	for filename in sorted(os.listdir(PACK_DIR)):
 		code, ext = os.path.splitext(filename)
@@ -117,6 +133,7 @@ def sync_city_packs():
 			apply_city_pack(code)
 		else:
 			remove_city_pack(code)
+	ensure_languages(restrict=True)
 
 
 def _repoint_links(old, new):

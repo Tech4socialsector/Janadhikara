@@ -7,12 +7,16 @@ import * as householdProfile from './householdProfile'
 import * as individualProfile from './individualProfile'
 import * as settlement from './settlement'
 import * as settlementProfile from './settlementProfile'
+import * as hydHouseholdProfile from './hydHouseholdProfile'
+import * as hydIndividualProfile from './hydIndividualProfile'
 
 const HOOKS = {
   'Household Profile': householdProfile,
   'Individual Profile': individualProfile,
   Settlement: settlement,
   'HYD Settlement Profile': settlementProfile,
+  'HYD Household Profile': hydHouseholdProfile,
+  'HYD Individual Profile': hydIndividualProfile,
 }
 
 export function getDoctypeHooks(doctype) {

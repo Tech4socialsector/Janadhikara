@@ -215,7 +215,7 @@ def _app_meta_doctypes():
 # ---- Uploads from the phone (always started by the person, from Sync Data) --------------------------------------
 
 LOG = "Offline Sync Log"
-OWN_RECORD_DOCTYPES = ("Settlement", "HYD Settlement Profile", "Household Profile", "Individual Profile", "ToDo")
+OWN_RECORD_DOCTYPES = ("Settlement", "HYD Settlement Profile", "HYD Household Profile", "HYD Individual Profile", "Household Profile", "Individual Profile", "ToDo")
 FILE_FIELDTYPES = {"Attach", "Attach Image", "Signature", "Image"}
 SKIP_TABLES = {"Individual Document"}  # attachments: never put on a device
 IGNORED_KEYS = {"name", "owner", "creation", "modified", "modified_by", "docstatus", "idx", "parent", "parentfield", "parenttype", "doctype", "__islocal", "__unsaved"}

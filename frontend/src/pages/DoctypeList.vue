@@ -87,6 +87,14 @@
                 :options="[{ label: field.label, value: '' }, { label: t('Yes'), value: '1' }, { label: t('No'), value: '0' }]"
                 v-model="quickFilters[field.fieldname]"
               />
+              <!-- A Link: pick the record from a list (the first entry shows them all again) -->
+              <LinkFilterPicker
+                v-else-if="field.fieldtype === 'Link'"
+                :doctype="field.options"
+                :placeholder="field.label"
+                :all-label="field.label"
+                v-model="quickFilters[field.fieldname]"
+              />
               <FormControl v-else type="text" :placeholder="field.label" v-model="quickFilters[field.fieldname]" />
             </div>
           </template>
@@ -352,7 +360,14 @@
             <ListGroups v-if="showGroupedRows" />
             <ListRows v-else />
           </template>
-          <ListEmptyState v-else />
+          <!-- Centred on the width you can see (the table inside scrolls sideways when it has many columns), not on
+          the full width of all its columns: 100cqw is the width of .doctype-list-scroll. -->
+          <div v-else class="sticky left-0 flex flex-col items-center gap-3 px-4 py-16 text-center" style="width: 100cqw">
+            <p class="text-lg font-medium text-ink-gray-8">{{ hasActiveFilters ? t('No records match your filters') : t('No records yet') }}</p>
+            <p v-if="hasActiveFilters" class="text-sm text-ink-gray-5">{{ t('Try adjusting or clearing your filters.') }}</p>
+            <Button v-if="hasActiveFilters" variant="ghost" icon-left="x" @click="clearAllFilters">{{ t('Clear filters') }}</Button>
+            <Button v-else-if="metaResource.data" variant="outline" icon-left="plus" @click="goToNew">{{ t('Create the first one') }}</Button>
+          </div>
           <SelectionBar v-if="selectable" @delete="confirmBulkDelete" />
         </template>
       </ListView>
@@ -391,6 +406,8 @@ column headings stay in view. (Header 2.5rem + 15 rows of 2.57rem.) */
   max-height: 41rem;
   overflow: auto;
   overscroll-behavior: contain;
+  /* lets the empty message be centred on the visible width (100cqw), whatever the columns add up to */
+  container-type: inline-size;
 }
 /* The list's own inner wrappers scroll too, which would stop the heading from sticking to this box */
 .doctype-list-scroll > .relative.overflow-x-auto,
@@ -513,6 +530,7 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import UserLinkHoverCard from '@/components/UserLinkHoverCard.vue'
 import FilterEditor from '@/components/FilterEditor.vue'
+import LinkFilterPicker from '@/components/LinkFilterPicker.vue'
 import SortEditor from '@/components/SortEditor.vue'
 import SelectionBar from '@/components/SelectionBar.vue'
 import { exportRecords as downloadRecords } from '@/utils/exportRecords'
@@ -632,8 +650,8 @@ const quickFilterEntries = computed(() => {
     if (value == null || value === '') continue
     if (field.fieldtype === 'Check') {
       result[field.fieldname] = Number(value)
-    } else if (field.fieldtype === 'Select') {
-      result[field.fieldname] = value
+    } else if (field.fieldtype === 'Select' || field.fieldtype === 'Link') {
+      result[field.fieldname] = value // an exact record, not a part of a name
     } else {
       result[field.fieldname] = ['like', `%${value}%`]
     }

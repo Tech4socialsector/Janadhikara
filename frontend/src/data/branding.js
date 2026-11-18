@@ -6,6 +6,7 @@ import defaultLogo from '@/assets/default-logo.png'
 import { online } from '@/data/connection'
 import { appIconDataUrl } from '@/data/offlineStore'
 import { doctypePrefix } from '@/data/doctypePrefix'
+import { offeredLanguages, DEFAULT_LANGUAGES } from '@/data/cityLanguages'
 
 // The app's configurable name/logo, from App Setting (allow_guest=True
 // so the Login page can also show it before authentication).
@@ -76,6 +77,8 @@ function shade(hex, percent) {
 
 watchEffect(() => {
   doctypePrefix.value = brandingResource.data?.city?.doctype_prefix || null
+  const languages = brandingResource.data?.city?.languages
+  offeredLanguages.value = languages?.length ? languages : DEFAULT_LANGUAGES
 })
 
 watchEffect(() => {

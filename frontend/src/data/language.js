@@ -2,6 +2,7 @@ import { computed, ref, watch } from 'vue'
 import { createResource } from 'frappe-ui'
 import { session } from '@/data/session'
 import { online } from '@/data/connection'
+import { offeredLanguages, LANGUAGE_NAMES } from '@/data/cityLanguages'
 
 // The app's language: chosen from the switcher in the top bar, remembered on
 // this device (so it works offline) and saved on the user's profile when online.
@@ -47,15 +48,14 @@ export const languagesResource = createResource({
   onSuccess: (data) => write(LIST_KEY, JSON.stringify(data)),
 })
 
-// Languages to offer, falling back to the last list seen when offline.
-// For the time being the app is offered in English, Assamese and Hindi only, whatever other languages the site has enabled.
-// To offer another, add its code here and add its translations.
-export const OFFERED_LANGUAGES = ['en', 'as', 'hi']
-// The three offered languages by their own names, for a visitor who is not signed in yet (nothing to fetch).
-const OWN_NAMES = [{ label: 'English', value: 'en' }, { label: 'অসমীয়া', value: 'as' }, { label: 'हिन्दी', value: 'hi' }]
+// Languages to offer, falling back to the last list seen when offline. Which ones is the city's choice (Guwahati:
+// English, Assamese and Hindi; Hyderabad: English and Telugu - see city_packs/), whatever other languages the site has
+// enabled. The list comes with the branding (data/cityLanguages.js).
+const ownNames = () => offeredLanguages.value.map((value) => ({ label: LANGUAGE_NAMES[value] || value, value }))
 export const languages = computed(() => {
-  const list = (languagesResource.data || cachedLanguages() || []).filter((l) => OFFERED_LANGUAGES.includes(l.value))
-  return list.length ? list : OWN_NAMES
+  const list = (languagesResource.data || cachedLanguages() || []).filter((l) => offeredLanguages.value.includes(l.value))
+  // the list kept on this device may be of another city's languages: then the offered ones by their own names
+  return list.length === offeredLanguages.value.length ? list : ownNames()
 })
 // Started once every module has loaded (`session` is part of a circular import, see settingsEntries.js).
 queueMicrotask(() =>
@@ -71,7 +71,7 @@ let unsynced = false
 
 export const appLanguage = computed(() => {
   const language = chosen.value || session.user_language || 'en'
-  return OFFERED_LANGUAGES.includes(language) ? language : 'en'
+  return offeredLanguages.value.includes(language) ? language : 'en'
 })
 
 const setLanguageResource = createResource({

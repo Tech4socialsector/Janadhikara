@@ -43,6 +43,14 @@
           :options="valueOptionsFor(row)"
           v-model="row.value"
         />
+        <!-- A Link value: a list of the records to search and click, not an ID to type -->
+        <LinkFilterPicker
+          v-else-if="fieldFor(row.fieldname)?.fieldtype === 'Link'"
+          class="w-0 min-w-0 flex-[1.3]"
+          :doctype="fieldFor(row.fieldname).options"
+          :placeholder="`${t('Select')} ${fieldLabel(row.fieldname)}`"
+          v-model="row.value"
+        />
         <DatePicker
           v-else-if="fieldFor(row.fieldname)?.fieldtype === 'Date' || fieldFor(row.fieldname)?.fieldtype === 'Datetime'"
           class="w-0 min-w-0 flex-[1.3]"
@@ -75,7 +83,9 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { Button, FeatherIcon, FormControl, DatePicker, MultiSelect, useCall } from 'frappe-ui'
+import { Button, FeatherIcon, FormControl, DatePicker, MultiSelect } from 'frappe-ui'
+import LinkFilterPicker from '@/components/LinkFilterPicker.vue'
+import { linkOptions } from '@/data/linkOptions'
 import { t } from '@/utils/translate'
 
 // A row-based field/operator/value filter editor - one row per filter,
@@ -144,40 +154,8 @@ function asArray(value) {
   return Array.isArray(value) ? value : value ? [value] : []
 }
 
-// Select options are static (field.options, newline-separated); Link
-// options need a live fetch per doctype - cached per fieldname so
-// switching a row's field back and forth (or having several Link rows)
-// doesn't refetch the same doctype's records repeatedly.
-const linkOptionsCache = ref({})
-function ensureLinkOptionsLoaded(field) {
-  if (!field || field.fieldtype !== 'Link') return
-  if (linkOptionsCache.value[field.fieldname]) return
-  const entry = { loading: true, options: [] }
-  linkOptionsCache.value = { ...linkOptionsCache.value, [field.fieldname]: entry }
-  useCall({
-    url: `/api/v2/doctype/${field.options}/meta`,
-    method: 'GET',
-    cacheKey: `janadhikara-meta-${field.options}`,
-  })
-    .fetch()
-    .then((meta) => {
-      const titleField = meta?.title_field || 'name'
-      return useCall({
-        url: `/api/v2/document/${field.options}`,
-        method: 'GET',
-        params: { fields: JSON.stringify(['name', titleField]), limit: 1000 },
-      })
-        .fetch()
-        .then((rows) => {
-          entry.options = (rows || []).map((r) => ({ label: r[titleField] || r.name, value: r.name }))
-        })
-    })
-    .finally(() => {
-      entry.loading = false
-      linkOptionsCache.value = { ...linkOptionsCache.value }
-    })
-}
-
+// Select options are static (field.options, newline-separated); Link options are the records of the linked doctype,
+// loaded once and shared (data/linkOptions.js).
 function valueOptionsFor(row) {
   const field = fieldFor(row.fieldname)
   if (!field) return []
@@ -188,15 +166,12 @@ function valueOptionsFor(row) {
       .filter(Boolean)
       .map((v) => ({ label: v, value: v }))
   }
-  if (field.fieldtype === 'Link') {
-    ensureLinkOptionsLoaded(field)
-    return linkOptionsCache.value[field.fieldname]?.options || []
-  }
+  if (field.fieldtype === 'Link') return linkOptions(field.options).options
   return []
 }
 function valueOptionsLoading(row) {
   const field = fieldFor(row.fieldname)
-  return field?.fieldtype === 'Link' && !!linkOptionsCache.value[field.fieldname]?.loading
+  return field?.fieldtype === 'Link' && linkOptions(field.options).loading
 }
 
 let nextId = 0

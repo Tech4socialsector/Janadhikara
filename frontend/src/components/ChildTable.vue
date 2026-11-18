@@ -66,7 +66,7 @@
     the same `rows` / `selectedKeys` the grid uses. -->
     <template v-if="isMobile">
       <div
-        v-if="rows.length && canManage"
+        v-if="rows.length && canBulk"
         class="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-lg border bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-900"
       >
         <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
@@ -101,7 +101,7 @@
         >
           <div class="flex items-start gap-3">
             <input
-              v-if="canManage"
+              v-if="canBulk"
               type="checkbox"
               class="form-checkbox mt-0.5 h-4 w-4 flex-shrink-0 !rounded-[3px] border-gray-300 dark:border-gray-600 dark:bg-gray-800"
               :checked="selectedKeys.includes(row.__key)"
@@ -292,6 +292,7 @@ by it. */
 
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import {
   Button,
   TextInput,
@@ -305,6 +306,7 @@ import {
   ListGroups,
   ListEmptyState,
   Tooltip,
+  toast,
 } from 'frappe-ui'
 import DynamicField from '@/components/DynamicField.vue'
 import { useMeta, useFormFields } from '@/data/useMeta'
@@ -317,6 +319,8 @@ import { userContextResource } from '@/data/userContext'
 import ColumnPicker from '@/components/ColumnPicker.vue'
 import { linkTitle, isTitledLink, ensureTitlesForRows } from '@/data/linkTitles'
 import { resolveFrappeDefault } from '@/composables/useCommonFieldDefaults'
+import { findModuleByDoctype } from '@/data/modules'
+import { PROFILE_ROWS } from '@/data/profileRows'
 
 const { field, modelValue, doctype, docname, parentValues } = defineProps({
   field: { type: Object, required: true },
@@ -328,7 +332,12 @@ const { field, modelValue, doctype, docname, parentValues } = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 
+const router = useRouter()
 const childMetaResource = useMeta(field.options)
+// A table whose rows are made from another doctype's records (a household's roster: one row per Individual Profile):
+// Add Row opens that doctype's new form and a row opens the record it came from.
+const profileRows = PROFILE_ROWS[field.options] || null
+const profileRoute = computed(() => (profileRows ? findModuleByDoctype(profileRows.doctype)?.route : null))
 const columns = useFormFields(childMetaResource)
 
 // Rows that carry an Assigned Worker (a settlement's intervention units) belong to that worker:
@@ -338,6 +347,8 @@ const userContext = computed(() => userContextResource.data || {})
 // A read-only table (e.g. a settlement's Employees tab, filled in automatically) is only for looking.
 const readOnlyTable = computed(() => !!field.read_only)
 const canManage = computed(() => !readOnlyTable.value && (!workerScoped.value || !!userContext.value.can_manage_assigned_rows))
+// rows made from records are removed by deleting the record, so no bulk duplicate / delete on them
+const canBulk = computed(() => canManage.value && !profileRows)
 const canEditRow = (row) =>
   !readOnlyTable.value && (canManage.value || (!!userContext.value.employee && row?.assigned_worker === userContext.value.employee))
 if (!userContextResource.data && !userContextResource.loading) userContextResource.fetch()
@@ -388,7 +399,7 @@ const selectedKeys = ref([])
 // key remounts the grid with a clean selection.
 const gridKey = ref(0)
 const listViewOptions = computed(() => ({
-  selectable: canManage.value,
+  selectable: canBulk.value,
   rowHeight: '2.5rem', // rem, so rows scale with the screen (frappe-ui's default is a flat 40px)
   showTooltip: false,
   onRowClick: (row) => openRow(rows.value.indexOf(row)),
@@ -485,6 +496,12 @@ function newRowDefaults() {
 }
 
 function addRow() {
+  if (profileRows) {
+    if (!parentValues.name) return toast.error('Save the household first, then add its members.')
+    if (!profileRoute.value) return toast.error('Individual Profile is not available for your role.')
+    router.push({ name: 'DoctypeNew', params: { doctypeRoute: profileRoute.value }, query: { [profileRows.parentField]: parentValues.name } })
+    return
+  }
   // Mutate the array in place (it's the same reactive array the parent form
   // owns) rather than reassigning through the computed setter - reassigning
   // round-trips through the parent via emit('update:modelValue', ...), and
@@ -559,6 +576,11 @@ watch(
 const { runTrigger: onRowGeoChanged } = useFieldFunctions({ doctype: field.options, fields: columns, values: rowValues })
 
 function openRow(idx) {
+  const record = profileRows && profileRoute.value ? rows.value[idx]?.[profileRows.link] : null
+  if (record) {
+    router.push({ name: 'DoctypeForm', params: { doctypeRoute: profileRoute.value, name: record } })
+    return
+  }
   editingIdx.value = idx
   showRowEditor.value = true
 }
@@ -669,6 +691,7 @@ function insertRowBelow(idx) {
 // call site in the template) rather than captured here, since inserting/
 // duplicating earlier rows shifts every later row's index.
 function rowActions(idx) {
+  if (profileRows) return [{ group: 'Row', items: [{ label: 'Open profile', icon: 'external-link', onClick: () => openRow(idx) }] }]
   return [
     {
       group: 'Row',

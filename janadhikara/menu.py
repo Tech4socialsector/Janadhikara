@@ -16,6 +16,8 @@ MASTER_ICON = "database"
 ITEM_ICONS = {
 	"Settlement": "map-pin",
 	"HYD Settlement Profile": "map-pin",
+	"HYD Household Profile": "house",
+	"HYD Individual Profile": "users",
 	"Household Profile": "house",
 	"Individual Profile": "users",
 	"Relationship Type": "heart-handshake",
@@ -56,19 +58,17 @@ def ensure_master_sidebar():
 	"""after_migrate: Master Data lists every non-child doctype of the Masters module."""
 	if not frappe.db.exists("DocType", "App Module Setting"):
 		return
-	from janadhikara.city_pack import city_module
+	from janadhikara.city_pack import city_module, display_name, replacement_doctypes
 
 	modules = [MASTERS] + ([city_module()] if city_module() else [])  # a city's own masters are listed on its site
 	doctypes = frappe.get_all(
 		"DocType",
-		filters={"module": ["in", modules], "istable": 0, "issingle": 0, "custom": 0, "name": ["not in", ["HYD Settlement Profile"]]},
+		filters={"module": ["in", modules], "istable": 0, "issingle": 0, "custom": 0, "name": ["not in", ["HYD Settlement Profile", *replacement_doctypes()]]},
 		pluck="name",
 		order_by="name asc",
 	)
 	if not doctypes:
 		return
-	from janadhikara.city_pack import display_name
-
 	setting = _get_or_create_setting(MASTERS, MASTER_LABEL, MASTER_ICON, 4)
 	listed = {row.doctype_name for row in setting.doctypes or []}
 	missing = [d for d in doctypes if d not in listed]
@@ -78,7 +78,12 @@ def ensure_master_sidebar():
 		name = display_name(doctype)
 		return (name, frappe.scrub(name).replace("_", "-")) if name != doctype else (None, None)
 
-	fixed = False
+	# a city's replacement doctypes (its Settlement, Household, Individual Profile) sit with the others in their module, not here
+	own = replacement_doctypes()
+	kept = [row for row in setting.doctypes or [] if row.doctype_name not in own]
+	fixed = len(kept) != len(setting.doctypes or [])
+	if fixed:
+		setting.set("doctypes", kept)
 	for row in setting.doctypes or []:
 		label, route = shown(row.doctype_name or "")
 		if label and (row.label, row.route) != (label, route):

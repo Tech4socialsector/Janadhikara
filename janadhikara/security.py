@@ -27,7 +27,7 @@ def add_security_headers(response=None, request=None):
 # partner worker sees nothing.
 
 PROGRAMME_ROLES = {"System Manager", "Program Coordinator", "Program Manager"}
-PARTNER_FIELD = {"Household Profile": "partner_organization", "Settlement": "partner_organization", "HYD Settlement Profile": "partner_organization", "Individual Profile": "implementing_org"}
+PARTNER_FIELD = {"Household Profile": "partner_organization", "Settlement": "partner_organization", "HYD Settlement Profile": "partner_organization", "HYD Household Profile": "partner_organization", "HYD Individual Profile": "partner_organization", "Individual Profile": "implementing_org"}
 
 
 def user_scope(user=None):
@@ -107,6 +107,14 @@ def settlement_profile_conditions(user=None, **kwargs):
 	return _query_conditions("HYD Settlement Profile", user)
 
 
+def hyd_household_conditions(user=None, **kwargs):
+	return _query_conditions("HYD Household Profile", user)
+
+
+def hyd_individual_conditions(user=None, **kwargs):
+	return _query_conditions("HYD Individual Profile", user)
+
+
 def individual_conditions(user=None, **kwargs):
 	return _query_conditions("Individual Profile", user)
 
@@ -121,6 +129,14 @@ def settlement_has_permission(doc, ptype=None, user=None, **kwargs):
 
 def settlement_profile_has_permission(doc, ptype=None, user=None, **kwargs):
 	return _has_permission(doc, "HYD Settlement Profile", user, ptype)
+
+
+def hyd_household_has_permission(doc, ptype=None, user=None, **kwargs):
+	return _has_permission(doc, "HYD Household Profile", user, ptype)
+
+
+def hyd_individual_has_permission(doc, ptype=None, user=None, **kwargs):
+	return _has_permission(doc, "HYD Individual Profile", user, ptype)
 
 
 def individual_has_permission(doc, ptype=None, user=None, **kwargs):
