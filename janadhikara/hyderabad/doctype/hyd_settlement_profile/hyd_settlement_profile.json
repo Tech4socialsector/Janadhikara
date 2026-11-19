@@ -571,16 +571,18 @@
   },
   {
    "fieldname": "q2_16_states_the_migrants_come_from",
-   "fieldtype": "Data",
+   "fieldtype": "Select",
+   "options": "\nAndhra Pradesh\nArunachal Pradesh\nAssam\nBihar\nChhattisgarh\nGoa\nGujarat\nHaryana\nHimachal Pradesh\nJharkhand\nKarnataka\nKerala\nMadhya Pradesh\nMaharashtra\nManipur\nMeghalaya\nMizoram\nNagaland\nOdisha\nPunjab\nRajasthan\nSikkim\nTamil Nadu\nTelangana\nTripura\nUttar Pradesh\nUttarakhand\nWest Bengal",
    "label": "2.16. States the migrants come from",
    "description": "Shown for Inter-State and Both.",
    "depends_on": "eval:doc.q2_15_type_of_migrants && doc.q2_15_type_of_migrants != \"Intra-State\""
   },
   {
    "fieldname": "q2_17_districts_the_migrants_come_from",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
+   "options": "Adilabad\nBhadradri Kothagudem\nHanumakonda\nHyderabad\nJagtial\nJangaon\nJayashankar Bhupalpally\nJogulamba Gadwal\nKamareddy\nKarimnagar\nKhammam\nKomaram Bheem Asifabad\nMahabubabad\nMahabubnagar\nMancherial\nMedak\nMedchal–Malkajgiri\nMulugu\nNagarkurnool\nNalgonda\nNarayanpet\nNirmal\nNizamabad\nPeddapalli\nRajanna Sircilla\nRangareddy\nSangareddy\nSiddipet\nSuryapet\nVikarabad\nWanaparthy\nWarangal\nYadadri Bhuvanagiri",
    "label": "2.17. Districts the migrants come from",
-   "description": "Shown for Intra-State and Both.",
+   "description": "Shown for Intra-State and Both. Select all that apply.",
    "depends_on": "eval:doc.q2_15_type_of_migrants && doc.q2_15_type_of_migrants != \"Inter-State\""
   },
   {
@@ -1030,7 +1032,7 @@
    "fieldname": "q6_17_what_is_the_condition_of_roads_in",
    "fieldtype": "Small Text",
    "label": "6.17. What is the condition of roads in the settlement?",
-   "options": "CC Roads\nNormal Roads\nNo Proper Roads\nOther (specify)",
+   "options": "CC Roads\nTar Roads\nNo Proper Roads\nOther (specify)",
    "description": "Select all that apply."
   },
   {
@@ -1062,7 +1064,7 @@
    "fieldname": "q6_20_is_public_transport_accessible",
    "fieldtype": "Select",
    "label": "6.20. Is public transport accessible?",
-   "options": "\nYes\nYes Partially\nNo"
+   "options": "\nYes\nNo"
   },
   {
    "fieldname": "q6_21_are_cctv_cameras_installed_in_public_p",

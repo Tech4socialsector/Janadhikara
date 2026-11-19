@@ -446,13 +446,14 @@
    "fieldtype": "Select",
    "label": "24. What is the alternate source of light in your house?",
    "options": "\nEarthen lamps\nKerosene lamps\nCandles\nBiomass/wood fires\nBattery-powered torches\nSolar lanterns\nOthers (Specify)",
-   "description": "The source of lighting used by the household when electricity is unavailable or not accessible."
+   "description": "The source of lighting used by the household when electricity is unavailable or not accessible.",
+   "depends_on": "eval:doc.q23_electricity_supply==\"No\""
   },
   {
    "fieldname": "q24_alternate_source_light_house_other",
    "fieldtype": "Data",
    "label": "Please specify (Q24)",
-   "depends_on": "eval:doc.q24_alternate_source_light_house==\"Others (Specify)\""
+   "depends_on": "eval:doc.q23_electricity_supply==\"No\" && doc.q24_alternate_source_light_house==\"Others (Specify)\""
   },
   {
    "fieldname": "q25_fuels_used_cooking",
