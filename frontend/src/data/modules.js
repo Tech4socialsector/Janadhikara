@@ -43,9 +43,12 @@ export function findModuleByDoctype(doctypeName) {
   return flatModuleItems.value.find((item) => item.doctype_name === doctypeName)
 }
 
-// Pages of the app itself (Sync Data) that an App Module Setting switches on for a role. A module made only of
-// Pages is a "page module": it shows as one tile / one sidebar link that opens the page directly.
-export const isPageModule = (mod) => !!mod?.items?.length && mod.items.every((i) => i.type === 'Page')
-export const pageModules = computed(() => (modulesResource.data || []).filter(isPageModule))
-export const pageEntries = computed(() => pageModules.value.flatMap((m) => m.items.filter((i) => i.type === 'Page').map((i) => ({ ...i, module: m }))))
-export const hasPage = (route) => pageEntries.value.some((p) => p.route === route)
+// Pages of the app itself that sit in a group's items. Dashboard, Worklist, Support and Help already have their own
+// places in the sidebar and the phone menu; the others (Sync Data) are listed here so those can show them by role.
+const BUILTIN_ROUTES = ['dashboard', 'worklist', 'support', 'help']
+export const isPageModule = () => false
+export const pageModules = computed(() => [])
+export const pageEntries = computed(() =>
+  (modulesResource.data || []).flatMap((m) => (m.items || []).filter((i) => i.type === 'Page' && !BUILTIN_ROUTES.includes(i.route)).map((i) => ({ ...i, module: m }))),
+)
+export const hasPage = (route) => (modulesResource.data || []).some((m) => (m.items || []).some((i) => i.type === 'Page' && i.route === route))

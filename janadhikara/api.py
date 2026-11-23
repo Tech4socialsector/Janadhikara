@@ -327,7 +327,7 @@ SETTINGS_CATALOG = [
     ('Announcement', 'Content', 'megaphone', 'Banners shown to users on the Home page.'),
     ('AI Guide Section', 'Content', 'book-open', 'Guide content the AI assistant answers from.'),
     ('Question Bank', 'Content', 'list-checks', 'Questions asked on forms, and when each one is shown.'),
-    ('App Module Setting', 'Access', 'layout-grid', 'Modules, sidebar items and which roles can see them.'),
+    ('App Module Group', 'Access', 'layout-grid', 'Home cards and sidebars: their DocTypes, pages and which roles can see them.'),
 ]
 
 
@@ -335,7 +335,7 @@ SETTINGS_CATALOG = [
 def get_settings_entries():
     """Return the Settings dialog entries the current user may manage (write access). Single doctypes are edited inline; list doctypes are managed in
     Frappe desk (the SPA only has list pages for doctypes registered in an
-    App Module Setting)."""
+    App Module Group)."""
     if frappe.session.user == 'Guest':
         frappe.throw(_('Not permitted'), frappe.PermissionError)
 
@@ -585,69 +585,73 @@ def get_field_function_rules():
     return rules
 
 
-def module_visible_to_user(module_doc, user_roles):
-    """An App Module Setting doc is visible if enabled and either
-    role-restriction is off or its `roles` child table shares at least one
+def group_visible_to_user(group_doc, user_roles):
+    """An App Module Group is visible if enabled and either role-restriction is off or its `roles` share at least one
     role with the current user."""
-    if not module_doc.enabled:
+    if not group_doc.enabled:
         return False
-    if not module_doc.restrict_by_role:
+    if not group_doc.restrict_by_role:
         return True
-    allowed_roles = {r.role for r in (module_doc.roles or [])}
-    return bool(allowed_roles & user_roles)
+    return bool({r.role for r in (group_doc.roles or [])} & user_roles)
+
+
+def _item_roles(row):
+    """The roles typed in an item's Visible To Roles box (one per line, commas accepted too)."""
+    return [r.strip() for line in (row.roles or '').splitlines() for r in line.split(',') if r.strip()]
 
 
 @frappe.whitelist()
 def get_app_modules():
-    """Return the Janadhikara Vue app's navigation modules (from the standalone App
-    Module Setting doctype), filtered to those enabled and visible to the
-    current user's roles. Each module lists the sidebar DocTypes it exposes."""
+    """The Vue app's menu, from App Module Group: every enabled group this user may see, in order. A group is one
+    Home card ("module" to the app); with `sidebar` on it opens with a sidebar of its items. Each lists its items as an
+    ordered list of Links (DocTypes: the city's own version on a city's site, nothing the city does not use, nothing the
+    user cannot read), Pages (the app's own screens), Section Breaks (headings that fold up) and Spacers. A Link can be a
+    child (indented sub-item) of the Link above it. Items can be limited to roles of their own."""
     if frappe.session.user == 'Guest':
         frappe.throw(_('Not permitted'), frappe.PermissionError)
+    from janadhikara.city_pack import city_doctype, display_name
+    from janadhikara.menu import PAGES
 
     user_roles = set(frappe.get_roles())
-    names = frappe.get_all('App Module Setting', pluck='name', order_by='sort_order asc')
     unused = hidden_doctypes()  # what this site's city does not use
 
     modules = []
-    for name in names:
-        module_doc = frappe.get_cached_doc('App Module Setting', name)
-        if not module_visible_to_user(module_doc, user_roles):
+    for name in frappe.get_all('App Module Group', pluck='name', order_by='sort_order asc, creation asc'):
+        group = frappe.get_cached_doc('App Module Group', name)
+        if not group_visible_to_user(group, user_roles):
             continue
-        # The module's sidebar as an ordered list of Links, Section Breaks
-        # (group headings that fold up when clicked) and
-        # Spacers, where a Link can be a child (indented sub-item) of the Link
-        # above it. `doctypes` is the same list narrowed to just the Links, for
-        # everything that only needs "which doctypes does this module open".
         items = []
-        for item in module_doc.doctypes or []:
-            kind = item.item_type or 'Link'
-            if kind == 'Link':
-                if not item.doctype_name or item.doctype_name in unused:
+        for row in group.items or []:
+            allowed = _item_roles(row)
+            if allowed and not set(allowed) & user_roles:
+                continue
+            kind = row.item_type or 'DocType'
+            if kind == 'DocType':
+                doctype = city_doctype(row.doctype_name) if row.doctype_name else None
+                if not doctype or doctype in unused or row.doctype_name in unused or not frappe.db.exists('DocType', doctype):
                     continue
+                if not frappe.has_permission(doctype, 'read'):
+                    continue
+                shown = display_name(doctype)
                 items.append({
                     'type': 'Link',
-                    'doctype_name': item.doctype_name,
-                    'label': item.label or item.doctype_name,
-                    'icon': item.icon or module_doc.icon or 'file-text',
-                    'route': item.route or frappe.scrub(item.doctype_name).replace('_', '-'),
-                    'child': bool(item.child),
+                    'doctype_name': doctype,
+                    'label': row.label or shown,
+                    'icon': row.icon or group.icon or 'file-text',
+                    'route': row.route or frappe.scrub(shown).replace('_', '-'),
+                    'child': bool(row.child),
                 })
             elif kind == 'Page':
-                if not item.route:
+                page = PAGES.get(row.page)
+                if not page:
                     continue
-                items.append({
-                    'type': 'Page',
-                    'label': item.label or item.route,
-                    'icon': item.icon or module_doc.icon or 'file-text',
-                    'route': item.route,
-                })
+                items.append({'type': 'Page', 'label': row.label or row.page, 'icon': row.icon or page[1], 'route': page[0]})
             elif kind == 'Section Break':
                 items.append({
                     'type': 'Section Break',
-                    'label': item.label,
-                    'icon': item.icon or None,
-                    # Every group folds up when its heading is clicked, and starts open.
+                    'label': row.label,
+                    'icon': row.icon or None,
+                    # Every heading folds up when clicked, and starts open.
                     'collapsible': True,
                     'keep_closed': False,
                 })
@@ -657,8 +661,12 @@ def get_app_modules():
         if not doctypes and not any(i['type'] == 'Page' for i in items):
             continue
         modules.append({
-            'label': module_doc.label,
-            'icon': module_doc.icon or 'file-text',
+            'name': group.name,
+            'label': group.group_name,
+            'description': group.description or '',
+            'icon': group.icon or 'file-text',
+            'color': group.color or 'Blue',
+            'sidebar': bool(group.use_sidebar),
             'items': items,
             'doctypes': doctypes,
         })
@@ -740,8 +748,8 @@ def dismiss_announcement(name):
 
 @frappe.whitelist()
 def global_search(txt):
-    """Search across every DocType configured in the app's modules (App
-    Module Setting -> doctypes), respecting the user's normal doc
+    """Search across every DocType in the app's menu (App
+    Module Group -> items), respecting the user's normal doc
     permissions on each. Used by the Vue app's navbar search box."""
     from frappe.desk.search import search_link
 
@@ -749,21 +757,13 @@ def global_search(txt):
     if not txt or frappe.session.user == 'Guest':
         return []
 
-    user_roles = set(frappe.get_roles())
-    module_names = frappe.get_all('App Module Setting', pluck='name')
-
     seen_doctypes = set()
-    unused = hidden_doctypes()
     doctype_routes = {}
-    for module_name in module_names:
-        module_doc = frappe.get_cached_doc('App Module Setting', module_name)
-        if not module_visible_to_user(module_doc, user_roles):
-            continue
-        for item in (module_doc.doctypes or []):
-            if not item.doctype_name or item.doctype_name in seen_doctypes or item.doctype_name in unused:
-                continue
-            seen_doctypes.add(item.doctype_name)
-            doctype_routes[item.doctype_name] = item.route or frappe.scrub(item.doctype_name).replace('_', '-')
+    for module in get_app_modules():
+        for item in module['doctypes']:
+            if item['doctype_name'] not in seen_doctypes:
+                seen_doctypes.add(item['doctype_name'])
+                doctype_routes[item['doctype_name']] = item['route']
 
     results = []
     for doctype_name in seen_doctypes:

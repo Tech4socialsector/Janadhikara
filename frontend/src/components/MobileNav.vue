@@ -1,5 +1,6 @@
 <template>
   <nav
+    ref="navEl"
     class="fixed inset-x-0 bottom-0 z-30 flex items-stretch justify-around border-t bg-white pb-[env(safe-area-inset-bottom)] dark:border-gray-800 dark:bg-gray-900"
   >
     <router-link
@@ -105,9 +106,23 @@
 
 <script setup>
 import { showMobileMenu } from '@/data/mobileMenu'
-import { ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Avatar, Button, FeatherIcon } from 'frappe-ui'
+
+// The bar's real height (it varies with the device's safe area and the centre button) is shared as --mobile-nav-h, so a
+// page can stick its own bottom bar exactly above it (see SupportTicket.vue).
+const navEl = ref(null)
+let navObserver = null
+onMounted(() => {
+  const publish = () => document.documentElement.style.setProperty('--mobile-nav-h', `${Math.ceil(navEl.value?.getBoundingClientRect().height || 56)}px`)
+  publish()
+  if (typeof ResizeObserver !== 'undefined' && navEl.value) {
+    navObserver = new ResizeObserver(publish)
+    navObserver.observe(navEl.value, { box: 'border-box' })
+  }
+})
+onBeforeUnmount(() => navObserver?.disconnect())
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { activeModule } from '@/data/activeModule'
@@ -153,6 +168,7 @@ const quickLinks = computed(() => [
   { key: 'worklist', label: t('Worklist'), lucide: 'check-square', go: goto({ name: 'Worklist' }) },
   ...(hasPage('sync-data') ? [{ key: 'sync', label: t('Sync Data'), icon: SyncCloudIcon, badge: pendingCount.value > 0 ? (pendingCount.value > 9 ? '9+' : String(pendingCount.value)) : '', go: goto({ name: 'SyncData' }) }] : []),
   { key: 'help', label: t('Help'), lucide: 'help-circle', go: goto({ name: 'Help' }) },
+  { key: 'support', label: t('Support'), lucide: 'life-buoy', go: goto({ name: 'SupportDesk' }) },
 ])
 function openItem(item) {
   navigate(item.type === 'Page' ? `/${item.route}` : { name: 'DoctypeList', params: { doctypeRoute: item.route } })

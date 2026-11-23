@@ -80,7 +80,7 @@
  "autoname": "HYD-SET-.####",
  "naming_rule": "Expression (old style)",
  "creation": "2026-11-16 15:00:00.000000",
- "modified": "2026-11-16 15:00:00.000000",
+ "modified": "2026-11-20 11:00:00.000000",
  "links": [
   {
    "group": "Households",
@@ -271,7 +271,12 @@
   "section_record_status",
   "validation_status",
   "column_break_record_status",
-  "validation_comments"
+  "validation_comments",
+  "tab_foundation_review",
+  "section_foundation_views",
+  "q11_1_foundation_s_views",
+  "section_final_decision",
+  "q12_1_decision"
  ],
  "fields": [
   {
@@ -1406,6 +1411,32 @@
    "fieldname": "validation_comments",
    "fieldtype": "Small Text",
    "label": "Validation Comments"
+  },
+  {
+   "fieldname": "tab_foundation_review",
+   "fieldtype": "Tab Break",
+   "label": "Foundation Review"
+  },
+  {
+   "fieldname": "section_foundation_views",
+   "fieldtype": "Section Break",
+   "label": "11. Foundation's Recommendations / Views"
+  },
+  {
+   "fieldname": "q11_1_foundation_s_views",
+   "fieldtype": "Small Text",
+   "label": "11.1. Foundation's views"
+  },
+  {
+   "fieldname": "section_final_decision",
+   "fieldtype": "Section Break",
+   "label": "12. Final Decision"
+  },
+  {
+   "fieldname": "q12_1_decision",
+   "fieldtype": "Select",
+   "label": "12.1. Decision",
+   "options": "\nIncluded in the program\nExcluded from the program"
   }
  ]
 }

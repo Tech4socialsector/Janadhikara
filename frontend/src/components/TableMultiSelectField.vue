@@ -28,7 +28,7 @@ const emit = defineEmits(['update:modelValue'])
 
 // A Table MultiSelect's own child doctype (field.options) has exactly one
 // meaningful field besides the standard ones - that's the Link to the
-// doctype actually being selected from (e.g. App Module Setting Role.role
+// doctype actually being selected from (e.g. Has Role.role
 // links to Role). Fetch that child doctype's meta once to find it.
 const childMetaResource = useCall({
   url: `/api/v2/doctype/${props.field.options}/meta`,

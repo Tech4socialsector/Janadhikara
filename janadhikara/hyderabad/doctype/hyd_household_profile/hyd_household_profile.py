@@ -83,9 +83,6 @@ def refresh_profiles_match(household):
 	frappe.db.set_value("HYD Household Profile", household, "profiles_match_members", int(bool(members) and profiles == members), update_modified=False)
 
 
-GENDER = {"Male": "Male", "Female": "Female", "Others": "Other"}
-
-
 def sync_roster(profile, household=None, remove=False):
 	"""Keep a household's roster in step with its Individual Profiles: a profile has one roster row (made when the profile
 	is saved, updated when it changes, removed when it is deleted or moved to another household)."""
@@ -100,11 +97,18 @@ def sync_roster(profile, household=None, remove=False):
 		parent.remove(row)
 	else:
 		if not row:
-			row = parent.append("household_roster", {"individual_profile": profile.name})
+			# a member already named on the roster (no profile yet) is this profile's row; otherwise it is a new member
+			name = (profile.member_name or "").strip().lower()
+			row = next((r for r in parent.household_roster if not r.individual_profile and (r.member_name or "").strip().lower() == name), None)
+			if row:
+				row.individual_profile = profile.name
+			else:
+				row = parent.append("household_roster", {"individual_profile": profile.name})
 		row.member_name = profile.member_name
-		row.uin = profile.individual_id
-		row.age = profile.age
-		row.gender = GENDER.get(profile.sex)
+		row.uin = profile.individual_id  # the roster's ID follows the profile (it is read-only there)
+		row.date_of_birth = profile.date_of_birth or row.date_of_birth
+		row.age = profile.age if profile.age is not None else row.age
+		row.gender = profile.sex or row.gender
 	parent.flags.ignore_permissions = True
 	parent.save()
 

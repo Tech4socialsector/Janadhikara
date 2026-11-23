@@ -3,7 +3,7 @@ import { installOverlayGuard } from '@/utils/backClose'
 import { session, initialUserCheck, userResource, rememberedUser } from '@/data/session'
 import { modulesResource, findModuleByRoute } from '@/data/modules'
 import { settingsEntriesResource, findSettingsEntryByRoute } from '@/data/settingsEntries'
-import { setActiveModule } from '@/data/activeModule'
+import { setActiveModule, clearActiveModule } from '@/data/activeModule'
 import { queue, queueReady } from '@/data/offlineQueue'
 
 const routes = [
@@ -35,6 +35,22 @@ const routes = [
     path: '/help',
     name: 'Help',
     component: () => import('@/pages/Help.vue'),
+  },
+  {
+    path: '/support',
+    name: 'SupportDesk',
+    component: () => import('@/pages/SupportDesk.vue'),
+  },
+  {
+    path: '/support/new',
+    name: 'SupportNew',
+    component: () => import('@/pages/SupportNew.vue'),
+  },
+  {
+    path: '/support/:name',
+    name: 'SupportTicket',
+    component: () => import('@/pages/SupportTicket.vue'),
+    meta: { remountOnParamChange: true },
   },
   {
     path: '/sync-data',
@@ -245,6 +261,9 @@ router.beforeEach(async (to, from, next) => {
       }
       to.meta.resolvedDoctype = entry.doctype
     }
+  } else {
+    // Home, the Dashboard, Help ...: not a module's page, so no module's sidebar.
+    clearActiveModule()
   }
 
   next()

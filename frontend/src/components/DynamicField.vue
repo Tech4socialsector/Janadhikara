@@ -443,7 +443,7 @@
     <p v-if="field.description" class="mt-1.5 whitespace-pre-line text-p-xs text-ink-gray-5">{{ field.description }}</p>
     <p v-if="touched && validationError" class="mt-1.5 text-xs text-red-500">{{ validationError }}</p>
   </div>
-  <div v-else>
+  <div v-else @beforeinput="guardInput">
     <FormControl
       :type="controlType"
       :class="readOnlyClass"
@@ -1009,6 +1009,26 @@ const linkFilters = computed(() => {
 // check for free. Shown only after the field has actually been blurred at
 // least once (`touched`) - surfacing "Phone number must be exactly 10
 // digits" before the user has typed anything would just be noise.
+// What may be typed into a plain field, so a wrong character never gets in: only digits in a whole-number field,
+// letters (and . ' - and spaces) in a person's name, letters/digits in an ID. Matches the server's checks (validation.py).
+const PERSON_NAMES = ['member_name', 'respondent_name', 'household_head_name', 'contact_person', 'worker_name', 'employee_name', 'surveyor_name']
+const ID_FIELDS = ['uin', 'individual_id']
+const SIGNED_FIELDS = ['latitude', 'longitude']
+const allowedText = computed(() => {
+  const { fieldtype, fieldname } = props.field
+  if (fieldtype === 'Int' || fieldtype === 'Long Int') return SIGNED_FIELDS.includes(fieldname) ? /^[\d-]+$/ : /^\d+$/
+  if (['Float', 'Currency', 'Percent'].includes(fieldtype)) return SIGNED_FIELDS.includes(fieldname) ? /^[\d.-]+$/ : /^[\d.]+$/
+  if (fieldtype === 'Data' && PERSON_NAMES.includes(fieldname)) return /^[\p{L} .'\-]+$/u
+  if (fieldtype === 'Data' && ID_FIELDS.includes(fieldname)) return /^[A-Za-z0-9\-_/]+$/
+  return null
+})
+function guardInput(event) {
+  const rule = allowedText.value
+  if (!rule || event.isComposing) return
+  const text = event.data ?? event.dataTransfer?.getData('text') ?? ''
+  if (text && !rule.test(text)) event.preventDefault()
+}
+
 const validator = getValidatorForField(props.field)
 const touched = ref(false)
 const validationError = computed(() => (validator ? validator(props.modelValue) : ''))

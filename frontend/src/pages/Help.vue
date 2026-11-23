@@ -122,7 +122,7 @@
               <p>{{ t('Open Settings from the sidebar to configure the workspace:') }}</p>
               <ul>
                 <li>{{ t('App Setting — app name, logo, accent colour, sign-in page text, and the AI Assistant configuration.') }}</li>
-                <li>{{ t('App Module Setting — which modules and record types appear, in what order, with which icon, and which roles can see each one. A module or record type with no roles listed is visible to everyone.') }}</li>
+                <li>{{ t('App Module Group — the cards on Home: which record types and pages each holds, in what order, with which icon, whether it opens with a sidebar, and which roles can see the group and each item. A group or item with no roles listed is visible to everyone.') }}</li>
                 <li>{{ t('Announcement — create a message for the Home page banner, and choose whether it reaches everyone, selected roles, or selected users, with an optional date window and whether it can be dismissed.') }}</li>
                 <li>{{ t('Validation Status — the statuses available on survey records (e.g. Completed, Revision Needed), each of which can be restricted to specific roles.') }}</li>
               </ul>

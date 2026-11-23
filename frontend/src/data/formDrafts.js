@@ -1,14 +1,17 @@
-// Unsaved forms kept on this device, so a phone switching off, a closed window or a hung app does not lose what was typed.
+// Unsaved forms kept safe while they are being filled in, so a phone switching off, a closed window, a signed-out session
+// or a hung app does not lose what was typed.
 //
-// A draft is written every 30 seconds while a form has unsaved changes (and when the page is hidden), encrypted with the
-// same device key as the offline records, and only for the user who typed it. Nothing is sent to the server: the record is
-// created only when the worker presses Save. A draft is deleted once the record is saved, and after a day.
+// Two copies, both private to the user who typed it: one on this device (encrypted with the same device key as the offline
+// records; written instantly and works without a network) and one on the server (janadhikara.drafts; follows the user to
+// another phone or browser). The record itself is created only when the worker presses Save. A draft is deleted once the
+// record is saved or discarded, and after 7 days.
 import { encryptJson, decryptJson } from '@/data/deviceCrypto'
 import { session } from '@/data/session'
+import { call } from 'frappe-ui'
 
 const DB_NAME = 'janadhikara-drafts'
 const STORE = 'drafts'
-const MAX_AGE_MS = 24 * 60 * 60 * 1000
+const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000
 
 export const draftKey = (doctype, name) => `${session.user || ''}|${doctype}|${name || 'new'}`
 
@@ -67,5 +70,38 @@ export async function deleteDraft(key) {
     await run('readwrite', (store) => store.delete(key))
   } catch {
     // nothing to delete
+  }
+}
+
+// --- The copy on the server ----------------------------------------------------------------------------------------
+// Best effort: a failure (offline, signed out, not permitted) leaves the device copy, which is always written first.
+const serverArgs = (doctype, name) => ({ doctype, name: name || '' })
+
+export async function saveServerDraft(doctype, name, values) {
+  try {
+    await call('janadhikara.drafts.save_draft', { ...serverArgs(doctype, name), data: JSON.stringify(clean(values)) })
+    return Date.now()
+  } catch {
+    return null
+  }
+}
+
+export async function loadServerDraft(doctype, name) {
+  try {
+    const res = await call('janadhikara.drafts.get_draft', serverArgs(doctype, name))
+    const draft = res?.message ?? res
+    if (!draft?.data) return null
+    // the server stamps `modified` in its own clock: read as a UTC-less local time, only for showing "saved at"
+    return { values: draft.data, savedAt: new Date(String(draft.modified).replace(' ', 'T')).getTime() || Date.now() }
+  } catch {
+    return null
+  }
+}
+
+export async function deleteServerDraft(doctype, name) {
+  try {
+    await call('janadhikara.drafts.delete_draft', serverArgs(doctype, name))
+  } catch {
+    // nothing to delete, or no connection: the daily clean-up removes it
   }
 }

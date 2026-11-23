@@ -36,7 +36,8 @@
 
 <script setup>
 import { reactive, ref, watch } from 'vue'
-import { useDoc, Button, ErrorMessage, toast } from 'frappe-ui'
+import { Button, ErrorMessage, toast } from 'frappe-ui'
+import { safeUseDoc } from '@/data/safeUseDoc'
 import DynamicField from '@/components/DynamicField.vue'
 import Skeleton from '@/components/Skeleton.vue'
 import { useMeta, useFormFields } from '@/data/useMeta'
@@ -47,7 +48,7 @@ const props = defineProps({
 
 const metaResource = useMeta(props.doctype)
 const fields = useFormFields(metaResource)
-const doc = useDoc({ doctype: props.doctype, name: props.doctype })
+const doc = safeUseDoc({ doctype: props.doctype, name: props.doctype })
 
 const values = reactive({})
 

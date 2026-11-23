@@ -39,6 +39,18 @@ export function validatePincode(value) {
   return ''
 }
 
+export function validateAge(value) {
+  if (value === null || value === undefined || value === '') return ''
+  if (!/^\d+$/.test(String(value)) || Number(value) > 120) return 'Age must be a whole number from 0 to 120.'
+  return ''
+}
+
+export function validatePersonName(value) {
+  if (!value) return ''
+  if (String(value).trim().length < 2 || !/^[\p{L}]+(?:[ .'\-][\p{L}]+)*\.?$/u.test(String(value).trim())) return "Name can only have letters, spaces, . ' and -."
+  return ''
+}
+
 // Maps a field to its validator purely by naming convention - e.g.
 // phone_no/phone_number/mobile_no all mean "this is a phone number" the
 // same way across every doctype in this app (confirmed: every phone field
@@ -56,7 +68,9 @@ export function getValidatorForField(field) {
   if (field.fieldtype === 'Date' && /(^|_)(date_of_birth|dob)$/i.test(field.fieldname)) {
     return validateNotFutureDate
   }
+  if (field.fieldtype === 'Int' && /(^|_)age$/i.test(field.fieldname)) return validateAge
   if (field.fieldtype !== 'Data') return null
+  if (/^(member|respondent|household_head|worker|employee|surveyor)_name$|^contact_person$/.test(field.fieldname)) return validatePersonName
   const match = FIELDNAME_PATTERNS.find((p) => p.pattern.test(field.fieldname))
   return match?.validator || null
 }

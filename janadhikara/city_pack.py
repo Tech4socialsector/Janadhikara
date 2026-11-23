@@ -101,7 +101,7 @@ def apply_city_pack(city_code=None):
 		_swap_sidebar(shared, own, display_name(own, pack.get("prefix")))
 	from janadhikara.menu import ensure_master_sidebar
 
-	ensure_master_sidebar()  # the city's masters join Master Data
+	ensure_master_sidebar()  # the city's masters join Administration
 	frappe.clear_cache()
 
 
@@ -164,13 +164,13 @@ def _repoint_links(old, new):
 def _swap_sidebar(old, new, shown_as=None):
 	"""The sidebar entry for `old` becomes one for `new` (same place, same icon). `shown_as` is the name users see
 	and the address segment ("Settlement Profile" / settlement-profile): the city's short code stays out of both."""
-	if not frappe.db.exists("DocType", "App Module Setting"):
+	if not frappe.db.exists("DocType", "App Module Group"):
 		return
-	for name in frappe.get_all("App Module Setting", pluck="name"):
-		setting = frappe.get_doc("App Module Setting", name)
+	for name in frappe.get_all("App Module Group", pluck="name"):
+		setting = frappe.get_doc("App Module Group", name)
 		changed = False
-		for row in setting.doctypes or []:
-			if row.doctype_name == old:
+		for row in setting.items or []:
+			if row.item_type == "DocType" and row.doctype_name == old:
 				row.doctype_name = new
 				row.label = shown_as
 				row.route = frappe.scrub(shown_as).replace("_", "-") if shown_as else None
@@ -183,12 +183,12 @@ def _swap_sidebar(old, new, shown_as=None):
 def _drop_master_links(pack):
 	"""Take the city's master data entries out of the sidebar's Master Data (when the site's city changes)."""
 	prefix = pack.get("prefix")
-	if not prefix or not frappe.db.exists("DocType", "App Module Setting"):
+	if not prefix or not frappe.db.exists("DocType", "App Module Group"):
 		return
-	for name in frappe.get_all("App Module Setting", pluck="name"):
-		setting = frappe.get_doc("App Module Setting", name)
-		keep = [row for row in setting.doctypes or [] if not (row.doctype_name or "").startswith(f"{prefix} Municipal ")]
-		if len(keep) != len(setting.doctypes or []):
-			setting.set("doctypes", keep)
+	for name in frappe.get_all("App Module Group", pluck="name"):
+		setting = frappe.get_doc("App Module Group", name)
+		keep = [row for row in setting.items or [] if not (row.doctype_name or "").startswith(f"{prefix} Municipal ")]
+		if len(keep) != len(setting.items or []):
+			setting.set("items", keep)
 			setting.flags.ignore_permissions = True
 			setting.save()

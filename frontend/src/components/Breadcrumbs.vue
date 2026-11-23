@@ -9,9 +9,10 @@
       <router-link
         v-if="crumb.to && idx < crumbs.length - 1"
         :to="crumb.to"
-        class="flex-shrink-0 truncate rounded px-0.5 py-1 text-ink-gray-5 hover:text-ink-gray-7"
+        class="inline-flex flex-shrink-0 items-center rounded px-0.5 py-1 text-ink-gray-5 hover:text-ink-gray-7"
       >
-        {{ crumb.label }}
+        <LucideIcon v-if="crumb.home" name="house" class="relative -top-px mr-1 h-4 w-4 flex-shrink-0" />
+        <span class="truncate">{{ crumb.label }}</span>
       </router-link>
       <span v-else class="truncate px-0.5 py-1 text-ink-gray-9">
         {{ crumb.label }}
@@ -25,6 +26,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import LucideIcon from '@/components/LucideIcon.vue'
 import { useRoute } from 'vue-router'
 import { pageTitle } from '@/data/pageTitle'
 import { t } from '@/utils/translate'
@@ -42,12 +44,24 @@ import { findSettingsEntryByRoute } from '@/data/settingsEntries'
 const route = useRoute()
 
 const crumbs = computed(() => {
+  const home = { label: t('Home'), to: { name: 'Home' }, home: true }
+  // The app's own pages: Home / <page>
+  if (route.name === 'Dashboard') return [home, { label: t('Dashboard') }]
+  if (route.name === 'Worklist') return [home, { label: t('Worklist') }]
+  if (route.name === 'Help') return [home, { label: t('Help') }]
+  if (route.name === 'SyncData') return [home, { label: t('Sync Data') }]
+  if (route.name === 'OfflineEdit' || route.name === 'OfflineRecord') return [home, { label: t('Sync Data'), to: { name: 'SyncData' } }, { label: pageTitle.value || t('Record') }]
+  // The support desk: Home / Support, then a new ticket or the ticket itself
+  if (route.name === 'SupportDesk') return [home, { label: t('Support') }]
+  if (route.name === 'SupportNew') return [home, { label: t('Support'), to: { name: 'SupportDesk' } }, { label: t('New ticket') }]
+  if (route.name === 'SupportTicket') return [home, { label: t('Support'), to: { name: 'SupportDesk' } }, { label: pageTitle.value || route.params.name }]
+
   const doctypeRoute = route.params.doctypeRoute
   if (!doctypeRoute) return []
 
   if (doctypeRoute === 'todo') {
     return [
-      { label: t('Home'), to: { name: 'Home' } },
+      home,
       { label: t('Worklist'), to: { name: 'Worklist' } },
       { label: route.name === 'DoctypeNew' ? 'New task' : pageTitle.value || 'Task' },
     ]
@@ -55,12 +69,11 @@ const crumbs = computed(() => {
 
   const moduleItem = findModuleByRoute(doctypeRoute)
   const listLabel = t(moduleItem?.label || findSettingsEntryByRoute(doctypeRoute)?.label || doctypeRoute)
-  const list = [{ label: t('Home'), to: { name: 'Home' } }]
-  // There's no dedicated page per module (Home just lists every module's
-  // tiles inline), so the module crumb links back to Home too rather than
-  // to a route that doesn't exist.
+  const list = [home]
+  // There's no dedicated page per group (Home lists every group as a card), so the group crumb opens Home
+  // scrolled to that group's card.
   if (moduleItem?.module?.label) {
-    list.push({ label: t(moduleItem.module.label), to: { name: 'Home' } })
+    list.push({ label: t(moduleItem.module.label), to: { name: 'Home', query: { group: moduleItem.module.name || moduleItem.module.label } } })
   }
   list.push({ label: listLabel, to: { name: 'DoctypeList', params: { doctypeRoute } } })
 

@@ -115,7 +115,8 @@
 <script setup>
 import { computed, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useDoc, useNewDoc, FormControl, Button, ErrorMessage, FeatherIcon, toast } from 'frappe-ui'
+import { useNewDoc, FormControl, Button, ErrorMessage, FeatherIcon, toast } from 'frappe-ui'
+import { safeUseDoc } from '@/data/safeUseDoc'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import Skeleton from '@/components/Skeleton.vue'
@@ -131,7 +132,7 @@ const router = useRouter()
 setPageTitle(isNew ? 'New Email Account' : name)
 
 const newDoc = isNew ? useNewDoc('Email Account') : null
-const existingDoc = isNew ? null : useDoc({ doctype: 'Email Account', name })
+const existingDoc = isNew ? null : safeUseDoc({ doctype: 'Email Account', name })
 
 const values = reactive({
   email_account_name: '',

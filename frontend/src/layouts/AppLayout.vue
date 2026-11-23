@@ -8,7 +8,8 @@
     <slot />
   </MobileShell>
   <div v-else class="fixed inset-0 flex bg-surface-white text-ink-gray-8">
-    <AppSidebar />
+    <!-- No sidebar by default (every page is a tile on Home); only a module set to "Show Sidebar" (settings, master data) has one. -->
+    <AppSidebar v-if="!noSidebar && activeModule?.sidebar" />
     <div class="flex min-w-0 flex-1 flex-col">
       <TopNavbar />
       <main class="flex-1 overflow-y-auto bg-surface-white px-5 py-4 sm:px-6">
@@ -25,11 +26,13 @@ import AppSidebar from '@/components/AppSidebar.vue'
 import TopNavbar from '@/components/TopNavbar.vue'
 import MobileShell from '@/components/MobileShell.vue'
 import ConnectionBanner from '@/components/ConnectionBanner.vue'
+import { activeModule } from '@/data/activeModule'
 import { startRealtime } from '@/data/realtime'
 import { startAutoCleanup } from '@/data/offlineCleanup'
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('sm')
+defineProps({ noSidebar: { type: Boolean, default: false } })
 
 // Live notifications (a task assigned to you shows up at once).
 startRealtime()

@@ -1,0 +1,32 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "field:draft_key",
+ "creation": "2026-11-20 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-11-20 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "App Config",
+ "name": "Form Draft",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0,
+ "field_order": ["draft_key", "user", "ref_doctype", "ref_name", "data"],
+ "fields": [
+  {"fieldname": "draft_key", "fieldtype": "Data", "label": "Draft Key", "reqd": 1, "unique": 1, "read_only": 1},
+  {"fieldname": "user", "fieldtype": "Link", "label": "User", "options": "User", "reqd": 1, "read_only": 1, "in_list_view": 1, "search_index": 1},
+  {"fieldname": "ref_doctype", "fieldtype": "Data", "label": "Document Type", "reqd": 1, "read_only": 1, "in_list_view": 1},
+  {"fieldname": "ref_name", "fieldtype": "Data", "label": "Record (blank for a new one)", "read_only": 1, "in_list_view": 1},
+  {"fieldname": "data", "fieldtype": "Long Text", "label": "Answers (JSON)", "read_only": 1, "description": "What the user had typed and not yet saved. Only that user's own session can read or delete it (see janadhikara/drafts.py); removed once the record is saved, or after 7 days."}
+ ],
+ "permissions": [
+  {"role": "System Manager", "read": 1, "delete": 1}
+ ]
+}

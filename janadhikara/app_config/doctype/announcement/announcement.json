@@ -118,7 +118,7 @@
    "fieldname": "roles",
    "fieldtype": "Table MultiSelect",
    "label": "Roles",
-   "options": "Announcement Target Role"
+   "options": "Has Role"
   },
   {
    "depends_on": "eval:doc.audience==\"Specific Users\"",

@@ -9,7 +9,7 @@
       <template #sidebar-item="{ item, isCollapsed: sidebarCollapsed }">
         <hr v-if="item.dividerBefore" class="my-2 border-gray-200 dark:border-gray-800" />
         <!-- A module's sidebar can hold Section Break headings (optionally
-        collapsible), Spacers and indented sub-items - see App Module Setting. -->
+        collapsible), Spacers and indented sub-items - see App Module Group. -->
         <div v-if="item.spacer" class="h-1" />
         <!-- Group heading: reads like frappe-ui's own section label - muted,
         left-aligned, with the fold chevron after the text. A heading that

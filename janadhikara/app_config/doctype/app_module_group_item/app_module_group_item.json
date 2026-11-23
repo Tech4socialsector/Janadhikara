@@ -1,0 +1,90 @@
+{
+ "actions": [],
+ "creation": "2026-11-23 11:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "item_type",
+  "doctype_name",
+  "page",
+  "label",
+  "icon",
+  "route",
+  "child",
+  "roles"
+ ],
+ "fields": [
+  {
+   "default": "DocType",
+   "fieldname": "item_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type",
+   "options": "DocType\nPage\nSection Break\nSpacer",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.item_type=='DocType'",
+   "description": "Opens this DocType's list. On a city's site the city's own version is used.",
+   "fieldname": "doctype_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "DocType",
+   "mandatory_depends_on": "eval:doc.item_type=='DocType'",
+   "options": "DocType"
+  },
+  {
+   "depends_on": "eval:doc.item_type=='Page'",
+   "fieldname": "page",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Page",
+   "mandatory_depends_on": "eval:doc.item_type=='Page'",
+   "options": "\nDashboard\nWorklist\nSupport\nHelp\nSync Data"
+  },
+  {
+   "description": "Shown instead of the DocType or page name. For a Section Break, its heading.",
+   "fieldname": "label",
+   "fieldtype": "Data",
+   "label": "Label"
+  },
+  {
+   "fieldname": "icon",
+   "fieldtype": "Icon",
+   "label": "Icon"
+  },
+  {
+   "fieldname": "route",
+   "fieldtype": "Data",
+   "label": "Route",
+   "description": "Address segment; leave empty to use the DocType's own."
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.item_type=='DocType'",
+   "description": "Indent under the item above (sidebar groups).",
+   "fieldname": "child",
+   "fieldtype": "Check",
+   "label": "Sub-item"
+  },
+  {
+   "description": "One role per line. Leave empty to show it to everyone who can see the group.",
+   "fieldname": "roles",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Visible To Roles"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-11-23 11:00:00",
+ "modified_by": "Administrator",
+ "module": "App Config",
+ "name": "App Module Group Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "ASC",
+ "states": []
+}

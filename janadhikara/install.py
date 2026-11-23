@@ -1,8 +1,9 @@
 import frappe
 
-from janadhikara.modules_setup import ensure_sync_module
+from janadhikara.menu import ensure_master_sidebar, ensure_module_groups
 from janadhikara.required_fields import seed_required_fields
 from janadhikara.todo_setup import ensure_todo_setup
+from janadhikara.helpdesk import ensure_roles
 from janadhikara.statuses import ensure_statuses
 from janadhikara.translations import ensure_languages, import_translations
 
@@ -12,7 +13,9 @@ def after_install():
 	only English, Assamese and Hindi are offered, and the app's translations are loaded."""
 	ensure_languages(restrict=True)
 	ensure_statuses()
-	ensure_sync_module()
+	ensure_roles()
+	ensure_module_groups()
+	ensure_master_sidebar()
 	seed_required_fields()
 	ensure_todo_setup()
 	import_translations()

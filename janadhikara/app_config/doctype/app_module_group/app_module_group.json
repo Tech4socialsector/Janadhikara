@@ -1,0 +1,134 @@
+{
+ "actions": [],
+ "autoname": "field:group_name",
+ "creation": "2026-11-23 10:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "group_name",
+  "description",
+  "column_break_look",
+  "icon",
+  "color",
+  "sort_order",
+  "use_sidebar",
+  "section_break_items",
+  "items",
+  "section_break_roles",
+  "restrict_by_role",
+  "roles"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "description": "The heading of the card on Home. To change it, open the group and rename it (click its title).",
+   "fieldname": "group_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Group Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Description"
+  },
+  {
+   "fieldname": "column_break_look",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "icon",
+   "fieldtype": "Icon",
+   "label": "Icon"
+  },
+  {
+   "default": "Blue",
+   "fieldname": "color",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Color",
+   "options": "Blue\nGreen\nOrange\nPurple\nRed\nGray"
+  },
+  {
+   "default": "0",
+   "description": "Lower groups come first.",
+   "fieldname": "sort_order",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Order"
+  },
+  {
+   "default": "0",
+   "description": "Off: this group is a card on Home, each of its items a tile that opens directly. On: the group is one tile that opens with a sidebar listing its items (for settings and master data).",
+   "fieldname": "use_sidebar",
+   "fieldtype": "Check",
+   "label": "Show Sidebar"
+  },
+  {
+   "fieldname": "section_break_items",
+   "fieldtype": "Section Break",
+   "label": "Items"
+  },
+  {
+   "description": "What sits in this group: DocTypes and pages (and, for a sidebar group, section headings and spacers).",
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "App Module Group Item"
+  },
+  {
+   "fieldname": "section_break_roles",
+   "fieldtype": "Section Break",
+   "label": "Visible To"
+  },
+  {
+   "default": "0",
+   "description": "When off, every signed-in user sees this group.",
+   "fieldname": "restrict_by_role",
+   "fieldtype": "Check",
+   "label": "Restrict by Role"
+  },
+  {
+   "depends_on": "restrict_by_role",
+   "fieldname": "roles",
+   "fieldtype": "Table MultiSelect",
+   "label": "Roles",
+   "options": "Has Role"
+  }
+ ],
+ "links": [],
+ "modified": "2026-11-23 10:00:00",
+ "modified_by": "Administrator",
+ "module": "App Config",
+ "name": "App Module Group",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "sort_order",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "group_name",
+ "allow_rename": 1
+}

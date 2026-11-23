@@ -44,7 +44,7 @@ Then open `/janadhikara` on your site. Replace `<repository-url>` and `<site-nam
 After installation, sign in with an administrator account and configure the workspace in Frappe:
 
 1. Set the app name, logo, and other branding in **App Setting**.
-2. Add the modules and DocTypes users should see in **App Module Setting**. Module visibility can be restricted by role.
+2. Add the modules and DocTypes users should see in **App Module Group** (each group is a Home card; items and groups can be limited by role).
 3. Create announcements in **Announcement** and choose whether they apply to everyone, selected roles, or selected users.
 
 ## Frontend development

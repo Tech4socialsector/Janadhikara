@@ -1,6 +1,6 @@
 <template>
-  <!-- No template - this only registers the service worker and surfaces
-  update/offline-ready state via toast. Kept as a component (mounted once
+  <!-- No template - this only registers the service worker and applies
+  updates quietly (and says once that the app is ready to work offline). Kept as a component (mounted once
   in App.vue) rather than a bare side-effect module so it participates in
   Vue's lifecycle the same way the rest of this app's singletons do. -->
 </template>
@@ -32,8 +32,8 @@ onMounted(async () => {
   let refreshPromptShown = false
   const showRefreshPrompt = () => {
     refreshPromptShown = true
-    // The toast is easy to miss, and an old copy of the app keeps running until it is accepted: apply the
-    // update on the next page change too (never in the middle of filling in a form).
+    // No message is shown: the new version is applied quietly on the next page change (never in the middle of
+    // filling in a form), so an old copy of the app does not keep running.
     needRefresh.value = true
     router.afterEach(() => {
       if (needRefresh.value) {
@@ -42,13 +42,6 @@ onMounted(async () => {
       }
     })
     wb.addEventListener('controlling', () => window.location.reload())
-    toast.info('A new version of the app is available.', {
-      duration: 0,
-      action: {
-        label: 'Refresh',
-        onClick: () => updateServiceWorker.value(),
-      },
-    })
   }
 
   wb.addEventListener('installed', (event) => {

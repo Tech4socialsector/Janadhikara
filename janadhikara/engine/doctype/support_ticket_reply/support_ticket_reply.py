@@ -1,9 +1,8 @@
 # Copyright (c) 2026, tech4socialsector@azimpremjifoundation.org and contributors
 # For license information, please see license.txt
 
-# import frappe
 from frappe.model.document import Document
 
 
-class AnnouncementTargetRole(Document):
-	pass
+class SupportTicketReply(Document):
+	"""One message in a ticket's conversation. Created through janadhikara.helpdesk.add_reply."""

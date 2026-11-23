@@ -1,5 +1,4 @@
-// Child tables whose rows are made from another doctype's records: the roster of a household is filled in
-// by the Individual Profiles (server side: sync_roster), so a row is opened, and a member added, from the profile.
-export const PROFILE_ROWS = {
-  'HYD Household Member': { doctype: 'HYD Individual Profile', link: 'individual_profile', parentField: 'household' },
-}
+// Child tables whose rows are made from another doctype's records, so a row is opened, and a member added, from
+// that record instead of in the table. None now: Hyderabad's household roster is filled in on the household itself
+// (the basic details of each member); the Individual Profiles are matched to its rows by the server (sync_roster).
+export const PROFILE_ROWS = {}

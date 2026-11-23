@@ -275,7 +275,7 @@ export async function checkOfflineReadiness() {
       const keys = await (await caches.open(name)).keys()
       found += keys.filter((r) => new URL(r.url).pathname.startsWith('/assets/janadhikara/frontend/assets/')).length
     }
-    add('code', 'App screens saved', found > 0, found > 0 ? `${found} files` : 'Update the app while online: accept the "new version" prompt, or close and reopen the app.')
+    add('code', 'App screens saved', found > 0, found > 0 ? `${found} files` : 'Update the app while online: open another page, or close and reopen the app.')
   } catch {
     add('code', 'App screens saved', false, 'Open the app once with internet.')
   }

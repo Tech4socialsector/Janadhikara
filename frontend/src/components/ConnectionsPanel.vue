@@ -33,14 +33,14 @@
         <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ t('Family members') }}</p>
         <span
           class="rounded-full px-2 py-0.5 text-xs font-medium"
-          :class="memberSlots.missing ? 'bg-surface-amber-2 text-ink-amber-3' : 'bg-surface-green-2 text-ink-green-3'"
+          :class="memberSlots.left ? 'bg-surface-amber-2 text-ink-amber-3' : 'bg-surface-green-2 text-ink-green-3'"
         >
           {{ memberSlots.profiles.length }} {{ t('of') }} {{ memberSlots.expected }} {{ t('profiles added') }}
         </span>
         <span class="h-1.5 w-24 overflow-hidden rounded-full bg-surface-gray-3" aria-hidden="true">
           <span
             class="block h-full rounded-full transition-all"
-            :class="memberSlots.missing ? 'bg-amber-500' : 'bg-green-500'"
+            :class="memberSlots.left ? 'bg-amber-500' : 'bg-green-500'"
             :style="{ width: Math.min(100, Math.round((100 * memberSlots.profiles.length) / Math.max(1, memberSlots.expected))) + '%' }"
           />
         </span>
@@ -58,10 +58,20 @@
           <span class="truncate">{{ i + 1 }}. {{ p.member_name || p.name }}</span>
         </button>
       </div>
+      <!-- Members named on the roster who are not enrolled yet: Add profile opens their Individual Profile with their details filled in -->
+      <div v-if="memberSlots.pending.length" class="mt-2 grid grid-cols-1 gap-1.5 sm:grid-cols-2 xl:grid-cols-3">
+        <div v-for="(row, i) in memberSlots.pending" :key="row.name || 'p' + i" class="flex min-w-0 items-center justify-between gap-2 rounded-md border border-dashed border-outline-gray-2 px-2.5 py-1 text-sm text-gray-800 dark:text-gray-200">
+          <span class="flex min-w-0 items-center gap-2">
+            <FeatherIcon name="circle" class="h-4 w-4 flex-shrink-0 text-gray-400" />
+            <span class="truncate">{{ memberSlots.profiles.length + i + 1 }}. {{ row.member_name }}</span>
+          </span>
+          <Button size="sm" variant="subtle" icon-left="plus" @click="enrol(row)">{{ t('Add profile') }}</Button>
+        </div>
+      </div>
       <!-- Members still to add: name them here, Add profile opens their Individual Profile with it filled in -->
       <div v-if="memberSlots.missing" class="mt-2 grid grid-cols-1 gap-2 lg:grid-cols-2">
         <div v-for="i in memberSlots.missing" :key="'new' + i" class="flex items-center gap-2">
-          <span class="w-6 flex-shrink-0 text-right text-sm text-gray-500">{{ memberSlots.profiles.length + i }}.</span>
+          <span class="w-6 flex-shrink-0 text-right text-sm text-gray-500">{{ memberSlots.profiles.length + memberSlots.pending.length + i }}.</span>
           <input
             v-model="newNames[i]"
             type="text"
@@ -143,8 +153,19 @@ const memberSlots = computed(() => {
   const expected = Number(props.values?.member_count) || 0
   if (!memberConn || !expected) return null
   const profiles = memberProfiles.data || []
-  return { expected, profiles, missing: Math.max(0, expected - profiles.length) }
+  const missing = Math.max(0, expected - profiles.length)
+  // members named on the household's roster whose Individual Profile is not made yet
+  const pending = (props.values?.household_roster || []).filter((r) => r.member_name && !r.individual_profile).slice(0, missing)
+  return { expected, profiles, pending, missing: missing - pending.length, left: missing }
 })
+function enrol(row) {
+  const query = { household: props.name, member_name: row.member_name }
+  if (row.age != null && row.age !== '') query.age = row.age
+  if (row.uin) query.individual_id = row.uin
+  if (row.gender) query.sex = row.gender
+  if (row.date_of_birth) query.date_of_birth = row.date_of_birth
+  router.push({ name: 'DoctypeNew', params: { doctypeRoute: memberConn.route }, query })
+}
 function addMember(i) {
   router.push({
     name: 'DoctypeNew',

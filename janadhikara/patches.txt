@@ -62,3 +62,6 @@ janadhikara.patches.v1_1.household_sheet_round2
 janadhikara.patches.v1_1.individual_sheet_round2
 janadhikara.patches.v1_1.feedback_round3
 janadhikara.patches.v1_1.feedback_round4
+janadhikara.patches.v1_1.use_has_role
+janadhikara.patches.v1_1.merge_modules_into_groups
+janadhikara.patches.v1_1.roster_sex_options

@@ -19,6 +19,7 @@
   "member_name",
   "individual_profile",
   "uin",
+  "date_of_birth",
   "age",
   "gender"
  ],
@@ -26,42 +27,46 @@
   {
    "fieldname": "member_name",
    "fieldtype": "Data",
-   "label": "Member Name",
+   "label": "1.3 Individual Name",
    "in_list_view": 1,
-   "reqd": 0,
-   "read_only": 1
+   "reqd": 1
   },
   {
    "fieldname": "individual_profile",
    "fieldtype": "Link",
    "label": "Individual Profile",
    "options": "HYD Individual Profile",
-   "in_list_view": 1,
+   "in_list_view": 0,
    "read_only": 1,
-   "description": "Filled in automatically: the roster row is made from the member's Individual Profile."
+   "description": "Set automatically when the member's Individual Profile is added; the member's name above is the one shown.",
+   "hidden": 1
   },
   {
    "fieldname": "uin",
    "fieldtype": "Data",
-   "label": "UIN",
+   "label": "1.2 Individual ID",
    "in_list_view": 1,
-   "description": "The member's Individual ID.",
+   "description": "Filled in from the Individual ID when the member's Individual Profile is added.",
    "read_only": 1
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "1.4 Date of birth",
+   "in_list_view": 0
   },
   {
    "fieldname": "age",
    "fieldtype": "Int",
-   "label": "Age",
-   "in_list_view": 1,
-   "read_only": 1
+   "label": "1.5 Age",
+   "in_list_view": 1
   },
   {
    "fieldname": "gender",
    "fieldtype": "Select",
-   "label": "Gender",
-   "options": "\nMale\nFemale\nOther",
-   "in_list_view": 1,
-   "read_only": 1
+   "label": "1.6 Sex",
+   "options": "\nMale\nFemale\nOthers\nPrefer not to say",
+   "in_list_view": 1
   }
  ],
  "permissions": []

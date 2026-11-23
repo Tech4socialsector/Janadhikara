@@ -44,9 +44,9 @@ ALWAYS_BLOCKED = {
     'User Permission', 'Role Permission for Page and Report', 'System Settings', 'Email Account',
     'Email Domain', 'OAuth Client', 'OAuth Bearer Token', 'API Request Log', 'Access Log', 'Error Log',
     'Activity Log', 'Version', 'Patch Log', 'Scheduled Job Type', 'Server Script', 'Client Script',
-    'App Setting', 'App Module Setting', 'App Module DocType Item', 'App Module Setting Role',
+    'App Setting', 'App Module Group', 'App Module Group Item',
     'AI Guide Section', 'AI Guide Instruction', 'AI Data Policy', 'AI Data Policy Field',
-    'Field Function Mapping', 'Field Function Mapping Item', 'Announcement Dismissal', 'Push Subscription',
+    'Field Function Mapping', 'Field Function Mapping Item', 'Announcement Dismissal', 'Push Subscription', 'Form Draft',
 }
 
 LAYOUT_FIELDTYPES = {'Section Break', 'Column Break', 'Tab Break', 'HTML', 'Heading', 'Button', 'Image'}

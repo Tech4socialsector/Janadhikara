@@ -1,10 +1,10 @@
 <template>
-  <AppLayout>
-    <PageHeader>
-      <template #title>
-        <h1 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ greeting }}</h1>
-      </template>
-    </PageHeader>
+  <AppLayout no-sidebar>
+    <!-- A soft tinted greeting panel, then every module as a tile (same landing page as the budget app). -->
+    <div class="mb-6 rounded-xl bg-gradient-to-br from-blue-50 to-white p-6 dark:from-gray-800/60 dark:to-gray-900">
+      <h1 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ greeting }}</h1>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ t('Jump into a module below to get started.') }}</p>
+    </div>
 
     <!-- Announcements: one rounded card at a time (prev/next + dots when
     there are several) so it stays compact on every screen size. A soft
@@ -84,90 +84,45 @@
         class="mb-5 py-6 text-center text-gray-500 dark:text-gray-400"
       >
         No modules are configured for your account yet. Ask a coordinator to
-        enable modules in App Module Setting.
+        add groups in App Module Group.
       </div>
 
     <!-- Every module as a tile, on every screen size: a wrapping grid, so on a
     phone they're all visible at once (no paging arrows). Tapping one makes it the
     open module - on a phone that opens the menu drawer straight onto that module's
     configured sidebar items, which is why the old inline items list is gone. -->
-      <div class="grid grid-cols-3 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(7rem,max-content))] sm:gap-4">
-      <!-- Numbers and charts across the households and individuals recorded. First tile. -->
-      <router-link
-        :to="{ name: 'Dashboard' }"
-        class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
-      >
-        <span class="module-tile-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-gray-300 group-active:translate-y-0 group-active:scale-95 group-active:shadow-sm dark:bg-gray-800 dark:ring-gray-700 dark:group-hover:ring-gray-600 sm:h-[4.5rem] sm:w-[4.5rem]">
-          <LucideIcon name="layout-dashboard" class="h-7 w-7 text-gray-600 transition-colors duration-150 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100 sm:h-8 sm:w-8" />
-        </span>
-        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">{{ t('Dashboard') }}</span>
-      </router-link>
-
-
-      <button
-        v-for="mod in shownModules"
-        :key="mod.label"
-        class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
-        :class="{ 'bg-gray-100 dark:bg-gray-800': activeModule?.label === mod.label }"
-        @click="toggleModule(mod)"
-      >
-        <span class="module-tile-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-gray-300 group-active:translate-y-0 group-active:scale-95 group-active:shadow-sm dark:bg-gray-800 dark:ring-gray-700 dark:group-hover:ring-gray-600 sm:h-[4.5rem] sm:w-[4.5rem]">
-          <LucideIcon :name="mod.icon" class="h-7 w-7 text-gray-600 transition-colors duration-150 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100 sm:h-8 sm:w-8" />
-        </span>
-        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">
-          {{ t(mod.label) }}
-        </span>
-      </button>
-
-
-      <!-- Pages switched on for this role through a module (Sync Data: offline records waiting to be uploaded). -->
-      <router-link
-        v-for="page in pageTiles"
-        :key="page.route"
-        :to="`/${page.route}`"
-        class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
-      >
-        <span class="module-tile-icon relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md dark:bg-gray-800 dark:ring-gray-700 sm:h-[4.5rem] sm:w-[4.5rem]">
-          <SyncCloudIcon v-if="page.route === 'sync-data'" class="h-7 w-7 text-gray-600 dark:text-gray-300 sm:h-8 sm:w-8" />
-          <LucideIcon v-else :name="page.icon" class="h-7 w-7 text-gray-600 dark:text-gray-300 sm:h-8 sm:w-8" />
-          <span
-            v-if="page.route === 'sync-data' && pendingCount > 0"
-            class="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-xs font-semibold text-white ring-2 ring-white dark:ring-gray-900"
-          >
-            {{ pendingCount > 99 ? '99+' : pendingCount }}
-          </span>
-        </span>
-        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">{{ t(page.label) }}</span>
-      </router-link>
-
-      <!-- User manual: always available, same as Dashboard, not gated by App Module Setting. -->
-      <router-link
-        :to="{ name: 'Help' }"
-        class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
-      >
-        <span class="module-tile-icon flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-gray-300 group-active:translate-y-0 group-active:scale-95 group-active:shadow-sm dark:bg-gray-800 dark:ring-gray-700 dark:group-hover:ring-gray-600 sm:h-[4.5rem] sm:w-[4.5rem]">
-          <LucideIcon name="help-circle" class="h-7 w-7 text-gray-600 transition-colors duration-150 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100 sm:h-8 sm:w-8" />
-        </span>
-        <span class="line-clamp-2 text-xs font-medium leading-tight text-gray-900 dark:text-gray-100 sm:text-sm">{{ t('Help') }}</span>
-      </router-link>
-      </div>
-
-      <!-- The open module's pages as tiles, so they are one click away without the sidebar. -->
-      <div v-if="activeModule && !isMobile && moduleItems.length" class="mt-8">
-        <h2 class="mb-3 px-2 text-sm font-medium text-gray-500 dark:text-gray-400">{{ t(activeModule.label) }}</h2>
-        <div class="grid grid-cols-[repeat(auto-fill,minmax(7rem,max-content))] gap-4">
-          <button
-            v-for="item in moduleItems"
-            :key="item.route"
-            class="module-tile group flex flex-col items-center gap-2 rounded-lg p-2 text-center transition-colors duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
-            @click="openItem(item)"
-          >
-            <span class="module-tile-icon flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 transition-all duration-150 ease-out group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:ring-gray-300 group-active:translate-y-0 group-active:scale-95 dark:bg-gray-800 dark:ring-gray-700 dark:group-hover:ring-gray-600">
-              <LucideIcon :name="item.icon || activeModule.icon" class="h-8 w-8 text-gray-600 transition-colors duration-150 group-hover:text-gray-900 dark:text-gray-300 dark:group-hover:text-gray-100" />
+      <!-- One card per App Module Group (heading, description, tinted by its colour); modules and built-in pages sit inside. -->
+      <div class="grid items-start gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <section
+          v-for="card in cards"
+          :key="card.key"
+          :id="`group-${card.key}`"
+          class="scroll-mt-20 overflow-hidden rounded-2xl border bg-surface-white shadow-sm transition-shadow duration-500"
+          :class="highlighted === card.key ? 'border-outline-gray-4 shadow-lg ring-2 ring-outline-gray-3' : 'border-outline-gray-2'"
+        >
+          <header v-if="card.label" class="flex items-center gap-3 px-3.5 py-2.5 sm:px-4 sm:py-3" :class="card.look.head">
+            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl" :class="card.look.icon">
+              <LucideIcon :name="card.icon" class="h-5 w-5" />
             </span>
-            <span class="line-clamp-2 text-sm font-medium leading-tight text-gray-900 dark:text-gray-100">{{ t(item.label || item.doctype_name) }}</span>
-          </button>
-        </div>
+            <div class="min-w-0">
+              <h2 class="truncate text-base font-semibold text-ink-gray-9">{{ t(card.label) }}</h2>
+              <p v-if="card.description" class="line-clamp-2 text-xs leading-snug text-ink-gray-6 sm:line-clamp-1 sm:text-sm">{{ t(card.description) }}</p>
+            </div>
+          </header>
+          <div class="grid grid-cols-4 gap-x-1 gap-y-2 p-2.5 sm:grid-cols-3 sm:gap-2 sm:p-3">
+            <HomeTile
+              v-for="tile in card.tiles"
+              :key="tile.key"
+              :icon="tile.icon"
+              :label="t(tile.label)"
+              :to="tile.to"
+              :tint="card.look.icon"
+              :badge="tile.badge || 0"
+              :sync-icon="!!tile.sync"
+              @click="tile.click && tile.click()"
+            />
+          </div>
+        </section>
       </div>
     </div>
 
@@ -191,21 +146,20 @@
 </style>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { FeatherIcon, ErrorMessage, Button } from 'frappe-ui'
 import { t } from '@/utils/translate'
 import AppLayout from '@/layouts/AppLayout.vue'
-import PageHeader from '@/components/PageHeader.vue'
 import Skeleton from '@/components/Skeleton.vue'
 import LucideIcon from '@/components/LucideIcon.vue'
-import SyncCloudIcon from '@/components/SyncCloudIcon.vue'
-import { modulesResource, isPageModule, pageEntries } from '@/data/modules'
+import HomeTile from '@/components/HomeTile.vue'
+import { modulesResource } from '@/data/modules'
 import { pendingCount } from '@/data/offlineQueue'
 import { online } from '@/data/connection'
 import { announcementsResource, dismissAnnouncement } from '@/data/announcements'
-import { activeModule, setActiveModule, clearActiveModule } from '@/data/activeModule'
+import { setActiveModule } from '@/data/activeModule'
 import { openMobileMenu } from '@/data/mobileMenu'
 import { setPageTitle } from '@/data/pageTitle'
 import { session } from '@/data/session'
@@ -216,28 +170,28 @@ const announcements = computed(() => announcementsResource.data || [])
 const announcementStyles = {
   Info: {
     name: 'info',
-    card: 'border-blue-100 bg-gradient-to-br from-blue-50 to-white dark:border-blue-900/60 dark:from-blue-950/60 dark:to-gray-900',
+    card: 'border-blue-100 bg-gradient-to-br from-blue-50 to-white dark:border-blue-900/60 dark:from-blue-900/30 dark:to-gray-900',
     icon: 'bg-blue-100 text-blue-600 dark:bg-blue-900/60 dark:text-blue-300',
     chip: 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300',
     dot: 'bg-blue-500',
   },
   Success: {
     name: 'check-circle',
-    card: 'border-green-100 bg-gradient-to-br from-green-50 to-white dark:border-green-900/60 dark:from-green-950/60 dark:to-gray-900',
+    card: 'border-green-100 bg-gradient-to-br from-green-50 to-white dark:border-green-900/60 dark:from-green-900/30 dark:to-gray-900',
     icon: 'bg-green-100 text-green-600 dark:bg-green-900/60 dark:text-green-300',
     chip: 'bg-green-100 text-green-700 dark:bg-green-900/60 dark:text-green-300',
     dot: 'bg-green-500',
   },
   Warning: {
     name: 'alert-triangle',
-    card: 'border-amber-100 bg-gradient-to-br from-amber-50 to-white dark:border-amber-900/60 dark:from-amber-950/60 dark:to-gray-900',
+    card: 'border-amber-100 bg-gradient-to-br from-amber-50 to-white dark:border-amber-900/60 dark:from-amber-900/30 dark:to-gray-900',
     icon: 'bg-amber-100 text-amber-600 dark:bg-amber-900/60 dark:text-amber-300',
     chip: 'bg-amber-100 text-amber-700 dark:bg-amber-900/60 dark:text-amber-300',
     dot: 'bg-amber-500',
   },
   Urgent: {
     name: 'alert-circle',
-    card: 'border-red-100 bg-gradient-to-br from-red-50 to-white dark:border-red-900/60 dark:from-red-950/60 dark:to-gray-900',
+    card: 'border-red-100 bg-gradient-to-br from-red-50 to-white dark:border-red-900/60 dark:from-red-900/30 dark:to-gray-900',
     icon: 'bg-red-100 text-red-600 dark:bg-red-900/60 dark:text-red-300',
     chip: 'bg-red-100 text-red-700 dark:bg-red-900/60 dark:text-red-300',
     dot: 'bg-red-500',
@@ -258,34 +212,80 @@ const greeting = computed(() => {
 })
 
 const router = useRouter()
-const shownModules = computed(() => (modulesResource.data || []).filter((m) => !isPageModule(m)))
-// Sync Data comes from the user's modules. If the modules could not be loaded at all (offline on a first visit) it is
-// still offered, so records saved on the device can always be uploaded.
-// On phones Sync Data sits in the bottom nav instead (MobileNav.vue), so it has no tile here.
-const pageTiles = computed(() =>
-  (pageEntries.value.length || !(modulesResource.error && !modulesResource.data?.length)
-    ? pageEntries.value
-    : [{ label: 'Sync Data', route: 'sync-data', icon: 'cloud-upload' }]
-  ).filter((page) => !(isMobile.value && page.route === 'sync-data')),
-)
-// Links only: section headings and spacers belong to the sidebar.
-const moduleItems = computed(() => (activeModule.value?.doctypes || []).filter((it) => it.route && it.type !== 'Section Break' && it.type !== 'Spacer'))
-function openItem(item) {
+const route = useRoute()
+
+// Card colours (heading band + icon tint), written out in full so Tailwind keeps them
+const LOOKS = {
+  Blue: { head: 'bg-blue-50 dark:bg-blue-900/30', icon: 'bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-300' },
+  Green: { head: 'bg-green-50 dark:bg-green-900/30', icon: 'bg-green-100 text-green-600 dark:bg-green-900/50 dark:text-green-300' },
+  Orange: { head: 'bg-orange-50 dark:bg-orange-900/30', icon: 'bg-orange-100 text-orange-600 dark:bg-orange-900/50 dark:text-orange-300' },
+  Purple: { head: 'bg-purple-50 dark:bg-purple-900/30', icon: 'bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-300' },
+  Red: { head: 'bg-red-50 dark:bg-red-900/30', icon: 'bg-red-100 text-red-600 dark:bg-red-900/50 dark:text-red-300' },
+  Gray: { head: 'bg-surface-gray-2', icon: 'bg-surface-gray-3 text-ink-gray-7' },
+}
+
+// On a phone these two are in the bottom navigation, so Home does not repeat them
+const PHONE_NAV_PAGES = ['worklist', 'sync-data']
+
+function openItem(mod, item) {
+  setActiveModule(mod)
   router.push({ name: 'DoctypeList', params: { doctypeRoute: item.route } })
 }
+// One card per App Module Group. A group with "Show Sidebar" is one tile that opens it with its sidebar; any other
+// group shows each of its DocTypes and pages as a tile of its own that opens directly.
+const cards = computed(() => {
+  const mods = modulesResource.data || []
+  if (!mods.length && modulesResource.error) {
+    // The groups could not be loaded at all (offline on a first visit): Sync Data is still offered, so records saved on the device can be uploaded.
+    return [{ key: '_offline', label: '', look: LOOKS.Gray, tiles: [{ key: 'sync-data', label: 'Sync Data', icon: 'cloud-upload', to: '/sync-data', sync: true, badge: pendingCount.value }] }]
+  }
+  return mods
+    .map((mod) => ({
+      key: mod.name || mod.label,
+      label: mod.label,
+      description: mod.description,
+      icon: mod.icon,
+      look: LOOKS[mod.color] || LOOKS.Blue,
+      tiles: mod.sidebar
+        ? [{ key: 'open', label: t('Open'), icon: mod.icon, click: () => toggleModule(mod) }]
+        : (mod.items || [])
+            .filter((it) => (it.type === 'Link' && it.route) || (it.type === 'Page' && !(isMobile.value && PHONE_NAV_PAGES.includes(it.route))))
+            .map((it) =>
+              it.type === 'Page'
+                ? { key: `page/${it.route}`, label: it.label, icon: it.icon, to: `/${it.route}`, sync: it.route === 'sync-data', badge: it.route === 'sync-data' ? pendingCount.value : 0 }
+                : { key: `${mod.label}/${it.route}`, label: it.label || it.doctype_name, icon: it.icon || mod.icon, click: () => openItem(mod, it) },
+            ),
+    }))
+    .filter((c) => c.tiles.length)
+})
+// Arriving from a breadcrumb (Home?group=Name): scroll to that group's card and flash it
+const highlighted = ref('')
+watch(
+  [() => route.query.group, () => cards.value.length],
+  async ([group]) => {
+    if (!group || !cards.value.some((c) => c.key === group)) return
+    await nextTick()
+    document.getElementById(`group-${group}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    highlighted.value = group
+    setTimeout(() => (highlighted.value = ''), 1800)
+  },
+  { immediate: true },
+)
+
+// Links only: section headings and spacers belong to the sidebar.
+const firstItem = (mod) => (mod.doctypes || []).find((it) => it.route && it.type !== 'Section Break' && it.type !== 'Spacer')
 
 function toggleModule(mod) {
   if (isMobile.value) {
     // The drawer is the way to browse a module on a phone: pick the module and
-    // open the menu on its sidebar items (tapping the open one just reopens it).
+    // open the menu on its sidebar items.
     setActiveModule(mod)
     openMobileMenu()
     return
   }
-  if (activeModule.value?.label === mod.label) {
-    clearActiveModule()
-  } else {
-    setActiveModule(mod)
-  }
+  // A computer: straight into the module's first page; the sidebar appears there with the rest.
+  const item = firstItem(mod)
+  setActiveModule(mod)
+  if (item) router.push({ name: 'DoctypeList', params: { doctypeRoute: item.route } })
 }
 </script>

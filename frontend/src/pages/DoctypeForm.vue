@@ -36,7 +36,7 @@
           >
             {{ t('Not Saved') }}
           </span>
-          <span v-if="isDirty && draftSavedAt" class="text-xs text-gray-400">{{ t('Draft saved on this device') }}</span>
+          <span v-if="isDirty && draftStatus" class="text-xs text-gray-400" role="status">{{ draftStatus }}</span>
         </div>
       </template>
       <template #actions>
@@ -138,6 +138,19 @@
     </Dialog>
 
     <RecordTasks v-if="!isNew && name && !offlineId" :doctype="doctype" :name="name" />
+
+    <!-- A draft of this form was found (a closed window, a signed-out session, another phone): the worker chooses. -->
+    <div
+      v-if="pendingDraft"
+      class="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200"
+      role="alert"
+    >
+      <span>{{ t('You have unsaved answers on this form from') }} {{ draftTime(pendingDraft.savedAt) }}.</span>
+      <span class="flex gap-2">
+        <Button size="sm" variant="subtle" @click="discardDraft">{{ t('Discard') }}</Button>
+        <Button size="sm" variant="solid" @click="restoreDraft">{{ t('Restore') }}</Button>
+      </span>
+    </div>
 
     <div v-if="metaResource.loading && !metaResource.data" class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
       <div v-for="i in 6" :key="i" class="space-y-1.5">
@@ -347,7 +360,8 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { breakpointsTailwind, onKeyStroke, useBreakpoints } from '@vueuse/core'
-import { useDoc, useNewDoc, useCall, call, Button, Dialog, ErrorMessage, FeatherIcon, toast } from 'frappe-ui'
+import { useNewDoc, useCall, call, Button, Dialog, ErrorMessage, FeatherIcon, toast } from 'frappe-ui'
+import { safeUseDoc } from '@/data/safeUseDoc'
 import AppLayout from '@/layouts/AppLayout.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import RecordTasks from '@/components/RecordTasks.vue'
@@ -361,7 +375,7 @@ import Skeleton from '@/components/Skeleton.vue'
 import ChildTable from '@/components/ChildTable.vue'
 import FormTabSections from '@/components/FormTabSections.vue'
 import { t, tn } from '@/utils/translate'
-import { draftKey, saveDraft, loadDraft, deleteDraft } from '@/data/formDrafts'
+import { draftKey, saveDraft, loadDraft, deleteDraft, saveServerDraft, loadServerDraft, deleteServerDraft } from '@/data/formDrafts'
 import ConnectionsPanel from '@/components/ConnectionsPanel.vue'
 import ActivityPanel from '@/components/ActivityPanel.vue'
 import { useMeta, useFormFields, useFormTabs, useTableFields } from '@/data/useMeta'
@@ -540,7 +554,7 @@ const isPromptNamed = computed(() => metaResource.data?.autoname === 'prompt')
 const newDocName = ref('')
 
 const newDoc = isNew ? useNewDoc(doctype) : null
-const existingDoc = isNew || localItem || useLocalCopy ? null : useDoc({ doctype, name })
+const existingDoc = isNew || localItem || useLocalCopy ? null : safeUseDoc({ doctype, name })
 
 // existingDoc.error used to be silently ignored - a failed record fetch
 // (permission denied, the record renamed/deleted since the link that led
@@ -949,35 +963,82 @@ function confirmLeaveIfDirty(e) {
 onMounted(() => window.addEventListener('beforeunload', confirmLeaveIfDirty))
 onBeforeUnmount(() => window.removeEventListener('beforeunload', confirmLeaveIfDirty))
 
-// ---- Drafts on this device ----------------------------------------------------------------------------------------
-// Every 30 seconds an unsaved form is kept as an encrypted draft (see data/formDrafts.js), so a switch-off, a closed
-// window or a hung phone does not lose it. Reopening the form offers to resume it. A record waiting on the device
-// (offlineId) is already stored there, so it needs no draft.
+// ---- Drafts -------------------------------------------------------------------------------------------------------
+// While a form has unsaved changes it is kept as a draft: a few seconds after the last change (and every 30 seconds,
+// and when the page is hidden, and right before Save is sent). Each time it goes to this device first (encrypted,
+// instant, works offline) and then to the server (so it follows the worker to another phone and survives a signed-out
+// session). A draft is dropped only by saving the record or by Discard: leaving the form for another page keeps it, so
+// nothing typed is lost to a stray tap on Back. When the form is opened again the worker is offered the draft
+// (Restore / Discard) instead of it being put back silently. A record waiting on the device (offlineId) is already
+// stored there, so it needs no draft.
 const DRAFT_EVERY_MS = 30_000
+const DRAFT_IDLE_MS = 4_000
 const currentDraftKey = () => draftKey(doctype, isNew ? null : name)
+const draftName = () => (isNew ? null : name)
 const draftSavedAt = ref(null)
+const draftOnServer = ref(false)
+const pendingDraft = ref(null)
 
+const draftTime = (ms) => new Date(ms).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })
+const draftStatus = computed(() => {
+  if (!draftSavedAt.value) return ''
+  const time = new Date(draftSavedAt.value).toLocaleTimeString([], { timeStyle: 'short' })
+  return draftOnServer.value ? `${t('Draft saved')} ${time}` : `${t('Draft saved on this device')} ${time}`
+})
+
+let drafting = false
+let cleared = false // the draft was just dropped (saved or discarded): not written again until something is changed
 async function writeDraft() {
-  if (offlineId || !isDirty.value || saving.value) return
-  draftSavedAt.value = await saveDraft(currentDraftKey(), values)
+  if (offlineId || cleared || !isDirty.value || saving.value || pendingDraft.value || drafting) return
+  drafting = true
+  try {
+    const key = currentDraftKey()
+    const local = await saveDraft(key, values)
+    const server = navigator.onLine ? await saveServerDraft(doctype, draftName(), values) : null
+    draftOnServer.value = !!server
+    draftSavedAt.value = server || local
+  } finally {
+    drafting = false
+  }
 }
 function clearDraft() {
+  cleared = true
   draftSavedAt.value = null
+  pendingDraft.value = null
   deleteDraft(currentDraftKey())
+  deleteServerDraft(doctype, draftName())
+}
+function restoreDraft() {
+  Object.assign(values, pendingDraft.value.values)
+  pendingDraft.value = null
+}
+function discardDraft() {
+  clearDraft()
 }
 
-// Once the form has loaded (and its starting values are known), put back what was typed before the phone shut down or
-// the window was closed. A draft only survives such an abnormal end: leaving the form in the app (Back, a menu item,
-// saving) deletes it, so a new form never starts with someone else's answers.
+// Once the form has loaded (and its starting values are known), look for a draft: the one on this device first, else the
+// one on the server (from another device). One that matches what the form already shows is not worth offering.
 const stopDraftWatch = watch(
   () => cleanSnapshot.value !== null,
   async (ready) => {
     if (!ready || offlineId) return
     stopDraftWatch()
-    const draft = await loadDraft(currentDraftKey())
-    if (draft && JSON.stringify(draft.values) !== cleanSnapshot.value) Object.assign(values, draft.values)
+    const draft = (await loadDraft(currentDraftKey())) || (navigator.onLine ? await loadServerDraft(doctype, draftName()) : null)
+    if (draft && JSON.stringify(draft.values) !== cleanSnapshot.value) pendingDraft.value = draft
+    else if (draft) clearDraft()
   },
   { immediate: true },
+)
+
+// A few seconds after the last change
+let idleTimer = null
+watch(
+  () => (isDirty.value ? JSON.stringify(values) : null),
+  (snapshot) => {
+    clearTimeout(idleTimer)
+    if (snapshot) cleared = false
+    if (snapshot) idleTimer = setTimeout(writeDraft, DRAFT_IDLE_MS)
+  },
 )
 
 let draftTimer = null
@@ -990,10 +1051,11 @@ onMounted(() => {
   window.addEventListener('pagehide', writeDraft)
 })
 onBeforeUnmount(() => {
-  clearDraft()
   clearInterval(draftTimer)
+  clearTimeout(idleTimer)
   document.removeEventListener('visibilitychange', onHidden)
   window.removeEventListener('pagehide', writeDraft)
+  writeDraft() // leaving the form with unsaved answers keeps them as a draft
 })
 
 const { applyCommonFieldDefaults } = useCommonFieldDefaults({
@@ -1342,6 +1404,7 @@ async function save() {
   if (useLocalCopy) return saveOffline({ uploadIfReachable: true })
   // 2G / 3G or a very weak signal: keep it here rather than wait on the server (upload it from Sync Data).
   if (slowNetwork.value) return saveOffline({ slow: true })
+  await writeDraft() // if the session ended or the server fails, what was typed is still kept
   saving.value = true
   saveError.value = null
   try {
@@ -1393,6 +1456,10 @@ async function save() {
     // frappe-ui's own cache error carries no useful text: say what it means instead
     const unhelpful = /^Invalid doc/.test(String(shown?.message || ''))
     saveError.value = unhelpful ? new Error('The server did not accept this record. Check the answers marked required and try again.') : shown
+    // The session ended while the form was open: the answers are already kept as a draft, so say so.
+    if (e?.httpStatus === 401 || e?.httpStatus === 403 || /session|log ?in|logged in|AuthenticationError/i.test(String(e?.exc_type || '') + String(e?.message || ''))) {
+      toast.error(t('Your session has ended. Sign in again: your answers are kept as a draft.'))
+    }
     // The inline message sits at the very bottom of the form, easy to miss
     // on a long one - toast it too so a failed save is never silent.
     toast.error(String(unhelpful ? 'The server did not accept this record. Check the answers marked required and try again.' : shown?.messages?.[0] || shown?.message || 'Could not save').replace(/<[^>]+>/g, ''))

@@ -26,8 +26,6 @@ add_to_apps_screen = [
 # Reference data every site needs. A fresh install skips one-off patches, so what they seeded is exported here and
 # loaded on install and on every migrate (so these lists are changed in the app, not on a site).
 fixtures = [
-	# Sync Data is created by code (modules_setup.py) so that the roles set on a site are not overwritten here.
-	{"dt": "App Module Setting", "filters": [["name", "!=", "Sync Data"]]},
 	{"dt": "Assam District"},
 	{"dt": "Welfare Board"},
 	{"dt": "Relationship Type"},
@@ -44,6 +42,8 @@ fixtures = [
 
 # Validation Status options are role-restricted (see masters/doctype/validation_status).
 permission_query_conditions = {
+	"Support Ticket": "janadhikara.helpdesk.ticket_conditions",
+	"Support Ticket Reply": "janadhikara.helpdesk.reply_conditions",
 	"Validation Status": "janadhikara.masters.doctype.validation_status.validation_status.get_permission_query_conditions",
 	"Partner Details": "janadhikara.security.partner_conditions",
 	"Household Profile": "janadhikara.security.household_conditions",
@@ -54,6 +54,8 @@ permission_query_conditions = {
 	"Individual Profile": "janadhikara.security.individual_conditions",
 }
 has_permission = {
+	"Support Ticket": "janadhikara.helpdesk.ticket_has_permission",
+	"Support Ticket Reply": "janadhikara.helpdesk.reply_has_permission",
 	"Validation Status": "janadhikara.masters.doctype.validation_status.validation_status.has_permission",
 	"Partner Details": "janadhikara.security.partner_has_permission",
 	"Household Profile": "janadhikara.security.household_has_permission",
@@ -299,12 +301,13 @@ after_install = "janadhikara.install.after_install"
 # Every doctype of this app gets a (disabled) AI Data Policy so the AI assistant
 # can't see it until someone has reviewed it - see janadhikara/ai/policy.py.
 after_request = ["janadhikara.security.add_security_headers"]
-before_migrate = ["janadhikara.app_modules.refresh_module_map"]
+before_migrate = ["janadhikara.app_modules.refresh_module_map", "janadhikara.helpdesk.ensure_roles"]
 after_migrate = [
+	"janadhikara.helpdesk.ensure_roles",
 	"janadhikara.ai.policy.ensure_policies",
+	"janadhikara.menu.ensure_module_groups",
 	"janadhikara.menu.ensure_master_sidebar",
 	"janadhikara.statuses.ensure_statuses",
-	"janadhikara.modules_setup.ensure_sync_module",
 	"janadhikara.required_fields.seed_required_fields",
 	"janadhikara.todo_setup.ensure_todo_setup",
 	"janadhikara.translations.import_translations",
@@ -345,5 +348,6 @@ scheduler_events = {
 	"daily": [
 		"janadhikara.worklist.nudge_stale_households",
 		"janadhikara.announcements.notify_started_announcements",
+		"janadhikara.drafts.clear_old_drafts",
 	],
 }
