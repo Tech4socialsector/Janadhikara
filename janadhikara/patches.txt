@@ -65,3 +65,4 @@ janadhikara.patches.v1_1.feedback_round4
 janadhikara.patches.v1_1.use_has_role
 janadhikara.patches.v1_1.merge_modules_into_groups
 janadhikara.patches.v1_1.roster_sex_options
+janadhikara.patches.v1_1.home_group_order

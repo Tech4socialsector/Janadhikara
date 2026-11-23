@@ -52,18 +52,32 @@ def _page(name, roles=None):
 	return {"item_type": "Page", "page": name, "roles": roles}
 
 
-# name, description, icon, colour, sidebar?, items
+DATA = "Base Line"
+PROGRAMME = "Dashboard & Reports"
+# the names these two groups had in earlier releases (a site that already has them keeps them)
+LEGACY = {DATA: ("Data Collection",), PROGRAMME: ("Programme Management",)}
+
+# The Home page, in this order. name, description, icon, colour, sidebar?, items
 GROUPS = [
-	("Data Collection", "Collect, manage and track programme data.", "clipboard-list", "Blue", 0,
-		[_doctype("Settlement"), _doctype("Household Profile"), _doctype("Individual Profile")]),
-	("Programme Management", "Plan, assign and track field work.", "list-checks", "Green", 0,
-		[_page("Worklist"), _page("Dashboard"), _page("Sync Data", SYNC_ROLES)]),
 	(ADMIN, "Manage partners, masters and announcements.", "user-cog", "Orange", 1,
 		[_doctype("Partner Details", "Partner Profile"), _doctype("Announcement"), _doctype("AI Guide Section")]),
+	(PROGRAMME, "Plan, assign and track field work.", "list-checks", "Green", 0,
+		[_page("Dashboard"), _page("Worklist"), _page("Sync Data", SYNC_ROLES)]),
+	(DATA, "Collect, manage and track programme data.", "clipboard-list", "Blue", 0,
+		[_doctype("Settlement"), _doctype("Household Profile"), _doctype("Individual Profile")]),
 	("Help & Support", "Get help, raise issues and track requests.", "life-buoy", "Purple", 0, [_page("Help"), _page("Support")]),
 ]
 # where a module of the old App Module Setting went
-OLD_MODULE_GROUP = {"Engine": ADMIN, "Masters": ADMIN, "Sync Data": "Programme Management"}
+OLD_MODULE_GROUP = {"Engine": ADMIN, "Masters": ADMIN, "Sync Data": PROGRAMME}
+
+
+def find_group(name):
+	"""The group called `name` - or, on a site that still has the earlier name, that one."""
+	name = next((new for new, old in LEGACY.items() if name in old), name)  # an earlier name means the same group
+	for candidate in (name, *LEGACY.get(name, ())):
+		if frappe.db.exists("App Module Group", candidate):
+			return candidate
+	return None
 
 
 def ensure_module_groups():
@@ -157,4 +171,28 @@ def apply_icons():
 				row.icon = ITEM_ICONS[row.doctype_name]
 		group.flags.ignore_permissions = True
 		group.save()
+	frappe.db.commit()
+
+
+def dedupe_items():
+	"""after_migrate: a group lists each DocType once. On a city's site an item for a shared doctype (Settlement) and one
+	already pointing at the city's own (HYD Settlement Profile) are the same thing: keep the first, drop the repeats."""
+	if not frappe.db.exists("DocType", "App Module Group"):
+		return
+	from janadhikara.city_pack import city_doctype
+
+	for name in frappe.get_all("App Module Group", pluck="name"):
+		group = frappe.get_doc("App Module Group", name)
+		seen, keep = set(), []
+		for row in group.items or []:
+			if row.item_type == "DocType" and row.doctype_name:
+				key = city_doctype(row.doctype_name)
+				if key in seen:
+					continue
+				seen.add(key)
+			keep.append(row)
+		if len(keep) != len(group.items or []):
+			group.set("items", keep)
+			group.flags.ignore_permissions = True
+			group.save()
 	frappe.db.commit()

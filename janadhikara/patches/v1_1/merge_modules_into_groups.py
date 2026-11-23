@@ -1,6 +1,6 @@
 import frappe
 
-from janadhikara.menu import OLD_MODULE_GROUP, PAGES, ensure_module_groups
+from janadhikara.menu import DATA, OLD_MODULE_GROUP, PAGES, ensure_module_groups, find_group
 
 OLD = ("App Module Setting", "App Module DocType Item")
 ROUTE_PAGE = {route: name for name, (route, _icon) in PAGES.items()}
@@ -9,7 +9,7 @@ ROUTE_PAGE = {route: name for name, (route, _icon) in PAGES.items()}
 def execute():
 	"""App Module Setting and its DocType Item table are replaced by App Module Group and its items: each module's
 	items move into its group (its Module Group, else Administration for Engine/Masters, Programme Management for Sync
-	Data, Data Collection for the rest); a module's "Show Sidebar" and its roles carry over to the group / its items.
+	Data, Base Line for the rest); a module's "Show Sidebar" and its roles carry over to the group / its items.
 	The old doctypes are then deleted."""
 	if not frappe.db.table_exists("App Module Setting"):
 		return
@@ -20,9 +20,8 @@ def execute():
 	want = ["module_group", "use_sidebar", "restrict_by_role", "sort_order"]
 	for module in frappe.get_all("App Module Setting", fields=["name"] + [c for c in want if c in cols], order_by="sort_order asc" if "sort_order" in cols else "creation asc"):
 		name = module.name
-		target = module.get("module_group") or OLD_MODULE_GROUP.get(name) or "Data Collection"
-		if not frappe.db.exists("App Module Group", target):
-			target = "Data Collection"
+		wanted = module.get("module_group") or OLD_MODULE_GROUP.get(name) or DATA
+		target = find_group(wanted) or find_group(DATA) or frappe.db.get_value("App Module Group", {"use_sidebar": 0}, "name")
 		group = frappe.get_doc("App Module Group", target)
 		if module.get("use_sidebar"):
 			group.use_sidebar = 1

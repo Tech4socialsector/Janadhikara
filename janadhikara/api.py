@@ -621,6 +621,7 @@ def get_app_modules():
         if not group_visible_to_user(group, user_roles):
             continue
         items = []
+        listed = set()  # a DocType (the city's own version, where there is one) is listed once per group
         for row in group.items or []:
             allowed = _item_roles(row)
             if allowed and not set(allowed) & user_roles:
@@ -630,8 +631,9 @@ def get_app_modules():
                 doctype = city_doctype(row.doctype_name) if row.doctype_name else None
                 if not doctype or doctype in unused or row.doctype_name in unused or not frappe.db.exists('DocType', doctype):
                     continue
-                if not frappe.has_permission(doctype, 'read'):
+                if doctype in listed or not frappe.has_permission(doctype, 'read'):
                     continue
+                listed.add(doctype)
                 shown = display_name(doctype)
                 items.append({
                     'type': 'Link',

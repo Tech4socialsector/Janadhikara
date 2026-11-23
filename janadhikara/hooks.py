@@ -307,6 +307,7 @@ after_migrate = [
 	"janadhikara.ai.policy.ensure_policies",
 	"janadhikara.menu.ensure_module_groups",
 	"janadhikara.menu.ensure_master_sidebar",
+	"janadhikara.menu.dedupe_items",
 	"janadhikara.statuses.ensure_statuses",
 	"janadhikara.required_fields.seed_required_fields",
 	"janadhikara.todo_setup.ensure_todo_setup",
