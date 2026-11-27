@@ -1,0 +1,465 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-11-23 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tab_personal_information",
+  "first_name",
+  "last_name",
+  "full_name",
+  "phone_number",
+  "gender",
+  "age",
+  "religion",
+  "social_category",
+  "languages_known",
+  "beneficiary_status",
+  "tab_location",
+  "state",
+  "district",
+  "zone",
+  "wardgp",
+  "habitation",
+  "tab_identity",
+  "is_identitity_proof_available",
+  "identity_proofs",
+  "tab_health",
+  "disability_condition",
+  "mental_health_illness",
+  "chronic_illness",
+  "other_chronic_illness",
+  "tab_point_of_contact",
+  "poc_name",
+  "poc_phone",
+  "tab_support_needed",
+  "grooming_services",
+  "other_supports",
+  "tab_additional_information",
+  "duration_monthstay",
+  "reasons_for_homelessness",
+  "skill_set",
+  "tab_family_information",
+  "marital_status",
+  "spouse_name",
+  "father_name",
+  "tab_native_place",
+  "native_state",
+  "native_district",
+  "address",
+  "tab_education_employment",
+  "education_level",
+  "is_employed",
+  "employment_type",
+  "other_employment",
+  "employment_details",
+  "section_closing",
+  "validation_status",
+  "validation_comments",
+  "section_assignment",
+  "partner_organization",
+  "organization_name",
+  "column_break_assignment",
+  "assigned_worker",
+  "record_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "tab_personal_information",
+   "fieldtype": "Tab Break",
+   "label": "Personal Information"
+  },
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "label": "1. First Name"
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "label": "2. Last Name"
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "3. Full Name",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "phone_number",
+   "fieldtype": "Data",
+   "label": "4. Phone Number"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "5. Gender",
+   "options": "\nMale\nFemale\nOthers",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Int",
+   "label": "6. Age",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "religion",
+   "fieldtype": "Select",
+   "label": "7. Religion",
+   "options": "\nHindu\nChristian\nMuslim\nOthers"
+  },
+  {
+   "fieldname": "social_category",
+   "fieldtype": "Select",
+   "label": "8. Social Category",
+   "options": "\nSC\nST\nOBC\nGeneral\nUnknown"
+  },
+  {
+   "fieldname": "languages_known",
+   "fieldtype": "Data",
+   "label": "9. Languages Known"
+  },
+  {
+   "fieldname": "beneficiary_status",
+   "fieldtype": "Select",
+   "label": "10. Beneficiary Status",
+   "options": "\nActive Partner\nCRC Partner\nInactive\nDiseased\nReunited\nOther"
+  },
+  {
+   "fieldname": "tab_location",
+   "fieldtype": "Tab Break",
+   "label": "Location"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "11. State"
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Data",
+   "label": "12. City/District"
+  },
+  {
+   "fieldname": "zone",
+   "fieldtype": "Data",
+   "label": "13. Zone/Block"
+  },
+  {
+   "fieldname": "wardgp",
+   "fieldtype": "Data",
+   "label": "14. Ward/GP"
+  },
+  {
+   "fieldname": "habitation",
+   "fieldtype": "Link",
+   "label": "15. Hotspot Name/Habitation",
+   "options": "PTN Hotspot"
+  },
+  {
+   "fieldname": "tab_identity",
+   "fieldtype": "Tab Break",
+   "label": "Identity"
+  },
+  {
+   "fieldname": "is_identitity_proof_available",
+   "fieldtype": "Select",
+   "label": "16. Is Identitity Proof Available?",
+   "options": "\nYes\nNo\nCan't Say"
+  },
+  {
+   "fieldname": "identity_proofs",
+   "fieldtype": "Table",
+   "label": "17. Identity Proofs",
+   "options": "PTN Identity Proofs",
+   "depends_on": "eval:doc.is_identitity_proof_available==\"Yes\""
+  },
+  {
+   "fieldname": "tab_health",
+   "fieldtype": "Tab Break",
+   "label": "Health"
+  },
+  {
+   "fieldname": "disability_condition",
+   "fieldtype": "Data",
+   "label": "18. Disability Condition"
+  },
+  {
+   "fieldname": "mental_health_illness",
+   "fieldtype": "Select",
+   "label": "19. Symptoms of Mental Health illness?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "chronic_illness",
+   "fieldtype": "Select",
+   "label": "20. Chronic Illness",
+   "options": "\nNone\nTB\nAsthma\nHIV\nCancer\nOther"
+  },
+  {
+   "fieldname": "other_chronic_illness",
+   "fieldtype": "Data",
+   "label": "21. If Others, Please Specify",
+   "depends_on": "eval:doc.chronic_illness==\"Other\""
+  },
+  {
+   "fieldname": "tab_point_of_contact",
+   "fieldtype": "Tab Break",
+   "label": "Point of Contact"
+  },
+  {
+   "fieldname": "poc_name",
+   "fieldtype": "Data",
+   "label": "22. POC Name"
+  },
+  {
+   "fieldname": "poc_phone",
+   "fieldtype": "Data",
+   "label": "23. POC Phone"
+  },
+  {
+   "fieldname": "tab_support_needed",
+   "fieldtype": "Tab Break",
+   "label": "Support Needed"
+  },
+  {
+   "fieldname": "grooming_services",
+   "fieldtype": "Select",
+   "label": "24. Regular Grooming services required?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "other_supports",
+   "fieldtype": "Small Text",
+   "label": "25. Other Supports expected from us"
+  },
+  {
+   "fieldname": "tab_additional_information",
+   "fieldtype": "Tab Break",
+   "label": "Additional Information"
+  },
+  {
+   "fieldname": "duration_monthstay",
+   "fieldtype": "Data",
+   "label": "26. Duration (Months) of Stay"
+  },
+  {
+   "fieldname": "reasons_for_homelessness",
+   "fieldtype": "Small Text",
+   "label": "27. Reasons for Homelessness"
+  },
+  {
+   "fieldname": "skill_set",
+   "fieldtype": "Small Text",
+   "label": "28. Skill Set"
+  },
+  {
+   "fieldname": "tab_family_information",
+   "fieldtype": "Tab Break",
+   "label": "Family Information"
+  },
+  {
+   "fieldname": "marital_status",
+   "fieldtype": "Select",
+   "label": "29. Marital Status",
+   "options": "\nUnmarried\nMarried\nDivorced\nSeparated\nWidowed\nUnknown"
+  },
+  {
+   "fieldname": "spouse_name",
+   "fieldtype": "Data",
+   "label": "30. Spouse's Name",
+   "depends_on": "eval:doc.marital_status==\"Married\""
+  },
+  {
+   "fieldname": "father_name",
+   "fieldtype": "Data",
+   "label": "31. Father's Name"
+  },
+  {
+   "fieldname": "tab_native_place",
+   "fieldtype": "Tab Break",
+   "label": "Native Place"
+  },
+  {
+   "fieldname": "native_state",
+   "fieldtype": "Data",
+   "label": "32. State"
+  },
+  {
+   "fieldname": "native_district",
+   "fieldtype": "Data",
+   "label": "33. District"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "34. Address",
+   "description": "Include block, GP, village or any other identifier info"
+  },
+  {
+   "fieldname": "tab_education_employment",
+   "fieldtype": "Tab Break",
+   "label": "Education & Employment"
+  },
+  {
+   "fieldname": "education_level",
+   "fieldtype": "Data",
+   "label": "35. Education Level"
+  },
+  {
+   "fieldname": "is_employed",
+   "fieldtype": "Check",
+   "label": "36. Is Employed?"
+  },
+  {
+   "fieldname": "employment_type",
+   "fieldtype": "Select",
+   "label": "37. Employment Type",
+   "options": "\nLabor\nHospitality\nRestaurants\nHousework\nBegging\nOther",
+   "depends_on": "eval:doc.is_employed==1"
+  },
+  {
+   "fieldname": "other_employment",
+   "fieldtype": "Data",
+   "label": "38. Please Specify",
+   "depends_on": "eval:doc.employment_type==\"Other\""
+  },
+  {
+   "fieldname": "employment_details",
+   "fieldtype": "Small Text",
+   "label": "39. Employment Details",
+   "depends_on": "eval:doc.is_employed==1"
+  },
+  {
+   "fieldname": "section_closing",
+   "fieldtype": "Section Break",
+   "label": "Closing and Record Status"
+  },
+  {
+   "fieldname": "validation_status",
+   "fieldtype": "Link",
+   "label": "Status",
+   "options": "Validation Status"
+  },
+  {
+   "fieldname": "validation_comments",
+   "fieldtype": "Small Text",
+   "label": "Validation Comments"
+  },
+  {
+   "fieldname": "section_assignment",
+   "fieldtype": "Section Break",
+   "label": "Assignment"
+  },
+  {
+   "fieldname": "partner_organization",
+   "fieldtype": "Link",
+   "label": "Partner Organization",
+   "options": "Partner Details"
+  },
+  {
+   "fieldname": "organization_name",
+   "fieldtype": "Data",
+   "label": "Organization Name",
+   "fetch_from": "partner_organization.organization_name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_assignment",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "assigned_worker",
+   "fieldtype": "Link",
+   "label": "Name of the ORW",
+   "options": "User"
+  },
+  {
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "default": "Today"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-23 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Patna",
+ "name": "PTN Beneficiary",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "description": "Beneficiary master profile for homeless clients",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "System Manager"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Program Coordinator"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Program Manager"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Organization Admin"
+  },
+  {
+   "role": "ORW",
+   "read": 1,
+   "write": 1,
+   "create": 1
+  }
+ ],
+ "track_changes": 1,
+ "allow_import": 1,
+ "autoname": "PTN-BEN.####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "full_name",
+ "show_title_field_in_link": 1,
+ "search_fields": "full_name,phone_number"
+}

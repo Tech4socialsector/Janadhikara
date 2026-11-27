@@ -16,6 +16,8 @@ from janadhikara.app_modules import APP_MODULES
 MOBILE_RE = re.compile(r"^\d{10}$")
 PINCODE_RE = re.compile(r"^[1-9]\d{5}$")
 PERSON_NAME_RE = re.compile(r"^[^\W\d_]+(?:[ .'\-][^\W\d_]+)*\.?$")
+# Patna only: a dot may also be followed by a space ("Md. Ali")
+PATNA_PERSON_NAME_RE = re.compile(r"^[^\W\d_]+(?:(?:\. ?|[ '\-])[^\W\d_]+)*\.?$")
 
 PERSON_NAME_FIELDS = {
 	"member_name",
@@ -110,7 +112,8 @@ def _check(doc, meta, errors, parent, row_label=None):
 			if not MOBILE_RE.match(digits):
 				errors.append(prefix + _("{0} must be a 10-digit number.").format(label))
 		elif fn in PERSON_NAME_FIELDS and ft == "Data":
-			if len(str(value)) < 2 or not PERSON_NAME_RE.match(str(value)):
+			name_re = PATNA_PERSON_NAME_RE if meta.module == "Patna" else PERSON_NAME_RE
+			if len(str(value)) < 2 or not name_re.match(str(value)):
 				errors.append(prefix + _("{0} can only have letters, spaces, . ' and -.").format(label))
 		elif fn in ("pincode", "pin_code") and ft == "Data":
 			if not PINCODE_RE.match(str(value)):

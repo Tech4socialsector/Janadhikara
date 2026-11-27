@@ -14,6 +14,7 @@ from frappe.utils import now_datetime
 
 MAX_ROWS = 5000
 from janadhikara.app_modules import APP_MODULES, active_modules
+from janadhikara.patna import PATNA_RECORDS
 
 # Held back from the device whatever the permissions say.
 # Doctypes outside the app's own modules that still work offline (the Worklist is made of ToDos).
@@ -215,7 +216,7 @@ def _app_meta_doctypes():
 # ---- Uploads from the phone (always started by the person, from Sync Data) --------------------------------------
 
 LOG = "Offline Sync Log"
-OWN_RECORD_DOCTYPES = ("Settlement", "HYD Settlement Profile", "HYD Household Profile", "HYD Individual Profile", "Household Profile", "Individual Profile", "ToDo")
+OWN_RECORD_DOCTYPES = ("Settlement", "HYD Settlement Profile", "HYD Household Profile", "HYD Individual Profile", "Household Profile", "Individual Profile", "ToDo", *PATNA_RECORDS)
 FILE_FIELDTYPES = {"Attach", "Attach Image", "Signature", "Image"}
 SKIP_TABLES = {"Individual Document"}  # attachments: never put on a device
 IGNORED_KEYS = {"name", "owner", "creation", "modified", "modified_by", "docstatus", "idx", "parent", "parentfield", "parenttype", "doctype", "__islocal", "__unsaved"}

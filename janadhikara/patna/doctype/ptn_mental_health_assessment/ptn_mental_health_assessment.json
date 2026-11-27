@@ -1,0 +1,850 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-11-23 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tab_mental_health_assessment_form",
+  "file_number",
+  "cc_no",
+  "date_of_registration",
+  "photograph",
+  "dormitory",
+  "tab_facility_details",
+  "place_of_rescue",
+  "current_duration_npk",
+  "no_of_times_brought_to_npk",
+  "tab_demographic_details",
+  "namelast_name",
+  "gender",
+  "age_in_years",
+  "height",
+  "weight",
+  "tab_address",
+  "citytown_village",
+  "taluktehsil_panchayat",
+  "post_office",
+  "police_station",
+  "district",
+  "state",
+  "presence_of_family",
+  "fatherhusbandwife",
+  "no_of_children",
+  "family_size",
+  "duration_away_from_home_months",
+  "contact_no",
+  "tab_social_clinical_background",
+  "marital_status",
+  "family_type",
+  "occupation",
+  "religion",
+  "family_tree",
+  "pathways_to_care_since_the_onset_of_illness",
+  "screening_of_symptoms",
+  "psychiatry_history",
+  "total_duration_of_illness",
+  "age_at_onset",
+  "onset",
+  "course",
+  "tab_stressors",
+  "precipitating_factor",
+  "contributory_factor",
+  "aggravating_factor",
+  "tab_biological_functions",
+  "sleep",
+  "sexual_function",
+  "bladder",
+  "appetite",
+  "bowel",
+  "socio_occupational_functioning",
+  "past_history",
+  "family_psychiatric_history",
+  "physical_health",
+  "specify",
+  "mental_status_examination_first_evaluation",
+  "tab_psychiatric_diagnosis",
+  "psychiatric_diagnosis",
+  "additional_diagnosis",
+  "medical_diagnosis",
+  "tab_treatment_provided",
+  "medications",
+  "non_pharmacological_interventions",
+  "lab_investigations",
+  "advice_given",
+  "next_review",
+  "date_of_next_visit",
+  "date",
+  "next_followup",
+  "tab_lab_results",
+  "section_urine_examination_physical_examination",
+  "color",
+  "apperance",
+  "section_urine_examination_chemical_examination",
+  "albumin",
+  "sugar",
+  "others",
+  "section_urine_examination_microscopy",
+  "epithelial_cells",
+  "pus_cells",
+  "section_biochemistry",
+  "fasting_blood_sugar",
+  "hba1c",
+  "mbg",
+  "sgot_ast",
+  "sgpt_alt",
+  "total_bilurbil",
+  "alkaline_phosphate",
+  "t3",
+  "t4",
+  "tsh",
+  "section_rft_renal_function_test",
+  "blood_urea",
+  "creatinine",
+  "uric_acid",
+  "section_lipid_profile",
+  "total_cholesterol",
+  "tryglycerides",
+  "hdl_cholesterol",
+  "ldl_cholesterol",
+  "vldl_cholesterol",
+  "section_hematology",
+  "hemoglobin",
+  "neutrophil",
+  "lymphocytes",
+  "eosnophil",
+  "monocytes",
+  "basophils",
+  "section_esr_erythrocyte_sedimentation_rate",
+  "wbc_count",
+  "section_serology",
+  "hiv_1",
+  "hbsag",
+  "vdrl",
+  "section_assignment",
+  "partner_organization",
+  "organization_name",
+  "column_break_assignment",
+  "assigned_worker",
+  "record_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "tab_mental_health_assessment_form",
+   "fieldtype": "Tab Break",
+   "label": "Mental Health Assessment Form"
+  },
+  {
+   "fieldname": "file_number",
+   "fieldtype": "Data",
+   "label": "1. File number",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "cc_no",
+   "fieldtype": "Data",
+   "label": "2. CC No"
+  },
+  {
+   "fieldname": "date_of_registration",
+   "fieldtype": "Date",
+   "label": "3. Date of Registration",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "photograph",
+   "fieldtype": "Attach Image",
+   "label": "4. Photograph"
+  },
+  {
+   "fieldname": "dormitory",
+   "fieldtype": "Data",
+   "label": "5. Dormitory"
+  },
+  {
+   "fieldname": "tab_facility_details",
+   "fieldtype": "Tab Break",
+   "label": "Facility Details"
+  },
+  {
+   "fieldname": "place_of_rescue",
+   "fieldtype": "Data",
+   "label": "6. Place of Rescue"
+  },
+  {
+   "fieldname": "current_duration_npk",
+   "fieldtype": "Data",
+   "label": "7. The current duration of stay at NPK"
+  },
+  {
+   "fieldname": "no_of_times_brought_to_npk",
+   "fieldtype": "Data",
+   "label": "8. No. of times the person has been brought to NPK"
+  },
+  {
+   "fieldname": "tab_demographic_details",
+   "fieldtype": "Tab Break",
+   "label": "Demographic Details"
+  },
+  {
+   "fieldname": "namelast_name",
+   "fieldtype": "Data",
+   "label": "9. Name/Last Name",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "10. Gender",
+   "options": "\nMale\nFemale\nOthers"
+  },
+  {
+   "fieldname": "age_in_years",
+   "fieldtype": "Data",
+   "label": "11. Age in years"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Int",
+   "label": "12. Height"
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Int",
+   "label": "13. Weight"
+  },
+  {
+   "fieldname": "tab_address",
+   "fieldtype": "Tab Break",
+   "label": "Address"
+  },
+  {
+   "fieldname": "citytown_village",
+   "fieldtype": "Data",
+   "label": "14. City/Town/ Village"
+  },
+  {
+   "fieldname": "taluktehsil_panchayat",
+   "fieldtype": "Data",
+   "label": "15. Taluk/Tehsil Panchayat"
+  },
+  {
+   "fieldname": "post_office",
+   "fieldtype": "Data",
+   "label": "16. Post office"
+  },
+  {
+   "fieldname": "police_station",
+   "fieldtype": "Data",
+   "label": "17. Police Station"
+  },
+  {
+   "fieldname": "district",
+   "fieldtype": "Data",
+   "label": "18. District"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "19. State"
+  },
+  {
+   "fieldname": "presence_of_family",
+   "fieldtype": "Select",
+   "label": "20. Presence of family",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "fatherhusbandwife",
+   "fieldtype": "Data",
+   "label": "21. Father/husband/wife"
+  },
+  {
+   "fieldname": "no_of_children",
+   "fieldtype": "Int",
+   "label": "22. No. of Children"
+  },
+  {
+   "fieldname": "family_size",
+   "fieldtype": "Int",
+   "label": "23. Family Size"
+  },
+  {
+   "fieldname": "duration_away_from_home_months",
+   "fieldtype": "Int",
+   "label": "24. Duration away from home (months)"
+  },
+  {
+   "fieldname": "contact_no",
+   "fieldtype": "Data",
+   "label": "25. Contact No"
+  },
+  {
+   "fieldname": "tab_social_clinical_background",
+   "fieldtype": "Tab Break",
+   "label": "Social / Clinical Background"
+  },
+  {
+   "fieldname": "marital_status",
+   "fieldtype": "Select",
+   "label": "26. Marital status",
+   "options": "\nSingle\nMarried\nSeparated\nDivorced\nWidowed\nLive in"
+  },
+  {
+   "fieldname": "family_type",
+   "fieldtype": "Select",
+   "label": "27. Family type",
+   "options": "\nLiving Alone\nNuclear\nJoint"
+  },
+  {
+   "fieldname": "occupation",
+   "fieldtype": "Select",
+   "label": "28. Occupation",
+   "options": "\nAgricultural Labour\nSkilled worker\nSelf-employed\nUnskilled worker\nHome Maker\nBegs for living\nStudent\nRetired\nProfessional\nUnemployed"
+  },
+  {
+   "fieldname": "religion",
+   "fieldtype": "Select",
+   "label": "29. Religion",
+   "options": "\nHindu\nMuslim\nChristian\nBuddhist\nSikh\nJain\nOthers\nNot Known"
+  },
+  {
+   "fieldname": "family_tree",
+   "fieldtype": "Data",
+   "label": "30. Family Tree"
+  },
+  {
+   "fieldname": "pathways_to_care_since_the_onset_of_illness",
+   "fieldtype": "Data",
+   "label": "31. Pathways to care since the onset of illness"
+  },
+  {
+   "fieldname": "screening_of_symptoms",
+   "fieldtype": "Data",
+   "label": "32. Screening of Symptoms"
+  },
+  {
+   "fieldname": "psychiatry_history",
+   "fieldtype": "Select",
+   "label": "33. Psychiatry History",
+   "options": "\nOnset\nProgress\nCurrent level of function\nPsychosocial stress"
+  },
+  {
+   "fieldname": "total_duration_of_illness",
+   "fieldtype": "Data",
+   "label": "34. Total duration of illness"
+  },
+  {
+   "fieldname": "age_at_onset",
+   "fieldtype": "Int",
+   "label": "35. Age at onset"
+  },
+  {
+   "fieldname": "onset",
+   "fieldtype": "Select",
+   "label": "36. Onset",
+   "options": "\nAbrupt\nAcute\nInsidious"
+  },
+  {
+   "fieldname": "course",
+   "fieldtype": "Select",
+   "label": "37. Course",
+   "options": "\nEpisodic\nContinuous\nFluctuating"
+  },
+  {
+   "fieldname": "tab_stressors",
+   "fieldtype": "Tab Break",
+   "label": "Stressors"
+  },
+  {
+   "fieldname": "precipitating_factor",
+   "fieldtype": "Data",
+   "label": "38. Precipitating factor",
+   "description": "The main event or trigger that directly leads to the onset or worsening of symptoms"
+  },
+  {
+   "fieldname": "contributory_factor",
+   "fieldtype": "Data",
+   "label": "39. Contributory factor",
+   "description": "A condition or circumstance that adds to or increases the likelihood of symptoms but is not the main cause"
+  },
+  {
+   "fieldname": "aggravating_factor",
+   "fieldtype": "Data",
+   "label": "40. Aggravating factor",
+   "description": "Something that makes existing symptoms worse"
+  },
+  {
+   "fieldname": "tab_biological_functions",
+   "fieldtype": "Tab Break",
+   "label": "Biological Functions"
+  },
+  {
+   "fieldname": "sleep",
+   "fieldtype": "Select",
+   "label": "41. Sleep",
+   "options": "\nNormal\nImpaired"
+  },
+  {
+   "fieldname": "sexual_function",
+   "fieldtype": "Select",
+   "label": "42. Sexual function",
+   "options": "\nNormal\nImpaired"
+  },
+  {
+   "fieldname": "bladder",
+   "fieldtype": "Select",
+   "label": "43. Bladder",
+   "options": "\nNormal\nImpaired"
+  },
+  {
+   "fieldname": "appetite",
+   "fieldtype": "Select",
+   "label": "44. Appetite",
+   "options": "\nNormal\nImpaired"
+  },
+  {
+   "fieldname": "bowel",
+   "fieldtype": "Select",
+   "label": "45. Bowel",
+   "options": "\nNormal\nImpaired"
+  },
+  {
+   "fieldname": "socio_occupational_functioning",
+   "fieldtype": "Select",
+   "label": "46. Socio Occupational Functioning",
+   "options": "\nNormal\nImpaired"
+  },
+  {
+   "fieldname": "past_history",
+   "fieldtype": "Select",
+   "label": "47. Past History",
+   "options": "\nMedical\nPsychiatric\nNil"
+  },
+  {
+   "fieldname": "family_psychiatric_history",
+   "fieldtype": "Select",
+   "label": "48. Family psychiatric History",
+   "options": "\nPsychosis\nMood disorder\nSuicide\nSubstance\nNil"
+  },
+  {
+   "fieldname": "physical_health",
+   "fieldtype": "Select",
+   "label": "49. Physical Health",
+   "options": "\nNormal\nAbnormal"
+  },
+  {
+   "fieldname": "specify",
+   "fieldtype": "Data",
+   "label": "50. Specify"
+  },
+  {
+   "fieldname": "mental_status_examination_first_evaluation",
+   "fieldtype": "Small Text",
+   "label": "51. Mental Status Examination at First Evaluation"
+  },
+  {
+   "fieldname": "tab_psychiatric_diagnosis",
+   "fieldtype": "Tab Break",
+   "label": "Psychiatric Diagnosis"
+  },
+  {
+   "fieldname": "psychiatric_diagnosis",
+   "fieldtype": "Data",
+   "label": "52. Psychiatric Diagnosis"
+  },
+  {
+   "fieldname": "additional_diagnosis",
+   "fieldtype": "Data",
+   "label": "53. Additional diagnosis"
+  },
+  {
+   "fieldname": "medical_diagnosis",
+   "fieldtype": "Data",
+   "label": "54. Medical Diagnosis"
+  },
+  {
+   "fieldname": "tab_treatment_provided",
+   "fieldtype": "Tab Break",
+   "label": "Treatment Provided"
+  },
+  {
+   "fieldname": "medications",
+   "fieldtype": "Data",
+   "label": "55. Medications"
+  },
+  {
+   "fieldname": "non_pharmacological_interventions",
+   "fieldtype": "Data",
+   "label": "56. Non-Pharmacological Interventions"
+  },
+  {
+   "fieldname": "lab_investigations",
+   "fieldtype": "Small Text",
+   "label": "57. Lab Investigations"
+  },
+  {
+   "fieldname": "advice_given",
+   "fieldtype": "Small Text",
+   "label": "58. Advice given"
+  },
+  {
+   "fieldname": "next_review",
+   "fieldtype": "Small Text",
+   "label": "59. Next Review (Follow-up)"
+  },
+  {
+   "fieldname": "date_of_next_visit",
+   "fieldtype": "Date",
+   "label": "60. Date of Next Visit"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "61. Date"
+  },
+  {
+   "fieldname": "next_followup",
+   "fieldtype": "Table",
+   "label": "62. Next Review Followup",
+   "options": "PTN Mental Health Followup"
+  },
+  {
+   "fieldname": "tab_lab_results",
+   "fieldtype": "Tab Break",
+   "label": "Lab Results"
+  },
+  {
+   "fieldname": "section_urine_examination_physical_examination",
+   "fieldtype": "Section Break",
+   "label": "Urine Examination - Physical Examination"
+  },
+  {
+   "fieldname": "color",
+   "fieldtype": "Data",
+   "label": "63. Color"
+  },
+  {
+   "fieldname": "apperance",
+   "fieldtype": "Data",
+   "label": "64. Apperance"
+  },
+  {
+   "fieldname": "section_urine_examination_chemical_examination",
+   "fieldtype": "Section Break",
+   "label": "Urine Examination - Chemical Examination"
+  },
+  {
+   "fieldname": "albumin",
+   "fieldtype": "Data",
+   "label": "65. Albumin"
+  },
+  {
+   "fieldname": "sugar",
+   "fieldtype": "Data",
+   "label": "66. Sugar"
+  },
+  {
+   "fieldname": "others",
+   "fieldtype": "Data",
+   "label": "67. Others"
+  },
+  {
+   "fieldname": "section_urine_examination_microscopy",
+   "fieldtype": "Section Break",
+   "label": "Urine Examination - Microscopy"
+  },
+  {
+   "fieldname": "epithelial_cells",
+   "fieldtype": "Data",
+   "label": "68. Epithelial Cells"
+  },
+  {
+   "fieldname": "pus_cells",
+   "fieldtype": "Data",
+   "label": "69. Pus cells"
+  },
+  {
+   "fieldname": "section_biochemistry",
+   "fieldtype": "Section Break",
+   "label": "Biochemistry"
+  },
+  {
+   "fieldname": "fasting_blood_sugar",
+   "fieldtype": "Data",
+   "label": "70. Fasting Blood sugar"
+  },
+  {
+   "fieldname": "hba1c",
+   "fieldtype": "Data",
+   "label": "71. HBA1c"
+  },
+  {
+   "fieldname": "mbg",
+   "fieldtype": "Data",
+   "label": "72. MBG - Mean Blood Glucose"
+  },
+  {
+   "fieldname": "sgot_ast",
+   "fieldtype": "Data",
+   "label": "73. SGOT/AST"
+  },
+  {
+   "fieldname": "sgpt_alt",
+   "fieldtype": "Data",
+   "label": "74. SGPT/ALT"
+  },
+  {
+   "fieldname": "total_bilurbil",
+   "fieldtype": "Data",
+   "label": "75. Total Bilurbil"
+  },
+  {
+   "fieldname": "alkaline_phosphate",
+   "fieldtype": "Data",
+   "label": "76. Alkaline Phosphate"
+  },
+  {
+   "fieldname": "t3",
+   "fieldtype": "Data",
+   "label": "77. T3"
+  },
+  {
+   "fieldname": "t4",
+   "fieldtype": "Data",
+   "label": "78. T4"
+  },
+  {
+   "fieldname": "tsh",
+   "fieldtype": "Data",
+   "label": "79. TSH"
+  },
+  {
+   "fieldname": "section_rft_renal_function_test",
+   "fieldtype": "Section Break",
+   "label": "RFT - Renal Function Test"
+  },
+  {
+   "fieldname": "blood_urea",
+   "fieldtype": "Data",
+   "label": "80. Blood Urea"
+  },
+  {
+   "fieldname": "creatinine",
+   "fieldtype": "Data",
+   "label": "81. Creatinine"
+  },
+  {
+   "fieldname": "uric_acid",
+   "fieldtype": "Data",
+   "label": "82. Uric Acid"
+  },
+  {
+   "fieldname": "section_lipid_profile",
+   "fieldtype": "Section Break",
+   "label": "Lipid Profile"
+  },
+  {
+   "fieldname": "total_cholesterol",
+   "fieldtype": "Data",
+   "label": "83. Total Cholesterol"
+  },
+  {
+   "fieldname": "tryglycerides",
+   "fieldtype": "Data",
+   "label": "84. Tryglycerides"
+  },
+  {
+   "fieldname": "hdl_cholesterol",
+   "fieldtype": "Data",
+   "label": "85. HDL Cholesterol"
+  },
+  {
+   "fieldname": "ldl_cholesterol",
+   "fieldtype": "Data",
+   "label": "86. LDL Cholesterol"
+  },
+  {
+   "fieldname": "vldl_cholesterol",
+   "fieldtype": "Data",
+   "label": "87. VLDL Cholesterol"
+  },
+  {
+   "fieldname": "section_hematology",
+   "fieldtype": "Section Break",
+   "label": "Hematology"
+  },
+  {
+   "fieldname": "hemoglobin",
+   "fieldtype": "Data",
+   "label": "88. Hemoglobin"
+  },
+  {
+   "fieldname": "neutrophil",
+   "fieldtype": "Data",
+   "label": "89. Neutrophil"
+  },
+  {
+   "fieldname": "lymphocytes",
+   "fieldtype": "Data",
+   "label": "90. Lymphocytes"
+  },
+  {
+   "fieldname": "eosnophil",
+   "fieldtype": "Data",
+   "label": "91. Eosnophil"
+  },
+  {
+   "fieldname": "monocytes",
+   "fieldtype": "Data",
+   "label": "92. Monocytes"
+  },
+  {
+   "fieldname": "basophils",
+   "fieldtype": "Data",
+   "label": "93. Basophils"
+  },
+  {
+   "fieldname": "section_esr_erythrocyte_sedimentation_rate",
+   "fieldtype": "Section Break",
+   "label": "ESR - Erythrocyte Sedimentation Rate"
+  },
+  {
+   "fieldname": "wbc_count",
+   "fieldtype": "Data",
+   "label": "94. Total WBC Count"
+  },
+  {
+   "fieldname": "section_serology",
+   "fieldtype": "Section Break",
+   "label": "Serology"
+  },
+  {
+   "fieldname": "hiv_1",
+   "fieldtype": "Data",
+   "label": "95. HIV 1&2"
+  },
+  {
+   "fieldname": "hbsag",
+   "fieldtype": "Data",
+   "label": "96. HBSAg"
+  },
+  {
+   "fieldname": "vdrl",
+   "fieldtype": "Data",
+   "label": "97. VDRL"
+  },
+  {
+   "fieldname": "section_assignment",
+   "fieldtype": "Section Break",
+   "label": "Assignment"
+  },
+  {
+   "fieldname": "partner_organization",
+   "fieldtype": "Link",
+   "label": "Partner Organization",
+   "options": "Partner Details"
+  },
+  {
+   "fieldname": "organization_name",
+   "fieldtype": "Data",
+   "label": "Organization Name",
+   "fetch_from": "partner_organization.organization_name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_assignment",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "assigned_worker",
+   "fieldtype": "Link",
+   "label": "Name of the ORW",
+   "options": "User"
+  },
+  {
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "default": "Today"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-23 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Patna",
+ "name": "PTN Mental Health Assessment",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "description": "Detailed psychiatric / medical assessment form",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "System Manager"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Program Coordinator"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Program Manager"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Organization Admin"
+  },
+  {
+   "role": "ORW",
+   "read": 1,
+   "write": 1,
+   "create": 1
+  }
+ ],
+ "track_changes": 1,
+ "allow_import": 1,
+ "autoname": "PTN-MHA.####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "namelast_name",
+ "show_title_field_in_link": 1
+}

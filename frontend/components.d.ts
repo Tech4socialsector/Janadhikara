@@ -37,6 +37,7 @@ declare module 'vue' {
     LucideIcon: typeof import('./src/components/LucideIcon.vue')['default']
     MobileNav: typeof import('./src/components/MobileNav.vue')['default']
     MobileShell: typeof import('./src/components/MobileShell.vue')['default']
+    NamedFileUploader: typeof import('./src/components/NamedFileUploader.vue')['default']
     NetworkPill: typeof import('./src/components/NetworkPill.vue')['default']
     NotificationPanel: typeof import('./src/components/NotificationPanel.vue')['default']
     NotificationSettingsPanel: typeof import('./src/components/NotificationSettingsPanel.vue')['default']

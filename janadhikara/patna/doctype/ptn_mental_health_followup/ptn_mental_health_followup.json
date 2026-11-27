@@ -1,0 +1,39 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-11-23 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "review_followup",
+  "nextvisit_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "review_followup",
+   "fieldtype": "Small Text",
+   "label": "Follow-up",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "nextvisit_date",
+   "fieldtype": "Date",
+   "label": "Follow-up Date",
+   "in_list_view": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-23 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Patna",
+ "name": "PTN Mental Health Followup",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1,
+ "editable_grid": 1,
+ "permissions": []
+}

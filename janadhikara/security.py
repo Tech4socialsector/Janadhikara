@@ -27,7 +27,10 @@ def add_security_headers(response=None, request=None):
 # partner worker sees nothing.
 
 PROGRAMME_ROLES = {"System Manager", "Program Coordinator", "Program Manager"}
+from janadhikara.patna import PATNA_RECORDS
+
 PARTNER_FIELD = {"Household Profile": "partner_organization", "Settlement": "partner_organization", "HYD Settlement Profile": "partner_organization", "HYD Household Profile": "partner_organization", "HYD Individual Profile": "partner_organization", "Individual Profile": "implementing_org"}
+PARTNER_FIELD.update({doctype: "partner_organization" for doctype in PATNA_RECORDS})
 
 
 def user_scope(user=None):
@@ -141,6 +144,15 @@ def hyd_individual_has_permission(doc, ptype=None, user=None, **kwargs):
 
 def individual_has_permission(doc, ptype=None, user=None, **kwargs):
 	return _has_permission(doc, "Individual Profile", user, ptype)
+
+
+def city_record_conditions(user=None, doctype=None, **kwargs):
+	"""A city record form (Patna's): a partner worker sees only their own partner's records. Frappe passes the doctype."""
+	return _query_conditions(doctype, user)
+
+
+def city_record_has_permission(doc, ptype=None, user=None, **kwargs):
+	return _has_permission(doc, doc.doctype, user, ptype)
 
 
 def enforce_own_partner(doc):

@@ -14,7 +14,7 @@ from frappe import _
 from frappe.desk.form.assign_to import _add, close_all_assignments
 from frappe.utils import add_days, nowdate
 
-HOUSEHOLD_DOCTYPES = ("Household Profile", "HYD Household Profile")
+HOUSEHOLD_DOCTYPES = ("Household Profile", "HYD Household Profile", "PTN Household Detail")
 STALE_DAYS = 7
 OPEN_STATUSES = ("Partially Completed",)
 DONE_STATUSES = ("Validated", "Completed")

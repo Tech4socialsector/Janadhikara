@@ -1,3 +1,5 @@
+from janadhikara.patna import PATNA_RECORDS
+
 app_name = "janadhikara"
 app_title = "Janadhikara"
 app_publisher = "tech4socialsector@azimpremjifoundation.org"
@@ -52,6 +54,7 @@ permission_query_conditions = {
 	"HYD Household Profile": "janadhikara.security.hyd_household_conditions",
 	"HYD Individual Profile": "janadhikara.security.hyd_individual_conditions",
 	"Individual Profile": "janadhikara.security.individual_conditions",
+	**{doctype: "janadhikara.security.city_record_conditions" for doctype in PATNA_RECORDS},
 }
 has_permission = {
 	"Support Ticket": "janadhikara.helpdesk.ticket_has_permission",
@@ -64,6 +67,7 @@ has_permission = {
 	"HYD Household Profile": "janadhikara.security.hyd_household_has_permission",
 	"HYD Individual Profile": "janadhikara.security.hyd_individual_has_permission",
 	"Individual Profile": "janadhikara.security.individual_has_permission",
+	**{doctype: "janadhikara.security.city_record_has_permission" for doctype in PATNA_RECORDS},
 }
 
 # Includes in <head>
@@ -326,13 +330,14 @@ doc_events = {
 		"on_trash": "janadhikara.customization_log.custom_field_deleted",
 	},
 	"*": {
-		"before_validate": "janadhikara.validation.resolve_default_tokens",
+		"before_validate": ["janadhikara.validation.resolve_default_tokens", "janadhikara.photo_names.save_photos_from_device"],
 		"validate": ["janadhikara.questions.validate_answers", "janadhikara.validation.validate_doc"],
 	},
 	"DocType": {"after_insert": "janadhikara.ai.policy.on_doctype_created"},
 	"Error Log": {"before_insert": "janadhikara.security.scrub_error_log"},
 	"Household Profile": {"on_update": "janadhikara.worklist.household_updated"},
 	"HYD Household Profile": {"on_update": "janadhikara.worklist.household_updated"},
+	"PTN Household Detail": {"on_update": "janadhikara.worklist.household_updated"},
 	"Notification Log": {"after_insert": "janadhikara.push.notification_created"},
 	"Announcement": {"on_update": "janadhikara.announcements.announcement_saved"},
 	"ToDo": {

@@ -1,0 +1,22 @@
+{
+ "city": "patna",
+ "description": "Patna: its own Household Detail and Family Member forms stand in for the shared Household and Individual Profiles, with Patna's Entitlements, Mental Health Assessment, Medical OPD and Health Camp Record forms. The masters only the Guwahati forms use, and the shared Settlement, are not shown.",
+ "module": "Patna",
+ "prefix": "PTN",
+ "replaces": {
+  "Household Profile": "PTN Household Detail",
+  "Individual Profile": "PTN Family Member"
+ },
+ "hide": [
+  "Settlement",
+  "Relationship Type",
+  "Cooking Fuel",
+  "Welfare Board",
+  "Assam District"
+ ],
+ "dashboard": "patna_dashboard.json",
+ "languages": [
+  "en",
+  "hi"
+ ]
+}

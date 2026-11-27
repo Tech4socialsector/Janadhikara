@@ -90,6 +90,54 @@ REQUIRED = {
   "municipal_circle",
   "municipal_ward",
   "q10_1_after_assessing_the_settlement_do_you"
+ ],
+ "PTN Hotspot": [
+  "hotspot_name"
+ ],
+ "PTN Religion": [
+  "religion_name"
+ ],
+ "PTN Tracking Activities": [
+  "activity_name",
+  "status"
+ ],
+ "PTN Payments Table Child": [
+  "payment_type",
+  "amount"
+ ],
+ "PTN Household Detail": [
+  "record_date",
+  "validation_status"
+ ],
+ "PTN Family Member": [
+  "hhid",
+  "validation_status",
+  "record_date"
+ ],
+ "PTN Beneficiary": [
+  "validation_status",
+  "record_date"
+ ],
+ "PTN Health Camp Record": [
+  "record_date"
+ ],
+ "PTN Medical OPD": [
+  "beneficiary",
+  "status",
+  "record_date"
+ ],
+ "PTN Entitlements": [
+  "beneficiary",
+  "status",
+  "request_date",
+  "document_type",
+  "record_date"
+ ],
+ "PTN Weekly Visit Update": [
+  "record_date"
+ ],
+ "PTN Mental Health Assessment": [
+  "record_date"
  ]
 }
 

@@ -1,0 +1,274 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-11-23 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tab_date_time",
+  "camp_date",
+  "camp_time",
+  "tab_patients_screened",
+  "number_of_males",
+  "number_of_children",
+  "total_patients_screened",
+  "number_of_females",
+  "number_of_others",
+  "health_camp_attendee",
+  "healthcame_escalation",
+  "tab_location",
+  "camp_location",
+  "other_camp_location",
+  "camp_state",
+  "camp_district",
+  "zone_camp_location",
+  "ward_camp_location",
+  "habitation_camp",
+  "tab_medical_details",
+  "total_medicines_dispensed",
+  "total_referrals_done",
+  "total_diagnostics_done",
+  "section_assignment",
+  "partner_organization",
+  "organization_name",
+  "column_break_assignment",
+  "assigned_worker",
+  "record_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "tab_date_time",
+   "fieldtype": "Tab Break",
+   "label": "Date & Time"
+  },
+  {
+   "fieldname": "camp_date",
+   "fieldtype": "Date",
+   "label": "1. Camp Date",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "camp_time",
+   "fieldtype": "Time",
+   "label": "2. Camp Time"
+  },
+  {
+   "fieldname": "tab_patients_screened",
+   "fieldtype": "Tab Break",
+   "label": "Patients Screened"
+  },
+  {
+   "fieldname": "number_of_males",
+   "fieldtype": "Int",
+   "label": "3. Number of Males"
+  },
+  {
+   "fieldname": "number_of_children",
+   "fieldtype": "Int",
+   "label": "4. Number of Children"
+  },
+  {
+   "fieldname": "total_patients_screened",
+   "fieldtype": "Int",
+   "label": "5. Total Patients Screened",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "number_of_females",
+   "fieldtype": "Int",
+   "label": "6. Number of Females"
+  },
+  {
+   "fieldname": "number_of_others",
+   "fieldtype": "Int",
+   "label": "7. Number of Others"
+  },
+  {
+   "fieldname": "health_camp_attendee",
+   "fieldtype": "Table",
+   "label": "8. Health Camp Attendee",
+   "options": "PTN Health Camp Attendee"
+  },
+  {
+   "fieldname": "healthcame_escalation",
+   "fieldtype": "Table",
+   "label": "9. Healthcamp Attendees Escalation cases",
+   "options": "PTN Health Camp Escalation"
+  },
+  {
+   "fieldname": "tab_location",
+   "fieldtype": "Tab Break",
+   "label": "Location"
+  },
+  {
+   "fieldname": "camp_location",
+   "fieldtype": "Select",
+   "label": "10. Camp Location",
+   "options": "\nGovt Aided Shelter Home\nPrivate Shelter Home\nHotspot\nOthers",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "other_camp_location",
+   "fieldtype": "Data",
+   "label": "11. Please Specify Camp Location",
+   "depends_on": "eval:doc.camp_location==\"Others\""
+  },
+  {
+   "fieldname": "camp_state",
+   "fieldtype": "Data",
+   "label": "12. State"
+  },
+  {
+   "fieldname": "camp_district",
+   "fieldtype": "Data",
+   "label": "13. City/District"
+  },
+  {
+   "fieldname": "zone_camp_location",
+   "fieldtype": "Data",
+   "label": "14. Zone/Block"
+  },
+  {
+   "fieldname": "ward_camp_location",
+   "fieldtype": "Data",
+   "label": "15. Ward/GP"
+  },
+  {
+   "fieldname": "habitation_camp",
+   "fieldtype": "Data",
+   "label": "16. Hotspot Name/Habitation"
+  },
+  {
+   "fieldname": "tab_medical_details",
+   "fieldtype": "Tab Break",
+   "label": "Medical Details"
+  },
+  {
+   "fieldname": "total_medicines_dispensed",
+   "fieldtype": "Int",
+   "label": "17. Total Medicines Dispensed"
+  },
+  {
+   "fieldname": "total_referrals_done",
+   "fieldtype": "Int",
+   "label": "18. Total Referrals Done"
+  },
+  {
+   "fieldname": "total_diagnostics_done",
+   "fieldtype": "Int",
+   "label": "19. Total Diagnostics Done"
+  },
+  {
+   "fieldname": "section_assignment",
+   "fieldtype": "Section Break",
+   "label": "Assignment"
+  },
+  {
+   "fieldname": "partner_organization",
+   "fieldtype": "Link",
+   "label": "Partner Organization",
+   "options": "Partner Details"
+  },
+  {
+   "fieldname": "organization_name",
+   "fieldtype": "Data",
+   "label": "Organization Name",
+   "fetch_from": "partner_organization.organization_name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_assignment",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "assigned_worker",
+   "fieldtype": "Link",
+   "label": "Name of the ORW",
+   "options": "User"
+  },
+  {
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "default": "Today"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-23 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Patna",
+ "name": "PTN Health Camp Record",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "description": "Health camp record with attendees and escalation cases",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "System Manager"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Program Coordinator"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Program Manager"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Organization Admin"
+  },
+  {
+   "role": "ORW",
+   "read": 1,
+   "write": 1,
+   "create": 1
+  }
+ ],
+ "track_changes": 1,
+ "allow_import": 1,
+ "autoname": "PTN-HCR.####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "camp_date",
+ "show_title_field_in_link": 1
+}

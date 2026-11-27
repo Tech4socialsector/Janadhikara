@@ -6,7 +6,7 @@ cities still share the household and individual forms. A city with doctypes of i
 (janadhikara/hyderabad/doctype/...), listed in CITY_MODULES and used only on that city's site."""
 
 SHARED_MODULES = ("Masters", "App Config", "Engine", "Guwahati")
-CITY_MODULES = ("Hyderabad",)
+CITY_MODULES = ("Hyderabad", "Patna")
 APP_MODULES = SHARED_MODULES + CITY_MODULES
 
 

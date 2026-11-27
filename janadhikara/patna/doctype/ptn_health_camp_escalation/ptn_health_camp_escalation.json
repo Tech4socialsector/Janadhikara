@@ -1,0 +1,98 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-11-23 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "beneficiary",
+  "beneficiary_name",
+  "hotspot",
+  "age",
+  "gender",
+  "beneficiary_status",
+  "escalation_type",
+  "facility_type",
+  "hospital_name",
+  "crc"
+ ],
+ "fields": [
+  {
+   "fieldname": "beneficiary",
+   "fieldtype": "Link",
+   "label": "Beneficiary",
+   "options": "PTN Family Member",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "beneficiary_name",
+   "fieldtype": "Data",
+   "label": "Beneficiary Name",
+   "fetch_from": "beneficiary.full_name",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "hotspot",
+   "fieldtype": "Data",
+   "label": "Hotspot",
+   "fetch_from": "beneficiary.member_hotspot"
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Data",
+   "label": "Age",
+   "fetch_from": "beneficiary.age"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Data",
+   "label": "Gender",
+   "fetch_from": "beneficiary.gender"
+  },
+  {
+   "fieldname": "beneficiary_status",
+   "fieldtype": "Data",
+   "label": "Beneficiary Status",
+   "fetch_from": "beneficiary.beneficiary_status"
+  },
+  {
+   "fieldname": "escalation_type",
+   "fieldtype": "Select",
+   "label": "Escalation Type",
+   "options": "\nOPD\nIPD",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "facility_type",
+   "fieldtype": "Select",
+   "label": "Facility Type",
+   "options": "\nHospital\nCRC",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "hospital_name",
+   "fieldtype": "Data",
+   "label": "Hospital Name"
+  },
+  {
+   "fieldname": "crc",
+   "fieldtype": "Data",
+   "label": "CRC"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-23 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Patna",
+ "name": "PTN Health Camp Escalation",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "description": "Health camp attendees escalation cases",
+ "istable": 1,
+ "editable_grid": 1,
+ "permissions": []
+}

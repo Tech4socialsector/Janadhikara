@@ -47,8 +47,14 @@ def city_doctype(doctype):
 
 
 def hidden_doctypes():
-	"""Doctypes this site's city does not use (pack "hide"): left out of the sidebar, Home, search and the offline download."""
-	return set((current_pack() or {}).get("hide", []))
+	"""Doctypes this site's city does not use: left out of the sidebar, Home, search and the offline download. That is
+	the pack's "hide" list plus every doctype of another city's module (a Guwahati site never shows PTN/HYD forms)."""
+	from janadhikara.app_modules import CITY_MODULES
+
+	pack = current_pack() or {}
+	other_cities = [m for m in CITY_MODULES if m != pack.get("module")]
+	others = frappe.get_all("DocType", filters={"module": ["in", other_cities]}, pluck="name") if other_cities else []
+	return set(pack.get("hide", [])) | set(others)
 
 
 def dashboard_spec():

@@ -1,0 +1,293 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-11-23 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "beneficiary",
+  "full_name",
+  "active_partner",
+  "wardgp",
+  "gender",
+  "age",
+  "hotspot_namehabitation",
+  "referral_date",
+  "admission_date",
+  "referralsource",
+  "type_of_diagnosis",
+  "description",
+  "status",
+  "pickup_location",
+  "type_of_facility",
+  "hospital",
+  "crc",
+  "modifieddatetime",
+  "tab_ambulance_request",
+  "ambulance_status",
+  "pickup_date_time",
+  "driver",
+  "ambulance_km",
+  "table_zmhr",
+  "section_assignment",
+  "partner_organization",
+  "organization_name",
+  "column_break_assignment",
+  "assigned_worker",
+  "record_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "beneficiary",
+   "fieldtype": "Link",
+   "label": "1. Beneficiary",
+   "options": "PTN Family Member",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "2. Full Name",
+   "fetch_from": "beneficiary.full_name"
+  },
+  {
+   "fieldname": "active_partner",
+   "fieldtype": "Data",
+   "label": "3. Active Partner",
+   "fetch_from": "beneficiary.beneficiary_status"
+  },
+  {
+   "fieldname": "wardgp",
+   "fieldtype": "Data",
+   "label": "4. Ward/GP",
+   "fetch_from": "beneficiary.area"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Data",
+   "label": "5. Gender",
+   "fetch_from": "beneficiary.gender"
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Data",
+   "label": "6. Age",
+   "fetch_from": "beneficiary.age"
+  },
+  {
+   "fieldname": "hotspot_namehabitation",
+   "fieldtype": "Data",
+   "label": "7. Hotspot Name/Habitation",
+   "fetch_from": "beneficiary.member_hotspot"
+  },
+  {
+   "fieldname": "referral_date",
+   "fieldtype": "Date",
+   "label": "8. Referral Date"
+  },
+  {
+   "fieldname": "admission_date",
+   "fieldtype": "Date",
+   "label": "9. Admission Date"
+  },
+  {
+   "fieldname": "referralsource",
+   "fieldtype": "Data",
+   "label": "10. Referral Source"
+  },
+  {
+   "fieldname": "type_of_diagnosis",
+   "fieldtype": "Data",
+   "label": "11. Type Of Diagnosis"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "12. Complain Description"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "13. Status",
+   "options": "\nNew\nIn Follow Up\nUntraced\nClosed",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "pickup_location",
+   "fieldtype": "Data",
+   "label": "14. Pickup location"
+  },
+  {
+   "fieldname": "type_of_facility",
+   "fieldtype": "Select",
+   "label": "15. Type Of Facility",
+   "options": "\nHospital\nCRC"
+  },
+  {
+   "fieldname": "hospital",
+   "fieldtype": "Data",
+   "label": "16. Hospital",
+   "depends_on": "eval:doc.type_of_facility==\"Hospital\"",
+   "mandatory_depends_on": "eval:doc.type_of_facility==\"Hospital\""
+  },
+  {
+   "fieldname": "crc",
+   "fieldtype": "Data",
+   "label": "17. CRC",
+   "depends_on": "eval:doc.type_of_facility==\"CRC\"",
+   "mandatory_depends_on": "eval:doc.type_of_facility==\"CRC\""
+  },
+  {
+   "fieldname": "modifieddatetime",
+   "fieldtype": "Datetime",
+   "label": "18. Modified"
+  },
+  {
+   "fieldname": "tab_ambulance_request",
+   "fieldtype": "Tab Break",
+   "label": "Ambulance Request"
+  },
+  {
+   "fieldname": "ambulance_status",
+   "fieldtype": "Select",
+   "label": "19. Ambulance Status",
+   "options": "\nNew\nAMB Dispatched\nCompleted\nAttempted\nFailed"
+  },
+  {
+   "fieldname": "pickup_date_time",
+   "fieldtype": "Datetime",
+   "label": "20. Pickup Date time"
+  },
+  {
+   "fieldname": "driver",
+   "fieldtype": "Data",
+   "label": "21. Ambulance Driver",
+   "mandatory_depends_on": "eval:doc.ambulance_status && doc.ambulance_status!=\"New\""
+  },
+  {
+   "fieldname": "ambulance_km",
+   "fieldtype": "Int",
+   "label": "22. Ambulance KM"
+  },
+  {
+   "fieldname": "table_zmhr",
+   "fieldtype": "Table",
+   "label": "23. Payment Table",
+   "options": "PTN Payments Table Child"
+  },
+  {
+   "fieldname": "section_assignment",
+   "fieldtype": "Section Break",
+   "label": "Assignment"
+  },
+  {
+   "fieldname": "partner_organization",
+   "fieldtype": "Link",
+   "label": "Partner Organization",
+   "options": "Partner Details",
+   "fetch_from": "beneficiary.partner_organization",
+   "read_only": 1
+  },
+  {
+   "fieldname": "organization_name",
+   "fieldtype": "Data",
+   "label": "Organization Name",
+   "fetch_from": "partner_organization.organization_name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_assignment",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "assigned_worker",
+   "fieldtype": "Link",
+   "label": "Name of the ORW",
+   "options": "User"
+  },
+  {
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "default": "Today"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-23 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Patna",
+ "name": "PTN Medical OPD",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "description": "Out-patient referral record",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "System Manager"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Program Coordinator"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Program Manager"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Organization Admin"
+  },
+  {
+   "role": "ORW",
+   "read": 1,
+   "write": 1,
+   "create": 1
+  }
+ ],
+ "track_changes": 1,
+ "allow_import": 1,
+ "autoname": "PTN-MOPD.####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "full_name",
+ "show_title_field_in_link": 1
+}

@@ -20,6 +20,12 @@ class Settlement(Document):
 		self.validate_questionnaire()
 		self.validate_validation_status()
 
+	def on_update(self):
+		from janadhikara.photo_names import name_table_photos
+
+		# street view photos are stored as <Settlement ID>-<day><month>, e.g. SET0013-19Nov.jpg
+		name_table_photos(self, "q19_3_street_view_photos")
+
 	def validate_validation_status(self):
 		"""The Status question, with the same rule as on the Household and Individual Profile: only an option the user's
 		role may use can be set, and a Validated record is changed only by someone who may use Validated."""

@@ -1,0 +1,39 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-11-23 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "entitlement_type",
+  "number"
+ ],
+ "fields": [
+  {
+   "fieldname": "entitlement_type",
+   "fieldtype": "Data",
+   "label": "Entitlement Type",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "number",
+   "fieldtype": "Int",
+   "label": "Number",
+   "in_list_view": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-23 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Patna",
+ "name": "PTN Identity Proofs",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1,
+ "editable_grid": 1,
+ "permissions": []
+}

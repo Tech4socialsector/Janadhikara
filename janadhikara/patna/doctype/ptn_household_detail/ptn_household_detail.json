@@ -1,0 +1,892 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "PTN-HH.####",
+ "creation": "2026-11-23 12:00:00",
+ "description": "Household-level survey (one record per household)",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tab_user",
+  "urc_name",
+  "area",
+  "name_of_the_subsettlement",
+  "area_location",
+  "tab_hh_details",
+  "household_head_name",
+  "total_family_members",
+  "respondent_name",
+  "house_no",
+  "address",
+  "phone_no",
+  "alternative_phone_no",
+  "religion",
+  "caste",
+  "rationcard_type",
+  "getting_ration",
+  "card_correction",
+  "remarks",
+  "mpc_member",
+  "tab_utility_infrastructure",
+  "cookingfuel_type",
+  "source_of_electricity",
+  "please_mention_any_issues_you_are_facing",
+  "free_electricity",
+  "water_supply",
+  "water_timing",
+  "type_of_toilet",
+  "public_toilet",
+  "drainage_connection",
+  "garbage_collection",
+  "tab_housing_property",
+  "type_of_house",
+  "no_of_rooms",
+  "no_of_floors",
+  "area_plot",
+  "separate_kitchen",
+  "owned_rented",
+  "monthly_rent",
+  "rent_agreement",
+  "noc_house",
+  "sale_deed",
+  "power_attorney",
+  "bu_plan",
+  "light_bill",
+  "tax_bill",
+  "house_purchase",
+  "other_property",
+  "tab_expenditure_savings",
+  "household_income",
+  "section_where_are_you_saving_money",
+  "bank",
+  "vc",
+  "post_office",
+  "home",
+  "job_place",
+  "gold",
+  "mfi",
+  "section_income_certificate",
+  "family_income_certificate",
+  "section_loan",
+  "outstanding_loan",
+  "loan_source",
+  "section_type_of_loan",
+  "home_loan",
+  "vehicle_loan",
+  "personal_loan",
+  "education_loan",
+  "business_loan",
+  "section_insurance",
+  "any_insurance",
+  "interested_in_insurance",
+  "section_type_of_insurance_existing",
+  "life_insurance",
+  "health_insurance",
+  "fire_insurance",
+  "vehicle_insurance",
+  "home_insurance",
+  "accident_insurance",
+  "section_interested_insurance",
+  "life_insurance1",
+  "health_insurance1",
+  "fire_insurance1",
+  "vehicle_insurance1",
+  "home_insurance1",
+  "accident_insurance1",
+  "tab_migration_details",
+  "areyou_migrated",
+  "from_where",
+  "bihar_district",
+  "other_state",
+  "years_thisarea",
+  "years_patna",
+  "tab_climate_impact",
+  "house_stable",
+  "roof_holes",
+  "house_condition",
+  "summer_issues",
+  "monsoon_issues",
+  "air_temperature",
+  "humidity_level",
+  "living_indoors",
+  "tab_death_details",
+  "death_3years",
+  "died_name",
+  "age_on_death_day",
+  "cause_of_death",
+  "other_causeof_death",
+  "death_certificate",
+  "section_closing",
+  "validation_status",
+  "validation_comments",
+  "section_assignment",
+  "partner_organization",
+  "organization_name",
+  "column_break_assignment",
+  "assigned_worker",
+  "record_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "tab_user",
+   "fieldtype": "Tab Break",
+   "label": "User"
+  },
+  {
+   "fieldname": "urc_name",
+   "fieldtype": "Data",
+   "label": "1. URC name"
+  },
+  {
+   "fieldname": "area",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "2. Name of the Area"
+  },
+  {
+   "fieldname": "name_of_the_subsettlement",
+   "fieldtype": "Data",
+   "label": "3. Name of the Subsettlement"
+  },
+  {
+   "fieldname": "area_location",
+   "fieldtype": "Geolocation",
+   "label": "4. Location of the Area"
+  },
+  {
+   "fieldname": "tab_hh_details",
+   "fieldtype": "Tab Break",
+   "label": "HH Details"
+  },
+  {
+   "fieldname": "household_head_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "5. Household Head Name"
+  },
+  {
+   "fieldname": "total_family_members",
+   "fieldtype": "Int",
+   "label": "6. Total Family Members"
+  },
+  {
+   "fieldname": "respondent_name",
+   "fieldtype": "Data",
+   "label": "7. Respondent's Name"
+  },
+  {
+   "fieldname": "house_no",
+   "fieldtype": "Data",
+   "label": "8. House/ Door No"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "9. Address (Landmark, Settlment name,ward name )"
+  },
+  {
+   "fieldname": "phone_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "10. Phone No"
+  },
+  {
+   "fieldname": "alternative_phone_no",
+   "fieldtype": "Data",
+   "label": "11. Alternative Phone No"
+  },
+  {
+   "fieldname": "religion",
+   "fieldtype": "Link",
+   "label": "12. Religion",
+   "options": "PTN Religion"
+  },
+  {
+   "fieldname": "caste",
+   "fieldtype": "Select",
+   "label": "13. Caste",
+   "options": "\nGeneral\nOBC\nSC\nST\nOther"
+  },
+  {
+   "fieldname": "rationcard_type",
+   "fieldtype": "Select",
+   "label": "14. Which Ration Card do you hold in this household?",
+   "options": "\nAPL\nBPL\nNone"
+  },
+  {
+   "depends_on": "eval:doc.rationcard_type && doc.rationcard_type!=\"None\"",
+   "fieldname": "getting_ration",
+   "fieldtype": "Select",
+   "label": "15. Getting Ration or Not?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.rationcard_type && doc.rationcard_type!=\"None\"",
+   "fieldname": "card_correction",
+   "fieldtype": "Select",
+   "label": "16. Is it need to make corrections if has an APL or BPL card?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "17. Remarks"
+  },
+  {
+   "fieldname": "mpc_member",
+   "fieldtype": "Select",
+   "label": "18. Is any family member an MPC member?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "tab_utility_infrastructure",
+   "fieldtype": "Tab Break",
+   "label": "Utility & Infrastructure"
+  },
+  {
+   "fieldname": "cookingfuel_type",
+   "fieldtype": "Select",
+   "label": "19. Which Type of Fuel Maily Use for Household Cooking?",
+   "options": "\nLPG\nKerosene\nCoal\nWood\nElectricity\nOther"
+  },
+  {
+   "fieldname": "source_of_electricity",
+   "fieldtype": "Select",
+   "label": "20. Source of Electricity",
+   "options": "\nSBPDCL (South Bihar Power)\nPrivate Connection\nTorrent Power\nUGVCL\nNone\nOther"
+  },
+  {
+   "fieldname": "please_mention_any_issues_you_are_facing",
+   "fieldtype": "Data",
+   "label": "21. Please mention any issues you are facing"
+  },
+  {
+   "fieldname": "free_electricity",
+   "fieldtype": "Select",
+   "label": "22. Have you filled the form in Suryaghar Free Electricity Yojana or not?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "water_supply",
+   "fieldtype": "Select",
+   "label": "23. Water Supply Source",
+   "options": "\nCommon Tab/ Common Tube Well-Handpump\nMunicipal Individual Connection\nPrivate Individual Connection/Borewell\nTanker"
+  },
+  {
+   "fieldname": "water_timing",
+   "fieldtype": "Select",
+   "label": "24. What is the water timing?",
+   "options": "\n30 Minutes\n1 Hour\n2 Hours\nMore Than 2 hours\nNo Timing"
+  },
+  {
+   "fieldname": "type_of_toilet",
+   "fieldtype": "Select",
+   "label": "25. Type of Toilet",
+   "options": "\nIntrahousehold Toilet\nShared Toilet (from Neighbor)\nCommon Toilet\nPublic Toilet\nOpen Defecation"
+  },
+  {
+   "depends_on": "eval:[\"Common Toilet\",\"Public Toilet\"].includes(doc.type_of_toilet)",
+   "fieldname": "public_toilet",
+   "fieldtype": "Select",
+   "label": "26. If Common or Public Toilet, How much time does it take?",
+   "options": "\n15 Minutes\n30 Minutes\n1 Hour\nMore Than 1 Hour"
+  },
+  {
+   "fieldname": "drainage_connection",
+   "fieldtype": "Select",
+   "label": "27. Drainage Connection",
+   "options": "\nGovernment Drainage Connection\nPrivate Drainage Connection\nSoak Pit\nSeptik Tank\nNot Connected"
+  },
+  {
+   "fieldname": "garbage_collection",
+   "fieldtype": "Select",
+   "label": "28. Frequency of accessing the garbage collection facility",
+   "options": "\nTwice in a day\nOnce in a day\nOnce in a two days\nOnce in a week\nNo facility"
+  },
+  {
+   "fieldname": "tab_housing_property",
+   "fieldtype": "Tab Break",
+   "label": "Housing & Property"
+  },
+  {
+   "fieldname": "type_of_house",
+   "fieldtype": "Select",
+   "label": "29. Type of House",
+   "options": "\nKutcha\nPacca\nSemi pacca"
+  },
+  {
+   "fieldname": "no_of_rooms",
+   "fieldtype": "Select",
+   "label": "30. How many rooms in the House?",
+   "options": "\n1\n2\n3\n4"
+  },
+  {
+   "fieldname": "no_of_floors",
+   "fieldtype": "Select",
+   "label": "31. How many Floors in the house?",
+   "options": "\nG\n1\n2\n3\n4"
+  },
+  {
+   "fieldname": "area_plot",
+   "fieldtype": "Select",
+   "label": "32. Approximate area of Plot (in Square Feet)",
+   "options": "\nLess than 100 sq ft\n101 - 200 sq ft\n201 - 300 sq ft\n301 - 400 sq ft\n401 - 500 sq ft\n501 - 750 sq ft\n751 - 1000 sq ft\nMore than 1000 sq ft"
+  },
+  {
+   "fieldname": "separate_kitchen",
+   "fieldtype": "Select",
+   "label": "33. Is there a separate kitchen in your house?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "owned_rented",
+   "fieldtype": "Select",
+   "label": "34. Owned or Rented?",
+   "options": "\nOwned\nRented"
+  },
+  {
+   "depends_on": "eval:doc.owned_rented==\"Rented\"",
+   "fieldname": "monthly_rent",
+   "fieldtype": "Data",
+   "label": "35. How Much is the Monthly Rent?"
+  },
+  {
+   "depends_on": "eval:doc.owned_rented==\"Rented\"",
+   "fieldname": "rent_agreement",
+   "fieldtype": "Select",
+   "label": "36. Do you have a Rent Agreement?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "noc_house",
+   "fieldtype": "Select",
+   "label": "37. Do you have NOC for your house?",
+   "options": "\nYes\nNo\nDon't Know"
+  },
+  {
+   "fieldname": "sale_deed",
+   "fieldtype": "Select",
+   "label": "38. Do you have a Sale Deed?",
+   "options": "\nYes\nNo\nDon't Know"
+  },
+  {
+   "fieldname": "power_attorney",
+   "fieldtype": "Select",
+   "label": "39. Do You have Powere of Attorney?",
+   "options": "\nYes\nNo\nDon't Know"
+  },
+  {
+   "fieldname": "bu_plan",
+   "fieldtype": "Select",
+   "label": "40. Do you have BU Permission or Passed Plan?",
+   "options": "\nYes\nNo\nDon't Know"
+  },
+  {
+   "fieldname": "light_bill",
+   "fieldtype": "Select",
+   "label": "41. Do you have Light Bill?",
+   "options": "\nYes\nNo\nDon't Know"
+  },
+  {
+   "fieldname": "tax_bill",
+   "fieldtype": "Select",
+   "label": "42. Do you have Tax Bill?",
+   "options": "\nYes\nNo\nDon't Know"
+  },
+  {
+   "fieldname": "house_purchase",
+   "fieldtype": "Select",
+   "label": "43. Do you have any receipt for purchase of house?",
+   "options": "\nYes\nNo\nDon't Know"
+  },
+  {
+   "fieldname": "other_property",
+   "fieldtype": "Select",
+   "label": "44. Do you have any other Property Documents?",
+   "options": "\nYes\nNo\nDon't Know"
+  },
+  {
+   "fieldname": "tab_expenditure_savings",
+   "fieldtype": "Tab Break",
+   "label": "Expenditure & Savings"
+  },
+  {
+   "fieldname": "household_income",
+   "fieldtype": "Int",
+   "label": "45. Monthly Income of  Household"
+  },
+  {
+   "fieldname": "section_where_are_you_saving_money",
+   "fieldtype": "Section Break",
+   "label": "Where are you Saving money?"
+  },
+  {
+   "default": "0",
+   "fieldname": "bank",
+   "fieldtype": "Check",
+   "label": "46. Bank"
+  },
+  {
+   "default": "0",
+   "fieldname": "vc",
+   "fieldtype": "Check",
+   "label": "47. VC"
+  },
+  {
+   "default": "0",
+   "fieldname": "post_office",
+   "fieldtype": "Check",
+   "label": "48. Post office"
+  },
+  {
+   "default": "0",
+   "fieldname": "home",
+   "fieldtype": "Check",
+   "label": "49. Home"
+  },
+  {
+   "default": "0",
+   "fieldname": "job_place",
+   "fieldtype": "Check",
+   "label": "50. Job place"
+  },
+  {
+   "default": "0",
+   "fieldname": "gold",
+   "fieldtype": "Check",
+   "label": "51. Gold"
+  },
+  {
+   "default": "0",
+   "fieldname": "mfi",
+   "fieldtype": "Check",
+   "label": "52. MFI"
+  },
+  {
+   "fieldname": "section_income_certificate",
+   "fieldtype": "Section Break",
+   "label": "Income Certificate"
+  },
+  {
+   "fieldname": "family_income_certificate",
+   "fieldtype": "Select",
+   "label": "53. Family has Income Certificate?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "section_loan",
+   "fieldtype": "Section Break",
+   "label": "Loan"
+  },
+  {
+   "fieldname": "outstanding_loan",
+   "fieldtype": "Select",
+   "label": "54. Do you have any outstanding loans?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "loan_source",
+   "fieldtype": "Select",
+   "label": "55. What source do you use for loans?",
+   "options": "\nGovt_Bank\nPvt_Bank\nCooperative\nGovt_Bank,Pvt_Bank\nMFI,Company\nMFI\nSahukar\nCompany\nPrivate Financer\nPvt_Bank,Cooperative\nPvt_Bank,Sahukar\nOther"
+  },
+  {
+   "fieldname": "section_type_of_loan",
+   "fieldtype": "Section Break",
+   "label": "Type of Loan"
+  },
+  {
+   "fieldname": "home_loan",
+   "fieldtype": "Select",
+   "label": "56. Do you have a Home Loan?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "vehicle_loan",
+   "fieldtype": "Select",
+   "label": "57. Do you have a Vehicle Loan?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "personal_loan",
+   "fieldtype": "Select",
+   "label": "58. Do you have a Personal Loan?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "education_loan",
+   "fieldtype": "Select",
+   "label": "59. Do you have a Education Loan?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "business_loan",
+   "fieldtype": "Select",
+   "label": "60. Do you have a Business Loan?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "section_insurance",
+   "fieldtype": "Section Break",
+   "label": "Insurance"
+  },
+  {
+   "fieldname": "any_insurance",
+   "fieldtype": "Select",
+   "label": "61. Do you have any Insurance?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "interested_in_insurance",
+   "fieldtype": "Select",
+   "label": "62. Are you interested in taking insurance?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "section_type_of_insurance_existing",
+   "fieldtype": "Section Break",
+   "label": "Type of Insurance (existing)"
+  },
+  {
+   "fieldname": "life_insurance",
+   "fieldtype": "Select",
+   "label": "63. Life Insurance",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "health_insurance",
+   "fieldtype": "Select",
+   "label": "64. Health Insurance",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "fire_insurance",
+   "fieldtype": "Select",
+   "label": "65. Fire Insurance",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "vehicle_insurance",
+   "fieldtype": "Select",
+   "label": "66. Vehicle Insurance",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "home_insurance",
+   "fieldtype": "Select",
+   "label": "67. Home Insurance",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "accident_insurance",
+   "fieldtype": "Select",
+   "label": "68. Accident Insurance",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "section_interested_insurance",
+   "fieldtype": "Section Break",
+   "label": "Interested Insurance"
+  },
+  {
+   "fieldname": "life_insurance1",
+   "fieldtype": "Select",
+   "label": "69. Life Insurance",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "health_insurance1",
+   "fieldtype": "Select",
+   "label": "70. Health Insurance",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "fire_insurance1",
+   "fieldtype": "Select",
+   "label": "71. Fire Insurance",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "vehicle_insurance1",
+   "fieldtype": "Select",
+   "label": "72. Vehicle Insurance",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "home_insurance1",
+   "fieldtype": "Select",
+   "label": "73. Home Insurance",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "accident_insurance1",
+   "fieldtype": "Select",
+   "label": "74. Accident Insurance",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "tab_migration_details",
+   "fieldtype": "Tab Break",
+   "label": "Migration Details"
+  },
+  {
+   "fieldname": "areyou_migrated",
+   "fieldtype": "Select",
+   "label": "75. Are you Migrated?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.areyou_migrated==\"Yes\"",
+   "fieldname": "from_where",
+   "fieldtype": "Select",
+   "label": "76. If yes, Where are you from?",
+   "options": "\nTown/Village within Bihar State\nTown/Village outside Bihar State"
+  },
+  {
+   "depends_on": "eval:doc.areyou_migrated==\"Yes\" && doc.from_where==\"Town/Village within Bihar State\"",
+   "fieldname": "bihar_district",
+   "fieldtype": "Data",
+   "label": "77. If you are from Bihar, which district do you belong to?"
+  },
+  {
+   "depends_on": "eval:doc.areyou_migrated==\"Yes\" && doc.from_where==\"Town/Village outside Bihar State\"",
+   "fieldname": "other_state",
+   "fieldtype": "Data",
+   "label": "78. If you are from Other State, which state do you belong to?"
+  },
+  {
+   "fieldname": "years_thisarea",
+   "fieldtype": "Data",
+   "label": "79. For how many years have you been living in this area?"
+  },
+  {
+   "depends_on": "eval:doc.areyou_migrated==\"Yes\" && doc.from_where==\"Town/Village outside Bihar State\"",
+   "fieldname": "years_patna",
+   "fieldtype": "Data",
+   "label": "80. For how many years have you been living in Patna?"
+  },
+  {
+   "fieldname": "tab_climate_impact",
+   "fieldtype": "Tab Break",
+   "label": "Climate Impact"
+  },
+  {
+   "fieldname": "house_stable",
+   "fieldtype": "Select",
+   "label": "81. Are the exterior and interior walls, ceiling and supporting structures of the house stable so that the roof can be accessed?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "roof_holes",
+   "fieldtype": "Select",
+   "label": "82. Are there any holes in the roof?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "house_condition",
+   "fieldtype": "Select",
+   "label": "83. How would you describe the condition of your house?",
+   "options": "\nExcellent - No immediate repair and maintenance needed\nGood - Minor maintenance needed\nAverage - Some repair and maintenance needed\nPoor - Immediate repairs and maintenance needed\nVery poor - Extensive and immediate repair and maintenance needed"
+  },
+  {
+   "fieldname": "summer_issues",
+   "fieldtype": "Select",
+   "label": "84. Are you facing issues during summer?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "monsoon_issues",
+   "fieldtype": "Select",
+   "label": "85. Are you facing issues during Monsoon",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "air_temperature",
+   "fieldtype": "Select",
+   "label": "86. What is your feeling about the air temperature?",
+   "options": "\nVery cold\nCold\nSlightly Cool\nNormal\nSlightly warm\nWarm\nVery warm"
+  },
+  {
+   "fieldname": "humidity_level",
+   "fieldtype": "Select",
+   "label": "87. What is your feeling about the humidity level of your home?",
+   "options": "\nDry (a feeling of dryness in the mouth and throat)\nAppropriate and desirable\nWet skin\nClothes sticking to the skin surface\nFully wet skin\nSweat loss from the skin surface"
+  },
+  {
+   "fieldname": "living_indoors",
+   "fieldtype": "Select",
+   "label": "88. What time of the day do you mostly feel hot while living indoors?",
+   "options": "\nMorning\nNoon\nEvening\nNight"
+  },
+  {
+   "fieldname": "tab_death_details",
+   "fieldtype": "Tab Break",
+   "label": "Death Details"
+  },
+  {
+   "fieldname": "death_3years",
+   "fieldtype": "Select",
+   "label": "89. Has anyone died in your household in the last three years?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "depends_on": "eval:doc.areyou_migrated==\"Yes\" && doc.from_where==\"Town/Village outside Bihar State\"",
+   "fieldname": "died_name",
+   "fieldtype": "Data",
+   "label": "90. Name of Death Person"
+  },
+  {
+   "depends_on": "eval:doc.areyou_migrated==\"Yes\" && doc.from_where==\"Town/Village outside Bihar State\"",
+   "fieldname": "age_on_death_day",
+   "fieldtype": "Data",
+   "label": "91. Age as on Death day"
+  },
+  {
+   "depends_on": "eval:doc.areyou_migrated==\"Yes\" && doc.from_where==\"Town/Village outside Bihar State\"",
+   "fieldname": "cause_of_death",
+   "fieldtype": "Select",
+   "label": "92. Cause of Death",
+   "options": "\nDiarrhea\nAccident\nTB\nBlood Pressure\nDiabetes\nCOVID-19\nSuicide\nCancer\nHeart Attack\nOther"
+  },
+  {
+   "depends_on": "eval:doc.areyou_migrated==\"Yes\" && doc.from_where==\"Town/Village outside Bihar State\"",
+   "fieldname": "other_causeof_death",
+   "fieldtype": "Data",
+   "label": "93. If, Other cause of death"
+  },
+  {
+   "depends_on": "eval:doc.areyou_migrated==\"Yes\" && doc.from_where==\"Town/Village outside Bihar State\"",
+   "fieldname": "death_certificate",
+   "fieldtype": "Select",
+   "label": "94. Do you have a Death Certificate?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "section_closing",
+   "fieldtype": "Section Break",
+   "label": "Closing and Record Status"
+  },
+  {
+   "fieldname": "validation_status",
+   "fieldtype": "Link",
+   "label": "Status",
+   "options": "Validation Status"
+  },
+  {
+   "fieldname": "validation_comments",
+   "fieldtype": "Small Text",
+   "label": "Validation Comments"
+  },
+  {
+   "fieldname": "section_assignment",
+   "fieldtype": "Section Break",
+   "label": "Assignment"
+  },
+  {
+   "fieldname": "partner_organization",
+   "fieldtype": "Link",
+   "label": "Partner Organization",
+   "options": "Partner Details"
+  },
+  {
+   "fetch_from": "partner_organization.organization_name",
+   "fieldname": "organization_name",
+   "fieldtype": "Data",
+   "label": "Organization Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_assignment",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "assigned_worker",
+   "fieldtype": "Link",
+   "label": "Name of the ORW",
+   "options": "User"
+  },
+  {
+   "default": "Today",
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "label": "Date"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-26 10:45:07.114896",
+ "modified_by": "Administrator",
+ "module": "Patna",
+ "name": "PTN Household Detail",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Program Coordinator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Program Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Organization Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "role": "ORW",
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "search_fields": "household_head_name,phone_no,area",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "household_head_name",
+ "track_changes": 1
+}

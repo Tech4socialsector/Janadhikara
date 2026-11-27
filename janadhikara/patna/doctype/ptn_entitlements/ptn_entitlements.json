@@ -1,0 +1,217 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-11-23 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "beneficiary",
+  "full_name",
+  "age",
+  "gender",
+  "active_partner",
+  "hotspot",
+  "entitlement_type",
+  "status",
+  "mobile_number",
+  "request_date",
+  "document_type",
+  "acknowledgement_no",
+  "section_assignment",
+  "partner_organization",
+  "organization_name",
+  "column_break_assignment",
+  "assigned_worker",
+  "record_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "beneficiary",
+   "fieldtype": "Link",
+   "label": "1. Beneficiary",
+   "options": "PTN Family Member",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "2. Full Name",
+   "fetch_from": "beneficiary.full_name"
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Data",
+   "label": "3. Age",
+   "fetch_from": "beneficiary.age"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Data",
+   "label": "4. Gender",
+   "fetch_from": "beneficiary.gender"
+  },
+  {
+   "fieldname": "active_partner",
+   "fieldtype": "Data",
+   "label": "5. Active Partner",
+   "fetch_from": "beneficiary.beneficiary_status"
+  },
+  {
+   "fieldname": "hotspot",
+   "fieldtype": "Data",
+   "label": "6. Hotspot",
+   "fetch_from": "beneficiary.member_hotspot"
+  },
+  {
+   "fieldname": "entitlement_type",
+   "fieldtype": "Select",
+   "label": "7. Entitlement Type",
+   "options": "\nNew\nReissue\nUpdate"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "8. Status",
+   "options": "\nNew\nApplied\nInprogress\nIssued\nRejected\nUntraced",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "9. Register Mobile No"
+  },
+  {
+   "fieldname": "request_date",
+   "fieldtype": "Date",
+   "label": "10. Request Date",
+   "read_only": 1,
+   "default": "Today"
+  },
+  {
+   "fieldname": "document_type",
+   "fieldtype": "Select",
+   "label": "11. Document type",
+   "options": "\nAadhaar Card\nPAN Card\nVoter ID\nRation Card",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "acknowledgement_no",
+   "fieldtype": "Data",
+   "label": "12. Acknowledgement no"
+  },
+  {
+   "fieldname": "section_assignment",
+   "fieldtype": "Section Break",
+   "label": "Assignment"
+  },
+  {
+   "fieldname": "partner_organization",
+   "fieldtype": "Link",
+   "label": "Partner Organization",
+   "options": "Partner Details",
+   "fetch_from": "beneficiary.partner_organization",
+   "read_only": 1
+  },
+  {
+   "fieldname": "organization_name",
+   "fieldtype": "Data",
+   "label": "Organization Name",
+   "fetch_from": "partner_organization.organization_name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_assignment",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "assigned_worker",
+   "fieldtype": "Link",
+   "label": "Name of the ORW",
+   "options": "User"
+  },
+  {
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "default": "Today"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-23 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Patna",
+ "name": "PTN Entitlements",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "description": "Entitlement / government document application tracking",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "System Manager"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Program Coordinator"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Program Manager"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Organization Admin"
+  },
+  {
+   "role": "ORW",
+   "read": 1,
+   "write": 1,
+   "create": 1
+  }
+ ],
+ "track_changes": 1,
+ "allow_import": 1,
+ "autoname": "PTN-ENT.####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "full_name",
+ "show_title_field_in_link": 1
+}

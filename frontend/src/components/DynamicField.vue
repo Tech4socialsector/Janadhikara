@@ -105,8 +105,9 @@
             </div>
           </div>
           <div v-else-if="!linkMode" class="grid grid-cols-3 gap-2">
-            <FileUploader
+            <NamedFileUploader
               file-types="image/*"
+              :file-name="uploadName"
               :upload-args="{ doctype, docname, private: uploadsArePrivate }"
               @success="onImageUploaded"
             >
@@ -121,9 +122,10 @@
                   {{ uploading ? `${progress}%` : t('Camera') }}
                 </button>
               </template>
-            </FileUploader>
-            <FileUploader
+            </NamedFileUploader>
+            <NamedFileUploader
               file-types="image/*"
+              :file-name="uploadName"
               :upload-args="{ doctype, docname, private: uploadsArePrivate }"
               @success="onImageUploaded"
             >
@@ -137,7 +139,7 @@
                   {{ uploading ? `${progress}%` : t('Gallery') }}
                 </button>
               </template>
-            </FileUploader>
+            </NamedFileUploader>
             <button
               type="button"
               class="flex w-full flex-col items-center gap-2 rounded-lg border border-outline-gray-2 px-2 py-4 text-sm text-ink-gray-8 hover:bg-surface-gray-1"
@@ -464,6 +466,8 @@
 import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 // The rich-text editor (tiptap / prosemirror, ~370 KB gzipped) loads only when a form has such a field.
 const TextEditor = defineAsyncComponent(() => import('@frappe-text-editor'))
+import NamedFileUploader, { renameFile } from '@/components/NamedFileUploader.vue'
+import { isDevicePhoto, uploadOrKeep } from '@/data/offlinePhoto'
 import { FormControl, FileUploader, FileUploadHandler, Button, ErrorMessage, FeatherIcon, Tooltip, Rating, TimePicker, DatePicker, DateTimePicker } from 'frappe-ui'
 import { t } from '@/utils/translate'
 import UserLinkHoverCard from '@/components/UserLinkHoverCard.vue'
@@ -498,6 +502,8 @@ const props = defineProps({
   parentValues: { type: Object, default: () => ({}) },
   // The whole row/form is being viewed, not edited (e.g. a unit that belongs to another worker).
   readOnly: { type: Boolean, default: false },
+  // Name to store an uploaded photo under (without extension), e.g. SET0013-19Nov for a photo of settlement SET0013 added on 19 Nov.
+  uploadName: { type: String, default: null },
 })
 const emit = defineEmits(['update:modelValue', 'address-resolved', 'pincode-resolved', 'location-resolved', 'geo-changed'])
 
@@ -779,10 +785,13 @@ async function takePhoto() {
   cameraUploading.value = true
   cameraError.value = null
   try {
-    const file = new File([blob], `photo-${Date.now()}.jpg`, { type: 'image/jpeg' })
-    const uploaded = await new FileUploadHandler().upload(file, { doctype: props.doctype, docname: props.docname, private: uploadsArePrivate.value })
+    const file = renameFile(new File([blob], `photo-${Date.now()}.jpg`, { type: 'image/jpeg' }), props.uploadName)
+    // with no connection the photo is kept on the phone and goes up with the record (data/offlinePhoto.js)
+    const fileUrl = await uploadOrKeep(file, (named) =>
+      new FileUploadHandler().upload(named, { doctype: props.doctype, docname: props.docname, private: uploadsArePrivate.value }),
+    )
     stopCamera()
-    onImageUploaded(uploaded)
+    onImageUploaded({ file_url: fileUrl })
   } catch {
     cameraError.value = t('The photo could not be uploaded. Try again.')
   } finally {
@@ -929,6 +938,7 @@ const readOnlyClass = computed(() =>
 
 const fileName = computed(() => {
   if (!props.modelValue) return ''
+  if (isDevicePhoto(props.modelValue)) return t('Photo saved on this device - it uploads with the record')
   try {
     return decodeURIComponent(props.modelValue.split('/').pop())
   } catch {

@@ -1,0 +1,580 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-11-23 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tab_basic_detail",
+  "hhid",
+  "household_head_name",
+  "ph_1",
+  "area",
+  "name_of_the_subsettlement",
+  "beneficiary_status",
+  "member_hotspot",
+  "section_member_details",
+  "first_name",
+  "last_name",
+  "full_name",
+  "gender",
+  "date_of_birth",
+  "age",
+  "marital_status",
+  "pregnant_status",
+  "mamta_card",
+  "widow_pension",
+  "education",
+  "education_status",
+  "place_of_education",
+  "institute_name",
+  "unemployment_reason",
+  "occupation",
+  "occupation_place",
+  "monthly_income",
+  "part_of_saath",
+  "remark",
+  "tab_health_related",
+  "mobility",
+  "selfcare",
+  "usual_activities",
+  "pain_discomfort",
+  "anxiety_depression",
+  "any_disability",
+  "disability_card",
+  "major_illness",
+  "other_illness",
+  "tab_documents",
+  "aadhaar_card",
+  "pan_card",
+  "do_you_have_a_birth_certificate",
+  "caste_certificate",
+  "voter_id",
+  "passport",
+  "marriage_certificate",
+  "tab_entitlements_bank",
+  "sukanya_scheme",
+  "esharm_card",
+  "enirman_card",
+  "antyodaya_shramik",
+  "ayushyaman_card",
+  "abha_card",
+  "oldage_pension",
+  "sewa_bima",
+  "pmmy",
+  "vishwakarma",
+  "bank_account",
+  "mfi_account",
+  "section_closing",
+  "validation_status",
+  "validation_comments",
+  "section_assignment",
+  "partner_organization",
+  "organization_name",
+  "column_break_assignment",
+  "assigned_worker",
+  "record_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "tab_basic_detail",
+   "fieldtype": "Tab Break",
+   "label": "Basic Detail"
+  },
+  {
+   "fieldname": "hhid",
+   "fieldtype": "Link",
+   "label": "1. Household ID",
+   "options": "PTN Household Detail",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "household_head_name",
+   "fieldtype": "Data",
+   "label": "2. Household Head Name",
+   "fetch_from": "hhid.household_head_name"
+  },
+  {
+   "fieldname": "ph_1",
+   "fieldtype": "Data",
+   "label": "3. HH Phone Number 1",
+   "fetch_from": "hhid.phone_no"
+  },
+  {
+   "fieldname": "area",
+   "fieldtype": "Data",
+   "label": "4. Name of the Area",
+   "fetch_from": "hhid.area"
+  },
+  {
+   "fieldname": "name_of_the_subsettlement",
+   "fieldtype": "Data",
+   "label": "5. Name of the Subsettlement",
+   "fetch_from": "hhid.name_of_the_subsettlement"
+  },
+  {
+   "fieldname": "beneficiary_status",
+   "fieldtype": "Select",
+   "label": "6. Member's Status",
+   "options": "\nActive Partner\nCRC Partner\nInactive\nDiseased\nReunited\nOther"
+  },
+  {
+   "fieldname": "member_hotspot",
+   "fieldtype": "Link",
+   "label": "7. Member's Hotspot",
+   "options": "PTN Hotspot"
+  },
+  {
+   "fieldname": "section_member_details",
+   "fieldtype": "Section Break",
+   "label": "Member Details"
+  },
+  {
+   "fieldname": "first_name",
+   "fieldtype": "Data",
+   "label": "8. Family Member's First Name?"
+  },
+  {
+   "fieldname": "last_name",
+   "fieldtype": "Data",
+   "label": "9. Family Member's Last Name?"
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "10. Family Member's Full Name",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "11. Gender",
+   "options": "\nMale\nFemale\nOther",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "12. Date of Birth"
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Int",
+   "label": "13. Age",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "marital_status",
+   "fieldtype": "Select",
+   "label": "14. Marital Status",
+   "options": "\nUnmarried\nMarried\nWidow\nWidower\nDivorcee\nSeperated",
+   "depends_on": "eval:doc.age>=15"
+  },
+  {
+   "fieldname": "pregnant_status",
+   "fieldtype": "Select",
+   "label": "15. Are you Pregnant",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.age>=15 && doc.gender==\"Female\" && doc.marital_status==\"Married\""
+  },
+  {
+   "fieldname": "mamta_card",
+   "fieldtype": "Select",
+   "label": "16. Do you have a mamta Card?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.age>=15 && doc.gender==\"Female\" && doc.marital_status==\"Married\" && doc.pregnant_status==\"Yes\""
+  },
+  {
+   "fieldname": "widow_pension",
+   "fieldtype": "Select",
+   "label": "17. Do you have a Widow Pension?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.age>=15 && doc.gender==\"Female\" && doc.marital_status==\"Widow\""
+  },
+  {
+   "fieldname": "education",
+   "fieldtype": "Select",
+   "label": "18. Education",
+   "options": "\nPre-School\nPrimary(1st - 7th Standard)\nHigh School (8th-10th)\nHigher Secondary (11th-12th Std)\nGraduate\nPost Graduate\nCertified Training/Course\nEducation Not Started\nIlliterate"
+  },
+  {
+   "fieldname": "education_status",
+   "fieldtype": "Select",
+   "label": "19. Is the Education ongoing?",
+   "options": "\nEducation is Completed\nEducation is Ongoing\nDropout",
+   "depends_on": "eval:doc.education && doc.education!=\"Education Not Started\" && doc.education!=\"Illiterate\""
+  },
+  {
+   "fieldname": "place_of_education",
+   "fieldtype": "Data",
+   "label": "20. Place of Education",
+   "depends_on": "eval:doc.education_status==\"Education is Ongoing\""
+  },
+  {
+   "fieldname": "institute_name",
+   "fieldtype": "Data",
+   "label": "21. Name of the Institute",
+   "depends_on": "eval:doc.education_status==\"Education is Ongoing\""
+  },
+  {
+   "fieldname": "unemployment_reason",
+   "fieldtype": "Select",
+   "label": "22. Reason for Unemployment",
+   "options": "\nHousewife\nPensioner\nStudent\nUnemployed – has skill\nUnemployed – has no skill\nRetired",
+   "depends_on": "eval:doc.age>12 && doc.occupation==\"Unemployment\""
+  },
+  {
+   "fieldname": "occupation",
+   "fieldtype": "Select",
+   "label": "23. Occupation",
+   "options": "\nDaily wages\nPrivate job\nGovernment job\nSelf-employment\nUnemployment\nNot Applicable",
+   "depends_on": "eval:doc.age>12"
+  },
+  {
+   "fieldname": "occupation_place",
+   "fieldtype": "Select",
+   "label": "24. Place of Occupation",
+   "options": "\nWithin Patna\nOutside Patna\nAt home",
+   "depends_on": "eval:doc.age>12 && doc.occupation && doc.occupation!=\"Unemployment\" && doc.occupation!=\"Not Applicable\""
+  },
+  {
+   "fieldname": "monthly_income",
+   "fieldtype": "Int",
+   "label": "25. Monthly Income",
+   "depends_on": "eval:doc.age>12"
+  },
+  {
+   "fieldname": "part_of_saath",
+   "fieldtype": "Select",
+   "label": "26. Have you been part of Saath's Groups/Committee?",
+   "options": "\nCommittee\nURC Committee\nWoman Group\nYouth Group\nKishor Group\nKishori Group\nKishor Kishori mix group\nOld age Group\nChildren Group\nCommunity"
+  },
+  {
+   "fieldname": "remark",
+   "fieldtype": "Small Text",
+   "label": "27. Remark"
+  },
+  {
+   "fieldname": "tab_health_related",
+   "fieldtype": "Tab Break",
+   "label": "Health Related"
+  },
+  {
+   "fieldname": "mobility",
+   "fieldtype": "Select",
+   "label": "28. Mobility",
+   "options": "\nNo problem\nSlightly problem\nSevere"
+  },
+  {
+   "fieldname": "selfcare",
+   "fieldtype": "Select",
+   "label": "29. Self-care",
+   "options": "\nNo problem\nSlightly problem\nSevere"
+  },
+  {
+   "fieldname": "usual_activities",
+   "fieldtype": "Select",
+   "label": "30. Usual Activities",
+   "options": "\nNo problem\nSlightly problem\nSevere\nModerate"
+  },
+  {
+   "fieldname": "pain_discomfort",
+   "fieldtype": "Select",
+   "label": "31. Pain / Discomfort",
+   "options": "\nSlightly problem\nModerate\nSevere\nNo problem"
+  },
+  {
+   "fieldname": "anxiety_depression",
+   "fieldtype": "Select",
+   "label": "32. Anxiety / Depression I am not anxious or depressed",
+   "options": "\nNo problem\nSlightly problem\nSevere\nModerate"
+  },
+  {
+   "fieldname": "any_disability",
+   "fieldtype": "Select",
+   "label": "33. Any Disability",
+   "options": "\nNone\nMental Illness\nHearing Impairment\nVision Impairment\nPhysical Disability\nLocomotor"
+  },
+  {
+   "fieldname": "disability_card",
+   "fieldtype": "Select",
+   "label": "34. If disability, have Disability Card?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "major_illness",
+   "fieldtype": "Select",
+   "label": "35. Do they have any major Illness?",
+   "options": "\nNone\nBP\nDiabetes\nAllergy\nCancer\nHeadaches\nHeart Disease\nHepatitis A, B and C\nGynecologic Problem\nTB\nAsthma\nENT Issues\nSkin Diseases\nOther"
+  },
+  {
+   "fieldname": "other_illness",
+   "fieldtype": "Data",
+   "label": "36. If, Other major illness"
+  },
+  {
+   "fieldname": "tab_documents",
+   "fieldtype": "Tab Break",
+   "label": "Documents"
+  },
+  {
+   "fieldname": "aadhaar_card",
+   "fieldtype": "Select",
+   "label": "37. Do you have an Aadhaar Card?",
+   "options": "\nYes\nNo\nCorrection Needed"
+  },
+  {
+   "fieldname": "pan_card",
+   "fieldtype": "Select",
+   "label": "38. Do you have a PAN Card?",
+   "options": "\nYes\nNo\nCorrection Needed",
+   "depends_on": "eval:doc.age>17"
+  },
+  {
+   "fieldname": "do_you_have_a_birth_certificate",
+   "fieldtype": "Select",
+   "label": "39. Do you have a Birth Certificate?",
+   "options": "\nYes\nNo\nCorrection Needed"
+  },
+  {
+   "fieldname": "caste_certificate",
+   "fieldtype": "Select",
+   "label": "40. Do you have a Caste Certificate?",
+   "options": "\nYes\nNo\nCorrection Needed"
+  },
+  {
+   "fieldname": "voter_id",
+   "fieldtype": "Select",
+   "label": "41. Do you have a Voter ID?",
+   "options": "\nYes\nNo\nCorrection Needed",
+   "depends_on": "eval:doc.age>17"
+  },
+  {
+   "fieldname": "passport",
+   "fieldtype": "Select",
+   "label": "42. Do you have a Passport?",
+   "options": "\nYes\nNo\nCorrection Needed"
+  },
+  {
+   "fieldname": "marriage_certificate",
+   "fieldtype": "Select",
+   "label": "43. Do you have a Marriage Certificate?",
+   "options": "\nYes\nNo\nCorrection Needed",
+   "depends_on": "eval:doc.marital_status==\"Married\""
+  },
+  {
+   "fieldname": "tab_entitlements_bank",
+   "fieldtype": "Tab Break",
+   "label": "Entitlements & Bank"
+  },
+  {
+   "fieldname": "sukanya_scheme",
+   "fieldtype": "Select",
+   "label": "44. Do you have an Sukanya Samridhi Scheme?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.gender==\"Female\" && doc.age<11"
+  },
+  {
+   "fieldname": "esharm_card",
+   "fieldtype": "Select",
+   "label": "45. Do you have a e-Shram Card?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.age>17"
+  },
+  {
+   "fieldname": "enirman_card",
+   "fieldtype": "Select",
+   "label": "46. Do you have e-Nirman Card?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.age>17"
+  },
+  {
+   "fieldname": "antyodaya_shramik",
+   "fieldtype": "Select",
+   "label": "47. Do you have a Antyodaya Shramik Suraksha Yojna?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.age>17"
+  },
+  {
+   "fieldname": "ayushyaman_card",
+   "fieldtype": "Select",
+   "label": "48. Do you have a Ayushyaman/Health Card?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "abha_card",
+   "fieldtype": "Select",
+   "label": "49. Do you have a ABHA Card?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "oldage_pension",
+   "fieldtype": "Select",
+   "label": "50. Do you have a Old Age Pension?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.age>60"
+  },
+  {
+   "fieldname": "sewa_bima",
+   "fieldtype": "Select",
+   "label": "51. Do you have a SEWA BIMA Yojna?",
+   "options": "\nYes\nNo",
+   "depends_on": "eval:doc.age>=5 && doc.age<=70"
+  },
+  {
+   "fieldname": "pmmy",
+   "fieldtype": "Select",
+   "label": "52. Do you have a Pradhan Mantri Mundra Yojba (PMMY)?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "vishwakarma",
+   "fieldtype": "Select",
+   "label": "53. Have you benefited from the Vishwakarma Yojana?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "bank_account",
+   "fieldtype": "Select",
+   "label": "54. Do you have a Bank Account?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "mfi_account",
+   "fieldtype": "Select",
+   "label": "55. Do you have an MFI Account?",
+   "options": "\nYes\nNo"
+  },
+  {
+   "fieldname": "section_closing",
+   "fieldtype": "Section Break",
+   "label": "Closing and Record Status"
+  },
+  {
+   "fieldname": "validation_status",
+   "fieldtype": "Link",
+   "label": "Status",
+   "options": "Validation Status"
+  },
+  {
+   "fieldname": "validation_comments",
+   "fieldtype": "Small Text",
+   "label": "Validation Comments"
+  },
+  {
+   "fieldname": "section_assignment",
+   "fieldtype": "Section Break",
+   "label": "Assignment"
+  },
+  {
+   "fieldname": "partner_organization",
+   "fieldtype": "Link",
+   "label": "Partner Organization",
+   "options": "Partner Details",
+   "fetch_from": "hhid.partner_organization",
+   "read_only": 1
+  },
+  {
+   "fieldname": "organization_name",
+   "fieldtype": "Data",
+   "label": "Organization Name",
+   "fetch_from": "partner_organization.organization_name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_assignment",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "assigned_worker",
+   "fieldtype": "Link",
+   "label": "Name of the ORW",
+   "options": "User"
+  },
+  {
+   "fieldname": "record_date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "default": "Today"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-11-23 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Patna",
+ "name": "PTN Family Member",
+ "owner": "Administrator",
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "description": "Individual-level survey of each household member; also the Beneficiary of all service forms",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "System Manager"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Program Coordinator"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Program Manager"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "import": 1,
+   "role": "Organization Admin"
+  },
+  {
+   "role": "ORW",
+   "read": 1,
+   "write": 1,
+   "create": 1
+  }
+ ],
+ "track_changes": 1,
+ "allow_import": 1,
+ "autoname": "PTN-FM.####",
+ "naming_rule": "Expression (old style)",
+ "title_field": "full_name",
+ "show_title_field_in_link": 1,
+ "search_fields": "full_name,hhid,household_head_name,ph_1"
+}

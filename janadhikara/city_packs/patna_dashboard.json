@@ -1,0 +1,259 @@
+{
+ "doctype": "PTN Household Detail",
+ "date_field": "record_date",
+ "default_columns": [
+  "household_head_name",
+  "area",
+  "phone_no",
+  "partner_organization",
+  "validation_status"
+ ],
+ "filters": [
+  {
+   "key": "partner_organization",
+   "label": "Partner organization",
+   "source": {
+    "doctype": "Partner Details",
+    "label": "organization_name"
+   }
+  },
+  {
+   "key": "religion",
+   "label": "Religion",
+   "source": {
+    "doctype": "PTN Religion",
+    "label": "religion_name"
+   }
+  },
+  {
+   "key": "validation_status",
+   "label": "Status",
+   "source": "status"
+  }
+ ],
+ "cards": [
+  {
+   "key": "households",
+   "title": "Households",
+   "op": "count"
+  },
+  {
+   "key": "members",
+   "title": "Family members (as told by households)",
+   "op": "sum",
+   "fields": [
+    "total_family_members"
+   ]
+  },
+  {
+   "key": "bpl",
+   "title": "BPL ration card",
+   "op": "count",
+   "where": {
+    "rationcard_type": "BPL"
+   }
+  },
+  {
+   "key": "no_ration",
+   "title": "No ration card",
+   "op": "count",
+   "where": {
+    "rationcard_type": "None"
+   }
+  },
+  {
+   "key": "migrated",
+   "title": "Migrated households",
+   "op": "count",
+   "where": {
+    "areyou_migrated": "Yes"
+   }
+  },
+  {
+   "key": "loans",
+   "title": "With outstanding loans",
+   "op": "count",
+   "where": {
+    "outstanding_loan": "Yes"
+   }
+  },
+  {
+   "key": "deaths",
+   "title": "A death in the last 3 years",
+   "op": "count",
+   "where": {
+    "death_3years": "Yes"
+   }
+  },
+  {
+   "key": "validated",
+   "title": "Profiles validated",
+   "op": "percent",
+   "where": {
+    "validation_status": "Validated"
+   },
+   "suffix": "%"
+  }
+ ],
+ "charts": [
+  {
+   "key": "monthly",
+   "title": "Recorded over time",
+   "subtitle": "Households added each month",
+   "kind": "line",
+   "op": "monthly",
+   "series": "Households",
+   "wide": true
+  },
+  {
+   "key": "caste",
+   "title": "Caste",
+   "kind": "donut",
+   "op": "counts",
+   "field": "caste"
+  },
+  {
+   "key": "ration",
+   "title": "Ration card",
+   "kind": "donut",
+   "op": "counts",
+   "field": "rationcard_type"
+  },
+  {
+   "key": "fuel",
+   "title": "Cooking fuel",
+   "kind": "bar",
+   "horizontal": true,
+   "op": "counts",
+   "field": "cookingfuel_type"
+  },
+  {
+   "key": "water",
+   "title": "Water supply source",
+   "kind": "bar",
+   "horizontal": true,
+   "op": "counts",
+   "field": "water_supply"
+  },
+  {
+   "key": "toilet",
+   "title": "Type of toilet",
+   "kind": "bar",
+   "horizontal": true,
+   "op": "counts",
+   "field": "type_of_toilet"
+  },
+  {
+   "key": "house",
+   "title": "Type of house",
+   "kind": "donut",
+   "op": "counts",
+   "field": "type_of_house"
+  },
+  {
+   "key": "tenure",
+   "title": "Owned or rented",
+   "kind": "donut",
+   "op": "counts",
+   "field": "owned_rented"
+  },
+  {
+   "key": "condition",
+   "title": "Condition of the house",
+   "kind": "bar",
+   "horizontal": true,
+   "op": "counts",
+   "field": "house_condition"
+  },
+  {
+   "key": "documents",
+   "title": "Property documents",
+   "subtitle": "Share of households answering Yes",
+   "kind": "bar",
+   "horizontal": true,
+   "suffix": "%",
+   "op": "yes_share",
+   "items": [
+    [
+     "NOC",
+     "noc_house"
+    ],
+    [
+     "Sale deed",
+     "sale_deed"
+    ],
+    [
+     "Power of attorney",
+     "power_attorney"
+    ],
+    [
+     "BU permission / passed plan",
+     "bu_plan"
+    ],
+    [
+     "Light bill",
+     "light_bill"
+    ],
+    [
+     "Tax bill",
+     "tax_bill"
+    ],
+    [
+     "Purchase receipt",
+     "house_purchase"
+    ],
+    [
+     "Other property documents",
+     "other_property"
+    ]
+   ]
+  },
+  {
+   "key": "insurance",
+   "title": "Insurance",
+   "subtitle": "Share of households answering Yes",
+   "kind": "bar",
+   "horizontal": true,
+   "suffix": "%",
+   "op": "yes_share",
+   "items": [
+    [
+     "Any insurance",
+     "any_insurance"
+    ],
+    [
+     "Life",
+     "life_insurance"
+    ],
+    [
+     "Health",
+     "health_insurance"
+    ],
+    [
+     "Fire",
+     "fire_insurance"
+    ],
+    [
+     "Vehicle",
+     "vehicle_insurance"
+    ],
+    [
+     "Home",
+     "home_insurance"
+    ],
+    [
+     "Accident",
+     "accident_insurance"
+    ]
+   ]
+  },
+  {
+   "key": "status",
+   "title": "Profile status",
+   "kind": "donut",
+   "op": "counts",
+   "field": "validation_status",
+   "order": "status"
+  }
+ ]
+}

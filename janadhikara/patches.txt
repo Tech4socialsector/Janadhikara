@@ -66,3 +66,4 @@ janadhikara.patches.v1_1.use_has_role
 janadhikara.patches.v1_1.merge_modules_into_groups
 janadhikara.patches.v1_1.roster_sex_options
 janadhikara.patches.v1_1.home_group_order
+janadhikara.patches.v1_1.patna_drop_unused_forms

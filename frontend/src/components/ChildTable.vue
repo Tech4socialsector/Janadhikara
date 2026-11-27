@@ -187,7 +187,7 @@
       </template>
     </ListView>
 
-    <Dialog v-model="showRowEditor" :options="{ size: '2xl', title: 'row-editor' }">
+    <Dialog v-model="showRowEditor" :options="{ size: hasPhoto ? '4xl' : '2xl', title: 'row-editor' }">
       <template #body>
         <!-- #body-content (the default slot this used before) sits inside
         Dialog's own fixed-padding, non-scrollable wrapper alongside the
@@ -215,6 +215,7 @@
                 :docname="docname"
                 :sibling-values="editingRow"
                 :parent-values="parentValues"
+                :upload-name="photoFileName"
                 :read-only="editingReadOnly"
                 v-model="editingRow[col.fieldname]"
                 @geo-changed="onRowGeoChanged"
@@ -309,6 +310,7 @@ import {
   toast,
 } from 'frappe-ui'
 import DynamicField from '@/components/DynamicField.vue'
+import { isDevicePhoto } from '@/data/offlinePhoto'
 import { useMeta, useFormFields } from '@/data/useMeta'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 import { useFieldFunctions } from '@/composables/useFieldFunctions'
@@ -417,18 +419,24 @@ const listViewOptions = computed(() => ({
 const TALL_FIELDTYPES = new Set(['Text Editor', 'Small Text', 'Text', 'Long Text', 'Code', 'HTML Editor', 'Attach Image', 'Attach'])
 const ROW_HEIGHT_REM = 4.5
 const TALL_ROW_HEIGHT_REM = 8
+// a photo needs room for the live camera view and the picture itself
+const PHOTO_ROW_HEIGHT_REM = 30
 const CHROME_HEIGHT_REM = 9.5 // header + footer + vertical padding
 const MIN_PANEL_HEIGHT_REM = 14
 const MAX_PANEL_HEIGHT_REM = 42
 
 const editorHeight = computed(() => {
   const fieldsHeight = columns.value.reduce(
-    (sum, col) => sum + (TALL_FIELDTYPES.has(col.fieldtype) ? TALL_ROW_HEIGHT_REM : ROW_HEIGHT_REM),
+    (sum, col) =>
+      sum +
+      (col.fieldtype === 'Attach Image' ? PHOTO_ROW_HEIGHT_REM : TALL_FIELDTYPES.has(col.fieldtype) ? TALL_ROW_HEIGHT_REM : ROW_HEIGHT_REM),
     0,
   )
   const total = Math.min(MAX_PANEL_HEIGHT_REM, Math.max(MIN_PANEL_HEIGHT_REM, fieldsHeight + CHROME_HEIGHT_REM))
-  return `${total}rem`
+  // never taller than the screen (the field list scrolls inside)
+  return `min(${total}rem, 92dvh)`
 })
+const hasPhoto = computed(() => columns.value.some((col) => col.fieldtype === 'Attach Image'))
 
 // Mobile card helpers. The first summary column is the card's title; the
 // rest form its label/value grid.
@@ -526,6 +534,7 @@ const SUMMARY_VALUE_MAX_LENGTH = 60
 function formatValue(value, field) {
   if (value == null || value === '') return '-'
   if (field.fieldtype === 'Check') return value ? 'Yes' : 'No'
+  if (isDevicePhoto(value)) return 'Photo on this device (uploads with the record)'
   // A linked record shows by its title (name), not its ID.
   const text = String(isTitledLink(field) ? linkTitle(field.options, value) : value)
   return text.length > SUMMARY_VALUE_MAX_LENGTH ? text.slice(0, SUMMARY_VALUE_MAX_LENGTH - 1) + '…' : text
@@ -540,6 +549,17 @@ watch(
 
 const showRowEditor = ref(false)
 const editingIdx = ref(null)
+// A street view photo is stored as <Settlement ID>-<day><month>, e.g. SET0013-19Nov.jpg (the server does the same on
+// save, so a photo added before the settlement has its ID is renamed then).
+const NAMED_PHOTO_TABLES = ['Settlement Street Photo']
+const photoFileName = computed(() => {
+  const parentName = parentValues?.name
+  if (!NAMED_PHOTO_TABLES.includes(field.options) || !parentName || String(parentName).startsWith('new-')) return null
+  const today = new Date()
+  const day = String(today.getDate()).padStart(2, '0')
+  const month = today.toLocaleString('en', { month: 'short' })
+  return `${parentName}-${day}${month}`
+})
 const editingRow = computed(() => (editingIdx.value == null ? null : rows.value[editingIdx.value]))
 
 // Field Function Mapping rules on the child doctype (e.g. an Intervention
